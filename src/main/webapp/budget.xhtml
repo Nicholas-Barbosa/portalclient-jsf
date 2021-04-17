@@ -1,0 +1,100 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="./WEB-INF/template.xhtml">
+
+	<ui:define name="head">
+		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+	</ui:define>
+	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
+
+	<ui:define name="viewname">
+		<li>#{holdMessageView.getLabel('compras_message')}</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li><p:link outcome="/budget">#{holdMessageView.getLabel('orcamento_message')}</p:link></li>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h:form id="formClientTb">
+			<div class="p-grid table-demo">
+				<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
+
+				<div class="p-col-12">
+					<div class="card">
+						<h5>#{holdMessageView.label('selecione_cliente')}</h5>
+
+						<p:remoteCommand name="rcCustomers"
+							action="#{budgetController.getClientsFromWS}"
+							value="#{budgetController.gssResponseClients.clients}"
+							update="@form" />
+
+						<p:dataTable var="customer" reflow="true" id="dtCustomer"
+							binding="#{budgetController.uiCustomerDataTable}"
+							value="#{budgetController.gssResponseClients.clients}">
+
+							<f:facet name="header">
+								<div class="customers-table-header">
+									<span style="font-weight: bold">CUSTOMERS</span>
+								</div>
+							</f:facet>
+
+
+							<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
+								<h:outputText value="#{customer.fantasyName}" />
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('store')}">
+								<h:outputText value="#{customer.store}" />
+							</p:column>
+
+							<p:column headerText="#{holdMessageView.label('cidade')}">
+								<h:outputText value="#{customer.city}" />
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('tabela')}">
+								<h:outputText value="#{customer.table}" />
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('endereco')}">
+								<h:outputText value="#{customer.address}" />
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('estado')}">
+								<h:outputText value="#{customer.state}" />
+							</p:column>
+							<p:column headerText="cgc">
+								<h:outputText value="#{customer.cgc}" />
+							</p:column>
+
+							<p:column headerText="#{holdMessageView.label('nome')}">
+								<h:outputText value="#{customer.name}" />
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('codigo')}">
+								<h:outputText value="#{customer.code}" />
+							</p:column>
+
+							<p:column headerText="#{holdMessageView.label('bloqueado')}">
+								<h:outputText value="#{customer.blocked}" />
+							</p:column>
+
+						</p:dataTable>
+
+					</div>
+				</div>
+			</div>
+		</h:form>
+		<script type="text/javascript">
+            function runRemoteCommand() {
+                var promise = rcCustomers();
+                let dtCustomer = document.getElementById("formClientTb:dtCustomer");
+                dtCustomer.style.display = "none";
+                promise.then(responseData => {
+                    var serverTime = responseData.jqXHR.pfArgs.serverTime;     
+                    dtCustomer.style.display = "block";
+                    console.log("Request successful, returned server");
+                }).catch(function (error) {
+                    console.error("Request failed", error);
+                });
+            }
+            runRemoteCommand();
+        </script>
+	</ui:define>
+</ui:composition>
