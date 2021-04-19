@@ -17,18 +17,38 @@
 
 	<ui:define name="content">
 
+		<div id="divLoading">
+			<div class="grid-demo">
+				<div class="p-grid p-dir-col">
+					<div class="p-col">
+						<div class="card grid-item">
+							<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
+								id="iconOkCustomers"></i> 
+
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+
+
+
 		<h:form id="formClientTb">
 			<div class="p-grid table-demo">
-				<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
+
 
 				<div class="p-col-12">
+					<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
 					<div class="card">
 						<h5>#{holdMessageView.label('selecione_cliente')}</h5>
 
 						<p:remoteCommand name="rcCustomers"
-							action="#{budgetController.getClientsFromWS}"
-							value="#{budgetController.gssResponseClients.clients}"
-							update="@form" />
+							action="#{budgetController.getClientsFromWS}" value="remote"
+							update="@form" process="@this" />
 
 						<p:dataTable var="customer" reflow="true" id="dtCustomer"
 							binding="#{budgetController.uiCustomerDataTable}"
@@ -77,24 +97,40 @@
 
 						</p:dataTable>
 
+						<p:blockUI block="dtCustomer" trigger="dtCustomer">
+
+						</p:blockUI>
 					</div>
 				</div>
 			</div>
 		</h:form>
+
+		<p:blockUI binding="#{budgetController.uiBlockForm}" id="uiBlockForm">
+			<f:event listener="#{budgetController.preRenderUIBlockCustomerForm}"
+				type="preRenderComponent"></f:event>
+		</p:blockUI>
+
+
+
 		<script type="text/javascript">
+			var divLoading = document.getElementById("divLoading");
             function runRemoteCommand() {
-                var promise = rcCustomers();
+            	divLoading.style.display="block";
+                let promise = rcCustomers();
                 let dtCustomer = document.getElementById("formClientTb:dtCustomer");
                 dtCustomer.style.display = "none";
                 promise.then(responseData => {
-                    var serverTime = responseData.jqXHR.pfArgs.serverTime;     
                     dtCustomer.style.display = "block";
+                    divLoading.style.display="none";
                     console.log("Request successful, returned server");
                 }).catch(function (error) {
+                	divLoading.style.display="none";
                     console.error("Request failed", error);
                 });
             }
+           
             runRemoteCommand();
         </script>
 	</ui:define>
+
 </ui:composition>

@@ -1,4 +1,4 @@
-package com.portal.service.restclient;
+package com.portal.client.rest;
 
 import java.io.InputStream;
 
