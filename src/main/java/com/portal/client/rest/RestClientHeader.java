@@ -2,14 +2,18 @@ package com.portal.client.rest;
 
 public class RestClientHeader {
 
+	
 	private String key;
 	private Object value;
 
 	public RestClientHeader(String key, Object value) {
 		super();
+	
 		this.key = key;
 		this.value = value;
 	}
+
+	
 
 	public String getKey() {
 		return key;
@@ -23,6 +27,7 @@ public class RestClientHeader {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		
 		result = prime * result + ((key == null) ? 0 : key.hashCode());
 		result = prime * result + ((value == null) ? 0 : value.hashCode());
 		return result;
@@ -37,6 +42,7 @@ public class RestClientHeader {
 		if (getClass() != obj.getClass())
 			return false;
 		RestClientHeader other = (RestClientHeader) obj;
+		
 		if (key == null) {
 			if (other.key != null)
 				return false;
@@ -50,4 +56,5 @@ public class RestClientHeader {
 		return true;
 	}
 
+	
 }

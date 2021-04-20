@@ -23,7 +23,7 @@
 					<div class="p-col">
 						<div class="card grid-item">
 							<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
-								id="iconOkCustomers"></i> 
+								id="iconOkCustomers"></i>
 
 
 						</div>
@@ -103,8 +103,10 @@
 					</div>
 				</div>
 			</div>
-		</h:form>
 
+		</h:form>
+		<h5>Modal</h5>
+		
 		<p:blockUI binding="#{budgetController.uiBlockForm}" id="uiBlockForm">
 			<f:event listener="#{budgetController.preRenderUIBlockCustomerForm}"
 				type="preRenderComponent"></f:event>

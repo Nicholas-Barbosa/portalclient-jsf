@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</f:facet>
+	<title>FarAway - Login</title>
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+
+</h:head>
+
+<h:body styleClass="login-body">
+	<div class="login-image">
+		<p:graphicImage name="images/pages/bg-header-login.png"
+			library="rain-layout" />
+	</div>
+	<div class="login-card">
+		<h1>
+			FARAWAY<span>LOGIN</span>
+		</h1>
+		<span>#{holdMessageView.label('boas_vindas_login')} </span>
+		<h:form>
+			<div class="form-group">
+				<span>#{holdMessageView.label('usuario')}</span>
+				<p:inputText placeholder="name@example.com"
+					value="#{loginController.username}" />
+			</div>
+			<div class="form-group">
+				<span>#{holdMessageView.label('senha')}</span>
+				<p:password placeholder="write your password..."
+					value="#{loginController.password}" />
+			</div>
+
+
+			<p:commandButton value="LOGINd" action="#{loginController.doLogin}" onstart="PF('dlgLoading').show()" onerror="console.log('error')"/>
+
+
+		</h:form>
+
+
+	</div>
+
+	<p:commandButton value="Show" type="button" icon="pi pi-external-link"
+		onclick="PF('dlg2').show()" />
+
+	<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
+		widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"
+		modal="true" closable="false" draggable="false">
+		<div class="grid-demo">
+			<div class="p-grid p-dir-col-rev">
+				<div class="p-col">
+					<div class="card grid-item">
+						<i class="pi pi-spin pi-spinner" style="font-size: 8rem"></i>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+
+	</p:dialog>
+
+
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+
+
+</h:body>
+
+</html>

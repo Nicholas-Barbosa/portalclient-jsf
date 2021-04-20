@@ -35,9 +35,9 @@ public class UserStylePreferences implements Serializable {
 
 	private boolean lightLogo = true;
 
-	private List<ComponentTheme> componentThemes = new ArrayList<ComponentTheme>();
+	private transient List<ComponentTheme> componentThemes = new ArrayList<ComponentTheme>();
 
-	private List<LayoutPrimaryColor> layoutPrimaryColors = new ArrayList<LayoutPrimaryColor>();
+	private transient List<LayoutPrimaryColor> layoutPrimaryColors = new ArrayList<LayoutPrimaryColor>();
 
 	@PostConstruct
 	public void init() {

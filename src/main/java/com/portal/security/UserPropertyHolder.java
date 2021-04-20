@@ -1,13 +1,20 @@
 package com.portal.security;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.SessionScoped;
 
-@SessionScoped
-public class UserPropertyHolder {
+import com.portal.security.api.ServiceApi;
 
+@SessionScoped
+public class UserPropertyHolder implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String name;
 	private final Map<String, ServiceApi> authenticatedServices = new ConcurrentHashMap<>();
 
@@ -56,5 +63,9 @@ public class UserPropertyHolder {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	public boolean isAuthenticated() {
+		return !authenticatedServices.isEmpty();
 	}
 }
