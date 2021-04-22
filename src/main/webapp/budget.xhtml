@@ -24,114 +24,180 @@
 						<div class="card grid-item">
 							<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
 								id="iconOkCustomers"></i>
+						</div>
+					</div>
+				</div>
+			</div>
 
+		</div>
+		<div id="error">
+			<div class="grid-demo">
+				<div class="p-grid p-dir-col">
+					<div class="p-col">
+						<div class="card grid-item">
+							<i class="pi pi-times" style="font-size: 8rem"
+								id="iconOkCustomers"></i>
+						</div>
+						<div class="card grid-item">
+							<p:messages id="messageError" globalOnly="true" showDetail="true" />
 
+						</div>
+						<div class="card grid-item">
+							<p:commandButton value="Tentar novamente"
+								styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
+								icon="pi pi-refresh 3rem" />
 						</div>
 					</div>
 
 				</div>
 			</div>
-
 		</div>
-
-
-
-
-		<h:form id="formClientTb">
-			<div class="p-grid table-demo">
-
-
+		
+			<div class="p-grid table-demo" >
 				<div class="p-col-12">
 					<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
 					<div class="card">
-						<h5>#{holdMessageView.label('selecione_cliente')}</h5>
+						<h:form id="formClientTb">
+							<h5>#{holdMessageView.label('selecione_cliente')}</h5>
 
-						<p:remoteCommand name="rcCustomers"
-							action="#{budgetController.getClientsFromWS}" value="remote"
-							update="@form" process="@this" />
+							<p:remoteCommand name="rcCustomers"
+								action="#{budgetController.getClientsFromWS}" value="remote"
+								update="@form messageError" process="@this" />
 
-						<p:dataTable var="customer" reflow="true" id="dtCustomer"
-							binding="#{budgetController.uiCustomerDataTable}"
-							value="#{budgetController.gssResponseClients.clients}">
+							<p:dataTable var="customer" reflow="true" id="dtCustomer"
+								binding="#{budgetController.uiCustomerDataTable}"
+								value="#{budgetController.lazyCustomers}" rowSelectMode="add"
+								rowKey="#{customer.cgc}"
+								selection="#{budgetController.selectedCustomer}"
+								paginator="true" paginatorPosition="bottom" rows="12"
+								paginatorAlwaysVisible="false"
+								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+								lazy="true">
 
-							<f:facet name="header">
-								<div class="customers-table-header">
-									<span style="font-weight: bold">CUSTOMERS</span>
-								</div>
-							</f:facet>
+								<f:facet name="header">
+									<div class="customers-table-header">
+										<span style="font-weight: bold">CUSTOMERS</span>
+									</div>
+								</f:facet>
+								<p:ajax event="page"
+									listener="#{budgetController.onPageCustomerListener}"
+									process="@this" update="messageError"
+									onerror="divError.style.display='none'" />
+								<p:column selectionMode="single" />
+
+								<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
+									<h:outputText value="#{customer.fantasyName}" />
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('store')}">
+									<h:outputText value="#{customer.store}" />
+								</p:column>
+
+								<p:column headerText="#{holdMessageView.label('cidade')}">
+									<h:outputText value="#{customer.city}" />
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('tabela')}">
+									<h:outputText value="#{customer.table}" />
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('endereco')}">
+									<h:outputText value="#{customer.address}" />
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('estado')}">
+									<h:outputText value="#{customer.state}" />
+								</p:column>
+								<p:column headerText="cgc">
+									<h:outputText value="#{customer.cgc}" />
+								</p:column>
+
+								<p:column headerText="#{holdMessageView.label('nome')}">
+									<h:outputText value="#{customer.name}" />
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('codigo')}">
+									<h:outputText value="#{customer.code}" />
+								</p:column>
+
+								<p:column headerText="#{holdMessageView.label('bloqueado')}">
+									<h:outputText value="#{customer.blocked}" />
+								</p:column>
+
+							</p:dataTable>
+
+							<p:blockUI block="dtCustomer" trigger="dtCustomer">
+
+							</p:blockUI>
+
+						</h:form>
+					</div>
+
+					<div class="card">
+						<h:form id="tbProducts">
+							<h5>#{holdMessageView.label('selecione_produtos')}</h5>
+							<p:remoteCommand name="rcProducts"
+								action="#{budgetController.getProductsFromWS}" value="remote"
+								update="@form" process="@this" />
 
 
-							<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
-								<h:outputText value="#{customer.fantasyName}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('store')}">
-								<h:outputText value="#{customer.store}" />
-							</p:column>
+							<p:dialog header="#{holdMessageView.label('selecione_produtos')}"
+								widgetVar="chooseProducts" showEffect="fade" modal="true"
+								draggable="false">
+								<p:dataTable value="#{budgetController.lazyProducts}"
+									var="product" paginator="true" rows="10">
+									<f:facet name="header">
 
-							<p:column headerText="#{holdMessageView.label('cidade')}">
-								<h:outputText value="#{customer.city}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('tabela')}">
-								<h:outputText value="#{customer.table}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('endereco')}">
-								<h:outputText value="#{customer.address}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('estado')}">
-								<h:outputText value="#{customer.state}" />
-							</p:column>
-							<p:column headerText="cgc">
-								<h:outputText value="#{customer.cgc}" />
-							</p:column>
+										<p:commandButton
+											value="#{holdMessageView.label('confirmar_selecao')}"
+											onclick="PF('chooseProducts').show()" icon="pi pi-check"
+											styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2" />
+									</f:facet>
+								</p:dataTable>
+							</p:dialog>
+						</h:form>
 
-							<p:column headerText="#{holdMessageView.label('nome')}">
-								<h:outputText value="#{customer.name}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('codigo')}">
-								<h:outputText value="#{customer.code}" />
-							</p:column>
 
-							<p:column headerText="#{holdMessageView.label('bloqueado')}">
-								<h:outputText value="#{customer.blocked}" />
-							</p:column>
-
-						</p:dataTable>
-
-						<p:blockUI block="dtCustomer" trigger="dtCustomer">
-
-						</p:blockUI>
 					</div>
 				</div>
+
 			</div>
-
-		</h:form>
-		<h5>Modal</h5>
 		
-		<p:blockUI binding="#{budgetController.uiBlockForm}" id="uiBlockForm">
-			<f:event listener="#{budgetController.preRenderUIBlockCustomerForm}"
-				type="preRenderComponent"></f:event>
-		</p:blockUI>
-
+		<p:messages globalOnly="true" redisplay="true" showDetail="true"
+			closable="true" />
 
 
 		<script type="text/javascript">
 			var divLoading = document.getElementById("divLoading");
+			var divError = document.getElementById("error");
+			var formCustomerDtable = document.getElementById("formClientTb");
+			divError.style.display='none';
+			formCustomerDtable.style.display='none'
             function runRemoteCommand() {
-            	divLoading.style.display="block";
                 let promise = rcCustomers();
-                let dtCustomer = document.getElementById("formClientTb:dtCustomer");
-                dtCustomer.style.display = "none";
-                promise.then(responseData => {
-                    dtCustomer.style.display = "block";
-                    divLoading.style.display="none";
-                    console.log("Request successful, returned server");
-                }).catch(function (error) {
-                	divLoading.style.display="none";
-                    console.error("Request failed", error);
-                });
             }
-           
+
+            
+            function renderPageForError(){
+            	divError.style.display="block";
+        		document.getElementById('tables').style.display="none";
+            }
+            
+            $(document).on('pfAjaxStart', (xhr,settings)=> {  
+            	divLoading.style.display="block";
+            	
+            });
+            
+            $(document).on('pfAjaxComplete', (xhr,settings)=> {  
+            	var responseStatus = settings.getResponseHeader('Pipeline-Status');
+            	divLoading.style.display="none";
+            	
+            	if(responseStatus == 'Error'){           		
+            		divError.style.display="block";
+            		formCustomerDtable.style.display='block'
+            	}else{
+            		divError.style.display="none";
+            		formCustomerDtable.style.display='block'
+            	}
+            
+            });
             runRemoteCommand();
+            
         </script>
 	</ui:define>
 

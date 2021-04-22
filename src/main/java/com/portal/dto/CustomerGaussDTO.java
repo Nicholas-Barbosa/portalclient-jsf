@@ -1,28 +1,42 @@
 package com.portal.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.Serializable;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class GssClientDTO {
+import javax.json.bind.annotation.JsonbProperty;
 
+public class CustomerGaussDTO implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5152498286178192330L;
+	@JsonbProperty
 	private String address;
+	@JsonbProperty
 	private String code;
+	@JsonbProperty
 	private String store;
+	@JsonbProperty
 	private String state;
+	@JsonbProperty
 	private String cgc;
+	@JsonbProperty
 	private String blocked;
+	@JsonbProperty
 	private String name;
-	@JsonProperty("fantasy_name")
+
+	@JsonbProperty("fantasy_name")
 	private String fantasyName;
+	@JsonbProperty
 	private String city;
+	@JsonbProperty
 	private String table;
 
-	public GssClientDTO() {
+	public CustomerGaussDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public GssClientDTO(String address, String code, String store, String state, String cgc, String blocked,
+	public CustomerGaussDTO(String address, String code, String store, String state, String cgc, String blocked,
 			String name, String fantasyName, String city, String table) {
 		super();
 		this.address = address;
@@ -75,4 +89,12 @@ public class GssClientDTO {
 	public String getTable() {
 		return table;
 	}
+
+	@Override
+	public String toString() {
+		return "GssCustomerDTO [address=" + address + ", code=" + code + ", store=" + store + ", state=" + state
+				+ ", cgc=" + cgc + ", blocked=" + blocked + ", name=" + name + ", fantasyName=" + fantasyName
+				+ ", city=" + city + ", table=" + table + "]";
+	}
+
 }

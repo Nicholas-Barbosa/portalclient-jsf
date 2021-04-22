@@ -2,7 +2,7 @@ package com.portal.security.api;
 
 public enum TokenType {
 
-	BAERER("Baerer");
+	Bearer("Bearer");
 
 	private final String tokenType;
 

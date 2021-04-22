@@ -2,30 +2,31 @@ package com.portal.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.json.bind.annotation.JsonbProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class GssResponseClientsDTO {
+public class CustomerResponseGaussDTO {
 
-	@JsonProperty("total_items")
+	@JsonbProperty("total_items")
 	private Integer totalItems;
-	@JsonProperty("total_page")
+
+	@JsonbProperty("total_page")
 	private Integer totalPages;
-	@JsonProperty("page_size")
+
+	@JsonbProperty("page_size")
 	private Integer pageSize;
-	@JsonProperty("page")
+
+	@JsonbProperty
 	private Integer page;
 
-	@JsonProperty("client")
-	private List<GssClientDTO> clients;
+	@JsonbProperty("client")
+	private List<CustomerGaussDTO> clients;
 
-	public GssResponseClientsDTO() {
+	public CustomerResponseGaussDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public GssResponseClientsDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
-			List<GssClientDTO> clients) {
+	public CustomerResponseGaussDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
+			List<CustomerGaussDTO> clients) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
@@ -50,7 +51,7 @@ public class GssResponseClientsDTO {
 		return page;
 	}
 
-	public List<GssClientDTO> getClients() {
+	public List<CustomerGaussDTO> getClients() {
 		return clients;
 	}
 

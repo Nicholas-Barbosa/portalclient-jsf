@@ -1,10 +1,15 @@
 package com.portal.security.api;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
-public class OAuth2ServiceApi extends ServiceApi {
+public class OAuth2ServiceApi extends ServiceApi implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6694867188257986664L;
 	private final String token;
 	private final String refreshToken;
 	private final String grantType;
@@ -22,8 +27,9 @@ public class OAuth2ServiceApi extends ServiceApi {
 		this.grantType = grantType;
 		this.scope = scope;
 		this.createdAt = createdAt;
-		this.expireIn = cronExpireIn();
 		this.timeUnit = timeUnit;
+		this.expireIn = cronExpireIn(duration);
+
 	}
 
 	public String getToken() {

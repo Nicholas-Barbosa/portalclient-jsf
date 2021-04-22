@@ -1,4 +1,4 @@
-package com.portal.producer;
+package com.portal.cdi.producer;
 
 import java.util.Locale;
 

@@ -1,22 +1,31 @@
 package com.portal.client.rest.auth;
 
+import java.util.Map;
+
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.rest.RestClient;
-import com.portal.security.api.ServiceApi;
 
 public interface AuthenticatedRestClient extends RestClient {
 
-	void setDefaultServiceApi(ServiceApi service);
+	/**
+	 * HTTP get to ServiceApi base path resolved with endpoint. Return an object
+	 * reference type referencing to error type if status different of 200,201 is
+	 * returned.Else will return an object reference to response type.
+	 * 
+	 * @param <T>
+	 * @param endpoint
+	 * @param queryParams
+	 * @return
+	 */
+	<T, ERROR> Object getForEntity(String serviceApiKey, String endpoint, Class<T> responseType, Class<ERROR> errorType,
+			Map<String,Object>queryParams);
 
-	<T> T getForEntity(String path, Object... queryParams);
-
-	<T, R> T postForEntity(String path, R requestBodyType, MediaType mediaTypeRequestBody, Class<T> responseType,
-			Object... queryParams);
+//	<T, R> T postForEntity(String path, R requestBodyType, MediaType mediaTypeRequestBody, Class<T> responseType,
+//			Object... queryParams);
 
 	/**
-	 * Make the login(HTTP POST) against path and set the returned service to a
-	 * object of ServiceApi. Return true if status 201.
+	 * Make the login(HTTP POST) against path .
 	 * 
 	 * 
 	 * @param path

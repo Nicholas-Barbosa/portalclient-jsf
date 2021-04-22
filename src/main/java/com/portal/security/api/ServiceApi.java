@@ -1,7 +1,13 @@
 package com.portal.security.api;
 
-public class ServiceApi {
+import java.io.Serializable;
 
+public class ServiceApi implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5239012235740247278L;
 	private final String username;
 	private final char[] password;
 	private final String basePath;

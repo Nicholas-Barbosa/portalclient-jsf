@@ -2,13 +2,9 @@ package com.portal.client.rest;
 
 import java.io.Serializable;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 
 public interface RestClient extends Serializable {
-
-	Client client = ClientBuilder.newClient();
 
 	/**
 	 * Execute HTTP get to specific uri.Return an object of type T, that will be

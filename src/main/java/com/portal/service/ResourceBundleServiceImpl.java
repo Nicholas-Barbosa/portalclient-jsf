@@ -27,7 +27,7 @@ public class ResourceBundleServiceImpl implements Serializable, ResourceBundleSe
 	@Override
 	public String getMessage(String message) {
 		// TODO Auto-generated method stub
-		
+
 		return resourceBundle.getString(message);
 	}
 

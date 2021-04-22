@@ -2,14 +2,19 @@ package com.portal.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import javax.inject.Singleton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Singleton
-public class JacksonMapper {
+public class JacksonHoldByteStream implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4221134634676829296L;
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	/**
