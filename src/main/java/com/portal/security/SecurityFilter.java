@@ -28,12 +28,11 @@ public class SecurityFilter implements Filter {
 			throws IOException, ServletException {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		
+
 		if (!userPropertyHolder.isAuthenticated()
 				&& !httpRequest.getRequestURI().equals("/PortalAppClient/faces/login.xhtml")
 				&& !httpRequest.getRequestURI().contains("resource")) {
-			((HttpServletResponse) response)
-					.sendRedirect("login.xhtml");
+			((HttpServletResponse) response).sendRedirect("login.xhtml");
 
 		}
 		chain.doFilter(request, response);

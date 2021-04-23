@@ -18,7 +18,7 @@ public class HoldMessageView implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Inject
 	private ResourceBundleService resourceBundleService;
-	
+
 	public HoldMessageView() {
 		super();
 	}
@@ -26,6 +26,7 @@ public class HoldMessageView implements Serializable {
 	public String getLabel(String message) {
 		return resourceBundleService.getMessage(message);
 	}
+
 	public String label(String message) {
 		return resourceBundleService.getMessage(message);
 	}

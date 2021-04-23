@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.ServletRequest;
 
 @Named
 @SessionScoped
@@ -14,14 +15,16 @@ public class ResourceBundleServiceImpl implements Serializable, ResourceBundleSe
 
 	private static final long serialVersionUID = 1L;
 	private final ResourceBundle resourceBundle;
+	private final ServletRequest servletRequest;
 
 	public ResourceBundleServiceImpl() {
 		this(null);
 	}
 
 	@Inject
-	public ResourceBundleServiceImpl(Locale locale) {
-		resourceBundle = ResourceBundle.getBundle("message", locale);
+	public ResourceBundleServiceImpl(ServletRequest servletRequest) {
+		this.servletRequest = servletRequest;
+		resourceBundle = ResourceBundle.getBundle("message", this.servletRequest.getLocale());
 	}
 
 	@Override

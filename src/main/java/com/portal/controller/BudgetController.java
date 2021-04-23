@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import javax.faces.application.FacesMessage;
-import javax.faces.component.UIData;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -16,6 +15,7 @@ import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ProcessingException;
 
+import org.primefaces.component.api.UIData;
 import org.primefaces.component.blockui.BlockUI;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;

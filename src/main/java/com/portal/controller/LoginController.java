@@ -62,7 +62,7 @@ public class LoginController {
 					"/api/oauth2/v1/token", TokenType.Bearer, loginResponse.getAccessToken(),
 					loginResponse.getRefreshToken(), "password", loginResponse.getScope(), LocalDateTime.now(),
 					loginResponse.getExpireIn(), TimeUnit.SECONDS);
-			System.out.println(serivceApi instanceof OAuth2ServiceApi);
+
 			userPropertyHolder.registerAuthenticatedService("GAUSS_ORCAMENTO", serivceApi);
 
 			return "BUDGET_PREVIEW";

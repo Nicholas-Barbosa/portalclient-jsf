@@ -2,9 +2,9 @@ package com.portal.cdi.producer;
 
 import java.util.Locale;
 
-import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.servlet.ServletRequest;
+import javax.ws.rs.Produces;
 
 public class LocaleProducer {
 
@@ -16,8 +16,10 @@ public class LocaleProducer {
 		this.servletRequest = servletRequest;
 	}
 
+	
 	@Produces
 	public Locale getInstance() {
+		System.out.println("getInstance");
 		return servletRequest.getLocale();
 	}
 }
