@@ -35,12 +35,7 @@
 				<div class="p-grid p-dir-col">
 					<div class="p-col">
 						<div class="card grid-item">
-							<i class="pi pi-times" style="font-size: 8rem"
-								id="iconOkCustomers"></i>
-						</div>
-						<div class="card grid-item">
 							<p:messages id="messageError" globalOnly="true" showDetail="true" />
-
 						</div>
 						<div class="card grid-item">
 							<p:commandButton value="Tentar novamente"
@@ -48,20 +43,20 @@
 								icon="pi pi-refresh 3rem" />
 						</div>
 					</div>
-
 				</div>
 			</div>
 		</div>
-		
-			<div class="p-grid table-demo" >
+
+		<div id="divBudgetForm">
+			<div class="p-grid table-demo">
 				<div class="p-col-12">
 					<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
-					<div class="card">
+					<div class="card" id="card">
 						<h:form id="formClientTb">
-							<h5>#{holdMessageView.label('selecione_cliente')}</h5>
+							<h5 id="titleDtCustomer">#{holdMessageView.label('selecione_cliente')}</h5>
 
 							<p:remoteCommand name="rcCustomers"
-								action="#{budgetController.getClientsFromWS}" value="remote"
+								action="#{budgetController.initTableCustomers}" value="remote"
 								update="@form messageError" process="@this" />
 
 							<p:dataTable var="customer" reflow="true" id="dtCustomer"
@@ -77,8 +72,12 @@
 								<f:facet name="header">
 									<div class="customers-table-header">
 										<span style="font-weight: bold">CUSTOMERS</span>
+										<p:button icon="pi pi-search"
+											styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
+											onclick="PF('searchCustomer').show()" />
 									</div>
 								</f:facet>
+
 								<p:ajax event="page"
 									listener="#{budgetController.onPageCustomerListener}"
 									process="@this" update="messageError"
@@ -125,15 +124,31 @@
 
 							</p:blockUI>
 
+							<p:dialog modal="true"
+								header="#{holdMessageView.label('procurar_cliente')}"
+								widgetVar="searchCustomer">
+								<div class="p-formgroup-inline">
+									<div class="p-field">
+										<p:inputText id="firstname1" type="text"
+											placeholder="Firstname" />
+									</div>
+									<div class="p-field">
+										<p:inputText id="lastname1" type="text" placeholder="Lastname" />
+									</div>
+									<p:commandButton value="#{holdMessageView.label('enviar')}"
+										icon="pi pi-send" />
+								</div>
+
+							</p:dialog>
+
 						</h:form>
 					</div>
 
 					<div class="card">
 						<h:form id="tbProducts">
 							<h5>#{holdMessageView.label('selecione_produtos')}</h5>
-							<p:remoteCommand name="rcProducts"
-								action="#{budgetController.getProductsFromWS}" value="remote"
-								update="@form" process="@this" />
+							<p:remoteCommand name="rcProducts" value="remote" update="@form"
+								process="@this" />
 
 
 							<p:dialog header="#{holdMessageView.label('selecione_produtos')}"
@@ -157,7 +172,8 @@
 				</div>
 
 			</div>
-		
+
+		</div>
 		<p:messages globalOnly="true" redisplay="true" showDetail="true"
 			closable="true" />
 
@@ -165,37 +181,39 @@
 		<script type="text/javascript">
 			var divLoading = document.getElementById("divLoading");
 			var divError = document.getElementById("error");
-			var formCustomerDtable = document.getElementById("formClientTb");
-			divError.style.display='none';
-			formCustomerDtable.style.display='none'
+			var dtCustomers = document.getElementById("formClientTb:dtCustomer");
+			var titleDtCustomer = document.getElementById("titleDtCustomer");
+			var divBudgetForm = document.getElementById("divBudgetForm");
+			divError.style.display="none";
+			
             function runRemoteCommand() {
                 let promise = rcCustomers();
             }
 
-            
-            function renderPageForError(){
-            	divError.style.display="block";
-        		document.getElementById('tables').style.display="none";
-            }
-            
             $(document).on('pfAjaxStart', (xhr,settings)=> {  
             	divLoading.style.display="block";
-            	
+            	dtCustomers.style.display ="none"
+            	titleDtCustomer.style.display="none"
             });
             
             $(document).on('pfAjaxComplete', (xhr,settings)=> {  
-            	var responseStatus = settings.getResponseHeader('Pipeline-Status');
+            	
+            	var responseStatus = settings.getResponseHeader('Backbone-Status');
             	divLoading.style.display="none";
             	
             	if(responseStatus == 'Error'){           		
-            		divError.style.display="block";
-            		formCustomerDtable.style.display='block'
+            		divBudgetForm.style.display="block";  
+            		setTimeout(function(){
+            			divBudgetForm.style.display="none"
+            		},100)
+            		
             	}else{
             		divError.style.display="none";
-            		formCustomerDtable.style.display='block'
+            		
             	}
             
             });
+                     
             runRemoteCommand();
             
         </script>

@@ -1,14 +1,12 @@
 package com.portal.controller;
 
 import java.io.Serializable;
-import java.net.SocketTimeoutException;
-import java.text.MessageFormat;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,6 +19,7 @@ import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
+import com.portal.client.rest.QueryParam;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.controller.lazycollection.CustomerGaussDTOLazyDataModel;
 import com.portal.controller.lazycollection.ProductGaussDTOLazyDataModel;
@@ -29,6 +28,8 @@ import com.portal.dto.CustomerResponseGaussDTO;
 import com.portal.dto.ErrorGaussDTO;
 import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductsResponseGaussDTO;
+import com.portal.service.faces.FacesService;
+import com.portal.service.reflection.MethodAttributes;
 import com.portal.service.view.HoldMessageView;
 
 @Named
@@ -48,10 +49,6 @@ public class BudgetController implements Serializable {
 
 	private boolean render = true;
 
-	private String divLoadingMainMessage;
-
-	private final AuthenticatedRestClient authRestClient;
-
 	private CustomerGaussDTO selectedCustomer;
 
 	private LazyDataModel<CustomerGaussDTO> lazyCustomers;
@@ -60,29 +57,39 @@ public class BudgetController implements Serializable {
 
 	private final HoldMessageView holderMessage;
 
+	private final AuthenticatedRestClient authRestClient;
+
+	private final FacesService facesService;
+
 	private ProductsResponseGaussDTO productResponseDTO;
 
+	private String customerCode, customerStore;
+
+	private final Set<MethodAttributes> methodsThatThrewException = new ConcurrentSkipListSet<>();
+
 	public BudgetController() {
-		this(null, null);
+		this(null, null, null);
 	}
 
 	@Inject
-	public BudgetController(@OAuth2RestAuth AuthenticatedRestClient authRestClient, HoldMessageView holderMessage) {
+	public BudgetController(@OAuth2RestAuth AuthenticatedRestClient authRestClient, HoldMessageView holderMessage,
+			FacesService facesService) {
 		super();
 		this.authRestClient = authRestClient;
-		this.lazyCustomers = new CustomerGaussDTOLazyDataModel();
 		this.lazyProducts = new ProductGaussDTOLazyDataModel();
 		this.holderMessage = holderMessage;
-	}
-
-	public void onPageCustomerListener(PageEvent pageEvent) {
-		this.loadLazyCustomers(pageEvent.getPage() + 1, 12);
+		this.facesService = facesService;
 
 	}
 
-	public void getClientsFromWS() {
+	public void retryLoadCollections() {
+
+	}
+
+	public void initTableCustomers() {
 		try {
-			this.loadLazyCustomers(1, 12);
+			this.lazyCustomers = new CustomerGaussDTOLazyDataModel();
+			this.getCustomers(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 12)));
 		} catch (NotAuthorizedException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -91,48 +98,39 @@ public class BudgetController implements Serializable {
 
 	}
 
-	private void loadLazyCustomers(int offset, int pageSize) {
+	public void onPageCustomerListener(PageEvent pageEvent) {
+		this.getCustomers(List.of(new QueryParam("page", pageEvent.getPage() + 1), new QueryParam("pageSize", 12)));
+	}
+
+	private void getCustomers(List<QueryParam> queryParams, Object... pathParams) {
 		try {
-			Map<String, Object> queryParams = new HashMap<>();
-			queryParams.put("page", offset);
-			queryParams.put("pageSize", pageSize);
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", "clients", CustomerResponseGaussDTO.class,
-					ErrorGaussDTO.class, queryParams);
+					ErrorGaussDTO.class, queryParams, pathParams);
 			if (response instanceof CustomerResponseGaussDTO) {
 				this.customerResponseGaussDTO = (CustomerResponseGaussDTO) response;
-				this.lazyCustomers.setPageSize(pageSize);
+				this.lazyCustomers.setPageSize(this.customerResponseGaussDTO.getPageSize());
 				this.lazyCustomers.setRowCount(this.customerResponseGaussDTO.getTotalItems());
 
 				((CustomerGaussDTOLazyDataModel) this.lazyCustomers)
 						.addCollectionToLazyCustomers(this.customerResponseGaussDTO.getClients());
 			} else {
 				ErrorGaussDTO error = (ErrorGaussDTO) response;
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						holderMessage.label("resposta_servidor"), error.getErrorMessage()));
-				System.out.println("error message " + ((ErrorGaussDTO) response).getErrorMessage());
-				FacesContext.getCurrentInstance().getExternalContext().addResponseHeader("Pipeline-Status", "Error");
+				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
+						.addHeaderForResponse("Backbone-Status", "Error");
 			}
 		} catch (ProcessingException e) {
-			if (e.getCause() instanceof SocketTimeoutException) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						holderMessage.label("socket_exception"),
-						MessageFormat.format(holderMessage.label("socket_exception_detalhes"), e.getMessage())));
-			} else if (e.getCause() instanceof TimeoutException) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						holderMessage.label("timeout_ler_response"),
-						MessageFormat.format(holderMessage.label("timeout_ler_response_detalhes"), e.getMessage())));
+			this.methodsThatThrewException
+					.add(new MethodAttributes("getCustomers", new Object[] { queryParams, pathParams }));
+			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
+			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
 
-			}
-			FacesContext.getCurrentInstance().getExternalContext().addResponseHeader("Pipeline-Status", "Error");
-			e.printStackTrace();
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().getExternalContext().addResponseHeader("Pipeline-Status", "Error");
+			this.methodsThatThrewException
+					.add(new MethodAttributes("getCustomers", new Object[] { queryParams, pathParams }));
+			facesService.addHeaderForResponse("Backbone-Status", "Error");
+			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
 			e.printStackTrace();
 		}
-	}
-
-	public void getProductsFromWS() {
-		this.loadLazyProducts(0, 10, null);
 	}
 
 	private void loadLazyProducts(int offset, int pageSize, String code) {
@@ -180,14 +178,6 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public String getDivLoadingMainMessage() {
-		return divLoadingMainMessage;
-	}
-
-	public void setDivLoadingMainMessage(String divLoadingMainMessage) {
-		this.divLoadingMainMessage = divLoadingMainMessage;
-	}
-
 	public CustomerGaussDTO getSelectedCustomer() {
 		return selectedCustomer;
 	}
@@ -211,4 +201,21 @@ public class BudgetController implements Serializable {
 	public LazyDataModel<ProductGaussDTO> getLazyProducts() {
 		return lazyProducts;
 	}
+
+	public String getCustomerCode() {
+		return customerCode;
+	}
+
+	public void setCustomerCode(String customerCode) {
+		this.customerCode = customerCode;
+	}
+
+	public String getCustomerStore() {
+		return customerStore;
+	}
+
+	public void setCustomerStore(String customerStore) {
+		this.customerStore = customerStore;
+	}
+
 }

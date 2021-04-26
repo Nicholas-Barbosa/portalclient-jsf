@@ -34,9 +34,9 @@ public class SecurityFilter implements Filter {
 				&& !httpRequest.getRequestURI().contains("resource")) {
 			((HttpServletResponse) response).sendRedirect("login.xhtml");
 
+		} else {
+			chain.doFilter(request, response);
 		}
-		chain.doFilter(request, response);
-
 	}
 
 }

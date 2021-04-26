@@ -45,4 +45,8 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 	public void addCollectionToLazyCustomers(List<CustomerGaussDTO> customers) {
 		this.customers = new ArrayList<CustomerGaussDTO>(customers);
 	}
+	
+	public void clearCustomers() {
+		this.customers.clear();
+	}
 }
