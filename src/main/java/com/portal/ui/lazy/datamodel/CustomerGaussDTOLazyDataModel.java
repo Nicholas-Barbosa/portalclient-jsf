@@ -1,9 +1,8 @@
-package com.portal.controller.lazycollection;
+package com.portal.ui.lazy.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -11,7 +10,8 @@ import org.primefaces.model.SortMeta;
 
 import com.portal.dto.CustomerGaussDTO;
 
-public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDTO> {
+public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDTO>
+		implements LazyOperations<CustomerGaussDTO> {
 
 	/**
 	 * 
@@ -43,9 +43,8 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 
 	@Override
 	public CustomerGaussDTO getRowData(String rowKey) {
-		Optional<CustomerGaussDTO> object = customers.parallelStream()
-				.filter((CustomerGaussDTO x) -> x.getCgc().equals(rowKey)).findAny();
-		return object.isEmpty() ? null : object.get();
+		return customers.parallelStream().filter((CustomerGaussDTO x) -> x.getCgc().equals(rowKey)).findAny()
+				.orElse(null);
 	}
 
 	public void addCollectionToLazyCustomers(List<CustomerGaussDTO> customers) {
@@ -58,5 +57,12 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 
 	public List<CustomerGaussDTO> getCustomers() {
 		return customers == null ? new ArrayList<>() : new ArrayList<>(customers);
+	}
+
+	@Override
+	public void addCollection(List<CustomerGaussDTO> list) {
+		System.out.println("add collection!");
+		this.customers = new ArrayList<>(list);
+
 	}
 }

@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -15,24 +14,23 @@ import javax.ws.rs.ProcessingException;
 
 import org.primefaces.component.api.UIData;
 import org.primefaces.component.blockui.BlockUI;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.QueryParam;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
-import com.portal.controller.lazycollection.CustomerGaussDTOLazyDataModel;
-import com.portal.controller.lazycollection.ProductGaussDTOLazyDataModel;
 import com.portal.dto.CustomerGaussDTO;
 import com.portal.dto.CustomerResponseGaussDTO;
 import com.portal.dto.ErrorGaussDTO;
+import com.portal.dto.PageResponse;
 import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductsResponseGaussDTO;
 import com.portal.service.faces.FacesService;
-import com.portal.service.reflection.MethodAttributes;
-import com.portal.service.reflection.ReflectionService;
 import com.portal.service.view.HoldMessageView;
+import com.portal.ui.lazy.datamodel.CustomerGaussDTOLazyDataModel;
+import com.portal.ui.lazy.datamodel.LazyOperations;
+import com.portal.ui.lazy.datamodel.ProductGaussDTOLazyDataModel;
 
 @Named
 @ViewScoped
@@ -85,59 +83,91 @@ public class BudgetController implements Serializable {
 
 	}
 
+	/**
+	 * This method will be called when view page is render by async ajax request.
+	 */
 	public void initTableCustomers() {
-		try {
-			if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCustomers().isEmpty()) {
-				this.getCustomers(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 12)));
-			}
-		} catch (NotAuthorizedException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+
+		if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCustomers().isEmpty()) {
+			System.out.println("get customers!");
+			this.populateCollection(List.of(new QueryParam("page", 0),new QueryParam("pageSize", 12)), "clients", this.lazyCustomers,
+					CustomerResponseGaussDTO.class);
+
 		}
+	}
+
+	public void initTableProducts() {
 
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
-	
-		this.getCustomers(List.of(new QueryParam("page", pageEvent.getPage() + 1), new QueryParam("pageSize", 12)));
+		System.out.println("onPage!");
+		this.populateCollection(List.of(new QueryParam("page", pageEvent.getPage() + 1),new QueryParam("pageSize", 12)), "clients", this.lazyCustomers,
+				CustomerResponseGaussDTO.class);
 	}
 
-	public void getCustomers(List<QueryParam> queryParams, Object... pathParams) {
+	@SuppressWarnings("unchecked")
+	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollection(List<QueryParam> queryParams,
+			String enpoint, U collection, Class<T> responseType, Object... pathParams) {
 		try {
-			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", "clients", CustomerResponseGaussDTO.class,
-					ErrorGaussDTO.class, queryParams, pathParams);
-			if (response instanceof CustomerResponseGaussDTO) {
-				this.customerResponseGaussDTO = (CustomerResponseGaussDTO) response;
-				this.lazyCustomers.setPageSize(this.customerResponseGaussDTO.getPageSize());
-				this.lazyCustomers.setRowCount(this.customerResponseGaussDTO.getTotalItems());
+			
+			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
+					queryParams, pathParams);
 
-				((CustomerGaussDTOLazyDataModel) this.lazyCustomers)
-						.addCollectionToLazyCustomers(this.customerResponseGaussDTO.getClients());
-			} else {
+			try {
+
+				T pageResponse = (T) response;
+				System.out.println("totalItems" + pageResponse.totalItems());
+				collection.setPageSize(pageResponse.getPageSize());
+				collection.setRowCount(pageResponse.totalItems());
+				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
+			} catch (ClassCastException e) {
 				ErrorGaussDTO error = (ErrorGaussDTO) response;
 				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
 						.addHeaderForResponse("Backbone-Status", "Error");
 			}
 		} catch (ProcessingException e) {
-			this.methodsThatThrewException.put("getCustomers", new Object[] { queryParams, pathParams });
 			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
-			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
-
+			e.printStackTrace();
 		} catch (Exception e) {
-			this.methodsThatThrewException.put("getCustomers", new Object[] { queryParams, pathParams });
-			if (FacesContext.getCurrentInstance() != null)
-				facesService.addHeaderForResponse("Backbone-Status", "Error");
-			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
+			facesService.addHeaderForResponse("Backbone-Status", "Error");
 			e.printStackTrace();
 		}
 	}
+
+//	public void getCustomers(List<QueryParam> queryParams, Object... pathParams) {
+//		try {
+//			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", "clients", CustomerResponseGaussDTO.class,
+//					ErrorGaussDTO.class, queryParams, pathParams);
+//			if (response instanceof CustomerResponseGaussDTO) {
+//				this.customerResponseGaussDTO = (CustomerResponseGaussDTO) response;
+//				this.lazyCustomers.setPageSize(this.customerResponseGaussDTO.getPageSize());
+//				this.lazyCustomers.setRowCount(this.customerResponseGaussDTO.getTotalItems());
+//
+//				((CustomerGaussDTOLazyDataModel) this.lazyCustomers)
+//						.addCollectionToLazyCustomers(this.customerResponseGaussDTO.getClients());
+//			} else {
+//				ErrorGaussDTO error = (ErrorGaussDTO) response;
+//				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
+//						.addHeaderForResponse("Backbone-Status", "Error");
+//			}
+//		} catch (ProcessingException e) {
+//			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
+//			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
+//
+//		} catch (Exception e) {
+//			if (FacesContext.getCurrentInstance() != null)
+//				facesService.addHeaderForResponse("Backbone-Status", "Error");
+//			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Method triggered by rowSelect ajax event
 	 */
 	public void onCustomerSelected() {
-		//this.uiCustomerDataTable.setRendered(false);
+		// this.uiCustomerDataTable.setRendered(false);
 	}
 
 	/**

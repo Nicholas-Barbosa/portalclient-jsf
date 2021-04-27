@@ -1,4 +1,4 @@
-package com.portal.controller.lazycollection;
+package com.portal.ui.lazy.datamodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,21 @@ public class ProductGaussDTOLazyDataModel extends LazyDataModel<ProductGaussDTO>
 		return products;
 	}
 
-	public void addCollectionToLazyProducts(List<ProductGaussDTO> products) {
+	@Override
+	public String getRowKey(ProductGaussDTO object) {
+		// TODO Auto-generated method stub
+		return object.getCommercialCode();
+	}
+
+	@Override
+	public ProductGaussDTO getRowData(String rowKey) {
+		// TODO Auto-generated method stub
+		return products.parallelStream().filter((ProductGaussDTO p) -> p.getCommercialCode().equals(rowKey)).findAny()
+				.orElse(null);
+	}
+
+	public void addProducts(List<ProductGaussDTO> products) {
 		this.products = new ArrayList<>(products);
 	}
+
 }

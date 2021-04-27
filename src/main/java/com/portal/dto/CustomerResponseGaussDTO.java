@@ -1,10 +1,11 @@
 package com.portal.dto;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class CustomerResponseGaussDTO {
+public class CustomerResponseGaussDTO implements PageResponse<CustomerGaussDTO> {
 
 	@JsonbProperty("total_items")
 	private Integer totalItems;
@@ -35,22 +36,6 @@ public class CustomerResponseGaussDTO {
 		this.clients = clients;
 	}
 
-	public Integer getTotalItems() {
-		return totalItems;
-	}
-
-	public Integer getTotalPages() {
-		return totalPages;
-	}
-
-	public Integer getPageSize() {
-		return pageSize;
-	}
-
-	public Integer getPage() {
-		return page;
-	}
-
 	public List<CustomerGaussDTO> getClients() {
 		return clients;
 	}
@@ -59,6 +44,36 @@ public class CustomerResponseGaussDTO {
 	public String toString() {
 		return "GssResponseClientsDTO [totalItems=" + totalItems + ", totalPages=" + totalPages + ", pageSize="
 				+ pageSize + ", page=" + page + ", clients=" + clients + "]";
+	}
+
+	@Override
+	public int getPageSize() {
+		// TODO Auto-generated method stub
+		return pageSize;
+	}
+
+	@Override
+	public int getPage() {
+		// TODO Auto-generated method stub
+		return page;
+	}
+
+	@Override
+	public int totalPages() {
+		// TODO Auto-generated method stub
+		return totalPages;
+	}
+
+	@Override
+	public int totalItems() {
+		// TODO Auto-generated method stub
+		return totalItems;
+	}
+
+	@Override
+	public Collection<CustomerGaussDTO> getContent() {
+		// TODO Auto-generated method stub
+		return clients;
 	}
 
 }
