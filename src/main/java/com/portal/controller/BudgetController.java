@@ -15,6 +15,7 @@ import javax.ws.rs.ProcessingException;
 
 import org.primefaces.component.api.UIData;
 import org.primefaces.component.blockui.BlockUI;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
@@ -62,8 +63,6 @@ public class BudgetController implements Serializable {
 
 	private final FacesService facesService;
 
-	private final ReflectionService reflectionService;
-
 	private ProductsResponseGaussDTO productResponseDTO;
 
 	private String customerCode, customerStore;
@@ -71,24 +70,22 @@ public class BudgetController implements Serializable {
 	private final Map<String, Object[]> methodsThatThrewException = new ConcurrentHashMap<>();
 
 	public BudgetController() {
-		this(null, null, null, null);
+		this(null, null, null);
 	}
 
 	@Inject
 	public BudgetController(@OAuth2RestAuth AuthenticatedRestClient authRestClient, HoldMessageView holderMessage,
-			FacesService facesService, ReflectionService reflectionService) {
+			FacesService facesService) {
 		super();
 		this.authRestClient = authRestClient;
 		this.lazyProducts = new ProductGaussDTOLazyDataModel();
 		this.lazyCustomers = new CustomerGaussDTOLazyDataModel();
 		this.holderMessage = holderMessage;
 		this.facesService = facesService;
-		this.reflectionService = reflectionService;
 
 	}
 
 	public void initTableCustomers() {
-		System.out.println("init table!");
 		try {
 			if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCustomers().isEmpty()) {
 				this.getCustomers(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 12)));
@@ -102,11 +99,11 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
+	
 		this.getCustomers(List.of(new QueryParam("page", pageEvent.getPage() + 1), new QueryParam("pageSize", 12)));
 	}
 
 	public void getCustomers(List<QueryParam> queryParams, Object... pathParams) {
-		System.out.println("getting customers!");
 		try {
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", "clients", CustomerResponseGaussDTO.class,
 					ErrorGaussDTO.class, queryParams, pathParams);
@@ -136,18 +133,11 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-	private void loadLazyProducts(int offset, int pageSize, String code) {
-		String endpoint = null;
-//		if (code != null) {
-//			endpoint = "products/{0}";
-//			this.productResponseDTO = this.authRestClient.getForEntity("GAUSS_ORCAMENTO", endpoint,
-//					ProductsResponseGaussDTO.class, code);
-//		} else {
-//			endpoint = "products?page={0}&pageSize={1}";
-//			this.authRestClient.getForEntity("GAUSS_ORCAMENTO", endpoint, ProductsResponseGaussDTO.class, offset,
-//					pageSize);
-//		}
-
+	/**
+	 * Method triggered by rowSelect ajax event
+	 */
+	public void onCustomerSelected() {
+		//this.uiCustomerDataTable.setRendered(false);
 	}
 
 	/**

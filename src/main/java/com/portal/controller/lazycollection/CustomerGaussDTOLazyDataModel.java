@@ -3,6 +3,7 @@ package com.portal.controller.lazycollection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
@@ -38,6 +39,13 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 	public String getRowKey(CustomerGaussDTO object) {
 		// TODO Auto-generated method stub
 		return object.getCgc();
+	}
+
+	@Override
+	public CustomerGaussDTO getRowData(String rowKey) {
+		Optional<CustomerGaussDTO> object = customers.parallelStream()
+				.filter((CustomerGaussDTO x) -> x.getCgc().equals(rowKey)).findAny();
+		return object.isEmpty() ? null : object.get();
 	}
 
 	public void addCollectionToLazyCustomers(List<CustomerGaussDTO> customers) {
