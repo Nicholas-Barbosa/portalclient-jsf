@@ -3,10 +3,10 @@ package com.portal.controller;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,6 +30,7 @@ import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductsResponseGaussDTO;
 import com.portal.service.faces.FacesService;
 import com.portal.service.reflection.MethodAttributes;
+import com.portal.service.reflection.ReflectionService;
 import com.portal.service.view.HoldMessageView;
 
 @Named
@@ -61,35 +62,37 @@ public class BudgetController implements Serializable {
 
 	private final FacesService facesService;
 
+	private final ReflectionService reflectionService;
+
 	private ProductsResponseGaussDTO productResponseDTO;
 
 	private String customerCode, customerStore;
 
-	private final Set<MethodAttributes> methodsThatThrewException = new ConcurrentSkipListSet<>();
+	private final Map<String, Object[]> methodsThatThrewException = new ConcurrentHashMap<>();
 
 	public BudgetController() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(@OAuth2RestAuth AuthenticatedRestClient authRestClient, HoldMessageView holderMessage,
-			FacesService facesService) {
+			FacesService facesService, ReflectionService reflectionService) {
 		super();
 		this.authRestClient = authRestClient;
 		this.lazyProducts = new ProductGaussDTOLazyDataModel();
+		this.lazyCustomers = new CustomerGaussDTOLazyDataModel();
 		this.holderMessage = holderMessage;
 		this.facesService = facesService;
-
-	}
-
-	public void retryLoadCollections() {
+		this.reflectionService = reflectionService;
 
 	}
 
 	public void initTableCustomers() {
+		System.out.println("init table!");
 		try {
-			this.lazyCustomers = new CustomerGaussDTOLazyDataModel();
-			this.getCustomers(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 12)));
+			if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCustomers().isEmpty()) {
+				this.getCustomers(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 12)));
+			}
 		} catch (NotAuthorizedException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -102,7 +105,8 @@ public class BudgetController implements Serializable {
 		this.getCustomers(List.of(new QueryParam("page", pageEvent.getPage() + 1), new QueryParam("pageSize", 12)));
 	}
 
-	private void getCustomers(List<QueryParam> queryParams, Object... pathParams) {
+	public void getCustomers(List<QueryParam> queryParams, Object... pathParams) {
+		System.out.println("getting customers!");
 		try {
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", "clients", CustomerResponseGaussDTO.class,
 					ErrorGaussDTO.class, queryParams, pathParams);
@@ -119,15 +123,14 @@ public class BudgetController implements Serializable {
 						.addHeaderForResponse("Backbone-Status", "Error");
 			}
 		} catch (ProcessingException e) {
-			this.methodsThatThrewException
-					.add(new MethodAttributes("getCustomers", new Object[] { queryParams, pathParams }));
+			this.methodsThatThrewException.put("getCustomers", new Object[] { queryParams, pathParams });
 			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
 			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
 
 		} catch (Exception e) {
-			this.methodsThatThrewException
-					.add(new MethodAttributes("getCustomers", new Object[] { queryParams, pathParams }));
-			facesService.addHeaderForResponse("Backbone-Status", "Error");
+			this.methodsThatThrewException.put("getCustomers", new Object[] { queryParams, pathParams });
+			if (FacesContext.getCurrentInstance() != null)
+				facesService.addHeaderForResponse("Backbone-Status", "Error");
 			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
 			e.printStackTrace();
 		}

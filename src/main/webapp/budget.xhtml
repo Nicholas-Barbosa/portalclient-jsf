@@ -6,6 +6,7 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+
 	</ui:define>
 	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
 
@@ -16,6 +17,7 @@
 	</ui:define>
 
 	<ui:define name="content">
+
 
 		<div id="divLoading">
 			<div class="grid-demo">
@@ -38,7 +40,7 @@
 							<p:messages id="messageError" globalOnly="true" showDetail="true" />
 						</div>
 						<div class="card grid-item">
-							<p:commandButton value="Tentar novamente"
+							<p:button value="Tentar novamente"
 								styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
 								icon="pi pi-refresh 3rem" />
 						</div>
@@ -47,7 +49,9 @@
 			</div>
 		</div>
 
-		<div id="divBudgetForm">
+
+		
+
 			<div class="p-grid table-demo">
 				<div class="p-col-12">
 					<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
@@ -173,50 +177,46 @@
 
 			</div>
 
-		</div>
+		
 		<p:messages globalOnly="true" redisplay="true" showDetail="true"
 			closable="true" />
 
 
 		<script type="text/javascript">
-			var divLoading = document.getElementById("divLoading");
-			var divError = document.getElementById("error");
-			var dtCustomers = document.getElementById("formClientTb:dtCustomer");
-			var titleDtCustomer = document.getElementById("titleDtCustomer");
-			var divBudgetForm = document.getElementById("divBudgetForm");
-			divError.style.display="none";
-			
-            function runRemoteCommand() {
-                let promise = rcCustomers();
-            }
+	
+		 $("#error").hide();
+        function runRemoteCommand() {
+            let promise = rcCustomers();
+        }
 
-            $(document).on('pfAjaxStart', (xhr,settings)=> {  
-            	divLoading.style.display="block";
-            	dtCustomers.style.display ="none"
-            	titleDtCustomer.style.display="none"
-            });
-            
-            $(document).on('pfAjaxComplete', (xhr,settings)=> {  
-            	
-            	var responseStatus = settings.getResponseHeader('Backbone-Status');
-            	divLoading.style.display="none";
-            	
-            	if(responseStatus == 'Error'){           		
-            		divBudgetForm.style.display="block";  
-            		setTimeout(function(){
-            			divBudgetForm.style.display="none"
-            		},100)
-            		
-            	}else{
-            		divError.style.display="none";
-            		
-            	}
-            
-            });
-                     
-            runRemoteCommand();
-            
-        </script>
+        $(document).on('pfAjaxStart', (xhr,settings)=> {  
+        	 $("#divLoading").show();
+        	 $("#error").hide();
+        	 $("#formClientTb").hide();
+        });
+        
+        $(document).on('pfAjaxComplete', (xhr,settings)=> {  
+        	
+        	var responseStatus = settings.getResponseHeader('Backbone-Status');
+        	 $("#divLoading").hide();
+        	
+        	if(responseStatus == 'Error'){           		
+        		 $("#error").show();
+        		setTimeout(function(){
+        			 $("#formClientTb").hide();
+        			
+        		},100)
+        		
+        	}else{
+        		 $("#formClientTb").show();
+        		
+        	}
+        
+        });
+                 
+        runRemoteCommand();
+        
+		</script>
 	</ui:define>
 
 </ui:composition>

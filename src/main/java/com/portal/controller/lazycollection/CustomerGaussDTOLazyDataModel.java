@@ -1,7 +1,5 @@
 package com.portal.controller.lazycollection;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +10,7 @@ import org.primefaces.model.SortMeta;
 
 import com.portal.dto.CustomerGaussDTO;
 
-public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDTO>{
+public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDTO> {
 
 	/**
 	 * 
@@ -45,8 +43,12 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 	public void addCollectionToLazyCustomers(List<CustomerGaussDTO> customers) {
 		this.customers = new ArrayList<CustomerGaussDTO>(customers);
 	}
-	
+
 	public void clearCustomers() {
 		this.customers.clear();
+	}
+
+	public List<CustomerGaussDTO> getCustomers() {
+		return customers == null ? new ArrayList<>() : new ArrayList<>(customers);
 	}
 }

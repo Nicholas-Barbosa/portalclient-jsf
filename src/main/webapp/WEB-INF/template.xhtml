@@ -20,6 +20,7 @@
 	<h:outputScript name="js/layout.js" library="rain-layout" />
 	<h:outputScript name="js/prism.js" library="rain-layout" />
 	<h:outputScript name="sections.js" library="demo" />
+	<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 	<ui:insert name="head" />
 </h:head>
 
@@ -57,8 +58,8 @@
 	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
-	<h:outputStylesheet name="css/demo-#{userStylePreferences.darkMode}.css"
-		library="demo" />
+	<h:outputStylesheet
+		name="css/demo-#{userStylePreferences.darkMode}.css" library="demo" />
 </h:body>
 
 </html>

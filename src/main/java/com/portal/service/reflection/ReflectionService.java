@@ -1,11 +1,19 @@
 package com.portal.service.reflection;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Map;
 
-public class ReflectionService {
+public class ReflectionService implements Serializable{
+
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -513654863841560219L;
 
 	public <T> void executeMethods(Map<String, Object[]> mapMethods, T t) {
 		Method[] methods = t.getClass().getDeclaredMethods();
