@@ -10,9 +10,7 @@ class SimpleRestClientTemplateTest {
 
 	@Test
 	void test() {
-		RestClient restClient = new SimpleRestClient();
-		System.out.println(
-				restClient.getForEntity("http://192.168.0.246:8091/rest/clients", CustomerResponseGaussDTO.class));
+		
 	}
 
 }

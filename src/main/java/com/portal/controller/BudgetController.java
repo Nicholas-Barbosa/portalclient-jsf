@@ -1,9 +1,10 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -15,7 +16,6 @@ import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
-import com.portal.client.rest.QueryParam;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.CustomerGaussDTO;
 import com.portal.dto.CustomerResponseGaussDTO;
@@ -81,31 +81,41 @@ public class BudgetController implements Serializable {
 	 */
 	public void initTableCustomers() {
 		if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCollection().isEmpty()) {
-			this.populateCollection(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 12)), "clients",
-					this.lazyCustomers, CustomerResponseGaussDTO.class);
+			Map<String, Object> queryParams = new HashMap<>();
+			queryParams.put("page", 0);
+			queryParams.put("pageSize", 12);
+			this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
 
 		}
 	}
 
 	public void initTableProducts() {
-		this.populateCollection(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 10)), "products",
-				this.lazyProducts, ProductsResponseGaussDTO.class);
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", 0);
+		queryParams.put("pageSize", 10);
+		this.populateCollection(queryParams, "products", this.lazyProducts, ProductsResponseGaussDTO.class, null);
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
-		this.populateCollection(
-				List.of(new QueryParam("page", pageEvent.getPage() + 1), new QueryParam("pageSize", 12)), "clients",
-				this.lazyCustomers, CustomerResponseGaussDTO.class);
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", pageEvent.getPage() + 1);
+		queryParams.put("pageSize", 12);
+		this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
 	}
 
 	public void findCustomer() {
-		this.populateCollectionWithSingleRow(null, "clients", this.lazyCustomers, CustomerGaussDTO.class, customerCode,
-				"loja", customerStore);
+		Map<String, Object> pathParams = new HashMap<>();
+		pathParams.put("code", customerCode);
+		pathParams.put("store", customerStore);
+		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
+				CustomerResponseGaussDTO.class, pathParams);
+
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollection(List<QueryParam> queryParams,
-			String enpoint, U collection, Class<T> responseType, Object... pathParams) {
+	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollection(
+			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
+			Map<String, Object> pathParams) {
 		try {
 
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
@@ -115,6 +125,10 @@ public class BudgetController implements Serializable {
 				T pageResponse = (T) response;
 				collection.setPageSize(pageResponse.getPageSize());
 				collection.setRowCount(pageResponse.totalItems());
+
+				/*
+				 * Here will occur override,so T or U not make difference.
+				 */
 				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
 			} catch (ClassCastException e) {
 				ErrorGaussDTO error = (ErrorGaussDTO) response;
@@ -132,20 +146,22 @@ public class BudgetController implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(List<QueryParam> queryParams,
-			String enpoint, U collection, Class<T> responseType, Object... pathParams) {
+	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(
+			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
+			Map<String, Object> pathParams) {
 		try {
 
-			Object objectResponse = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
+			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
 					queryParams, pathParams);
 
 			try {
-				T response = (T) objectResponse;
+				T pageResponse = (T) response;
 				collection.setPageSize(1);
 				collection.setRowCount(1);
-				((LazyOperations<T>) collection).addCollection(List.of(response));
+				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
+
 			} catch (ClassCastException e) {
-				ErrorGaussDTO error = (ErrorGaussDTO) objectResponse;
+				ErrorGaussDTO error = (ErrorGaussDTO) response;
 				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
 						.addHeaderForResponse("Backbone-Status", "Error");
 

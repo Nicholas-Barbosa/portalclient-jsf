@@ -149,7 +149,7 @@
 								</div>
 								<p:commandButton value="#{holdMessageView.label('enviar')}"
 									icon="pi pi-send" action="#{budgetController.findCustomer}"
-									update="formClientTb:dtCustomer" onstart="onStartFindCustomer()" oncomplete="onCompleteFindCustomer()"/>
+									update="formClientTb:dtCustomer" onstart="onStartFindCustomer()" oncomplete="onCompleteFindCustomer(xhr)"/>
 							</div>
 
 						</p:dialog>
@@ -266,11 +266,12 @@
 				}
 			}
 			function onStartFindCustomer(){
-				onStartLoading();
 				PF('searchCustomer').hide();
+				
+				
 			}
-			function onCompleteFindCustomer(){
-				$("#divLoading").hide();
+			function onCompleteFindCustomer(xhr){
+				onCompleteInitTables(xhr)
 			}
 			initTablesCustomerProducts();
 		</script>

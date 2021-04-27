@@ -1,10 +1,9 @@
 package com.portal.client.rest.auth;
 
-import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.rest.QueryParam;
 import com.portal.client.rest.RestClient;
 
 public interface AuthenticatedRestClient extends RestClient {
@@ -20,7 +19,7 @@ public interface AuthenticatedRestClient extends RestClient {
 	 * @return
 	 */
 	<T, ERROR> Object getForEntity(String serviceApiKey, String endpoint, Class<T> responseType, Class<ERROR> errorType,
-			List<QueryParam> queryParams, Object... pathParams);
+			Map<String, Object> queryParams, Map<String, Object> pathParams);
 
 //	<T, R> T postForEntity(String path, R requestBodyType, MediaType mediaTypeRequestBody, Class<T> responseType,
 //			Object... queryParams);
