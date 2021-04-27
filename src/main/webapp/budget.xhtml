@@ -79,9 +79,18 @@
 							<f:facet name="header">
 								<div class="customers-table-header">
 									<span style="font-weight: bold">CUSTOMERS</span>
-									<p:button icon="pi pi-search"
-										styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
-										onclick="PF('searchCustomer').show()" />
+
+									<div class="ui-button-group">
+										<p:button icon="pi pi-search"
+											styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
+											onclick="PF('searchCustomer').show()" />
+
+										<p:commandButton icon="pi pi-refresh"
+											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
+											action="#{budgetController.refreshDtCustomers}"
+											update="@form" onstart="onStartRefresh()"
+											oncomplete="onCompleteRefresh()" />
+									</div>
 								</div>
 							</f:facet>
 
@@ -149,7 +158,8 @@
 								</div>
 								<p:commandButton value="#{holdMessageView.label('enviar')}"
 									icon="pi pi-send" action="#{budgetController.findCustomer}"
-									update="formClientTb:dtCustomer" onstart="onStartFindCustomer()" oncomplete="onCompleteFindCustomer(xhr)"/>
+									update="formClientTb" onstart="onStartFindCustomer()"
+									oncomplete="onCompleteFindCustomer(xhr)" />
 							</div>
 
 						</p:dialog>
@@ -252,13 +262,13 @@
 			function onCompleteInitTables(xhr) {
 				var responseStatus = xhr.getResponseHeader('Backbone-Status');
 				$("#divLoading").hide();
-
+				$("#formClientTb").hide();
 				if (responseStatus == 'Error') {
 					$("#error").show();
 					setTimeout(function() {
 						$("#formClientTb").hide();
 
-					}, 100)
+					}, 4)
 
 				} else {
 					$("#formClientTb").show();
@@ -267,11 +277,23 @@
 			}
 			function onStartFindCustomer(){
 				PF('searchCustomer').hide();
-				
+				$("#formClientTb").hide();
+				$("#divLoading").show();
 				
 			}
 			function onCompleteFindCustomer(xhr){
-				onCompleteInitTables(xhr)
+				$("#divLoading").hide();
+			
+			}
+			
+			function onStartRefresh(){
+				$("#divLoading").show();
+				$("#formClientTb").hide();
+			}
+			
+			function onCompleteRefresh(){
+				$("#divLoading").hide();
+				$("#formClientTb").show();
 			}
 			initTablesCustomerProducts();
 		</script>

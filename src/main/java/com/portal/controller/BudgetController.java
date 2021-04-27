@@ -80,13 +80,12 @@ public class BudgetController implements Serializable {
 	 * This method will be called when view page is render by async ajax request.
 	 */
 	public void initTableCustomers() {
-		if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCollection().isEmpty()) {
-			Map<String, Object> queryParams = new HashMap<>();
-			queryParams.put("page", 0);
-			queryParams.put("pageSize", 12);
-			this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
 
-		}
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", 0);
+		queryParams.put("pageSize", 12);
+		this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
+
 	}
 
 	public void initTableProducts() {
@@ -110,6 +109,10 @@ public class BudgetController implements Serializable {
 		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
 				CustomerResponseGaussDTO.class, pathParams);
 
+	}
+
+	public void refreshDtCustomers() {
+		this.initTableCustomers();
 	}
 
 	@SuppressWarnings("unchecked")
