@@ -68,15 +68,19 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 			Client client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).register(feature).build();
 
-			endpoint = pathParams != null
-					? endpoint+Arrays.stream(pathParams).map(x -> x.toString()).collect(Collectors.joining("/", "/", ""))
-					: endpoint;
+			endpoint = pathParams.length > 0 ? endpoint + Arrays.stream(pathParams).map(x -> {
+				System.out.println("X " + x);
+				return x.toString();
+			}).collect(Collectors.joining("/", "/", "")) : endpoint;
 			UriBuilder uriBuilder = UriBuilder.fromPath(oAuthApi.getBasePath()).path(endpoint);
-			queryParams.parallelStream().forEach(entry -> {
-				uriBuilder.queryParam(entry.getName(), entry.getValue());
-			});
+			if (queryParams != null) {
+				queryParams.parallelStream().forEach(entry -> {
+					uriBuilder.queryParam(entry.getName(), entry.getValue());
+				});
+			}
 
 			Response rawResponse = client.target(uriBuilder.build()).request().get();
+			
 			if (rawResponse.getStatus() == 201 || rawResponse.getStatus() == 200)
 				return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), responseType);
 			return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), errorType);

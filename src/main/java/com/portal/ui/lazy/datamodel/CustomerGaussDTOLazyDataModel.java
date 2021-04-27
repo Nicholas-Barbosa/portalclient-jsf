@@ -18,10 +18,10 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 	 */
 	private static final long serialVersionUID = -8941653163666281143L;
 
-	private List<CustomerGaussDTO> customers;
+	private  List<CustomerGaussDTO> customers;
 
 	public CustomerGaussDTOLazyDataModel() {
-		// TODO Auto-generated constructor stub
+		this.customers = new ArrayList<>();
 	}
 
 	public CustomerGaussDTOLazyDataModel(List<CustomerGaussDTO> customers) {
@@ -47,22 +47,21 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 				.orElse(null);
 	}
 
-	public void addCollectionToLazyCustomers(List<CustomerGaussDTO> customers) {
-		this.customers = new ArrayList<CustomerGaussDTO>(customers);
-	}
+	@Override
+	public void addCollection(List<CustomerGaussDTO> list) {
 
-	public void clearCustomers() {
-		this.customers.clear();
-	}
+		this.customers = new ArrayList<>(list);
 
-	public List<CustomerGaussDTO> getCustomers() {
-		return customers == null ? new ArrayList<>() : new ArrayList<>(customers);
 	}
 
 	@Override
-	public void addCollection(List<CustomerGaussDTO> list) {
-		System.out.println("add collection!");
-		this.customers = new ArrayList<>(list);
+	public void clearCollection() {
+		this.customers.clear();
 
+	}
+
+	@Override
+	public List<CustomerGaussDTO> getCollection() {
+		return this.customers == null ? new ArrayList<>() : customers;
 	}
 }

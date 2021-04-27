@@ -10,7 +10,8 @@ import org.primefaces.model.SortMeta;
 
 import com.portal.dto.ProductGaussDTO;
 
-public class ProductGaussDTOLazyDataModel extends LazyDataModel<ProductGaussDTO> {
+public class ProductGaussDTOLazyDataModel extends LazyDataModel<ProductGaussDTO>
+		implements LazyOperations<ProductGaussDTO> {
 
 	/**
 	 * 
@@ -18,6 +19,10 @@ public class ProductGaussDTOLazyDataModel extends LazyDataModel<ProductGaussDTO>
 	private static final long serialVersionUID = 2915731141483345370L;
 
 	private List<ProductGaussDTO> products;
+
+	public ProductGaussDTOLazyDataModel() {
+		this.products = new ArrayList<>();
+	}
 
 	@Override
 	public List<ProductGaussDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
@@ -34,13 +39,31 @@ public class ProductGaussDTOLazyDataModel extends LazyDataModel<ProductGaussDTO>
 
 	@Override
 	public ProductGaussDTO getRowData(String rowKey) {
-		// TODO Auto-generated method stub
+
 		return products.parallelStream().filter((ProductGaussDTO p) -> p.getCommercialCode().equals(rowKey)).findAny()
 				.orElse(null);
 	}
 
 	public void addProducts(List<ProductGaussDTO> products) {
 		this.products = new ArrayList<>(products);
+	}
+
+	@Override
+	public void addCollection(List<ProductGaussDTO> list) {
+		products = new ArrayList<>(list);
+
+	}
+
+	@Override
+	public void clearCollection() {
+		products.clear();
+
+	}
+
+	@Override
+	public List<ProductGaussDTO> getCollection() {
+		// TODO Auto-generated method stub
+		return new ArrayList<>(products);
 	}
 
 }

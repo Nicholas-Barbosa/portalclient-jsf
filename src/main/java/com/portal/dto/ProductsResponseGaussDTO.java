@@ -1,10 +1,12 @@
 package com.portal.dto;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductsResponseGaussDTO {
+public class ProductsResponseGaussDTO implements PageResponse<ProductGaussDTO> {
 
 	@JsonbProperty("total_items")
 	private Integer totalItems;
@@ -32,24 +34,34 @@ public class ProductsResponseGaussDTO {
 		this.products = products;
 	}
 
-	public Integer getTotalItems() {
-		return totalItems;
-	}
-
-	public Integer getTotalPages() {
-		return totalPages;
-	}
-
-	public Integer getPageSize() {
+	@Override
+	public int getPageSize() {
+		// TODO Auto-generated method stub
 		return pageSize;
 	}
 
-	public Integer getPage() {
+	@Override
+	public int getPage() {
+		// TODO Auto-generated method stub
 		return page;
 	}
 
-	public List<ProductGaussDTO> getProducts() {
-		return products;
+	@Override
+	public int totalPages() {
+		// TODO Auto-generated method stub
+		return totalPages;
+	}
+
+	@Override
+	public int totalItems() {
+		// TODO Auto-generated method stub
+		return totalItems;
+	}
+
+	@Override
+	public Collection<ProductGaussDTO> getContent() {
+
+		return new ArrayList<>(products);
 	}
 
 }

@@ -2,14 +2,11 @@ package com.portal.controller;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ProcessingException;
 
 import org.primefaces.component.api.UIData;
@@ -41,8 +38,6 @@ public class BudgetController implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private CustomerResponseGaussDTO customerResponseGaussDTO;
-
 	private transient UIData uiCustomerDataTable;
 
 	private transient BlockUI uiBlockForm;
@@ -65,8 +60,6 @@ public class BudgetController implements Serializable {
 
 	private String customerCode, customerStore;
 
-	private final Map<String, Object[]> methodsThatThrewException = new ConcurrentHashMap<>();
-
 	public BudgetController() {
 		this(null, null, null);
 	}
@@ -87,37 +80,39 @@ public class BudgetController implements Serializable {
 	 * This method will be called when view page is render by async ajax request.
 	 */
 	public void initTableCustomers() {
-
-		if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCustomers().isEmpty()) {
-			System.out.println("get customers!");
-			this.populateCollection(List.of(new QueryParam("page", 0),new QueryParam("pageSize", 12)), "clients", this.lazyCustomers,
-					CustomerResponseGaussDTO.class);
+		if (((CustomerGaussDTOLazyDataModel) this.lazyCustomers).getCollection().isEmpty()) {
+			this.populateCollection(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 12)), "clients",
+					this.lazyCustomers, CustomerResponseGaussDTO.class);
 
 		}
 	}
 
 	public void initTableProducts() {
-
+		this.populateCollection(List.of(new QueryParam("page", 0), new QueryParam("pageSize", 10)), "products",
+				this.lazyProducts, ProductsResponseGaussDTO.class);
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
-		System.out.println("onPage!");
-		this.populateCollection(List.of(new QueryParam("page", pageEvent.getPage() + 1),new QueryParam("pageSize", 12)), "clients", this.lazyCustomers,
-				CustomerResponseGaussDTO.class);
+		this.populateCollection(
+				List.of(new QueryParam("page", pageEvent.getPage() + 1), new QueryParam("pageSize", 12)), "clients",
+				this.lazyCustomers, CustomerResponseGaussDTO.class);
+	}
+
+	public void findCustomer() {
+		this.populateCollectionWithSingleRow(null, "clients", this.lazyCustomers, CustomerGaussDTO.class, customerCode,
+				"loja", customerStore);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollection(List<QueryParam> queryParams,
 			String enpoint, U collection, Class<T> responseType, Object... pathParams) {
 		try {
-			
+
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
 					queryParams, pathParams);
 
 			try {
-
 				T pageResponse = (T) response;
-				System.out.println("totalItems" + pageResponse.totalItems());
 				collection.setPageSize(pageResponse.getPageSize());
 				collection.setRowCount(pageResponse.totalItems());
 				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
@@ -125,6 +120,7 @@ public class BudgetController implements Serializable {
 				ErrorGaussDTO error = (ErrorGaussDTO) response;
 				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
 						.addHeaderForResponse("Backbone-Status", "Error");
+
 			}
 		} catch (ProcessingException e) {
 			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
@@ -135,33 +131,33 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-//	public void getCustomers(List<QueryParam> queryParams, Object... pathParams) {
-//		try {
-//			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", "clients", CustomerResponseGaussDTO.class,
-//					ErrorGaussDTO.class, queryParams, pathParams);
-//			if (response instanceof CustomerResponseGaussDTO) {
-//				this.customerResponseGaussDTO = (CustomerResponseGaussDTO) response;
-//				this.lazyCustomers.setPageSize(this.customerResponseGaussDTO.getPageSize());
-//				this.lazyCustomers.setRowCount(this.customerResponseGaussDTO.getTotalItems());
-//
-//				((CustomerGaussDTOLazyDataModel) this.lazyCustomers)
-//						.addCollectionToLazyCustomers(this.customerResponseGaussDTO.getClients());
-//			} else {
-//				ErrorGaussDTO error = (ErrorGaussDTO) response;
-//				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
-//						.addHeaderForResponse("Backbone-Status", "Error");
-//			}
-//		} catch (ProcessingException e) {
-//			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
-//			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
-//
-//		} catch (Exception e) {
-//			if (FacesContext.getCurrentInstance() != null)
-//				facesService.addHeaderForResponse("Backbone-Status", "Error");
-//			((CustomerGaussDTOLazyDataModel) this.lazyCustomers).clearCustomers();
-//			e.printStackTrace();
-//		}
-//	}
+	@SuppressWarnings("unchecked")
+	public <T, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(List<QueryParam> queryParams,
+			String enpoint, U collection, Class<T> responseType, Object... pathParams) {
+		try {
+
+			Object objectResponse = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
+					queryParams, pathParams);
+
+			try {
+				T response = (T) objectResponse;
+				collection.setPageSize(1);
+				collection.setRowCount(1);
+				((LazyOperations<T>) collection).addCollection(List.of(response));
+			} catch (ClassCastException e) {
+				ErrorGaussDTO error = (ErrorGaussDTO) objectResponse;
+				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
+						.addHeaderForResponse("Backbone-Status", "Error");
+
+			}
+		} catch (ProcessingException e) {
+			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
+			e.printStackTrace();
+		} catch (Exception e) {
+			facesService.addHeaderForResponse("Backbone-Status", "Error");
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Method triggered by rowSelect ajax event
