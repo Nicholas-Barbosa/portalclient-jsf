@@ -18,11 +18,11 @@ import org.primefaces.model.LazyDataModel;
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.CustomerGaussDTO;
-import com.portal.dto.CustomerResponseGaussDTO;
+import com.portal.dto.CustomerPageGaussDTO;
 import com.portal.dto.ErrorGaussDTO;
 import com.portal.dto.PageResponse;
 import com.portal.dto.ProductGaussDTO;
-import com.portal.dto.ProductsResponseGaussDTO;
+import com.portal.dto.ProductsPageGaussDTO;
 import com.portal.service.faces.FacesService;
 import com.portal.service.view.HoldMessageView;
 import com.portal.ui.lazy.datamodel.CustomerGaussDTOLazyDataModel;
@@ -56,7 +56,7 @@ public class BudgetController implements Serializable {
 
 	private final FacesService facesService;
 
-	private ProductsResponseGaussDTO productResponseDTO;
+	private ProductsPageGaussDTO productResponseDTO;
 
 	private String customerCode, customerStore;
 
@@ -84,7 +84,7 @@ public class BudgetController implements Serializable {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
 		queryParams.put("pageSize", 10);
-		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null,holderMessage.label("impossivel_procurar_clientes"));
+		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerPageGaussDTO.class, null,holderMessage.label("impossivel_procurar_clientes"));
 
 	}
 
@@ -92,14 +92,14 @@ public class BudgetController implements Serializable {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
 		queryParams.put("pageSize", 15);
-		this.populateLazyCollection(queryParams, "products", this.lazyProducts, ProductsResponseGaussDTO.class, null,holderMessage.label("impossivel_procurar_produtos"));
+		this.populateLazyCollection(queryParams, "products", this.lazyProducts, ProductsPageGaussDTO.class, null,holderMessage.label("impossivel_procurar_produtos"));
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", pageEvent.getPage() + 1);
 		queryParams.put("pageSize", 10);
-		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null,holderMessage.label("resposta_servidor"));
+		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerPageGaussDTO.class, null,holderMessage.label("resposta_servidor"));
 	}
 
 	public void findCustomer() {
@@ -108,7 +108,7 @@ public class BudgetController implements Serializable {
 		pathParams.put("code", customerCode);
 		pathParams.put("store", customerStore);
 		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
-				CustomerResponseGaussDTO.class, pathParams,holderMessage.label("nao_encontrado"));
+				CustomerPageGaussDTO.class, pathParams,holderMessage.label("nao_encontrado"));
 
 	}
 
@@ -233,7 +233,7 @@ public class BudgetController implements Serializable {
 		this.lazyCustomers = lazyCustomers;
 	}
 
-	public ProductsResponseGaussDTO getProductResponseDTO() {
+	public ProductsPageGaussDTO getProductResponseDTO() {
 		return productResponseDTO;
 	}
 
