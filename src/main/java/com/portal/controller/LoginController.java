@@ -1,10 +1,10 @@
 package com.portal.controller;
 
-import java.net.SocketTimeoutException;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
@@ -18,6 +18,7 @@ import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.LoginForm;
 import com.portal.dto.LoginGssResponseDTO;
+import com.portal.exception.ProcessingExceptionHandler;
 import com.portal.security.UserPropertyHolder;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
@@ -31,31 +32,36 @@ public class LoginController {
 	private final UserPropertyHolder userPropertyHolder;
 	private final AuthenticatedRestClient authenticatedRestClient;
 	private final HoldMessageView holdMessageView;
+	private final ProcessingExceptionHandler processingExceptionHandler;
 	private LoginForm loginForm;
 	private String headerDlgMessage;
 
 	public LoginController() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 
 	@Inject
 	public LoginController(UserPropertyHolder userPropertyHolder,
-			@OAuth2RestAuth AuthenticatedRestClient authenticatedRestClient, HoldMessageView holdMessageView) {
+			@OAuth2RestAuth AuthenticatedRestClient authenticatedRestClient, HoldMessageView holdMessageView,
+			ProcessingExceptionHandler processingExceptionHandler) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
 		this.authenticatedRestClient = authenticatedRestClient;
 		this.holdMessageView = holdMessageView;
 		this.headerDlgMessage = this.holdMessageView.label("autenticando_usuario");
 		this.loginForm = new LoginForm();
+		this.processingExceptionHandler = processingExceptionHandler;
 	}
 
 	public String doLogin() {
 		try {
-
+			Map<String, Object> queryParams = new HashMap<>();
+			queryParams.put("grant_type", "password");
+			queryParams.put("password", this.loginForm.getPassword());
+			queryParams.put("username", this.loginForm.getUsername());
 			LoginGssResponseDTO loginResponse = authenticatedRestClient.login(
-					"http://192.168.0.246:8091/rest/api/oauth2/v1/token?grant_type={0}&password={1}&username={2}", null,
-					null, LoginGssResponseDTO.class, "password", this.loginForm.getPassword(),
-					this.loginForm.getUsername());
+					"http://192.168.0.246:8091/rest/api/oauth2/v1/token", null,
+					null, LoginGssResponseDTO.class, queryParams);
 
 			ServiceApi serivceApi = new OAuth2ServiceApi(this.loginForm.getUsername(),
 					this.loginForm.getPassword().toCharArray(), "http://192.168.0.246:8091/rest",
@@ -76,22 +82,15 @@ public class LoginController {
 			// TODO: handle exception
 
 		} catch (ProcessingException e) {
+			System.out.println("Processing exception!");
+			processingExceptionHandler.checkProcessingExceptionCauseAndAddMessage(e);
 
-			if (e.getCause() instanceof SocketTimeoutException) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						holdMessageView.label("socket_exception"),
-						MessageFormat.format(holdMessageView.label("socket_exception_detalhes"), e.getMessage())));
-			} else if (e.getCause() instanceof TimeoutException) {
-				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-						holdMessageView.label("timeout_ler_response"),
-						MessageFormat.format(holdMessageView.label("timeout_ler_response_detalhes"), e.getMessage())));
-			}
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance()
 					.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
 							holdMessageView.label("erro_interno"),
 							MessageFormat.format(holdMessageView.label("detalhes_erro_interno"), e.getMessage())));
-			e.printStackTrace();
+			System.out.println("exception!");
 
 		}
 		return null;

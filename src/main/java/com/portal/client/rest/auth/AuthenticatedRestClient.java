@@ -33,5 +33,5 @@ public interface AuthenticatedRestClient extends RestClient {
 	 * @return
 	 */
 	<RQ, RP> RP login(String path, RQ requestBody, MediaType mediaRequestBody, Class<RP> responseType,
-			Object... queryParams);
+			Map<String,Object>queryParams);
 }

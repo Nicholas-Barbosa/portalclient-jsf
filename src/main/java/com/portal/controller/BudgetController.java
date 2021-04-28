@@ -23,6 +23,7 @@ import com.portal.dto.ErrorGaussDTO;
 import com.portal.dto.PageResponse;
 import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductsPageGaussDTO;
+import com.portal.exception.ProcessingExceptionHandler;
 import com.portal.service.faces.FacesService;
 import com.portal.service.view.HoldMessageView;
 import com.portal.ui.lazy.datamodel.CustomerGaussDTOLazyDataModel;
@@ -56,23 +57,27 @@ public class BudgetController implements Serializable {
 
 	private final FacesService facesService;
 
+	private final ProcessingExceptionHandler processingExceptionHandler;
 	private ProductsPageGaussDTO productResponseDTO;
 
 	private String customerCode, customerStore;
 
+	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
+
 	public BudgetController() {
-		this(null, null, null);
+		this(null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(@OAuth2RestAuth AuthenticatedRestClient authRestClient, HoldMessageView holderMessage,
-			FacesService facesService) {
+			FacesService facesService, ProcessingExceptionHandler processingExceptionHandler) {
 		super();
 		this.authRestClient = authRestClient;
 		this.lazyProducts = new ProductGaussDTOLazyDataModel();
 		this.lazyCustomers = new CustomerGaussDTOLazyDataModel();
 		this.holderMessage = holderMessage;
 		this.facesService = facesService;
+		this.processingExceptionHandler = processingExceptionHandler;
 
 	}
 
@@ -83,23 +88,18 @@ public class BudgetController implements Serializable {
 
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
-		queryParams.put("pageSize", 10);
-		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerPageGaussDTO.class, null,holderMessage.label("impossivel_procurar_clientes"));
+		queryParams.put("pageSize", pageSizeForCustomers);
+		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerPageGaussDTO.class, null,
+				holderMessage.label("impossivel_procurar_clientes"));
 
 	}
 
 	public void initTableProducts() {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
-		queryParams.put("pageSize", 15);
-		this.populateLazyCollection(queryParams, "products", this.lazyProducts, ProductsPageGaussDTO.class, null,holderMessage.label("impossivel_procurar_produtos"));
-	}
-
-	public void onPageCustomerListener(PageEvent pageEvent) {
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("page", pageEvent.getPage() + 1);
-		queryParams.put("pageSize", 10);
-		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerPageGaussDTO.class, null,holderMessage.label("resposta_servidor"));
+		queryParams.put("pageSize", pageSizeForProducts);
+		this.populateLazyCollection(queryParams, "products", this.lazyProducts, ProductsPageGaussDTO.class, null,
+				holderMessage.label("impossivel_procurar_produtos"));
 	}
 
 	public void findCustomer() {
@@ -108,7 +108,7 @@ public class BudgetController implements Serializable {
 		pathParams.put("code", customerCode);
 		pathParams.put("store", customerStore);
 		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
-				CustomerPageGaussDTO.class, pathParams,holderMessage.label("nao_encontrado"));
+				CustomerPageGaussDTO.class, pathParams, holderMessage.label("nao_encontrado"));
 
 	}
 
@@ -116,10 +116,24 @@ public class BudgetController implements Serializable {
 		this.initTableCustomers();
 	}
 
+	public void onPageCustomerListener(PageEvent pageEvent) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", pageEvent.getPage() + 1);
+		queryParams.put("pageSize", pageSizeForCustomers);
+		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerPageGaussDTO.class, null,
+				holderMessage.label("resposta_servidor"));
+	}
+
+	public void onPageProducts(PageEvent pageEvent) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", pageEvent.getPage() + 1);
+		queryParams.put("pageSize", pageSizeForCustomers);
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateLazyCollection(
 			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
-			Map<String, Object> pathParams,String summaryForErrorResponse) {
+			Map<String, Object> pathParams, String summaryForErrorResponse) {
 		try {
 
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
@@ -136,12 +150,13 @@ public class BudgetController implements Serializable {
 				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
 			} catch (ClassCastException e) {
 				ErrorGaussDTO error = (ErrorGaussDTO) response;
-				facesService.error(null, summaryForErrorResponse , error.getErrorMessage())
+				facesService.error(null, summaryForErrorResponse, error.getErrorMessage())
 						.addHeaderForResponse("Backbone-Status", "Error");
 
 			}
 		} catch (ProcessingException e) {
-			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
+			processingExceptionHandler.checkProcessingExceptionCauseAndAddMessage(e);
+			facesService.addHeaderForResponse("Backbone-Status", "Error");
 			e.printStackTrace();
 		} catch (Exception e) {
 			facesService.addHeaderForResponse("Backbone-Status", "Error");
@@ -152,7 +167,7 @@ public class BudgetController implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(
 			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
-			Map<String, Object> pathParams,String summaryForErrorResponse) {
+			Map<String, Object> pathParams, String summaryForErrorResponse) {
 		try {
 
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
@@ -171,7 +186,8 @@ public class BudgetController implements Serializable {
 
 			}
 		} catch (ProcessingException e) {
-			facesService.checkProcessingExceptionCauseAndAddMessage(e).addHeaderForResponse("Backbone-Status", "Error");
+			processingExceptionHandler.checkProcessingExceptionCauseAndAddMessage(e);
+			facesService.addHeaderForResponse("Backbone-Status", "Error");
 			e.printStackTrace();
 		} catch (Exception e) {
 			facesService.addHeaderForResponse("Backbone-Status", "Error");
@@ -184,16 +200,6 @@ public class BudgetController implements Serializable {
 	 */
 	public void onCustomerSelected() {
 		// this.uiCustomerDataTable.setRendered(false);
-	}
-
-	/**
-	 * called by <f:event listener="#{budgetController.preRenderUIBlockCustomerForm}
-	 * event="preRenderComponenet"/>
-	 */
-	public void preRenderUIBlockCustomerForm() {
-		this.uiBlockForm.setBlock("formClientTb");
-		this.uiBlockForm.setBlocked(true);
-
 	}
 
 	public boolean getRender() {
@@ -257,4 +263,11 @@ public class BudgetController implements Serializable {
 		this.customerStore = customerStore;
 	}
 
+	public Integer getPageSizeForCustomers() {
+		return pageSizeForCustomers;
+	}
+
+	public Integer getPageSizeForProducts() {
+		return pageSizeForProducts;
+	}
 }

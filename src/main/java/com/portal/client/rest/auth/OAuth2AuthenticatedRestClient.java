@@ -2,7 +2,6 @@ package com.portal.client.rest.auth;
 
 import java.io.InputStream;
 import java.io.Serializable;
-import java.text.MessageFormat;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -82,7 +81,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 				}
 			}
 			Response rawResponse = resource.request(MediaType.APPLICATION_JSON).get();
-			
+
 			if (rawResponse.getStatus() == 201 || rawResponse.getStatus() == 200)
 				return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), responseType);
 			return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), errorType);
@@ -94,12 +93,18 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 	@Override
 	public <RQ, RP> RP login(String path, RQ requestBody, MediaType mediaRequestBody, Class<RP> responseType,
-			Object... queryParams) {
-		Client client = ClientBuilder.newBuilder().readTimeout(5, TimeUnit.SECONDS).connectTimeout(8, TimeUnit.SECONDS)
-				.build();
-
-		return client.target(MessageFormat.format(path, queryParams)).request()
-				.post(requestBody != null ? Entity.entity(requestBody, mediaRequestBody) : null, responseType);
+			Map<String, Object> queryParams) {
+		WebTarget resource = client.target(path);
+		if (queryParams != null) {
+			// I didnt use lambdas cause only final local variables can be
+			// referenced,however target.queryParam return new WebTarget object.
+			Set<String> paramsInSet = queryParams.keySet();
+			for (String st : paramsInSet) {
+				resource = resource.queryParam(st, queryParams.get(st));
+			}
+		}
+		return resource.request().post(requestBody != null ? Entity.entity(requestBody, mediaRequestBody) : null,
+				responseType);
 	}
 
 }
