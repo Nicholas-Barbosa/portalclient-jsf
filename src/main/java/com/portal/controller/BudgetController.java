@@ -84,7 +84,7 @@ public class BudgetController implements Serializable {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
 		queryParams.put("pageSize", 10);
-		this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
+		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null,holderMessage.label("impossivel_procurar_clientes"));
 
 	}
 
@@ -92,14 +92,14 @@ public class BudgetController implements Serializable {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
 		queryParams.put("pageSize", 15);
-		this.populateCollection(queryParams, "products", this.lazyProducts, ProductsResponseGaussDTO.class, null);
+		this.populateLazyCollection(queryParams, "products", this.lazyProducts, ProductsResponseGaussDTO.class, null,holderMessage.label("impossivel_procurar_produtos"));
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", pageEvent.getPage() + 1);
 		queryParams.put("pageSize", 10);
-		this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
+		this.populateLazyCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null,holderMessage.label("resposta_servidor"));
 	}
 
 	public void findCustomer() {
@@ -108,7 +108,7 @@ public class BudgetController implements Serializable {
 		pathParams.put("code", customerCode);
 		pathParams.put("store", customerStore);
 		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
-				CustomerResponseGaussDTO.class, pathParams);
+				CustomerResponseGaussDTO.class, pathParams,holderMessage.label("nao_encontrado"));
 
 	}
 
@@ -117,9 +117,9 @@ public class BudgetController implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollection(
+	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateLazyCollection(
 			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
-			Map<String, Object> pathParams) {
+			Map<String, Object> pathParams,String summaryForErrorResponse) {
 		try {
 
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
@@ -136,7 +136,7 @@ public class BudgetController implements Serializable {
 				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
 			} catch (ClassCastException e) {
 				ErrorGaussDTO error = (ErrorGaussDTO) response;
-				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
+				facesService.error(null, summaryForErrorResponse , error.getErrorMessage())
 						.addHeaderForResponse("Backbone-Status", "Error");
 
 			}
@@ -152,7 +152,7 @@ public class BudgetController implements Serializable {
 	@SuppressWarnings("unchecked")
 	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(
 			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
-			Map<String, Object> pathParams) {
+			Map<String, Object> pathParams,String summaryForErrorResponse) {
 		try {
 
 			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
@@ -166,7 +166,7 @@ public class BudgetController implements Serializable {
 
 			} catch (ClassCastException e) {
 				ErrorGaussDTO error = (ErrorGaussDTO) response;
-				facesService.error(null, holderMessage.label("resposta_servidor"), error.getErrorMessage())
+				facesService.error(null, summaryForErrorResponse, error.getErrorMessage())
 						.addHeaderForResponse("Backbone-Status", "Error");
 
 			}
