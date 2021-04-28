@@ -31,6 +31,8 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 	private final UserPropertyHolder userPropertyHolder;
 
+	private final Client client;
+
 	public OAuth2AuthenticatedRestClient() {
 		this(null);
 	}
@@ -39,6 +41,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	public OAuth2AuthenticatedRestClient(UserPropertyHolder userPropertyHolder) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
+		this.client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).build();
 
 	}
 
@@ -64,10 +67,11 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 			Feature feature = OAuth2ClientSupport.feature(oAuthApi.getToken());
 
-			Client client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).register(feature).build();
+			client.register(feature);
+
 			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint);
 			if (pathParams != null) {
-				resource = resource.resolveTemplates(pathParams);
+				resource = resource.resolveTemplates(pathParams, true);
 			}
 			if (queryParams != null) {
 				// I didnt use lambdas cause only final local variables can be
@@ -77,8 +81,8 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 					resource = resource.queryParam(st, queryParams.get(st));
 				}
 			}
-			Response rawResponse = resource.request().get();
-
+			Response rawResponse = resource.request(MediaType.APPLICATION_JSON).get();
+			
 			if (rawResponse.getStatus() == 201 || rawResponse.getStatus() == 200)
 				return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), responseType);
 			return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), errorType);

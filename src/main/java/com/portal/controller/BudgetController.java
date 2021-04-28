@@ -83,7 +83,7 @@ public class BudgetController implements Serializable {
 
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
-		queryParams.put("pageSize", 12);
+		queryParams.put("pageSize", 10);
 		this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
 
 	}
@@ -91,18 +91,19 @@ public class BudgetController implements Serializable {
 	public void initTableProducts() {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", 0);
-		queryParams.put("pageSize", 10);
+		queryParams.put("pageSize", 15);
 		this.populateCollection(queryParams, "products", this.lazyProducts, ProductsResponseGaussDTO.class, null);
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", pageEvent.getPage() + 1);
-		queryParams.put("pageSize", 12);
+		queryParams.put("pageSize", 10);
 		this.populateCollection(queryParams, "clients", this.lazyCustomers, CustomerResponseGaussDTO.class, null);
 	}
 
 	public void findCustomer() {
+		System.out.println("find customer!");
 		Map<String, Object> pathParams = new HashMap<>();
 		pathParams.put("code", customerCode);
 		pathParams.put("store", customerStore);
