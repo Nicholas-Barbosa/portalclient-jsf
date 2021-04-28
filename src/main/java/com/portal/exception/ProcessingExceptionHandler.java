@@ -41,20 +41,20 @@ public class ProcessingExceptionHandler implements Serializable {
 	 * 
 	 * @param e
 	 */
-	public void checkProcessingExceptionCauseAndAddMessage(ProcessingException e) {
+	public void checkProcessingExceptionCauseAndAddMessage(ProcessingException e,String clientIdMessage) {
 		if (e.getCause() instanceof SocketTimeoutException) {
-			facesService.error(null, holderMessage.label("socket_exception"),
+			facesService.error(clientIdMessage,holderMessage.label("socket_exception"),
 					MessageFormat.format(holderMessage.label("socket_exception_detalhes"), e.getMessage()));
 		} else if (e.getCause() instanceof TimeoutException) {
-			facesService.error(null, holderMessage.label("timeout_ler_response"),
+			facesService.error(clientIdMessage, holderMessage.label("timeout_ler_response"),
 					MessageFormat.format(holderMessage.label("timeout_ler_response_detalhes"), e.getMessage()));
 
 		} else if (e.getCause() instanceof IllegalArgumentException) {
-			facesService.error(null, holderMessage.label("impossivel_enviar_request"),
+			facesService.error(clientIdMessage, holderMessage.label("impossivel_enviar_request"),
 					holderMessage.label("impossivel_enviar_request_detalhe"));
 
 		} else if (e.getCause() instanceof ConnectException) {
-			facesService.error(null, holderMessage.label("connect_exception"),
+			facesService.error(clientIdMessage, holderMessage.label("connect_exception"),
 					holderMessage.label("connect_exception_detales"));
 		} else
 			e.printStackTrace();

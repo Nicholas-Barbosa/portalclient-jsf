@@ -6,7 +6,7 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
-
+		<h:outputScript name="yu.js" library="javascript" />
 	</ui:define>
 	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
 
@@ -20,39 +20,56 @@
 	<ui:define name="content">
 
 
-		<div id="divLoading">
-			<div class="grid-demo">
-				<div class="p-grid p-dir-col">
-					<div class="p-col">
-						<div class="card grid-item">
-							<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
-								id="iconOkCustomers"></i>
-						</div>
-					</div>
-				</div>
-			</div>
 
-		</div>
-		<div id="error">
-			<div class="grid-demo">
-				<div class="p-grid p-dir-col">
-					<div class="p-col">
-						<div class="card grid-item">
-							<p:messages id="messageError" globalOnly="true" showDetail="true" />
-						</div>
-						<div class="card grid-item">
-							<p:button value="Tentar novamente"
-								styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
-								icon="pi pi-refresh 3rem"
-								onclick="reTryLoadProductsOrCustomers()" />
+
+
+		<div class="grid-demo" id="divLoadCustomers">
+			<div class="p-grid p-dir-col">
+				<div class="p-col-12">
+					<div class="card">
+						<h5>
+							<h:outputText value="#{budgetController.h5DivLoadCustomers}"
+								id="msgDivLoadCustomers" />
+						</h5>
+						<div class="p-grid">
+							<div class="p-col">
+								<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
+									id="spinnerCustomer"></i>
+								<p:messages id="messageCustomer" globalOnly="false"
+									showDetail="true" for="formClientTb:dtCustomer" />
+							</div>
+
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
+		<div class="grid-demo" id="divLoadProducts">
+			<div class="p-grid p-dir-col">
+				<div class="p-col-12">
+					<div class="card">
+						<h5>
+							<h:outputText value="#{budgetController.h5DivLoadProducts}"
+								id="msgDivLoadProducts" />
+						</h5>
+						<div class="p-grid">
+							<div class="p-col">
+								<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
+									id="spinnerProducts"></i>
+								<p:messages id="messageProduct" globalOnly="false"
+									showDetail="true" for="formProdutos:dtProducts" />
+							</div>
 
-
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="tryAgain">
+			<p:button value="#{holdMessageView.label('tentar_novamente')}"
+				onclick="reTryLoadProductsOrCustomers()" />
+		</div>
 
 		<div class="p-grid table-demo" id="budgetForm">
 			<div class="p-col-12">
@@ -66,7 +83,8 @@
 
 						<p:remoteCommand name="rcCustomers"
 							action="#{budgetController.initTableCustomers}" value="remote"
-							update="@form messageError" process="@this" />
+							update="@form messageCustomer msgDivLoadCustomers"
+							process="@this" />
 
 						<p:dataTable var="customer"
 							value="#{budgetController.lazyCustomers}" rowSelectMode="add"
@@ -88,16 +106,17 @@
 
 										<p:commandButton icon="pi pi-refresh"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
-											action="#{budgetController.refreshDtCustomers}"
-											update="@form" onstart="onStartRefresh()"
-											oncomplete="onCompleteRefresh()" />
+											action="#{budgetController.refreshDtCustomers}" update="@form messageCustomer msgDivLoadCustomers"
+											onstart="onStartProcessInDtCustomer()"
+											oncomplete="onCompleteProcessInDtCustomer(xhr)"
+											process="@this" />
 									</div>
 								</div>
 							</f:facet>
 
 							<p:ajax event="page"
 								listener="#{budgetController.onPageCustomerListener}"
-								process="@this" update="messageError"
+								process="@this" update="messageCustomer msgDivLoadCustomers"
 								oncomplete="onCompletePageCustomers(xhr)" />
 
 							<p:ajax event="rowSelect"
@@ -168,8 +187,10 @@
 								</div>
 								<p:commandButton value="#{holdMessageView.label('enviar')}"
 									icon="pi pi-send" action="#{budgetController.findCustomer}"
-									update="formClientTb" onstart="onStartFindCustomer()"
-									oncomplete="onCompleteFindCustomer(xhr)" validateClient="true" />
+									update="@form messageCustomer msgDivLoadCustomers"
+									onstart="onStartFindCustomer()"
+									oncomplete="onCompleteProcessInDtCustomer(xhr)"
+									validateClient="true" />
 							</div>
 
 						</p:dialog>
@@ -200,14 +221,14 @@
 					<h:form id="formProdutos">
 						<h5>#{holdMessageView.label('selecione_produtos')}</h5>
 						<p:remoteCommand name="rcProducts" value="remote"
-							update="@form messageError" process="@this"
+							update="@form messageProduct msgDivLoadProducts" process="@this"
 							action="#{budgetController.initTableProducts}" />
 
 
 						<p:dataTable value="#{budgetController.lazyProducts}"
 							var="product" paginator="true"
 							rows="#{budgetController.pageSizeForProducts}" scrollable="true"
-							scrollHeight="700">
+							scrollHeight="700" id="dtProducts">
 							<f:facet name="header">
 
 								<p:commandButton
@@ -249,97 +270,114 @@
 			//<![CDATA[
 			$("#error").hide();
 			$("#divSelectedCustomer").hide();
+			$("#tryAgain").hide();
 			var customerOk = false;
 			var productsOk = false;
 
 			function initTablesCustomerProducts() {
 				$("#budgetForm").hide();
-				onStartLoading();
+				
+				$("#divLoadCustomers").show();
+				$("#divLoadProducts").show();
+				
 				let promise = rcCustomers();
 				let promiseProducts = rcProducts();
-
-				const promises = [handleCustomerPromise(promise), handleProductsPromise(promiseProducts)];
-				Promise.all(promises).then((results) => {
-					$("#divLoading").hide();
-					$("#budgetForm").show();
-				}).catch(e => {
-					$("#divLoading").hide();
-					hideBudgetFormAndShowError();
-
+				
+				let reslPromCustomer = handleCustomerPromise(promise);
+				let reslPromProduct =  handleProductsPromise(promiseProducts);
+				const promises = [reslPromCustomer,reslPromProduct];
+				Promise.allSettled(promises).then((results) => {
+					const okWithAll = results.every(p=>{
+						return p.status !='rejected';
+					})
+					if(okWithAll){
+					
+						$("#budgetForm").show();
+						$("#tryAgain").hide();
+					}else{
+						$("#tryAgain").show();
+					}
+					
+					
 				})
 
 
 			}
+			
 
 			function reTryLoadProductsOrCustomers() {
-				onStartLoading();
 				$("#budgetForm").hide();
 				let resolvPromiseCustomer;
 				let resolvPromiseProducts;
 
 				if (customerOk != true) {
+					$("#spinnerCustomer").show();
+					$("#messageCustomer").hide();
 					console.log("retry for customer")
 					let promiseCustomer = rcCustomers();
 					resolvPromiseCustomer = handleCustomerPromise(promiseCustomer)
 				}
 
 				if (productsOk != true) {
+					$("#spinnerProducts").show();
+					$("#messageProduct").hide();
 					console.log("retry for product")
 					let promiseProducts = rcProducts();
 					resolvPromiseProducts = handleProductsPromise(promiseProducts);
 				}
 				const resolvedPromises = [resolvPromiseCustomer, resolvPromiseProducts]
-				Promise.all(resolvedPromises).then((results) => {
-					$("#budgetForm").show();
-					$("#divLoading").hide();
-				}).catch(e => {
-					$("#divLoading").hide();
-					hideBudgetFormAndShowError();
-				})
-
-
-			}
-			
-			function handleProductsPromise(promise) {
-
-				return new Promise((resolve, reject) => {
-					promise.then(value => {
-						productsOk = getResponseHeader(value.jqXHR);
-						if (productsOk) {
-							
-							resolve("promiseOk")
-						} else {
-							
-							productsOk = false;
-							reject("Error")
-						}
+				Promise.allSettled(resolvedPromises).then((results) => {
+					const okWithAll = results.every(p=>{
+						return p.status !='rejected';
 					})
+					if(okWithAll){
+						$("#divLoading").hide();
+						$("#budgetForm").show();
+						console.log(results[1])
+					}else{
+						$("#tryAgain").show();
+					}
+					
+					
 				})
+
 
 			}
 			function handleCustomerPromise(promise) {
-
 				return new Promise((resolve, reject) => {
 					promise.then(value => {
 						customerOk = getResponseHeader(value.jqXHR);
-						if (customerOk) {
-							
-							resolve("promiseOk")
-
-						} else {
-							
+						if (customerOk) {							
+							resolve("customerOk")
+							$("#divLoadCustomers").hide();													
+						} else {							
 							customerOk = false;
-							reject("Error")
+							reject("customerError")
+							$("#spinnerCustomer").hide();
 						}
+						
 					})
 				})
 			}
+			
+			function handleProductsPromise(promise) {
+				return new Promise((resolve, reject) => {
+					promise.then(value => {
+						productsOk = getResponseHeader(value.jqXHR);
+						if (productsOk) {							
+							resolve("productOk")
+							$("#divLoadProducts").hide();	
+						} else {							
+							productsOk = false;
+							reject("productError")
+							$("#spinnerProducts").hide();
+						}
+					})
+				})
 
-
+			}
 			
 
-
-			
 			function selectedCustomer() {
 				setTimeout(function () {
 					$("#formClientTb").hide();
@@ -356,35 +394,40 @@
 			function onStartLoading() {
 				$("#divLoading").show();
 				$("#error").hide();
+				$("#errorForCustomer").hide();
+				$("#errorForProducts").hide();
 
 			}
 
 
 			function onStartFindCustomer() {
 				PF('searchCustomer').hide();
-				$("#formClientTb").hide();
-				$("#divLoading").show();
+				$("#budgetForm").hide();
+				$("#divLoadCustomers").show();
 
 			}
-			function onCompleteFindCustomer(xhr) {
-				$("#divLoading").hide();
-
+			
+			function onStartProcessInDtCustomer() {
+				$("#budgetForm").hide();
+				$("#divLoadCustomers").show();
+				
 			}
 
-			function onStartRefresh() {
-				$("#divLoading").show();
-				$("#formClientTb").hide();
-			}
-
-			function onCompleteRefresh() {
-				$("#divLoading").hide();
-				$("#formClientTb").show();
+			function onCompleteProcessInDtCustomer(xhr) {
+				$("#spinnerCustomer").hide();
+				if(getResponseHeader(xhr)){
+					$("#budgetForm").show();
+					$("#divLoadCustomers").hide();
+				}else{
+					$("#budgetForm").hide();
+				}
 			}
 			
 			function onCompletePageCustomers(xhr){
-				
 				if(getResponseHeader(xhr)==false){
-					hideBudgetFormAndShowError();
+					$("#divLoadCustomers").show();	
+					$("#spinnerCustomer").hide();
+					$("#budgetForm").hide();
 					customerOk=false;
 				}
 			}

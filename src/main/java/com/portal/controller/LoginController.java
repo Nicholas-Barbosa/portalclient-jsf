@@ -83,7 +83,7 @@ public class LoginController {
 
 		} catch (ProcessingException e) {
 			System.out.println("Processing exception!");
-			processingExceptionHandler.checkProcessingExceptionCauseAndAddMessage(e);
+			processingExceptionHandler.checkProcessingExceptionCauseAndAddMessage(e,null);
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance()
