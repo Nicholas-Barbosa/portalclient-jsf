@@ -1,13 +1,13 @@
 package com.portal.client.rest.auth;
 
-import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
@@ -19,6 +19,8 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.client.oauth2.OAuth2ClientSupport;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
+import com.portal.client.rest.providers.OAuth2Support;
+import com.portal.client.rest.providers.message.reader.JsonObjectMessageReader;
 import com.portal.security.UserPropertyHolder;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
@@ -30,8 +32,6 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 	private final UserPropertyHolder userPropertyHolder;
 
-	private final Client client;
-
 	public OAuth2AuthenticatedRestClient() {
 		this(null);
 	}
@@ -40,7 +40,6 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	public OAuth2AuthenticatedRestClient(UserPropertyHolder userPropertyHolder) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
-		this.client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).build();
 
 	}
 
@@ -64,27 +63,44 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 		if (parentType instanceof OAuth2ServiceApi) {
 			OAuth2ServiceApi oAuthApi = (OAuth2ServiceApi) parentType;
 
-			Feature feature = OAuth2ClientSupport.feature(oAuthApi.getToken());
+			// Feature feature = OAuth2ClientSupport.feature(oAuthApi.getToken());
+			OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
+			Client client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).build()
+					.register(JsonObjectMessageReader.class);
 
-			client.register(feature);
-
-			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint);
+			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
 			if (pathParams != null) {
-				resource = resource.resolveTemplates(pathParams, true);
+				resource = resource.resolveTemplatesFromEncoded(pathParams);
 			}
 			if (queryParams != null) {
 				// I didnt use lambdas cause only final local variables can be
 				// referenced,however target.queryParam return new WebTarget object.
+
 				Set<String> paramsInSet = queryParams.keySet();
 				for (String st : paramsInSet) {
-					resource = resource.queryParam(st, queryParams.get(st));
+					try {
+						resource = resource.queryParam(st, URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
+
 			}
+
 			Response rawResponse = resource.request(MediaType.APPLICATION_JSON).get();
 
-			if (rawResponse.getStatus() == 201 || rawResponse.getStatus() == 200)
-				return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), responseType);
-			return JsonbBuilder.create().fromJson(((InputStream) rawResponse.getEntity()), errorType);
+			if (rawResponse.getStatus() == 201 || rawResponse.getStatus() == 200) {
+				// return JsonbBuilder.create().fromJson(((InputStream)
+				// rawResponse.getEntity()), responseType);
+				T t = rawResponse.readEntity(responseType);
+				client.close();
+				return t;
+			}
+			rawResponse.readEntity(errorType);
+			client.close();
+
+			return rawResponse.getEntity();
 		} else
 			throw new IllegalArgumentException(
 					"the ServiceApi object retrieved from the key,its not type of OAuth2AuthenticatedRestClient or covariant!");
@@ -94,7 +110,9 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	@Override
 	public <RQ, RP> RP login(String path, RQ requestBody, MediaType mediaRequestBody, Class<RP> responseType,
 			Map<String, Object> queryParams) {
+		Client client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).build();
 		WebTarget resource = client.target(path);
+
 		if (queryParams != null) {
 			// I didnt use lambdas cause only final local variables can be
 			// referenced,however target.queryParam return new WebTarget object.
@@ -103,6 +121,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 				resource = resource.queryParam(st, queryParams.get(st));
 			}
 		}
+
 		return resource.request().post(requestBody != null ? Entity.entity(requestBody, mediaRequestBody) : null,
 				responseType);
 	}

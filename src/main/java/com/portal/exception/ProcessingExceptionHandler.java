@@ -50,8 +50,8 @@ public class ProcessingExceptionHandler implements Serializable {
 					MessageFormat.format(holderMessage.label("timeout_ler_response_detalhes"), e.getMessage()));
 
 		} else if (e.getCause() instanceof IllegalArgumentException) {
-			facesService.error(clientIdMessage, holderMessage.label("impossivel_enviar_request"),
-					holderMessage.label("impossivel_enviar_request_detalhe"));
+			facesService.error(clientIdMessage, holderMessage.label("respota_invalida_servidor"),
+					holderMessage.label("detalhes_reposta_invalida_servidor"));
 
 		} else if (e.getCause() instanceof ConnectException) {
 			facesService.error(clientIdMessage, holderMessage.label("connect_exception"),

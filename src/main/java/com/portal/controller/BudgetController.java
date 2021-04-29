@@ -119,6 +119,7 @@ public class BudgetController implements Serializable {
 				ProductsPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
 				"formProdutos:dtProducts") ? holderMessage.label("selecione_produtos")
 						: holderMessage.label("impossivel_carregar_produtos");
+
 	}
 
 	public void initTableProducts() {
@@ -138,7 +139,7 @@ public class BudgetController implements Serializable {
 
 	public void refreshDtCustomers() {
 		this.globalLoadCustomers(0);
-		System.out.println(h5DivLoadCustomers);
+
 	}
 
 	public void onPageProducts(PageEvent pageEvent) {
