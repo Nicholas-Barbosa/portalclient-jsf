@@ -6,7 +6,9 @@ import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductsPageGaussDTO implements PageResponse<ProductGaussDTO> {
+import com.portal.pojo.Page;
+
+public class ProductPageGaussDTO implements Page<ProductGaussDTO> {
 
 	@JsonbProperty("total_items")
 	private Integer totalItems;
@@ -20,11 +22,11 @@ public class ProductsPageGaussDTO implements PageResponse<ProductGaussDTO> {
 	@JsonbProperty
 	private List<ProductGaussDTO> products;
 
-	public ProductsPageGaussDTO() {
+	public ProductPageGaussDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductsPageGaussDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
+	public ProductPageGaussDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
 			List<ProductGaussDTO> products) {
 		super();
 		this.totalItems = totalItems;

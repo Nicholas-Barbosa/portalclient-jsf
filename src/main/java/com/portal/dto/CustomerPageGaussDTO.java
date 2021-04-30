@@ -5,7 +5,9 @@ import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class CustomerPageGaussDTO implements PageResponse<CustomerGaussDTO> {
+import com.portal.pojo.Page;
+
+public class CustomerPageGaussDTO implements Page<CustomerGaussDTO> {
 
 	@JsonbProperty("total_items")
 	private Integer totalItems;

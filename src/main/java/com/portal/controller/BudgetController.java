@@ -1,13 +1,11 @@
 package com.portal.controller;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -28,17 +26,15 @@ import com.portal.dto.CustomerGaussDTO;
 import com.portal.dto.CustomerPageGaussDTO;
 import com.portal.dto.ErrorGaussDTO;
 import com.portal.dto.ItemBudgetFormGssDTO;
-import com.portal.dto.PageResponse;
 import com.portal.dto.ProductGaussDTO;
-import com.portal.dto.ProductsPageGaussDTO;
+import com.portal.dto.ProductPageGaussDTO;
 import com.portal.exception.ProcessingExceptionHandler;
+import com.portal.pojo.Page;
 import com.portal.service.faces.FacesService;
 import com.portal.service.view.HoldMessageView;
 import com.portal.ui.lazy.datamodel.CustomerGaussDTOLazyDataModel;
 import com.portal.ui.lazy.datamodel.LazyOperations;
 import com.portal.ui.lazy.datamodel.ProductGaussDTOLazyDataModel;
-
-import sun.awt.windows.ThemeReader;
 
 @Named
 @ViewScoped
@@ -68,7 +64,7 @@ public class BudgetController implements Serializable {
 	private final FacesService facesService;
 
 	private final ProcessingExceptionHandler processingExceptionHandler;
-	private ProductsPageGaussDTO productResponseDTO;
+	private ProductPageGaussDTO productResponseDTO;
 
 	private String customerCode, customerStore, h5DivLoadCustomers, h5DivLoadProducts;
 
@@ -170,14 +166,14 @@ public class BudgetController implements Serializable {
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSizeForProducts);
 		this.h5DivLoadProducts = this.populateLazyCollection(queryParams, "products", this.lazyProducts,
-				ProductsPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
+				ProductPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
 				"formProdutos:dtProducts") ? holderMessage.label("selecione_produtos")
 						: holderMessage.label("impossivel_carregar_produtos");
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends PageResponse<?>, U extends LazyDataModel<?>> boolean populateLazyCollection(
+	public <T extends Page<?>, U extends LazyDataModel<?>> boolean populateLazyCollection(
 			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
 			Map<String, Object> pathParams, String summaryForErrorResponse, String clientIdMessage) {
 		try {
@@ -213,7 +209,7 @@ public class BudgetController implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends PageResponse<?>, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(
+	public <T extends Page<?>, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(
 			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
 			Map<String, Object> pathParams, String summaryForErrorResponse, String clientIdMessage) {
 		try {
@@ -287,7 +283,7 @@ public class BudgetController implements Serializable {
 		this.lazyCustomers = lazyCustomers;
 	}
 
-	public ProductsPageGaussDTO getProductResponseDTO() {
+	public ProductPageGaussDTO getProductResponseDTO() {
 		return productResponseDTO;
 	}
 

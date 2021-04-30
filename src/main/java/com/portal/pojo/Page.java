@@ -1,8 +1,8 @@
-package com.portal.dto;
+package com.portal.pojo;
 
 import java.util.Collection;
 
-public interface PageResponse<T> {
+public interface Page<T> {
 
 	int getPageSize();
 
