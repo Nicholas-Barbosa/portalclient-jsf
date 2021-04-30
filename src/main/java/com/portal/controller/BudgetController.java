@@ -1,9 +1,13 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -13,6 +17,8 @@ import javax.ws.rs.ProcessingException;
 
 import org.primefaces.component.api.UIData;
 import org.primefaces.component.blockui.BlockUI;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.UnselectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
@@ -21,6 +27,7 @@ import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.CustomerGaussDTO;
 import com.portal.dto.CustomerPageGaussDTO;
 import com.portal.dto.ErrorGaussDTO;
+import com.portal.dto.ItemBudgetFormGssDTO;
 import com.portal.dto.PageResponse;
 import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductsPageGaussDTO;
@@ -30,6 +37,8 @@ import com.portal.service.view.HoldMessageView;
 import com.portal.ui.lazy.datamodel.CustomerGaussDTOLazyDataModel;
 import com.portal.ui.lazy.datamodel.LazyOperations;
 import com.portal.ui.lazy.datamodel.ProductGaussDTOLazyDataModel;
+
+import sun.awt.windows.ThemeReader;
 
 @Named
 @ViewScoped
@@ -65,6 +74,10 @@ public class BudgetController implements Serializable {
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
+	private List<ProductGaussDTO> selectedProducts;
+
+	private Set<ItemBudgetFormGssDTO> items;
+
 	public BudgetController() {
 		this(null, null, null, null);
 	}
@@ -86,17 +99,7 @@ public class BudgetController implements Serializable {
 	public void init() {
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
 		this.h5DivLoadProducts = holderMessage.label("carregano_produtos");
-	}
-
-	public void globalLoadCustomers(int page) {
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("page", page);
-		queryParams.put("pageSize", pageSizeForCustomers);
-		h5DivLoadCustomers = this.populateLazyCollection(queryParams, "clients", this.lazyCustomers,
-				CustomerPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_clientes"),
-				"formClientTb:dtCustomer") ? holderMessage.label("selecione_cliente")
-						: holderMessage.label("impossivel_carregar_clientes");
-
+		this.items = new ConcurrentSkipListSet<>();
 	}
 
 	/**
@@ -111,23 +114,11 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public void globalLoadProducts(int page) {
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("page", page);
-		queryParams.put("pageSize", pageSizeForProducts);
-		this.h5DivLoadProducts = this.populateLazyCollection(queryParams, "products", this.lazyProducts,
-				ProductsPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
-				"formProdutos:dtProducts") ? holderMessage.label("selecione_produtos")
-						: holderMessage.label("impossivel_carregar_produtos");
-
-	}
-
 	public void initTableProducts() {
 		this.globalLoadProducts(0);
 	}
 
 	public void findCustomer() {
-
 		Map<String, Object> pathParams = new HashMap<>();
 		pathParams.put("code", customerCode);
 		pathParams.put("store", customerStore);
@@ -145,7 +136,44 @@ public class BudgetController implements Serializable {
 	public void onPageProducts(PageEvent pageEvent) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", pageEvent.getPage() + 1);
+		queryParams.put("pageSize", pageSizeForProducts);
+
+		this.globalLoadProducts(pageEvent.getPage() + 1);
+	}
+
+	public void onProductSelected(SelectEvent<ProductGaussDTO> selectedProduct) {
+		ProductGaussDTO product = selectedProduct.getObject();
+		items.add(new ItemBudgetFormGssDTO(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
+				product.getDescriptionType(), 10));
+
+	}
+
+	public void unProductUnSelected(UnselectEvent<ProductGaussDTO> unSelectProduct) {
+		ProductGaussDTO product = unSelectProduct.getObject();
+		items.removeIf(p -> p.getCommercialCode().equals(product.getCommercialCode()));
+
+	}
+
+	public void globalLoadCustomers(int page) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSizeForCustomers);
+		h5DivLoadCustomers = this.populateLazyCollection(queryParams, "clients", this.lazyCustomers,
+				CustomerPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_clientes"),
+				"formClientTb:dtCustomer") ? holderMessage.label("selecione_cliente")
+						: holderMessage.label("impossivel_carregar_clientes");
+
+	}
+
+	public void globalLoadProducts(int page) {
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", page);
+		queryParams.put("pageSize", pageSizeForProducts);
+		this.h5DivLoadProducts = this.populateLazyCollection(queryParams, "products", this.lazyProducts,
+				ProductsPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
+				"formProdutos:dtProducts") ? holderMessage.label("selecione_produtos")
+						: holderMessage.label("impossivel_carregar_produtos");
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -297,5 +325,21 @@ public class BudgetController implements Serializable {
 
 	public String getH5DivLoadProducts() {
 		return h5DivLoadProducts;
+	}
+
+	public List<ProductGaussDTO> getSelectedProducts() {
+		return selectedProducts;
+	}
+
+	public void setSelectedProducts(List<ProductGaussDTO> selectedProducts) {
+		this.selectedProducts = selectedProducts;
+	}
+
+	public Set<ItemBudgetFormGssDTO> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<ItemBudgetFormGssDTO> items) {
+		this.items = items;
 	}
 }

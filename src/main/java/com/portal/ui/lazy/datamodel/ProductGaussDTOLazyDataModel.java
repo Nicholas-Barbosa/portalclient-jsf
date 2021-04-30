@@ -39,7 +39,6 @@ public class ProductGaussDTOLazyDataModel extends LazyDataModel<ProductGaussDTO>
 
 	@Override
 	public ProductGaussDTO getRowData(String rowKey) {
-
 		return products.parallelStream().filter((ProductGaussDTO p) -> p.getCommercialCode().equals(rowKey)).findAny()
 				.orElse(null);
 	}

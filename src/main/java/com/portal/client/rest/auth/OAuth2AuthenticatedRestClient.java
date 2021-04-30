@@ -12,14 +12,12 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.glassfish.jersey.client.oauth2.OAuth2ClientSupport;
-
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.providers.OAuth2Support;
+import com.portal.client.rest.providers.SimpleClientRequestFilter;
 import com.portal.client.rest.providers.message.reader.JsonObjectMessageReader;
 import com.portal.security.UserPropertyHolder;
 import com.portal.security.api.OAuth2ServiceApi;
@@ -63,10 +61,9 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 		if (parentType instanceof OAuth2ServiceApi) {
 			OAuth2ServiceApi oAuthApi = (OAuth2ServiceApi) parentType;
 
-			// Feature feature = OAuth2ClientSupport.feature(oAuthApi.getToken());
 			OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
 			Client client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).build()
-					.register(JsonObjectMessageReader.class);
+					.register(JsonObjectMessageReader.class).register(SimpleClientRequestFilter.class);
 
 			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
 			if (pathParams != null) {
@@ -88,11 +85,9 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 			}
 
-			Response rawResponse = resource.request(MediaType.APPLICATION_JSON).get();
+			Response rawResponse = resource.request().accept(MediaType.APPLICATION_JSON).get();
 
 			if (rawResponse.getStatus() == 201 || rawResponse.getStatus() == 200) {
-				// return JsonbBuilder.create().fromJson(((InputStream)
-				// rawResponse.getEntity()), responseType);
 				T t = rawResponse.readEntity(responseType);
 				client.close();
 				return t;
