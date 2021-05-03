@@ -12,6 +12,18 @@ public class Product {
 
 	private String description;
 
+	public Product() {
+		// TODO Auto-generated constructor stub
+	}
+	public Product(String code, String descriptionType, String commercialCode, String type, String description) {
+		super();
+		this.code = code;
+		this.descriptionType = descriptionType;
+		this.commercialCode = commercialCode;
+		this.type = type;
+		this.description = description;
+	}
+
 	public String getCode() {
 		return code;
 	}

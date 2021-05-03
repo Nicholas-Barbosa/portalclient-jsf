@@ -8,48 +8,45 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
-import com.portal.dto.CustomerGaussDTO;
+import com.portal.pojo.Customer;
 
-public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDTO>
-		implements LazyOperations<CustomerGaussDTO> {
+public class CustomerLazyDataModel extends LazyDataModel<Customer> implements LazyOperations<Customer> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8941653163666281143L;
 
-	private  List<CustomerGaussDTO> customers;
+	private List<Customer> customers;
 
-	public CustomerGaussDTOLazyDataModel() {
+	public CustomerLazyDataModel() {
 		this.customers = new ArrayList<>();
 	}
 
-	public CustomerGaussDTOLazyDataModel(List<CustomerGaussDTO> customers) {
+	public CustomerLazyDataModel(List<Customer> customers) {
 		super();
 		this.customers = customers;
 	}
 
 	@Override
-	public List<CustomerGaussDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+	public List<Customer> load(int first, int pageSize, Map<String, SortMeta> sortBy,
 			Map<String, FilterMeta> filterBy) {
 		return customers;
 	}
 
 	@Override
-	public String getRowKey(CustomerGaussDTO object) {
+	public String getRowKey(Customer object) {
 		// TODO Auto-generated method stub
 		return object.getCgc();
 	}
 
 	@Override
-	public CustomerGaussDTO getRowData(String rowKey) {
-		return customers.parallelStream().filter((CustomerGaussDTO x) -> x.getCgc().equals(rowKey)).findAny()
-				.orElse(null);
+	public Customer getRowData(String rowKey) {
+		return customers.parallelStream().filter((Customer x) -> x.getCgc().equals(rowKey)).findAny().orElse(null);
 	}
 
 	@Override
-	public void addCollection(List<CustomerGaussDTO> list) {
-
+	public void addCollection(List<Customer> list) {
 		this.customers = new ArrayList<>(list);
 
 	}
@@ -61,7 +58,8 @@ public class CustomerGaussDTOLazyDataModel extends LazyDataModel<CustomerGaussDT
 	}
 
 	@Override
-	public List<CustomerGaussDTO> getCollection() {
+	public List<Customer> getCollection() {
 		return this.customers == null ? new ArrayList<>() : customers;
 	}
+
 }

@@ -1,10 +1,10 @@
 package com.portal.pojo;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
-public class ProductPage implements Page<Product> {
+public class CustomerPage implements Page<Customer> {
 
 	private int totalItems;
 
@@ -14,15 +14,19 @@ public class ProductPage implements Page<Product> {
 
 	private int page;
 
-	private Set<Product> products;
+	private List<Customer> clients;
 
-	public ProductPage(int totalItems, int totalPages, int pageSize, int page, Set<Product> products) {
+	public CustomerPage() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public CustomerPage(int totalItems, int totalPages, int pageSize, int page, List<Customer> clients) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
 		this.pageSize = pageSize;
 		this.page = page;
-		this.products = products;
+		this.clients = clients;
 	}
 
 	@Override
@@ -50,9 +54,9 @@ public class ProductPage implements Page<Product> {
 	}
 
 	@Override
-	public Collection<Product> getContent() {
+	public Collection<Customer> getContent() {
 		// TODO Auto-generated method stub
-		return new HashSet<>(products);
+		return new ArrayList<>(clients);
 	}
 
 }

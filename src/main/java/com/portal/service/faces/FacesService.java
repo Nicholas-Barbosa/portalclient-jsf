@@ -11,8 +11,9 @@ public class FacesService implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	
+
+	public FacesService() {
+	}
 
 	/**
 	 * Add a warn message to the current request object(FacesContext)
@@ -70,10 +71,4 @@ public class FacesService implements Serializable {
 		return this;
 	}
 
-	
-
-	public FacesService addHeaderForResponse(String name, String value) {
-		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value);
-		return this;
-	}
 }

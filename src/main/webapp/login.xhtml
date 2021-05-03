@@ -48,10 +48,10 @@
 				</div>
 
 
-				<p:commandButton value="LOGIN" action="#{loginController.doLogin}"
-					onstart="PF('dlgLoading').show()" process="@form"
-					update="@form dlgLoading" oncomplete="PF('dlgLoading').hide();"
-					ajax="true" />
+				<p:commandButton value="LOGIN"
+					action="#{loginController.authenticate}"
+					onstart="PF('dlgLoading').show()" process="@form" update="@form messages dlgLoading"
+					oncomplete="PF('dlgLoading').hide();" ajax="true" />
 				<p:messages id="messages" showDetail="true" closable="true"
 					globalOnly="true" />
 			</h:form>
@@ -63,7 +63,7 @@
 
 		<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
 			widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"
-			modal="true" closable="true" draggable="false" id="dlgLoading">
+			modal="true" closable="false" draggable="false" id="dlgLoading">
 			<div class="grid-demo">
 				<div class="p-grid p-dir-col-rev">
 					<div class="p-col">

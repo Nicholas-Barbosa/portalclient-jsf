@@ -2,23 +2,22 @@ package com.portal.client.rest.auth;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.providers.OAuth2Support;
-import com.portal.client.rest.providers.SimpleClientRequestFilter;
-import com.portal.client.rest.providers.message.reader.JsonObjectMessageReader;
 import com.portal.security.UserPropertyHolder;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
@@ -48,54 +47,47 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	}
 
 	@Override
-	public <T, R> T postFoEntity(String uri, R requestBody, MediaType mediaRequestBody, Class<T> responseType,
-			Object... queryParams) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T, ERROR> Object getForEntity(String serviceApiKey, String endpoint, Class<T> responseType,
-			Class<ERROR> errorType, Map<String, Object> queryParams, Map<String, Object> pathParams) {
+	public <T, ERROR> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, MediaType media)
+			throws ProcessingException, SocketTimeoutException, ConnectException, IllegalArgumentException,
+			TimeoutException {
 		ServiceApi parentType = userPropertyHolder.findServiceApi(serviceApiKey);
+
 		if (parentType instanceof OAuth2ServiceApi) {
-			OAuth2ServiceApi oAuthApi = (OAuth2ServiceApi) parentType;
+			try {
+				OAuth2ServiceApi oAuthApi = (OAuth2ServiceApi) parentType;
 
-			OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
-			Client client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).build()
-					.register(JsonObjectMessageReader.class).register(SimpleClientRequestFilter.class);
-
-			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
-			if (pathParams != null) {
-				resource = resource.resolveTemplatesFromEncoded(pathParams);
-			}
-			if (queryParams != null) {
-				// I didnt use lambdas cause only final local variables can be
-				// referenced,however target.queryParam return new WebTarget object.
-
-				Set<String> paramsInSet = queryParams.keySet();
-				for (String st : paramsInSet) {
-					try {
-						resource = resource.queryParam(st, URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
+				Client client = getClientFollowingMediaType(media);
+				WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
+				if (pathParams != null) {
+					resource = resource.resolveTemplatesFromEncoded(pathParams);
+				}
+				if (queryParams != null) {
+					Set<String> paramsInSet = queryParams.keySet();
+					for (String st : paramsInSet) {
+						try {
+							resource = resource.queryParam(st,
+									URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
+						} catch (UnsupportedEncodingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
+
 				}
 
-			}
-
-			Response rawResponse = resource.request().accept(MediaType.APPLICATION_JSON).get();
-
-			if (rawResponse.getStatus() == 201 || rawResponse.getStatus() == 200) {
+				Response rawResponse = resource.request().accept(MediaType.APPLICATION_JSON).get();
+				
 				T t = rawResponse.readEntity(responseType);
 				client.close();
 				return t;
+			} catch (ProcessingException e) {
+				handleProcessingException(e);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			rawResponse.readEntity(errorType);
-			client.close();
-
-			return rawResponse.getEntity();
+			return null;
 		} else
 			throw new IllegalArgumentException(
 					"the ServiceApi object retrieved from the key,its not type of OAuth2AuthenticatedRestClient or covariant!");
@@ -103,22 +95,10 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	}
 
 	@Override
-	public <RQ, RP> RP login(String path, RQ requestBody, MediaType mediaRequestBody, Class<RP> responseType,
-			Map<String, Object> queryParams) {
-		Client client = ClientBuilder.newBuilder().connectTimeout(8, TimeUnit.SECONDS).build();
-		WebTarget resource = client.target(path);
-
-		if (queryParams != null) {
-			// I didnt use lambdas cause only final local variables can be
-			// referenced,however target.queryParam return new WebTarget object.
-			Set<String> paramsInSet = queryParams.keySet();
-			for (String st : paramsInSet) {
-				resource = resource.queryParam(st, queryParams.get(st));
-			}
-		}
-
-		return resource.request().post(requestBody != null ? Entity.entity(requestBody, mediaRequestBody) : null,
-				responseType);
+	public <T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, E requestBody, MediaType typeForRequest) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

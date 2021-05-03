@@ -1,11 +1,14 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -20,20 +23,17 @@ import org.primefaces.event.UnselectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.cdi.qualifier.OAuth2RestAuth;
-import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.CustomerGaussDTO;
-import com.portal.dto.CustomerPageGaussDTO;
-import com.portal.dto.ErrorGaussDTO;
 import com.portal.dto.ItemBudgetFormGssDTO;
 import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductPageGaussDTO;
-import com.portal.exception.ProcessingExceptionHandler;
-import com.portal.pojo.Page;
+import com.portal.pojo.Customer;
+import com.portal.pojo.CustomerPage;
+import com.portal.repository.CustomerRepository;
 import com.portal.service.faces.FacesService;
 import com.portal.service.view.HoldMessageView;
-import com.portal.ui.lazy.datamodel.CustomerGaussDTOLazyDataModel;
-import com.portal.ui.lazy.datamodel.LazyOperations;
+import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
+import com.portal.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.ui.lazy.datamodel.ProductGaussDTOLazyDataModel;
 
 @Named
@@ -53,17 +53,16 @@ public class BudgetController implements Serializable {
 
 	private CustomerGaussDTO selectedCustomer;
 
-	private LazyDataModel<CustomerGaussDTO> lazyCustomers;
+	private LazyDataModel<Customer> lazyCustomers;
 
 	private LazyDataModel<ProductGaussDTO> lazyProducts;
 
 	private final HoldMessageView holderMessage;
 
-	private final AuthenticatedRestClient authRestClient;
-
 	private final FacesService facesService;
 
-	private final ProcessingExceptionHandler processingExceptionHandler;
+	private final CustomerRepository customerRepository;
+
 	private ProductPageGaussDTO productResponseDTO;
 
 	private String customerCode, customerStore, h5DivLoadCustomers, h5DivLoadProducts;
@@ -75,26 +74,24 @@ public class BudgetController implements Serializable {
 	private Set<ItemBudgetFormGssDTO> items;
 
 	public BudgetController() {
-		this(null, null, null, null);
+		this(null, null, null);
 	}
 
 	@Inject
-	public BudgetController(@OAuth2RestAuth AuthenticatedRestClient authRestClient, HoldMessageView holderMessage,
-			FacesService facesService, ProcessingExceptionHandler processingExceptionHandler) {
+	public BudgetController(HoldMessageView holderMessage, FacesService facesService,
+			CustomerRepository customerRepository) {
 		super();
-		this.authRestClient = authRestClient;
 		this.lazyProducts = new ProductGaussDTOLazyDataModel();
-		this.lazyCustomers = new CustomerGaussDTOLazyDataModel();
+		this.lazyCustomers = new CustomerLazyDataModel();
 		this.holderMessage = holderMessage;
 		this.facesService = facesService;
-		this.processingExceptionHandler = processingExceptionHandler;
+		this.customerRepository = customerRepository;
 
 	}
 
 	@PostConstruct
 	public void init() {
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
-		this.h5DivLoadProducts = holderMessage.label("carregano_produtos");
 		this.items = new ConcurrentSkipListSet<>();
 	}
 
@@ -102,12 +99,32 @@ public class BudgetController implements Serializable {
 	 * This method will be called when view page is render by async ajax request.
 	 */
 	public void initTableCustomers() {
-		this.globalLoadCustomers(0);
+
+		CustomerPage customerPage;
+		try {
+			customerPage = this.customerRepository.getAllByPage(1, pageSizeForCustomers);
+			LazyPopulateUtils.populate(lazyCustomers, customerPage);
+		} catch (SocketTimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ConnectException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
 		this.globalLoadCustomers(pageEvent.getPage() + 1);
-
 	}
 
 	public void initTableProducts() {
@@ -118,9 +135,9 @@ public class BudgetController implements Serializable {
 		Map<String, Object> pathParams = new HashMap<>();
 		pathParams.put("code", customerCode);
 		pathParams.put("store", customerStore);
-		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
-				CustomerPageGaussDTO.class, pathParams, holderMessage.label("nao_encontrado"),
-				"formClientTb:dtCustomer");
+//		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
+//				CustomerPageGaussDTO.class, pathParams, holderMessage.label("nao_encontrado"),
+//				"formClientTb:dtCustomer");
 
 	}
 
@@ -154,10 +171,10 @@ public class BudgetController implements Serializable {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSizeForCustomers);
-		h5DivLoadCustomers = this.populateLazyCollection(queryParams, "clients", this.lazyCustomers,
-				CustomerPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_clientes"),
-				"formClientTb:dtCustomer") ? holderMessage.label("selecione_cliente")
-						: holderMessage.label("impossivel_carregar_clientes");
+//		h5DivLoadCustomers = this.populateLazyCollection(queryParams, "clients", this.lazyCustomers,
+//				CustomerPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_clientes"),
+//				"formClientTb:dtCustomer") ? holderMessage.label("selecione_cliente")
+//						: holderMessage.label("impossivel_carregar_clientes");
 
 	}
 
@@ -165,78 +182,11 @@ public class BudgetController implements Serializable {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSizeForProducts);
-		this.h5DivLoadProducts = this.populateLazyCollection(queryParams, "products", this.lazyProducts,
-				ProductPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
-				"formProdutos:dtProducts") ? holderMessage.label("selecione_produtos")
-						: holderMessage.label("impossivel_carregar_produtos");
+//		this.h5DivLoadProducts = this.populateLazyCollection(queryParams, "products", this.lazyProducts,
+//				ProductPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
+//				"formProdutos:dtProducts") ? holderMessage.label("selecione_produtos")
+//						: holderMessage.label("impossivel_carregar_produtos");
 
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T extends Page<?>, U extends LazyDataModel<?>> boolean populateLazyCollection(
-			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
-			Map<String, Object> pathParams, String summaryForErrorResponse, String clientIdMessage) {
-		try {
-
-			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
-					queryParams, pathParams);
-
-			try {
-				T pageResponse = (T) response;
-				collection.setPageSize(pageResponse.getPageSize());
-				collection.setRowCount(pageResponse.totalItems());
-
-				/*
-				 * Here will occur override,so T or U not make difference.
-				 */
-				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
-				return true;
-			} catch (ClassCastException e) {
-				ErrorGaussDTO error = (ErrorGaussDTO) response;
-				facesService.error(clientIdMessage, summaryForErrorResponse, error.getErrorMessage())
-						.addHeaderForResponse("Backbone-Status", "Error");
-
-			}
-		} catch (ProcessingException e) {
-			processingExceptionHandler.checkProcessingExceptionCauseAndAddMessage(e, clientIdMessage);
-			facesService.addHeaderForResponse("Backbone-Status", "Error");
-			e.printStackTrace();
-		} catch (Exception e) {
-			facesService.addHeaderForResponse("Backbone-Status", "Error");
-			e.printStackTrace();
-		}
-		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T extends Page<?>, U extends LazyDataModel<?>> void populateCollectionWithSingleRow(
-			Map<String, Object> queryParams, String enpoint, U collection, Class<T> responseType,
-			Map<String, Object> pathParams, String summaryForErrorResponse, String clientIdMessage) {
-		try {
-
-			Object response = authRestClient.getForEntity("GAUSS_ORCAMENTO", enpoint, responseType, ErrorGaussDTO.class,
-					queryParams, pathParams);
-
-			try {
-				T pageResponse = (T) response;
-				collection.setPageSize(1);
-				collection.setRowCount(1);
-				((LazyOperations<T>) collection).addCollection((List<T>) pageResponse.getContent());
-
-			} catch (ClassCastException e) {
-				ErrorGaussDTO error = (ErrorGaussDTO) response;
-				facesService.error(clientIdMessage, summaryForErrorResponse, error.getErrorMessage())
-						.addHeaderForResponse("Backbone-Status", "Error");
-
-			}
-		} catch (ProcessingException e) {
-			processingExceptionHandler.checkProcessingExceptionCauseAndAddMessage(e, clientIdMessage);
-			facesService.addHeaderForResponse("Backbone-Status", "Error");
-			e.printStackTrace();
-		} catch (Exception e) {
-			facesService.addHeaderForResponse("Backbone-Status", "Error");
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -275,11 +225,11 @@ public class BudgetController implements Serializable {
 		this.selectedCustomer = selectedCustomer;
 	}
 
-	public LazyDataModel<CustomerGaussDTO> getLazyCustomers() {
+	public LazyDataModel<Customer> getLazyCustomers() {
 		return lazyCustomers;
 	}
 
-	public void setLazyCustomers(LazyDataModel<CustomerGaussDTO> lazyCustomers) {
+	public void setLazyCustomers(LazyDataModel<Customer> lazyCustomers) {
 		this.lazyCustomers = lazyCustomers;
 	}
 

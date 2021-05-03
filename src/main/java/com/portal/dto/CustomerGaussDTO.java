@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.pojo.Customer;
+
 public class CustomerGaussDTO implements Serializable {
 
 	/**
@@ -48,6 +50,10 @@ public class CustomerGaussDTO implements Serializable {
 		this.name = name;
 		this.fantasyName = fantasyName;
 		this.city = city;
+	}
+
+	public Customer toCustomer() {
+		return new Customer(address, code, store, state, cgc, blocked, name, fantasyName, city, table);
 	}
 
 	public String getAddress() {

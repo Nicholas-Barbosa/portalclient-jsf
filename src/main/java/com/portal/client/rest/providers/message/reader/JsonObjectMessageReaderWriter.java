@@ -1,6 +1,8 @@
 package com.portal.client.rest.providers.message.reader;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
@@ -8,17 +10,19 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.MessageBodyWriter;
 
 //@Provider
 @Consumes("aplication/json")
-public class JsonObjectMessageReader implements MessageBodyReader<Object> {
+public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,MessageBodyWriter<Object> {
 
 	private final Jsonb jsonReader;
 
-	public JsonObjectMessageReader() {
+	public JsonObjectMessageReaderWriter() {
 		super();
 		this.jsonReader = JsonbBuilder.create();
 	}
@@ -37,6 +41,20 @@ public class JsonObjectMessageReader implements MessageBodyReader<Object> {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);
 		}
 
+	}
+
+	@Override
+	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void writeTo(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
+			throws IOException, WebApplicationException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

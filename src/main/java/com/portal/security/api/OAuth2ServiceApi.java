@@ -20,13 +20,13 @@ public class OAuth2ServiceApi extends ServiceApi implements Serializable {
 
 	public OAuth2ServiceApi(String username, char[] password, String basePath, String loginEndpoint,
 			TokenType tokenType, String token, String refreshToken, String grantType, String scope,
-			LocalDateTime createdAt, Long duration, TimeUnit timeUnit) {
+			 Long duration, TimeUnit timeUnit) {
 		super(username, password, basePath, loginEndpoint, tokenType);
 		this.token = token;
 		this.refreshToken = refreshToken;
 		this.grantType = grantType;
 		this.scope = scope;
-		this.createdAt = createdAt;
+		this.createdAt = LocalDateTime.now();
 		this.timeUnit = timeUnit;
 		this.expireIn = cronExpireIn(duration);
 

@@ -1,25 +1,30 @@
 package com.portal.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.pojo.Customer;
+import com.portal.pojo.CustomerPage;
 import com.portal.pojo.Page;
 
 public class CustomerPageGaussDTO implements Page<CustomerGaussDTO> {
 
 	@JsonbProperty("total_items")
-	private Integer totalItems;
+	private int totalItems;
 
 	@JsonbProperty("total_page")
-	private Integer totalPages;
+	private int totalPages;
 
 	@JsonbProperty("page_size")
-	private Integer pageSize;
+	private int pageSize;
 
 	@JsonbProperty
-	private Integer page;
+	private int page;
 
 	@JsonbProperty("client")
 	private List<CustomerGaussDTO> clients;
@@ -28,7 +33,7 @@ public class CustomerPageGaussDTO implements Page<CustomerGaussDTO> {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CustomerPageGaussDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
+	public CustomerPageGaussDTO(int totalItems, int totalPages, int pageSize, int page,
 			List<CustomerGaussDTO> clients) {
 		super();
 		this.totalItems = totalItems;
@@ -36,6 +41,11 @@ public class CustomerPageGaussDTO implements Page<CustomerGaussDTO> {
 		this.pageSize = pageSize;
 		this.page = page;
 		this.clients = clients;
+	}
+
+	public CustomerPage toCustomerPage() {
+		return new CustomerPage(totalItems, totalPages, pageSize, page, clients.parallelStream()
+				.map(CustomerGaussDTO::toCustomer).collect(CopyOnWriteArrayList::new, List::add, List::addAll));
 	}
 
 	public List<CustomerGaussDTO> getClients() {

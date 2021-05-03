@@ -11,5 +11,5 @@ public interface ProductRepository {
 	
 	ProductPage getAllByPage(int page,int pageSize);
 	
-	ProductPage getByDescription(String description);
+	ProductPage getByDescription(int page,int pageSize,String description);
 }

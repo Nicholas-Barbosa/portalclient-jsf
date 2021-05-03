@@ -6,6 +6,7 @@ import javax.annotation.Priority;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
+
 @Priority(10)
 public final class OAuth2Support implements ClientRequestFilter {
 
@@ -18,7 +19,6 @@ public final class OAuth2Support implements ClientRequestFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
-		System.out.println("Add header!");
 		requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + this.token);
 
 	}

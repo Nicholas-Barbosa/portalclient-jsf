@@ -1,7 +1,11 @@
 package com.portal.client.rest.auth;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.rest.RestClient;
@@ -18,20 +22,9 @@ public interface AuthenticatedRestClient extends RestClient {
 	 * @param queryParams
 	 * @return
 	 */
-	<T, ERROR> Object getForEntity(String serviceApiKey, String endpoint, Class<T> responseType, Class<ERROR> errorType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams);
+	<T, ERROR> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, MediaType media)
+			throws ProcessingException, SocketTimeoutException, ConnectException, IllegalArgumentException,
+			TimeoutException;
 
-//	<T, R> T postForEntity(String path, R requestBodyType, MediaType mediaTypeRequestBody, Class<T> responseType,
-//			Object... queryParams);
-
-	/**
-	 * Make the login(HTTP POST) against path .
-	 * 
-	 * 
-	 * @param path
-	 * @param queryParams
-	 * @return
-	 */
-	<RQ, RP> RP login(String path, RQ requestBody, MediaType mediaRequestBody, Class<RP> responseType,
-			Map<String,Object>queryParams);
 }
