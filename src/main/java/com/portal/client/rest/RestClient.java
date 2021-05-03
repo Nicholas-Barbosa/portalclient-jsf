@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -53,7 +54,9 @@ public interface RestClient extends Serializable {
 			throw new IllegalArgumentException(e.getCause().getMessage());
 		} else if (e.getCause() instanceof ConnectException) {
 			throw new ConnectException(e.getCause().getMessage());
-		} else
-			throw new ProcessingException(e.getCause().getMessage());
+		} else if (e.getCause() instanceof NotFoundException)
+			throw new NotFoundException();
+		else
+			e.printStackTrace();
 	}
 }

@@ -14,4 +14,11 @@ public class LazyPopulateUtils {
 		lazy.setRowCount(wrapperPage.totalItems());
 		((LazyOperations<T>) lazy).addCollection((List<T>) wrapperPage.getContent());
 	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends LazyDataModel<?>, U> void populateSingleRow(T lazy, U wrappedObject) {
+		lazy.setPageSize(1);
+		lazy.setRowCount(1);
+		((LazyOperations<T>) lazy).addCollection((List<T>) List.of(wrappedObject));
+	}
 }

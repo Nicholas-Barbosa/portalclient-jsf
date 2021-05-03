@@ -71,6 +71,8 @@ public class SimpleRestClient implements RestClient {
 			return resource.request().post(entityRequest, responseType);
 		} catch (ProcessingException e) {
 			RestClient.super.handleProcessingException(e);
+		} finally {
+			client.close();
 		}
 		return null;
 	}

@@ -54,11 +54,12 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 		ServiceApi parentType = userPropertyHolder.findServiceApi(serviceApiKey);
 
 		if (parentType instanceof OAuth2ServiceApi) {
+			Client client = null;
 			try {
 				OAuth2ServiceApi oAuthApi = (OAuth2ServiceApi) parentType;
 
 				OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
-				Client client = getClientFollowingMediaType(media);
+				client = getClientFollowingMediaType(media);
 				WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
 				if (pathParams != null) {
 					resource = resource.resolveTemplatesFromEncoded(pathParams);
@@ -78,14 +79,14 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 				}
 
 				Response rawResponse = resource.request().accept(MediaType.APPLICATION_JSON).get();
-				
 				T t = rawResponse.readEntity(responseType);
-				client.close();
 				return t;
 			} catch (ProcessingException e) {
 				handleProcessingException(e);
 			} catch (Exception e) {
 				e.printStackTrace();
+			} finally {
+				client.close();
 			}
 			return null;
 		} else

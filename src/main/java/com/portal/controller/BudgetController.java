@@ -6,6 +6,7 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeoutException;
@@ -14,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ProcessingException;
 
 import org.primefaces.component.api.UIData;
@@ -23,7 +25,6 @@ import org.primefaces.event.UnselectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.dto.CustomerGaussDTO;
 import com.portal.dto.ItemBudgetFormGssDTO;
 import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductPageGaussDTO;
@@ -51,7 +52,7 @@ public class BudgetController implements Serializable {
 
 	private boolean render = true;
 
-	private CustomerGaussDTO selectedCustomer;
+	private Customer selectedCustomer;
 
 	private LazyDataModel<Customer> lazyCustomers;
 
@@ -95,54 +96,59 @@ public class BudgetController implements Serializable {
 		this.items = new ConcurrentSkipListSet<>();
 	}
 
-	/**
-	 * This method will be called when view page is render by async ajax request.
-	 */
 	public void initTableCustomers() {
-
-		CustomerPage customerPage;
-		try {
-			customerPage = this.customerRepository.getAllByPage(1, pageSizeForCustomers);
-			LazyPopulateUtils.populate(lazyCustomers, customerPage);
-		} catch (SocketTimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ConnectException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
-
+		fetchCustomers(1);
 	}
 
 	public void onPageCustomerListener(PageEvent pageEvent) {
-		this.globalLoadCustomers(pageEvent.getPage() + 1);
+		int page = pageEvent.getPage();
+		fetchCustomers(++page);
 	}
 
 	public void initTableProducts() {
-		this.globalLoadProducts(0);
+
 	}
 
-	public void findCustomer() {
-		Map<String, Object> pathParams = new HashMap<>();
-		pathParams.put("code", customerCode);
-		pathParams.put("store", customerStore);
-//		this.populateCollectionWithSingleRow(null, "clients/{code}/loja/{store}", this.lazyCustomers,
-//				CustomerPageGaussDTO.class, pathParams, holderMessage.label("nao_encontrado"),
-//				"formClientTb:dtCustomer");
+	public void findCustomerByCodeAndStore() {
+		try {
+			Optional<Customer> opCustomer = customerRepository.getByCodeAndStore(customerCode, customerStore);
+			opCustomer.ifPresentOrElse(c -> {
+				LazyPopulateUtils.populateSingleRow(lazyCustomers, c);
+			}, () -> {
+				this.facesService.error(null, holderMessage.label("nao_encontrado"), null);
+				((CustomerLazyDataModel) this.lazyCustomers).clearCollection();
+				this.lazyCustomers.setPageSize(0);
+				this.lazyCustomers.setRowCount(0);
+			});
+		} catch (SocketTimeoutException e) {
+			this.facesService
+					.error(null, holderMessage.label("socket_exception"),
+							holderMessage.label("socket_exception_detalhes"))
+					.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (ConnectException e) {
+			// TODO Auto-generated catch block
+			this.facesService
+					.error(null, holderMessage.label("connect_exception"),
+							holderMessage.label("connect_exception_detales"))
+					.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			this.facesService
+					.error(null, holderMessage.label("respota_invalida_servidor"),
+							holderMessage.label("detalhes_reposta_invalida_servidor"))
+					.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (TimeoutException e) {
+			this.facesService
+					.error(null, holderMessage.label("timeout_ler_response"),
+							holderMessage.label("timeout_ler_response_detalhes"))
+					.addHeaderForResponse("Backbone-Status", "Error");
 
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void refreshDtCustomers() {
-		this.globalLoadCustomers(0);
 
 	}
 
@@ -151,7 +157,6 @@ public class BudgetController implements Serializable {
 		queryParams.put("page", pageEvent.getPage() + 1);
 		queryParams.put("pageSize", pageSizeForProducts);
 
-		this.globalLoadProducts(pageEvent.getPage() + 1);
 	}
 
 	public void onProductSelected(SelectEvent<ProductGaussDTO> selectedProduct) {
@@ -167,26 +172,41 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public void globalLoadCustomers(int page) {
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("page", page);
-		queryParams.put("pageSize", pageSizeForCustomers);
-//		h5DivLoadCustomers = this.populateLazyCollection(queryParams, "clients", this.lazyCustomers,
-//				CustomerPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_clientes"),
-//				"formClientTb:dtCustomer") ? holderMessage.label("selecione_cliente")
-//						: holderMessage.label("impossivel_carregar_clientes");
+	private void fetchCustomers(int page) {
+		CustomerPage customerPage;
+		try {
+			customerPage = this.customerRepository.getAllByPage(page, pageSizeForCustomers);
+			LazyPopulateUtils.populate(lazyCustomers, customerPage);
+		} catch (SocketTimeoutException e) {
+			this.facesService
+					.error("formClientTb:dtCustomer", holderMessage.label("socket_exception"),
+							holderMessage.label("socket_exception_detalhes"))
+					.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (ConnectException e) {
+			// TODO Auto-generated catch block
+			this.facesService
+					.error("formClientTb:dtCustomer", holderMessage.label("connect_exception"),
+							holderMessage.label("connect_exception_detales"))
+					.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			this.facesService
+					.error("formClientTb:dtCustomer", holderMessage.label("respota_invalida_servidor"),
+							holderMessage.label("detalhes_reposta_invalida_servidor"))
+					.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (TimeoutException e) {
+			this.facesService
+					.error("formClientTb:dtCustomer", holderMessage.label("timeout_ler_response"),
+							holderMessage.label("timeout_ler_response_detalhes"))
+					.addHeaderForResponse("Backbone-Status", "Error");
 
-	}
+		} catch (NotAuthorizedException e) {
+			this.facesService
+					.error("formClientTb:dtCustomer", holderMessage.label("nao_encontrado"),
+							holderMessage.label("usuario_nao_encontrado"))
+					.addHeaderForResponse("Backbone-Status", "Error");
 
-	public void globalLoadProducts(int page) {
-		Map<String, Object> queryParams = new HashMap<>();
-		queryParams.put("page", page);
-		queryParams.put("pageSize", pageSizeForProducts);
-//		this.h5DivLoadProducts = this.populateLazyCollection(queryParams, "products", this.lazyProducts,
-//				ProductPageGaussDTO.class, null, holderMessage.label("impossivel_procurar_produtos"),
-//				"formProdutos:dtProducts") ? holderMessage.label("selecione_produtos")
-//						: holderMessage.label("impossivel_carregar_produtos");
-
+		}
 	}
 
 	/**
@@ -217,11 +237,11 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public CustomerGaussDTO getSelectedCustomer() {
+	public Customer getSelectedCustomer() {
 		return selectedCustomer;
 	}
 
-	public void setSelectedCustomer(CustomerGaussDTO selectedCustomer) {
+	public void setSelectedCustomer(Customer selectedCustomer) {
 		this.selectedCustomer = selectedCustomer;
 	}
 

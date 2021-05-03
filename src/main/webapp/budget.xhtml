@@ -18,6 +18,7 @@
 	</ui:define>
 
 	<ui:define name="content">
+		<p:growl id="growl" showDetail="true" globalOnly="true" />
 		<div class="grid-demo" id="divLoadCustomers">
 			<div class="p-grid p-dir-col">
 				<div class="p-col-12">
@@ -161,8 +162,9 @@
 									<p:message for="store" id="msgLastname" display="icon" />
 								</div>
 								<p:commandButton value="#{holdMessageView.label('enviar')}"
-									icon="pi pi-send" action="#{budgetController.findCustomer}"
-									update="@form messageCustomer msgDivLoadCustomers"
+									icon="pi pi-send"
+									action="#{budgetController.findCustomerByCodeAndStore}"
+									update="@form growl"
 									onstart="onStartFindCustomer()"
 									oncomplete="onCompleteProcessInDtCustomer(xhr)"
 									validateClient="true" />
@@ -208,7 +210,8 @@
 						<p:tab title="#{holdMessageView.label('codigo_comercial')}">
 							<div class="p-formgroup-inline">
 								<div class="p-field">
-									<p:inputText type="text" placeholder="#{holdMessageView.label('codigo_comercial')}" />
+									<p:inputText type="text"
+										placeholder="#{holdMessageView.label('codigo_comercial')}" />
 								</div>
 								<p:commandButton type="button"
 									value="#{holdMessageView.label('enviar')}" icon="pi pi-send" />
@@ -224,6 +227,7 @@
 			</div>
 			<div class="p-col-12">
 				<div class="card">
+					<h5>#{holdMessageView.label('items')}</h5>
 					<h:form id="formItems">
 
 						<p:dataTable>
@@ -260,11 +264,9 @@
 								<p:ajax event="page"
 									listener="#{budgetController.onPageProducts}" process="@this" />
 								<p:ajax event="rowSelect" async="true"
-									listener="#{budgetController.onProductSelected}"
-									update="formDlgItems:dtItms" />
+									listener="#{budgetController.onProductSelected}" />
 								<p:ajax event="rowUnselect"
-									listener="#{budgetController.unProductUnSelected}"
-									update="formDlgItems:dtItms" />
+									listener="#{budgetController.unProductUnSelected}" />
 								<p:column
 									headerText="#{holdMessageView.label('codigo_comercial')}">
 									<h:outputText value="#{product.commercialCode}" />
@@ -288,36 +290,7 @@
 							</p:blockUI>
 						</h:form>
 					</div>
-					<div class="p-col">
-						<h:form id="formDlgItems">
-							<p:dataTable id="dtItms" value="#{budgetController.items}"
-								paginator="true" rows="10" var="item">
-								<f:facet name="header">
-									<div class="customers-table-header">
-										<span style="font-weight: bold">Items</span>
-									</div>
-								</f:facet>
-								<p:column
-									headerText="#{holdMessageView.label('codigo_comercial')}">
-									<h:outputText value="#{item.commercialCode}" />
-								</p:column>
-								<p:column headerText="#{holdMessageView.label('codigo')}">
-									<h:outputText value="#{item.code}" />
-								</p:column>
 
-								<p:column headerText="#{holdMessageView.label('tipo')}">
-									<h:outputText value="#{item.descriptionType}" />
-								</p:column>
-
-								<p:column headerText="#{holdMessageView.label('descricao')}">
-									<h:outputText value="#{item.description}" />
-								</p:column>
-							</p:dataTable>
-
-						</h:form>
-
-
-					</div>
 				</div>
 			</p:dialog>
 
@@ -342,7 +315,7 @@
 			function showSearchProducts(){
 				$("#divSearchProducts").show();
 			}
-			function initTablesCustomerProducts() {
+			function initTablesCustomer() {
 				$("#budgetForm").hide();
 				$("#divLoadCustomers").show();
 				let promise = rcCustomers();
@@ -394,25 +367,21 @@
 
 			}
 
-			function onStartLoading() {
-				$("#error").hide();
-				$("#errorForCustomer").hide();
-				
-
-			}
+			
 
 
 			function onStartFindCustomer() {
 				PF('searchCustomer').hide();
 				$("#budgetForm").hide();
 				$("#divLoadCustomers").show();
+				$("#spinnerCustomer").show();
 
 			}
 			
 			function onStartProcessInDtCustomer() {
 				$("#budgetForm").hide();
 				$("#divLoadCustomers").show();
-				
+				$("#spinnerCustomer").show();
 			}
 
 			function onCompleteProcessInDtCustomer(xhr) {
@@ -431,7 +400,7 @@
 					$("#spinnerCustomer").hide();
 					$("#budgetForm").hide();
 					$("#tryAgain").show();
-					customerOk=false;
+					
 				}
 			}
 			
@@ -446,7 +415,7 @@
 			}
 
 			
-			initTablesCustomerProducts();
+			initTablesCustomer();
 		//	]]>
 		</script>
 	</ui:define>

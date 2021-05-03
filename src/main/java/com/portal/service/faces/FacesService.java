@@ -71,4 +71,9 @@ public class FacesService implements Serializable {
 		return this;
 	}
 
+	public FacesService addHeaderForResponse(String name, String value) {
+		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value);
+		return this;
+	}
+
 }

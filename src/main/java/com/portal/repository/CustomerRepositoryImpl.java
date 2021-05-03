@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 
@@ -48,9 +49,23 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public Optional<Customer> getByCodeAndStore(String code, String store) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<Customer> getByCodeAndStore(String code, String store) throws SocketTimeoutException,
+			ConnectException, ProcessingException, IllegalArgumentException, TimeoutException {
+		try {
+			Map<String, Object> pathParams = getMapInstance();
+			pathParams.put("code", code);
+			pathParams.put("codeStore", store);
+			return Optional
+					.of(restClient
+							.getForEntity("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
+									CustomerPageGaussDTO.class, null, pathParams, MediaType.APPLICATION_JSON_TYPE)
+							.getClients().get(0).toCustomer());
+		} catch (NotFoundException e) {
+			return Optional.empty();
+		}
 	}
 
+	private Map<String, Object> getMapInstance() {
+		return new HashMap<>();
+	}
 }
