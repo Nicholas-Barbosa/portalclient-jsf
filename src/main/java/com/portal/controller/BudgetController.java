@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -131,6 +130,9 @@ public class BudgetController implements Serializable {
 
 	}
 
+	public void findProductByDescription() {
+		
+	}
 	public void findProductByCode() {
 		try {
 			Optional<Product> product = productRepository.getByCode(searchProductForm.getCode());

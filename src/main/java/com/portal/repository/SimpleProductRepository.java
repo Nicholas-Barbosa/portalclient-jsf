@@ -56,7 +56,7 @@ public class SimpleProductRepository implements ProductRepository, Serializable 
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}
-		
+
 	}
 
 	@Override
@@ -78,11 +78,16 @@ public class SimpleProductRepository implements ProductRepository, Serializable 
 	@Override
 	public ProductPage getByDescription(int page, int pageSize, String description) throws SocketTimeoutException,
 			ConnectException, ProcessingException, IllegalArgumentException, TimeoutException {
-		Map<String, Object> queryParams = Stream.of(page, pageSize)
-				.collect(Collectors.toMap(k -> k.toString(), v -> v));
+		Map<String, Object> queryParams = new HashMap<>();
+		queryParams.put("page", page);
+		queryParams.put("pageSize", pageSize);
+		queryParams.put("searchKey", description);
+
 		ProductPageGaussDTO productPageDto = (ProductPageGaussDTO) authRestClient.getForEntity("GAUSS_ORCAMENTO",
 				"products", ProductPageGaussDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
-		return null;
+		ProductPage product = productPageDto.toProduct();
+
+		return product;
 	}
 
 }
