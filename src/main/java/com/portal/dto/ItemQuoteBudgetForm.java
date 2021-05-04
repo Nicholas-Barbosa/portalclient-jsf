@@ -1,23 +1,28 @@
 package com.portal.dto;
 
-public class ItemBudgetFormGssDTO implements Comparable<ItemBudgetFormGssDTO>{
+import com.portal.pojo.Product;
+
+public class ItemQuoteBudgetForm implements Comparable<ItemQuoteBudgetForm> {
 
 	private String code;
 	private String descriptionType;
 	private String commercialCode;
-
 	private String description;
 	private Integer quantity;
 
-	public ItemBudgetFormGssDTO(String code, String descriptionType, String commercialCode, String description,
+	public ItemQuoteBudgetForm(String code, String descriptionType, String commercialCode, String description,
 			Integer quantity) {
 		super();
 		this.code = code;
 		this.descriptionType = descriptionType;
 		this.commercialCode = commercialCode;
-
 		this.description = description;
 		this.quantity = quantity;
+	}
+
+	public static ItemQuoteBudgetForm getInstanceFromProduct(Product product) {
+		return new ItemQuoteBudgetForm(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
+				product.getDescription(), 10);
 	}
 
 	public String getCode() {
@@ -40,6 +45,10 @@ public class ItemBudgetFormGssDTO implements Comparable<ItemBudgetFormGssDTO>{
 		return quantity;
 	}
 
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -57,7 +66,7 @@ public class ItemBudgetFormGssDTO implements Comparable<ItemBudgetFormGssDTO>{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ItemBudgetFormGssDTO other = (ItemBudgetFormGssDTO) obj;
+		ItemQuoteBudgetForm other = (ItemQuoteBudgetForm) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;
@@ -72,10 +81,9 @@ public class ItemBudgetFormGssDTO implements Comparable<ItemBudgetFormGssDTO>{
 	}
 
 	@Override
-	public int compareTo(ItemBudgetFormGssDTO o) {
+	public int compareTo(ItemQuoteBudgetForm o) {
 		// TODO Auto-generated method stub
 		return commercialCode.compareTo(o.commercialCode);
 	}
 
-	
 }

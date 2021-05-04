@@ -1,6 +1,13 @@
 package com.portal.pojo;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable, Comparable<Product> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1073082288183838723L;
 
 	private String code;
 
@@ -15,6 +22,7 @@ public class Product {
 	public Product() {
 		// TODO Auto-generated constructor stub
 	}
+
 	public Product(String code, String descriptionType, String commercialCode, String type, String description) {
 		super();
 		this.code = code;
@@ -69,5 +77,10 @@ public class Product {
 		return true;
 	}
 
-	
+	@Override
+	public int compareTo(Product o) {
+		// TODO Auto-generated method stub
+		return commercialCode.compareTo(o.commercialCode);
+	}
+
 }

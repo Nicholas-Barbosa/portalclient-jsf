@@ -5,14 +5,14 @@ import java.io.Serializable;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
-public class FacesService implements Serializable {
+public class FacesHelper implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public FacesService() {
+	public FacesHelper() {
 	}
 
 	/**
@@ -23,7 +23,7 @@ public class FacesService implements Serializable {
 	 * @param detail
 	 * @return
 	 */
-	public FacesService warn(String clientId, String summary, String detail) {
+	public FacesHelper warn(String clientId, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(clientId,
 				new FacesMessage(FacesMessage.SEVERITY_WARN, summary, detail));
 		return this;
@@ -37,7 +37,7 @@ public class FacesService implements Serializable {
 	 * @param detail
 	 * @return
 	 */
-	public FacesService info(String clientId, String summary, String detail) {
+	public FacesHelper info(String clientId, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(clientId,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail));
 		return this;
@@ -51,7 +51,7 @@ public class FacesService implements Serializable {
 	 * @param detail
 	 * @return
 	 */
-	public FacesService fatal(String clientId, String summary, String detail) {
+	public FacesHelper fatal(String clientId, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(clientId,
 				new FacesMessage(FacesMessage.SEVERITY_FATAL, summary, detail));
 		return this;
@@ -65,13 +65,13 @@ public class FacesService implements Serializable {
 	 * @param detail
 	 * @return
 	 */
-	public FacesService error(String clientId, String summary, String detail) {
+	public FacesHelper error(String clientId, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(clientId,
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, summary, detail));
 		return this;
 	}
 
-	public FacesService addHeaderForResponse(String name, String value) {
+	public FacesHelper addHeaderForResponse(String name, String value) {
 		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value);
 		return this;
 	}

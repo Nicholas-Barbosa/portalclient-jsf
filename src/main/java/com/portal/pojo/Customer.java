@@ -1,7 +1,13 @@
 package com.portal.pojo;
 
-public class Customer {
+import java.io.Serializable;
 
+public class Customer implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -9088263539208735631L;
 	private String address;
 	private String code;
 	private String store;

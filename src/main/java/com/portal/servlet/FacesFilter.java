@@ -1,4 +1,4 @@
-package com.portal.security;
+package com.portal.servlet;
 
 import java.io.IOException;
 
@@ -12,13 +12,15 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.portal.security.UserPropertyHolder;
+
 @WebFilter(value = "/faces/*")
-public class SecurityFilter implements Filter {
+public class FacesFilter implements Filter {
 
 	private final UserPropertyHolder userPropertyHolder;
 
 	@Inject
-	public SecurityFilter(UserPropertyHolder userPropertyHolder) {
+	public FacesFilter(UserPropertyHolder userPropertyHolder) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
 	}

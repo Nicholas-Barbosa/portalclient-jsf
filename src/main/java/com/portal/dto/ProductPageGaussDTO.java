@@ -3,21 +3,24 @@ package com.portal.dto;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.pojo.Page;
+import com.portal.pojo.ProductPage;
 
 public class ProductPageGaussDTO implements Page<ProductGaussDTO> {
 
 	@JsonbProperty("total_items")
-	private Integer totalItems;
+	private int totalItems;
 	@JsonbProperty("total_pages")
-	private Integer totalPages;
+	private int totalPages;
 	@JsonbProperty("page_size")
-	private Integer pageSize;
+	private int pageSize;
 	@JsonbProperty
-	private Integer page;
+	private int page;
 
 	@JsonbProperty
 	private List<ProductGaussDTO> products;
@@ -34,6 +37,11 @@ public class ProductPageGaussDTO implements Page<ProductGaussDTO> {
 		this.pageSize = pageSize;
 		this.page = page;
 		this.products = products;
+	}
+
+	public ProductPage toProduct() {
+		return new ProductPage(totalItems, page, pageSize, page, products.parallelStream().map(p -> p.toProduct())
+				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
 	}
 
 	@Override

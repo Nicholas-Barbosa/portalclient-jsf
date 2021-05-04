@@ -1,8 +1,9 @@
 package com.portal.pojo;
 
+import java.io.Serializable;
 import java.util.Collection;
 
-public interface Page<T> {
+public interface Page<T> extends Serializable {
 
 	int getPageSize();
 

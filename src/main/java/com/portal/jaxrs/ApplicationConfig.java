@@ -7,7 +7,7 @@ import javax.mvc.engine.ViewEngine;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("/view")
+@ApplicationPath("/api")
 public class ApplicationConfig extends Application {
 
 	@Override

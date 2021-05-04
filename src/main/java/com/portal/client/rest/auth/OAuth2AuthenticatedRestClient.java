@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
-import com.portal.client.rest.providers.OAuth2Support;
+import com.portal.client.rest.providers.filter.OAuth2Support;
 import com.portal.security.UserPropertyHolder;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;

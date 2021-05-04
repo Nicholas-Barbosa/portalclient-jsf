@@ -13,7 +13,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.rest.providers.ExceptionLauncherFilter;
+import com.portal.client.rest.providers.filter.ExceptionLauncherFilter;
 import com.portal.client.rest.providers.message.reader.JsonObjectMessageReaderWriter;
 
 public interface RestClient extends Serializable {
@@ -37,7 +37,7 @@ public interface RestClient extends Serializable {
 
 	default Client getClientFollowingMediaType(MediaType media) {
 		Client client = media == MediaType.APPLICATION_JSON_TYPE
-				? ClientBuilder.newBuilder().connectTimeout(5, TimeUnit.SECONDS).readTimeout(5, TimeUnit.SECONDS)
+				? ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
 						.build().register(JsonObjectMessageReaderWriter.class)
 				: null;
 		client.register(ExceptionLauncherFilter.class);

@@ -49,10 +49,10 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		queryParams.put("grant_type", "password");
 		queryParams.put("password", loginForm.getPassword());
 		queryParams.put("username", loginForm.getUsername());
-		LoginGssResponseDTO doPost = restClient.doPost("http://192.168.0.246:8091/rest/api/oauth2/v1/token",
+		LoginGssResponseDTO doPost = restClient.doPost("http://192.168.0.201:8090/rest/api/oauth2/v1/token",
 				LoginGssResponseDTO.class, queryParams, null, null, MediaType.APPLICATION_JSON_TYPE);
 		ServiceApi service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
-				"http://192.168.0.246:8091/rest", "v1/token", TokenType.Bearer, doPost.getAccessToken(),
+				"http://192.168.0.201:8090/rest", "v1/token", TokenType.Bearer, doPost.getAccessToken(),
 				doPost.getRefreshToken(), "password", "default", 1l, TimeUnit.HOURS);
 		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", service);
 

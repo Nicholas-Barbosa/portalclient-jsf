@@ -1,14 +1,11 @@
 package com.portal.dto;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.pojo.Customer;
 import com.portal.pojo.CustomerPage;
 import com.portal.pojo.Page;
 

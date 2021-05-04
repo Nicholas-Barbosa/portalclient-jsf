@@ -6,6 +6,11 @@ import java.util.List;
 
 public class CustomerPage implements Page<Customer> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7129315331224897427L;
+
 	private int totalItems;
 
 	private int totalPages;

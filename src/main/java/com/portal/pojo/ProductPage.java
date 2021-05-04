@@ -6,6 +6,11 @@ import java.util.Set;
 
 public class ProductPage implements Page<Product> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4300799200414274533L;
+
 	private int totalItems;
 
 	private int totalPages;

@@ -1,18 +1,27 @@
 package com.portal.repository;
 
 import java.io.Serializable;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
+import com.portal.dto.ProductGaussDTO;
 import com.portal.dto.ProductPageGaussDTO;
 import com.portal.pojo.Product;
 import com.portal.pojo.ProductPage;
@@ -36,17 +45,27 @@ public class SimpleProductRepository implements ProductRepository, Serializable 
 	}
 
 	@Override
-	public Optional<Product> getByCode(String code) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<Product> getByCode(String code) throws SocketTimeoutException, ConnectException,
+			ProcessingException, IllegalArgumentException, TimeoutException {
+		try {
+			Map<String, Object> pathParmas = new HashMap<>();
+			pathParmas.put("code", code);
+			ProductPageGaussDTO productPage = authRestClient.getForEntity("ORCAMENTO_API", "products/{code}",
+					ProductPageGaussDTO.class, null, pathParmas, MediaType.APPLICATION_JSON_TYPE);
+			return Optional.of(((List<ProductGaussDTO>) productPage.getContent()).get(0).toProduct());
+		} catch (NotFoundException e) {
+			return Optional.empty();
+		}
+		
 	}
 
 	@Override
-	public ProductPage getAllByPage(int page, int pageSize) {
+	public ProductPage getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
+			ProcessingException, IllegalArgumentException, TimeoutException {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
-		ProductPageGaussDTO productPageDto = (ProductPageGaussDTO) authRestClient.getForEntity("GAUSS_ORCAMENTO",
-				"products", ProductPageGaussDTO.class, queryParams, null);
+		ProductPageGaussDTO productPageDto = (ProductPageGaussDTO) authRestClient.getForEntity("ORCAMENTO_API",
+				"products", ProductPageGaussDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
 
 		return new ProductPage(productPageDto.totalItems(), productPageDto.totalPages(), productPageDto.getPageSize(),
 				productPageDto.getPage(),
@@ -57,11 +76,12 @@ public class SimpleProductRepository implements ProductRepository, Serializable 
 	}
 
 	@Override
-	public ProductPage getByDescription(int page, int pageSize, String description) {
+	public ProductPage getByDescription(int page, int pageSize, String description) throws SocketTimeoutException,
+			ConnectException, ProcessingException, IllegalArgumentException, TimeoutException {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
 		ProductPageGaussDTO productPageDto = (ProductPageGaussDTO) authRestClient.getForEntity("GAUSS_ORCAMENTO",
-				"products", ProductPageGaussDTO.class, queryParams, null);
+				"products", ProductPageGaussDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
 		return null;
 	}
 

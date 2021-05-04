@@ -44,7 +44,7 @@
 
 		<div id="tryAgain">
 			<p:button value="#{holdMessageView.label('tentar_novamente')}"
-				onclick="initTablesCustomerProducts()" />
+				onclick="initTablesCustomer()" />
 		</div>
 
 		<div class="p-grid table-demo" id="budgetForm">
@@ -164,8 +164,7 @@
 								<p:commandButton value="#{holdMessageView.label('enviar')}"
 									icon="pi pi-send"
 									action="#{budgetController.findCustomerByCodeAndStore}"
-									update="@form growl"
-									onstart="onStartFindCustomer()"
+									update="@form growl" onstart="onStartFindCustomer()"
 									oncomplete="onCompleteProcessInDtCustomer(xhr)"
 									validateClient="true" />
 							</div>
@@ -208,14 +207,24 @@
 							</div>
 						</p:tab>
 						<p:tab title="#{holdMessageView.label('codigo_comercial')}">
-							<div class="p-formgroup-inline">
-								<div class="p-field">
-									<p:inputText type="text"
-										placeholder="#{holdMessageView.label('codigo_comercial')}" />
+							<h:form>
+								<div class="p-formgroup-inline">
+									<div class="p-field">
+										<p:inputText type="text"
+											placeholder="#{holdMessageView.label('codigo_comercial')}"
+											value="#{budgetController.searchProductForm.code}" id="code">
+											<f:validateLength minimum="1" />
+										</p:inputText>
+										<p:message for="code" />
+									</div>
+									<p:commandButton value="#{holdMessageView.label('enviar')}"
+										icon="pi pi-send" process="@form"
+										update="@form formItems growl"
+										action="#{budgetController.findProductByCode}"
+										onstart="onStartSearchProduct()"
+										oncomplete="onCompleteSearchProduct()" />
 								</div>
-								<p:commandButton type="button"
-									value="#{holdMessageView.label('enviar')}" icon="pi pi-send" />
-							</div>
+							</h:form>
 						</p:tab>
 
 					</p:tabView>
@@ -225,76 +234,132 @@
 						styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2" />
 				</div>
 			</div>
-			<div class="p-col-12">
-				<div class="card">
-					<h5>#{holdMessageView.label('items')}</h5>
-					<h:form id="formItems">
 
-						<p:dataTable>
-							<f:facet name="header">
-								<p:commandButton value="#{holdMessageView.label('produtos')}"
-									onclick="PF('dlgSelectProducts').show()" icon="pi pi-list"
-									styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-									id="btnFindProducts" />
-								<p:button onclick="showSearchProducts()" icon="pi pi-search"
-									styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2" />
-							</f:facet>
+			<div id="ItemContainer">
+				<div class="p-col-12" id="ItemContainarLoader">
+					<div class="p-grid p-dir-col">
+						<div class="p-col-12">
+							<div class="card">
+								<div class="p-grid">
+									<div class="p-col">
+										<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
+											id="spinnerCustomer"></i>
 
+									</div>
 
-						</p:dataTable>
-					</h:form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="ItemContainerContent">
+					<div class="p-col-12">
+						<div class="card">
+							<h5>#{holdMessageView.label('items')}</h5>
+							<h:form id="formItems">
+								<p:dataTable value="#{budgetController.items}" paginator="true"
+									rows="10" var="item" paginatorAlwaysVisible="false"
+									editMode="cell" editable="true" rowKey="#{item.code}"
+									>
+									<f:facet name="header">
+										<p:commandButton value="#{holdMessageView.label('produtos')}"
+											onclick="PF('dlgSelectProducts').show()" icon="pi pi-list"
+											styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+											id="btnFindProducts" />
+										<p:button onclick="showSearchProducts()" icon="pi pi-search"
+											styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2" />
+									</f:facet>
+									<p:ajax event="cellEdit"
+										listener="#{budgetController.onCellItemEdit}" />
+									<p:column
+										headerText="#{holdMessageView.label('codigo_comercial')}">
+										<h:outputText value="#{item.commercialCode}" />
+									</p:column>
+									<p:column headerText="#{holdMessageView.label('codigo')}">
+										<h:outputText value="#{item.code}" />
+									</p:column>
+
+									<p:column headerText="#{holdMessageView.label('tipo')}">
+										<h:outputText value="#{item.descriptionType}" />
+									</p:column>
+
+									<p:column headerText="#{holdMessageView.label('descricao')}">
+										<h:outputText value="#{item.description}" />
+									</p:column>
+									<p:column headerText="#{holdMessageView.label('quantidade')}">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{item.quantity}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:inputText value="#{item.quantity}" style="width:100%"
+													label="Name" />
+
+											</f:facet>
+										</p:cellEditor>
+
+									</p:column>
+									<p:column style="width: 8rem; text-align: center;">
+										<p:commandButton icon="pi pi-trash"
+											styleClass="ui-button-secondary"
+											action="#{budgetController.removeItem(item)}" process="@this"
+											update="@form" />
+									</p:column>
+								</p:dataTable>
+							</h:form>
+						</div>
+					</div>
+					<p:dialog widgetVar="dlgSelectProducts" modal="true"
+						maximizable="true" minimizable="true">
+						<div class="p-grid">
+							<div class="p-col">
+								<h:form id="formProdutos">
+									<h5>#{holdMessageView.label('selecione_produtos')}</h5>
+
+									<p:dataTable value="#{budgetController.lazyProducts}"
+										var="product" paginator="true"
+										rows="#{budgetController.pageSizeForProducts}"
+										scrollable="true" scrollHeight="700" id="dtProducts"
+										lazy="true"
+										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+										paginatorAlwaysVisible="false"
+										selection="#{budgetController.selectedProducts}"
+										rowKey="#{product.commercialCode}" stripedRows="true"
+										selectionMode="multiple">
+										<p:ajax event="page"
+											listener="#{budgetController.onPageProducts}" process="@this" />
+										<p:ajax event="rowSelect" async="true"
+											listener="#{budgetController.onProductSelected}" />
+										<p:ajax event="rowUnselect"
+											listener="#{budgetController.unProductUnSelected}" />
+										<p:column
+											headerText="#{holdMessageView.label('codigo_comercial')}">
+											<h:outputText value="#{product.commercialCode}" />
+										</p:column>
+										<p:column headerText="#{holdMessageView.label('codigo')}">
+											<h:outputText value="#{product.code}" />
+										</p:column>
+
+										<p:column headerText="#{holdMessageView.label('tipo')}">
+											<h:outputText
+												value="#{product.descriptionType}-#{product.type}" />
+										</p:column>
+
+										<p:column headerText="#{holdMessageView.label('descricao')}">
+											<h:outputText value="#{product.description}" />
+										</p:column>
+									</p:dataTable>
+
+									<p:blockUI block="dtProducts" trigger="dtProducts">
+
+									</p:blockUI>
+								</h:form>
+							</div>
+
+						</div>
+					</p:dialog>
 				</div>
 			</div>
-			<p:dialog widgetVar="dlgSelectProducts" modal="true"
-				maximizable="true" minimizable="true">
-				<div class="p-grid">
-					<div class="p-col">
-						<h:form id="formProdutos">
-							<h5>#{holdMessageView.label('selecione_produtos')}</h5>
-
-							<p:dataTable value="#{budgetController.lazyProducts}"
-								var="product" paginator="true"
-								rows="#{budgetController.pageSizeForProducts}" scrollable="true"
-								scrollHeight="700" id="dtProducts" lazy="true"
-								paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-								paginatorAlwaysVisible="false"
-								selection="#{budgetController.selectedProducts}"
-								rowKey="#{product.commercialCode}" stripedRows="true"
-								selectionMode="multiple">
-								<p:ajax event="page"
-									listener="#{budgetController.onPageProducts}" process="@this" />
-								<p:ajax event="rowSelect" async="true"
-									listener="#{budgetController.onProductSelected}" />
-								<p:ajax event="rowUnselect"
-									listener="#{budgetController.unProductUnSelected}" />
-								<p:column
-									headerText="#{holdMessageView.label('codigo_comercial')}">
-									<h:outputText value="#{product.commercialCode}" />
-								</p:column>
-								<p:column headerText="#{holdMessageView.label('codigo')}">
-									<h:outputText value="#{product.code}" />
-								</p:column>
-
-								<p:column headerText="#{holdMessageView.label('tipo')}">
-									<h:outputText
-										value="#{product.descriptionType}-#{product.type}" />
-								</p:column>
-
-								<p:column headerText="#{holdMessageView.label('descricao')}">
-									<h:outputText value="#{product.description}" />
-								</p:column>
-							</p:dataTable>
-
-							<p:blockUI block="dtProducts" trigger="dtProducts">
-
-							</p:blockUI>
-						</h:form>
-					</div>
-
-				</div>
-			</p:dialog>
-
-
 
 
 		</div>
@@ -310,7 +375,9 @@
 			$("#divSelectedCustomer").hide();
 			$("#tryAgain").hide();
 			$("#divSearchProducts").hide();
+			$("#ItemContainarLoader").hide();
 			var customerOk = false;
+			
 			
 			function showSearchProducts(){
 				$("#divSearchProducts").show();
@@ -332,9 +399,7 @@
 
 
 			}
-			
-
-		
+	
 			function handleCustomerPromise(promise) {
 				return new Promise((resolve, reject) => {
 					promise.then(value => {
@@ -352,8 +417,6 @@
 				})
 			}
 			
-		
-
 			function selectedCustomer() {
 				setTimeout(function () {
 					$("#formClientTb").hide();
@@ -366,9 +429,6 @@
 				$("#divSelectedCustomer").hide();
 
 			}
-
-			
-
 
 			function onStartFindCustomer() {
 				PF('searchCustomer').hide();
@@ -402,6 +462,15 @@
 					$("#tryAgain").show();
 					
 				}
+			}
+			
+			function onStartSearchProduct(){
+				$("#ItemContainerContent").hide();
+				$("#ItemContainarLoader").show();
+			}
+			function onCompleteSearchProduct(){
+				$("#ItemContainerContent").show();
+				$("#ItemContainarLoader").hide();
 			}
 			
 			function getResponseHeader(xhr) {

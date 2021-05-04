@@ -11,7 +11,7 @@ import javax.ws.rs.NotAuthorizedException;
 
 import com.portal.dto.LoginForm;
 import com.portal.repository.AuthenticationRepository;
-import com.portal.service.faces.FacesService;
+import com.portal.service.faces.FacesHelper;
 import com.portal.service.view.HoldMessageView;
 
 @RequestScoped
@@ -21,7 +21,7 @@ public class LoginController {
 	private final HoldMessageView holdMessageView;
 
 	private final AuthenticationRepository authenticationRepository;
-	private final FacesService facesService;
+	private final FacesHelper facesService;
 
 	private LoginForm loginForm;
 	private String headerDlgMessage;
@@ -32,7 +32,7 @@ public class LoginController {
 
 	@Inject
 	public LoginController(HoldMessageView holdMessageView, AuthenticationRepository authenticationRepository,
-			FacesService facesService) {
+			FacesHelper facesService) {
 		super();
 		this.holdMessageView = holdMessageView;
 		this.headerDlgMessage = this.holdMessageView.label("autenticando_usuario");

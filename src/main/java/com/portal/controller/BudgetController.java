@@ -1,37 +1,37 @@
 package com.portal.controller;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.ProcessingException;
 
 import org.primefaces.component.api.UIData;
-import org.primefaces.component.blockui.BlockUI;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.dto.ItemBudgetFormGssDTO;
+import com.portal.controller.util.ExceptionMessageHandler;
+import com.portal.dto.ItemQuoteBudgetForm;
 import com.portal.dto.ProductGaussDTO;
-import com.portal.dto.ProductPageGaussDTO;
+import com.portal.dto.SearchProductForm;
 import com.portal.pojo.Customer;
 import com.portal.pojo.CustomerPage;
+import com.portal.pojo.Product;
 import com.portal.repository.CustomerRepository;
-import com.portal.service.faces.FacesService;
+import com.portal.repository.ProductRepository;
+import com.portal.service.faces.FacesHelper;
 import com.portal.service.view.HoldMessageView;
 import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.ui.lazy.datamodel.LazyPopulateUtils;
@@ -48,10 +48,6 @@ public class BudgetController implements Serializable {
 
 	private transient UIData uiCustomerDataTable;
 
-	private transient BlockUI uiBlockForm;
-
-	private boolean render = true;
-
 	private Customer selectedCustomer;
 
 	private LazyDataModel<Customer> lazyCustomers;
@@ -60,40 +56,47 @@ public class BudgetController implements Serializable {
 
 	private final HoldMessageView holderMessage;
 
-	private final FacesService facesService;
+	private final FacesHelper facesService;
 
 	private final CustomerRepository customerRepository;
 
-	private ProductPageGaussDTO productResponseDTO;
+	private final ExceptionMessageHandler exceptionMessageHandler;
 
+	private final ProductRepository productRepository;
 	private String customerCode, customerStore, h5DivLoadCustomers, h5DivLoadProducts;
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
 	private List<ProductGaussDTO> selectedProducts;
 
-	private Set<ItemBudgetFormGssDTO> items;
+	private Set<ItemQuoteBudgetForm> items;
+
+	private SearchProductForm searchProductForm;
 
 	public BudgetController() {
-		this(null, null, null);
+		this(null, null, null, null, null);
 	}
 
 	@Inject
-	public BudgetController(HoldMessageView holderMessage, FacesService facesService,
-			CustomerRepository customerRepository) {
+	public BudgetController(HoldMessageView holderMessage, FacesHelper facesService,
+			CustomerRepository customerRepository, ExceptionMessageHandler exceptionMessageHandler,
+			ProductRepository productRepository) {
 		super();
-		this.lazyProducts = new ProductGaussDTOLazyDataModel();
-		this.lazyCustomers = new CustomerLazyDataModel();
+
 		this.holderMessage = holderMessage;
 		this.facesService = facesService;
 		this.customerRepository = customerRepository;
-
+		this.exceptionMessageHandler = exceptionMessageHandler;
+		this.productRepository = productRepository;
 	}
 
 	@PostConstruct
 	public void init() {
+		this.lazyProducts = new ProductGaussDTOLazyDataModel();
+		this.lazyCustomers = new CustomerLazyDataModel();
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
-		this.items = new ConcurrentSkipListSet<>();
+		this.searchProductForm = new SearchProductForm();
+		this.items = new HashSet<>();
 	}
 
 	public void initTableCustomers() {
@@ -103,10 +106,6 @@ public class BudgetController implements Serializable {
 	public void onPageCustomerListener(PageEvent pageEvent) {
 		int page = pageEvent.getPage();
 		fetchCustomers(++page);
-	}
-
-	public void initTableProducts() {
-
 	}
 
 	public void findCustomerByCodeAndStore() {
@@ -120,36 +119,43 @@ public class BudgetController implements Serializable {
 				this.lazyCustomers.setPageSize(0);
 				this.lazyCustomers.setRowCount(0);
 			});
-		} catch (SocketTimeoutException e) {
-			this.facesService
-					.error(null, holderMessage.label("socket_exception"),
-							holderMessage.label("socket_exception_detalhes"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (ConnectException e) {
-			// TODO Auto-generated catch block
-			this.facesService
-					.error(null, holderMessage.label("connect_exception"),
-							holderMessage.label("connect_exception_detales"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			this.facesService
-					.error(null, holderMessage.label("respota_invalida_servidor"),
-							holderMessage.label("detalhes_reposta_invalida_servidor"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (TimeoutException e) {
-			this.facesService
-					.error(null, holderMessage.label("timeout_ler_response"),
-							holderMessage.label("timeout_ler_response_detalhes"))
-					.addHeaderForResponse("Backbone-Status", "Error");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			this.facesService.addHeaderForResponse("Backbone-Status", "Error");
+			exceptionMessageHandler.addMessageByException(null, e);
+
 		}
 	}
 
 	public void refreshDtCustomers() {
 
+	}
+
+	public void findProductByCode() {
+		try {
+			Optional<Product> product = productRepository.getByCode(searchProductForm.getCode());
+			product.ifPresentOrElse(presentProduct -> {
+				items.add(ItemQuoteBudgetForm.getInstanceFromProduct(presentProduct));
+			}, () -> {
+				facesService.error(null, holderMessage.label("nao_encontrado"), null);
+
+			});
+
+		} catch (Exception e) {
+			this.facesService.addHeaderForResponse("Backbone-Status", "Error");
+			exceptionMessageHandler.addMessageByException(null, e);
+			e.printStackTrace();
+		}
+	}
+
+	public void onCellItemEdit(CellEditEvent<Integer> event) {
+		((ItemQuoteBudgetForm) items.parallelStream().collect(CopyOnWriteArrayList::new, List::add, List::addAll)
+				.get(event.getRowIndex())).setQuantity(event.getNewValue());
+
+	}
+
+	public void removeItem(ItemQuoteBudgetForm item) {
+		this.items.removeIf(currentItem -> currentItem.getCode().equals(item.getCode()));
 	}
 
 	public void onPageProducts(PageEvent pageEvent) {
@@ -161,7 +167,7 @@ public class BudgetController implements Serializable {
 
 	public void onProductSelected(SelectEvent<ProductGaussDTO> selectedProduct) {
 		ProductGaussDTO product = selectedProduct.getObject();
-		items.add(new ItemBudgetFormGssDTO(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
+		items.add(new ItemQuoteBudgetForm(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
 				product.getDescriptionType(), 10));
 
 	}
@@ -177,36 +183,11 @@ public class BudgetController implements Serializable {
 		try {
 			customerPage = this.customerRepository.getAllByPage(page, pageSizeForCustomers);
 			LazyPopulateUtils.populate(lazyCustomers, customerPage);
-		} catch (SocketTimeoutException e) {
-			this.facesService
-					.error("formClientTb:dtCustomer", holderMessage.label("socket_exception"),
-							holderMessage.label("socket_exception_detalhes"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (ConnectException e) {
-			// TODO Auto-generated catch block
-			this.facesService
-					.error("formClientTb:dtCustomer", holderMessage.label("connect_exception"),
-							holderMessage.label("connect_exception_detales"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			this.facesService
-					.error("formClientTb:dtCustomer", holderMessage.label("respota_invalida_servidor"),
-							holderMessage.label("detalhes_reposta_invalida_servidor"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (TimeoutException e) {
-			this.facesService
-					.error("formClientTb:dtCustomer", holderMessage.label("timeout_ler_response"),
-							holderMessage.label("timeout_ler_response_detalhes"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-
-		} catch (NotAuthorizedException e) {
-			this.facesService
-					.error("formClientTb:dtCustomer", holderMessage.label("nao_encontrado"),
-							holderMessage.label("usuario_nao_encontrado"))
-					.addHeaderForResponse("Backbone-Status", "Error");
-
+		} catch (Exception e) {
+			this.facesService.addHeaderForResponse("Backbone-Status", "Error");
+			exceptionMessageHandler.addMessageByException("formClientTb:dtCustomer", e);
 		}
+
 	}
 
 	/**
@@ -216,25 +197,12 @@ public class BudgetController implements Serializable {
 		// this.uiCustomerDataTable.setRendered(false);
 	}
 
-	public boolean getRender() {
-		return this.render;
-	}
-
 	public UIData getUiCustomerDataTable() {
 		return uiCustomerDataTable;
 	}
 
 	public void setUiCustomerDataTable(UIData uiCustomerDataTable) {
 		this.uiCustomerDataTable = uiCustomerDataTable;
-	}
-
-	public BlockUI getUiBlockForm() {
-		return uiBlockForm;
-	}
-
-	public void setUiBlockForm(BlockUI uiBlockForm) {
-		this.uiBlockForm = uiBlockForm;
-
 	}
 
 	public Customer getSelectedCustomer() {
@@ -251,10 +219,6 @@ public class BudgetController implements Serializable {
 
 	public void setLazyCustomers(LazyDataModel<Customer> lazyCustomers) {
 		this.lazyCustomers = lazyCustomers;
-	}
-
-	public ProductPageGaussDTO getProductResponseDTO() {
-		return productResponseDTO;
 	}
 
 	public LazyDataModel<ProductGaussDTO> getLazyProducts() {
@@ -301,11 +265,19 @@ public class BudgetController implements Serializable {
 		this.selectedProducts = selectedProducts;
 	}
 
-	public Set<ItemBudgetFormGssDTO> getItems() {
+	public Set<ItemQuoteBudgetForm> getItems() {
 		return items;
 	}
 
-	public void setItems(Set<ItemBudgetFormGssDTO> items) {
+	public void setItems(Set<ItemQuoteBudgetForm> items) {
 		this.items = items;
+	}
+
+	public SearchProductForm getSearchProductForm() {
+		return searchProductForm;
+	}
+
+	public void setSearchProductForm(SearchProductForm searchProductForm) {
+		this.searchProductForm = searchProductForm;
 	}
 }

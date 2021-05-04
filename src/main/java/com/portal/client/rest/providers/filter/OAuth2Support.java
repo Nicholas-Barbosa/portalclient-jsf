@@ -1,4 +1,4 @@
-package com.portal.client.rest.providers;
+package com.portal.client.rest.providers.filter;
 
 import java.io.IOException;
 

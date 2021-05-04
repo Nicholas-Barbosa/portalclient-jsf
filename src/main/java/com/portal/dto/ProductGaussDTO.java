@@ -2,6 +2,8 @@ package com.portal.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.pojo.Product;
+
 public class ProductGaussDTO {
 
 	@JsonbProperty
@@ -28,6 +30,10 @@ public class ProductGaussDTO {
 		this.type = type;
 		this.description = description;
 
+	}
+
+	public Product toProduct() {
+		return new Product(code, descriptionType, commercialCode, type, description);
 	}
 
 	public String getCode() {
