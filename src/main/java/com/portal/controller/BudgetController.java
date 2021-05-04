@@ -1,6 +1,7 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,13 +29,14 @@ import com.portal.dto.SearchProductForm;
 import com.portal.pojo.Customer;
 import com.portal.pojo.CustomerPage;
 import com.portal.pojo.Product;
+import com.portal.pojo.ProductPage;
 import com.portal.repository.CustomerRepository;
 import com.portal.repository.ProductRepository;
 import com.portal.service.faces.FacesHelper;
 import com.portal.service.view.HoldMessageView;
 import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.ui.lazy.datamodel.ProductGaussDTOLazyDataModel;
+import com.portal.ui.lazy.datamodel.ProductLazyDataModel;
 
 @Named
 @ViewScoped
@@ -51,7 +53,7 @@ public class BudgetController implements Serializable {
 
 	private LazyDataModel<Customer> lazyCustomers;
 
-	private LazyDataModel<ProductGaussDTO> lazyProducts;
+	private LazyDataModel<Product> lazyProducts;
 
 	private final HoldMessageView holderMessage;
 
@@ -91,7 +93,7 @@ public class BudgetController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		this.lazyProducts = new ProductGaussDTOLazyDataModel();
+		this.lazyProducts = new ProductLazyDataModel();
 		this.lazyCustomers = new CustomerLazyDataModel();
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
 		this.searchProductForm = new SearchProductForm();
@@ -131,8 +133,15 @@ public class BudgetController implements Serializable {
 	}
 
 	public void findProductByDescription() {
-		
+		try {
+			ProductPage product = productRepository.getByDescription(0, 10, searchProductForm.getDescription());
+			((ProductLazyDataModel) (lazyProducts)).addCollection(new ArrayList<>(product.getContent()));
+		} catch (Exception e) {
+			exceptionMessageHandler.addMessageByException(null, e);
+			e.printStackTrace();
+		}
 	}
+
 	public void findProductByCode() {
 		try {
 			Optional<Product> product = productRepository.getByCode(searchProductForm.getCode());
@@ -144,7 +153,6 @@ public class BudgetController implements Serializable {
 			});
 
 		} catch (Exception e) {
-			this.facesService.addHeaderForResponse("Backbone-Status", "Error");
 			exceptionMessageHandler.addMessageByException(null, e);
 			e.printStackTrace();
 		}
@@ -223,7 +231,7 @@ public class BudgetController implements Serializable {
 		this.lazyCustomers = lazyCustomers;
 	}
 
-	public LazyDataModel<ProductGaussDTO> getLazyProducts() {
+	public LazyDataModel<Product> getLazyProducts() {
 		return lazyProducts;
 	}
 

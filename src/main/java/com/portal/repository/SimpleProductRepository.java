@@ -83,7 +83,7 @@ public class SimpleProductRepository implements ProductRepository, Serializable 
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", description);
 
-		ProductPageGaussDTO productPageDto = (ProductPageGaussDTO) authRestClient.getForEntity("GAUSS_ORCAMENTO",
+		ProductPageGaussDTO productPageDto = (ProductPageGaussDTO) authRestClient.getForEntity("ORCAMENTO_API",
 				"products", ProductPageGaussDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
 		ProductPage product = productPageDto.toProduct();
 

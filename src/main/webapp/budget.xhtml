@@ -194,17 +194,24 @@
 				<div class="card">
 					<p:tabView>
 						<p:tab title="#{holdMessageView.label('palavra_chave')}">
-							<h5>
-								<h:outputText
-									value="#{holdMessageView.label('busca_produtos_chave_descricao')}" />
-							</h5>
-							<div class="p-formgroup-inline">
-								<div class="p-field">
-									<p:inputText type="text" placeholder="keyword" />
+							<h:form>
+								<h5>
+									<h:outputText
+										value="#{holdMessageView.label('busca_produtos_chave_descricao')}" />
+								</h5>
+								<div class="p-formgroup-inline">
+									<div class="p-field">
+										<p:inputText type="text" placeholder="keyword"
+											value="#{budgetController.searchProductForm.description}" />
+									</div>
+									<p:commandButton value="#{holdMessageView.label('enviar')}"
+										icon="pi pi-send"
+										action="#{budgetController.findProductByDescription}"
+										update="growl" process="@form"
+										onstart="onStartSearchProduct()"
+										oncomplete="onCompleteSearchProduct()" />
 								</div>
-								<p:commandButton type="button"
-									value="#{holdMessageView.label('enviar')}" icon="pi pi-send" />
-							</div>
+							</h:form>
 						</p:tab>
 						<p:tab title="#{holdMessageView.label('codigo_comercial')}">
 							<h:form>
@@ -259,8 +266,7 @@
 							<h:form id="formItems">
 								<p:dataTable value="#{budgetController.items}" paginator="true"
 									rows="10" var="item" paginatorAlwaysVisible="false"
-									editMode="cell" editable="true" rowKey="#{item.code}"
-									>
+									editMode="cell" editable="true" rowKey="#{item.code}">
 									<f:facet name="header">
 										<p:commandButton value="#{holdMessageView.label('produtos')}"
 											onclick="PF('dlgSelectProducts').show()" icon="pi pi-list"
