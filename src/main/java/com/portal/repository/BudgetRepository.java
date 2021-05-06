@@ -8,11 +8,11 @@ import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ProcessingException;
 
-import com.portal.dto.QuoteBudgetForm;
-import com.portal.dto.ResponseQuoteBudgetDTO;
+import com.portal.dto.BudgetEstimateDTO;
+import com.portal.dto.BudgetEstimateForm;
 
 public interface BudgetRepository extends Serializable {
 
-	ResponseQuoteBudgetDTO quote(QuoteBudgetForm form) throws SocketTimeoutException, ConnectException,
+	BudgetEstimateDTO estimate(BudgetEstimateForm form) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, SocketException, TimeoutException;
 }

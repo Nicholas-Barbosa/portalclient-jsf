@@ -26,8 +26,8 @@ import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.ItemQuoteBudgetForm;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
-import com.portal.dto.QuoteBudgetForm;
-import com.portal.dto.ResponseQuoteBudgetDTO;
+import com.portal.dto.BudgetEstimateForm;
+import com.portal.dto.BudgetEstimateDTO;
 import com.portal.dto.SearchProductForm;
 import com.portal.repository.BudgetRepository;
 import com.portal.repository.CustomerRepository;
@@ -75,6 +75,10 @@ public class BudgetController implements Serializable {
 
 	private SearchProductForm searchProductForm;
 
+	private String processingEntity;
+
+	private BudgetEstimateDTO budgetEstimate;
+
 	public BudgetController() {
 		this(null, null, null, null, null);
 	}
@@ -102,18 +106,16 @@ public class BudgetController implements Serializable {
 	}
 
 	public void generateQuote() {
-		QuoteBudgetForm budgetForm = new QuoteBudgetForm(selectedCustomer.getCode(), selectedCustomer.getStore(),
+		BudgetEstimateForm budgetForm = new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(),
 				items);
 		try {
-			ResponseQuoteBudgetDTO estimated = this.budgetRepository.quote(budgetForm);
-
+			budgetEstimate = this.budgetRepository.estimate(budgetForm);
+			facesHelper.info(null, holderMessage.label("estimativa_orcamento_gerado"), null);
 		} catch (ClientErrorException e) {
-
-			System.out.println(e.getResponse().readEntity(String.class));
+			this.processingEntity = e.getResponse().readEntity(String.class);
+			facesHelper.addHeaderForResponse("Backbone-Status", "Error");
 		} catch (Exception e) {
-			System.out.println("exception!");
 			facesHelper.exceptionMessage().addMessageByException(null, e);
-			e.printStackTrace();
 		}
 	}
 
@@ -305,5 +307,13 @@ public class BudgetController implements Serializable {
 
 	public void setSearchProductForm(SearchProductForm searchProductForm) {
 		this.searchProductForm = searchProductForm;
+	}
+
+	public String getProcessingEntity() {
+		return processingEntity;
+	}
+
+	public BudgetEstimateDTO getBudgetEstimate() {
+		return budgetEstimate;
 	}
 }

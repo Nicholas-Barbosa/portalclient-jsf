@@ -39,7 +39,6 @@ public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
 		try {
-			System.out.println("read from!");
 			return jsonReader.fromJson(entityStream, type);
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);

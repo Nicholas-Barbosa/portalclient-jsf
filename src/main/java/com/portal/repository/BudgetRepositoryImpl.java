@@ -11,8 +11,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
-import com.portal.dto.QuoteBudgetForm;
-import com.portal.dto.ResponseQuoteBudgetDTO;
+import com.portal.dto.BudgetEstimateForm;
+import com.portal.dto.BudgetEstimateDTO;
 
 public class BudgetRepositoryImpl implements BudgetRepository {
 
@@ -33,9 +33,9 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public ResponseQuoteBudgetDTO quote(QuoteBudgetForm form) throws SocketTimeoutException, ConnectException,
+	public BudgetEstimateDTO estimate(BudgetEstimateForm form) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, SocketException, TimeoutException {
-		return restClient.post("ORCAMENTO_API", "estimate", ResponseQuoteBudgetDTO.class, null, null,
+		return restClient.post("ORCAMENTO_API", "estimate", BudgetEstimateDTO.class, null, null,
 				MediaType.APPLICATION_JSON_TYPE, form);
 
 	}

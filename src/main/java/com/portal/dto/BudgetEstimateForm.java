@@ -5,7 +5,7 @@ import java.util.Set;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class QuoteBudgetForm {
+public class BudgetEstimateForm {
 
 	@JsonbProperty
 	private String client;
@@ -14,7 +14,7 @@ public class QuoteBudgetForm {
 	@JsonbProperty
 	private Set<ItemQuoteBudgetForm> items;
 
-	public QuoteBudgetForm(String client, String store, Set<ItemQuoteBudgetForm> items) {
+	public BudgetEstimateForm(String client, String store, Set<ItemQuoteBudgetForm> items) {
 		super();
 		this.client = client;
 		this.store = store;

@@ -65,7 +65,6 @@ public interface RestClient extends Serializable {
 	}
 
 	default void handleResponseProcessingException(ResponseProcessingException e) {
-		System.out.println("");
 		if (e.getCause() instanceof NotFoundException) {
 			throw new NotFoundException(((NotFoundException) e.getCause()).getResponse());
 		} else if (e.getCause() instanceof NotAuthorizedException) {

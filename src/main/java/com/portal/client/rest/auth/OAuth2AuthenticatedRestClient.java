@@ -54,53 +54,47 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			Map<String, Object> queryParams, Map<String, Object> pathParams, MediaType media)
 			throws ProcessingException, SocketTimeoutException, ConnectException, IllegalArgumentException,
 			TimeoutException, SocketException {
-		ServiceApi parentType = userPropertyHolder.findServiceApi(serviceApiKey);
 
-		if (parentType instanceof OAuth2ServiceApi) {
-			Client client = null;
-			try {
-				OAuth2ServiceApi oAuthApi = (OAuth2ServiceApi) parentType;
+		OAuth2ServiceApi oAuthApi = getService(serviceApiKey);
 
-				OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
-				client = getClientFollowingMediaType(media);
-				WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
-				if (pathParams != null) {
-					resource = resource.resolveTemplatesFromEncoded(pathParams);
-				}
-				if (queryParams != null) {
-					Set<String> paramsInSet = queryParams.keySet();
-					for (String st : paramsInSet) {
-						try {
-							resource = resource.queryParam(st,
-									URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
-						} catch (UnsupportedEncodingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
+		Client client = null;
+		try {
 
-				}
-
-				Response rawResponse = resource.request().accept(MediaType.APPLICATION_JSON).get();
-				T t = rawResponse.readEntity(responseType);
-				return t;
-			} catch (ResponseProcessingException e) {
-				handleResponseProcessingException(e);
-			} catch (ProcessingException e) {
-				if (e.getCause() instanceof IllegalArgumentException) {
-					System.out.println("illegal, re running!");
-					return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
-				}
-				handleProcessingException(e);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				client.close();
+			OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
+			client = getClientFollowingMediaType(media);
+			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
+			if (pathParams != null) {
+				resource = resource.resolveTemplatesFromEncoded(pathParams);
 			}
-			return null;
-		} else
-			throw new IllegalArgumentException(
-					"the ServiceApi object retrieved from the key,its not type of OAuth2AuthenticatedRestClient or covariant!");
+			if (queryParams != null) {
+				Set<String> paramsInSet = queryParams.keySet();
+				for (String st : paramsInSet) {
+					try {
+						resource = resource.queryParam(st, URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+
+			Response rawResponse = resource.request().accept(MediaType.APPLICATION_JSON).get();
+			T t = rawResponse.readEntity(responseType);
+			return t;
+		} catch (ResponseProcessingException e) {
+			handleResponseProcessingException(e);
+		} catch (ProcessingException e) {
+			if (e.getCause() instanceof IllegalArgumentException) {
+				return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
+			}
+			handleProcessingException(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			client.close();
+		}
+		return null;
 
 	}
 
@@ -116,8 +110,8 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			Map<String, Object> pathParams, MediaType media, U requestBody) throws ProcessingException,
 			SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException, SocketException {
 		Client client = null;
+		OAuth2ServiceApi service = getService(serviceApiKey);
 		try {
-			OAuth2ServiceApi service = getService(serviceApiKey);
 			client = getClientFollowingMediaType(media);
 			OAuth2Support oAuth2Provider = new OAuth2Support(service.getToken());
 
@@ -128,9 +122,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			handleResponseProcessingException(e);
 		} catch (ProcessingException e) {
 			if (e.getCause() instanceof IllegalArgumentException) {
-				System.out.println("illegal, re running!");
-				System.out.println("service api " + serviceApiKey + " endpoint " + endpoint);
-				return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
+				return this.post(serviceApiKey, endpoint, responseType, queryParams, pathParams, media, requestBody);
 			}
 			handleProcessingException(e);
 

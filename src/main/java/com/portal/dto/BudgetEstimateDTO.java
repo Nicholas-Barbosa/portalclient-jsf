@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ResponseQuoteBudgetDTO {
+public class BudgetEstimateDTO {
 
 	@JsonbProperty("client_code")
 	private String customerCode;
