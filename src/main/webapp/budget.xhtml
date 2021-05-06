@@ -274,8 +274,11 @@
 								<f:facet name="header">
 									<p:commandButton
 										value="#{holdMessageView.label('confirmar_selecao')}"
+										
 										styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
-										oncomplete="PF('dlgSelectProducts').hide()" update="formItems" />
+										action="#{budgetController.generateQuote}" process="@this"
+										update="growl exceptionDialog msgQuoteSuccess budgetEstimateForm dtEstimateProducts formItems"
+										oncomplete="onCompleteQuote(xhr)" onstart="onStartQuote()" />
 
 								</f:facet>
 								<p:column selectionMode="multiple" />
@@ -545,7 +548,6 @@
 								</p:column>
 
 							</p:dataTable>
-							<p:commandButton value="update" update="dtProducts" />
 						</h:form>
 
 					</div>
@@ -571,11 +573,13 @@
 			$("#budgetForm").show();
 			}
 			function onStartQuote(){
+				PF('dlgSelectProducts').hide()
 				$("#budgetForm").hide();
 				$("#estimateLoad").show();
 				
 			}
 			function onCompleteQuote(xhr){
+				
 				$("#estimateLoad").hide();
 				if(getResponseHeader(xhr)){
 					$("#estimateContent").show();
