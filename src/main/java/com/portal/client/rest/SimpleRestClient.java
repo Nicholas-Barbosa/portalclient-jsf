@@ -1,7 +1,7 @@
 package com.portal.client.rest;
 
 import java.io.InputStream;
-import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.text.MessageFormat;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class SimpleRestClient implements RestClient {
 	@Override
 	public <T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, E requestBody, MediaType mediaType)
-			throws SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException {
+			throws SocketTimeoutException, IllegalArgumentException, TimeoutException, SocketException {
 		Client client = null;
 		try {
 			client = getClientFollowingMediaType(mediaType);

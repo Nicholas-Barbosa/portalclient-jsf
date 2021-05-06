@@ -36,7 +36,6 @@
 					<span>#{holdMessageView.label('usuario')}</span>
 					<p:inputText placeholder="name@example.com"
 						value="#{loginController.loginForm.username}" id="username" />
-
 					<p:message for="@previous" />
 				</div>
 				<div class="form-group">
@@ -45,8 +44,6 @@
 						value="#{loginController.loginForm.password}" id="password" />
 					<p:message for="@previous" />
 				</div>
-
-
 				<p:commandButton value="LOGIN"
 					action="#{loginController.authenticate}"
 					onstart="PF('dlgLoading').show()" process="@form" update="@form messages dlgLoading"
@@ -57,9 +54,6 @@
 
 
 		</div>
-
-
-
 		<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
 			widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"
 			modal="true" closable="false" draggable="false" id="dlgLoading">
@@ -73,12 +67,9 @@
 						<div class="card grid-item" style="display: none"
 							id="divColumnError">
 							<i class="pi pi-lock" style="font-size: 8rem"></i>
-
 						</div>
 					</div>
-
 				</div>
-
 			</div>
 		</p:dialog>
 		<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"

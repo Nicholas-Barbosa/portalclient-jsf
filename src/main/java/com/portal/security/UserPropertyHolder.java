@@ -8,9 +8,8 @@ import javax.enterprise.context.SessionScoped;
 
 import com.portal.security.api.ServiceApi;
 
-
 @SessionScoped
-public class UserPropertyHolder implements Serializable{
+public class UserPropertyHolder implements Serializable {
 
 	/**
 	 * 
@@ -46,6 +45,10 @@ public class UserPropertyHolder implements Serializable{
 	 */
 	public ServiceApi findServiceApi(String key) {
 		return this.authenticatedServices.get(key);
+	}
+
+	public boolean containsService(String key) {
+		return authenticatedServices.containsKey(key);
 	}
 
 	/**

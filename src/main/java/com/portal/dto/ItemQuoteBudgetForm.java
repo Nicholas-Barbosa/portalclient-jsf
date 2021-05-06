@@ -1,13 +1,15 @@
 package com.portal.dto;
 
-import com.portal.pojo.Product;
+import javax.json.bind.annotation.JsonbProperty;
 
 public class ItemQuoteBudgetForm implements Comparable<ItemQuoteBudgetForm> {
 
 	private String code;
 	private String descriptionType;
+	@JsonbProperty("product_code")
 	private String commercialCode;
 	private String description;
+	@JsonbProperty
 	private Integer quantity;
 
 	public ItemQuoteBudgetForm(String code, String descriptionType, String commercialCode, String description,
@@ -20,7 +22,7 @@ public class ItemQuoteBudgetForm implements Comparable<ItemQuoteBudgetForm> {
 		this.quantity = quantity;
 	}
 
-	public static ItemQuoteBudgetForm getInstanceFromProduct(Product product) {
+	public static ItemQuoteBudgetForm getInstanceFromProduct(ProductDTO product) {
 		return new ItemQuoteBudgetForm(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
 				product.getDescription(), 10);
 	}

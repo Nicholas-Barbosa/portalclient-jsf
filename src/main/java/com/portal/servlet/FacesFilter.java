@@ -37,8 +37,8 @@ public class FacesFilter implements Filter {
 			((HttpServletResponse) response).sendRedirect("login.xhtml");
 
 		} else {
-			chain.doFilter(request, response);
-		}
+		chain.doFilter(request, response);
+		 }
 	}
 
 }

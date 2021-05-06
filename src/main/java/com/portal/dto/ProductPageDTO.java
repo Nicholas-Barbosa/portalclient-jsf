@@ -3,16 +3,15 @@ package com.portal.dto;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.pojo.Page;
-import com.portal.pojo.ProductPage;
+public class ProductPageDTO implements Page<ProductDTO> {
 
-public class ProductPageGaussDTO implements Page<ProductGaussDTO> {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6631658017840393068L;
 	@JsonbProperty("total_items")
 	private int totalItems;
 	@JsonbProperty("total_pages")
@@ -23,25 +22,20 @@ public class ProductPageGaussDTO implements Page<ProductGaussDTO> {
 	private int page;
 
 	@JsonbProperty
-	private List<ProductGaussDTO> products;
+	private List<ProductDTO> products;
 
-	public ProductPageGaussDTO() {
+	public ProductPageDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductPageGaussDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
-			List<ProductGaussDTO> products) {
+	public ProductPageDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
+			List<ProductDTO> products) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
 		this.pageSize = pageSize;
 		this.page = page;
 		this.products = products;
-	}
-
-	public ProductPage toProduct() {
-		return new ProductPage(totalItems, page, pageSize, page, products.parallelStream().map(p -> p.toProduct())
-				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
 	}
 
 	@Override
@@ -69,7 +63,7 @@ public class ProductPageGaussDTO implements Page<ProductGaussDTO> {
 	}
 
 	@Override
-	public Collection<ProductGaussDTO> getContent() {
+	public Collection<ProductDTO> getContent() {
 
 		return new ArrayList<>(products);
 	}

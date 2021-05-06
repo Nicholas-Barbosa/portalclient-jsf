@@ -1,6 +1,7 @@
 package com.portal.client.rest.auth;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -22,9 +23,11 @@ public interface AuthenticatedRestClient extends RestClient {
 	 * @param queryParams
 	 * @return
 	 */
-	<T, ERROR> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, MediaType media)
-			throws ProcessingException, SocketTimeoutException, ConnectException, IllegalArgumentException,
-			TimeoutException;
+	<T> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, MediaType media) throws ProcessingException, SocketTimeoutException,
+			ConnectException, IllegalArgumentException, TimeoutException, SocketException;
 
+	<T, U> T post(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, MediaType media, U requestBody) throws ProcessingException,
+			SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException, SocketException;
 }

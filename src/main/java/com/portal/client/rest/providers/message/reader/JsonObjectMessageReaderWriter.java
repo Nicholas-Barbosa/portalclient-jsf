@@ -10,15 +10,18 @@ import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ProcessingException;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyReader;
 import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.Provider;
 
-//@Provider
+@Provider
 @Consumes("aplication/json")
-public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,MessageBodyWriter<Object> {
+@Produces("aplication/json")
+public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>, MessageBodyWriter<Object> {
 
 	private final Jsonb jsonReader;
 
@@ -36,6 +39,7 @@ public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
 		try {
+			System.out.println("read from!");
 			return jsonReader.fromJson(entityStream, type);
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);
@@ -53,8 +57,12 @@ public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,
 	public void writeTo(Object t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException {
-		// TODO Auto-generated method stub
-		
+		try {
+			jsonReader.toJson(entityStream);
+		} catch (Exception e) {
+			throw new ProcessingException("Error while serializing Object or covariant: " + type.getName(), e);
+		}
+
 	}
 
 }

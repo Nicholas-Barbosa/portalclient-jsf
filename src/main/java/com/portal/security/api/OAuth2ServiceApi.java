@@ -86,4 +86,13 @@ public class OAuth2ServiceApi extends ServiceApi implements Serializable {
 		}
 
 	}
+
+	@Override
+	public String toString() {
+		return "OAuth2ServiceApi [token=" + token + ", refreshToken=" + refreshToken + ", grantType=" + grantType
+				+ ", scope=" + scope + ", createdAt=" + createdAt + ", expireIn=" + expireIn + ", timeUnit=" + timeUnit
+				+ "]";
+	}
+	
+	
 }

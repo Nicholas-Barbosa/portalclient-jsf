@@ -2,9 +2,7 @@ package com.portal.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.pojo.Product;
-
-public class ProductGaussDTO {
+public class ProductDTO {
 
 	@JsonbProperty
 	private String code;
@@ -17,12 +15,11 @@ public class ProductGaussDTO {
 	@JsonbProperty
 	private String description;
 
-	public ProductGaussDTO() {
+	public ProductDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductGaussDTO(String code, String descriptionType, String commercialCode, String type,
-			String description) {
+	public ProductDTO(String code, String descriptionType, String commercialCode, String type, String description) {
 		super();
 		this.code = code;
 		this.descriptionType = descriptionType;
@@ -30,10 +27,6 @@ public class ProductGaussDTO {
 		this.type = type;
 		this.description = description;
 
-	}
-
-	public Product toProduct() {
-		return new Product(code, descriptionType, commercialCode, type, description);
 	}
 
 	public String getCode() {

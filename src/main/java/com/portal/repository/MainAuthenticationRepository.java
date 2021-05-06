@@ -2,6 +2,7 @@ package com.portal.repository;
 
 import java.io.Serializable;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 
 	@Override
 	public void login(LoginForm loginForm)
-			throws SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 
 		Map<String, Object> queryParams = new HashMap<>();
@@ -54,6 +55,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		ServiceApi service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
 				"http://192.168.0.201:8090/rest", "v1/token", TokenType.Bearer, doPost.getAccessToken(),
 				doPost.getRefreshToken(), "password", "default", 1l, TimeUnit.HOURS);
+		System.out.println("service " + doPost);
 		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", service);
 
 	}

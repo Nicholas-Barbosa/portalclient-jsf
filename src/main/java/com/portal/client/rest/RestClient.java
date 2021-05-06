@@ -2,15 +2,19 @@ package com.portal.client.rest;
 
 import java.io.Serializable;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.rest.providers.filter.ExceptionLauncherFilter;
@@ -28,12 +32,12 @@ public interface RestClient extends Serializable {
 	 * @param classGeneric
 	 * @return
 	 */
-	<T> T getForEntity(String uri, Class<T> responseType, Object... queryParams)
-			throws SocketTimeoutException, TimeoutException, IllegalArgumentException, ConnectException;
+	<T> T getForEntity(String uri, Class<T> responseType, Object... queryParams) throws SocketTimeoutException,
+			TimeoutException, IllegalArgumentException, ConnectException, SocketException;
 
 	<T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
-			E requestBody, MediaType mediaType)
-			throws SocketTimeoutException, TimeoutException, IllegalArgumentException, ConnectException;
+			E requestBody, MediaType mediaType) throws SocketTimeoutException, TimeoutException,
+			IllegalArgumentException, ConnectException, SocketException;
 
 	default Client getClientFollowingMediaType(MediaType media) {
 		Client client = media == MediaType.APPLICATION_JSON_TYPE
@@ -45,7 +49,7 @@ public interface RestClient extends Serializable {
 	}
 
 	default void handleProcessingException(ProcessingException e)
-			throws SocketTimeoutException, TimeoutException, IllegalArgumentException, ConnectException {
+			throws SocketTimeoutException, TimeoutException, IllegalArgumentException, SocketException {
 		if (e.getCause() instanceof SocketTimeoutException) {
 			throw new SocketTimeoutException(e.getCause().getMessage());
 		} else if (e.getCause() instanceof TimeoutException) {
@@ -54,9 +58,20 @@ public interface RestClient extends Serializable {
 			throw new IllegalArgumentException(e.getCause().getMessage());
 		} else if (e.getCause() instanceof ConnectException) {
 			throw new ConnectException(e.getCause().getMessage());
-		} else if (e.getCause() instanceof NotFoundException)
-			throw new NotFoundException();
-		else
-			e.printStackTrace();
+		} else if (e.getCause() instanceof SocketException) {
+			throw new SocketException();
+		}
+
+	}
+
+	default void handleResponseProcessingException(ResponseProcessingException e) {
+		System.out.println("");
+		if (e.getCause() instanceof NotFoundException) {
+			throw new NotFoundException(((NotFoundException) e.getCause()).getResponse());
+		} else if (e.getCause() instanceof NotAuthorizedException) {
+			throw new NotAuthorizedException(((NotFoundException) e.getCause()).getResponse());
+		} else if (e.getCause() instanceof ClientErrorException) {
+			throw new ClientErrorException(((ClientErrorException) e.getCause()).getResponse());
+		}
 	}
 }

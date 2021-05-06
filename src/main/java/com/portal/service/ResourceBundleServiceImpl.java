@@ -15,7 +15,6 @@ public class ResourceBundleServiceImpl implements Serializable, ResourceBundleSe
 
 	private static final long serialVersionUID = 1L;
 	private final ResourceBundle resourceBundle;
-	private final ServletRequest servletRequest;
 
 	public ResourceBundleServiceImpl() {
 		this(null);
@@ -23,14 +22,12 @@ public class ResourceBundleServiceImpl implements Serializable, ResourceBundleSe
 
 	@Inject
 	public ResourceBundleServiceImpl(ServletRequest servletRequest) {
-		this.servletRequest = servletRequest;
-		resourceBundle = ResourceBundle.getBundle("message", this.servletRequest.getLocale());
+		resourceBundle = ResourceBundle.getBundle("message", servletRequest.getLocale());
 	}
 
 	@Override
 	public String getMessage(String message) {
 		// TODO Auto-generated method stub
-
 		return resourceBundle.getString(message);
 	}
 

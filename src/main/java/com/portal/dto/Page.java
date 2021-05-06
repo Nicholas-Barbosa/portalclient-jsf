@@ -1,4 +1,4 @@
-package com.portal.pojo;
+package com.portal.dto;
 
 import java.io.Serializable;
 import java.util.Collection;

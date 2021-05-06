@@ -1,9 +1,16 @@
 package com.portal.service.faces;
 
 import java.io.Serializable;
+import java.net.ConnectException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeoutException;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+
+import com.portal.service.view.HoldMessageView;
 
 public class FacesHelper implements Serializable {
 
@@ -12,7 +19,15 @@ public class FacesHelper implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private final ExceptionMessageHandler exceptionMessageHandler;
+
 	public FacesHelper() {
+		this(null);
+	}
+
+	@Inject
+	public FacesHelper(HoldMessageView holdMessageView) {
+		this.exceptionMessageHandler = new ExceptionMessageHandler(holdMessageView);
 	}
 
 	/**
@@ -76,4 +91,46 @@ public class FacesHelper implements Serializable {
 		return this;
 	}
 
+	public ExceptionMessageHandler exceptionMessage() {
+		return exceptionMessageHandler;
+	}
+
+	public class ExceptionMessageHandler implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 195511019926868526L;
+		private final HoldMessageView holderMessage;
+
+		public ExceptionMessageHandler(HoldMessageView holderMessage) {
+			super();
+			this.holderMessage = holderMessage;
+		}
+
+		/**
+		 * Add message object to current request object(FacesContext) following
+		 * Exception instanceof.
+		 * 
+		 * The messages will be retrieved from resources bundles.
+		 * 
+		 * @param clientId
+		 * @param e
+		 * @throws RuntimeException
+		 */
+		public void addMessageByException(String clientId, Exception e) throws RuntimeException {
+			if (e instanceof SocketException) {
+				error(clientId, holderMessage.label("socket_exception"),
+						holderMessage.label("socket_exception_detalhes"));
+			} else if (e instanceof ConnectException) {
+				error(clientId, holderMessage.label("connect_exception"),
+						holderMessage.label("connect_exception_detales"));
+
+			} else if (e instanceof TimeoutException || e instanceof SocketTimeoutException) {
+				error(clientId, holderMessage.label("timeout_ler_response"),
+						holderMessage.label("timeout_ler_response_detalhes"));
+			} else
+				throw new RuntimeException(e);
+		}
+	}
 }

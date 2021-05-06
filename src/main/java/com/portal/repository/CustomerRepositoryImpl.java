@@ -1,6 +1,7 @@
 package com.portal.repository;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,9 +15,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
-import com.portal.dto.CustomerPageGaussDTO;
-import com.portal.pojo.Customer;
-import com.portal.pojo.CustomerPage;
+import com.portal.dto.CustomerDTO;
+import com.portal.dto.CustomerPageDTO;
 
 public class CustomerRepositoryImpl implements CustomerRepository {
 
@@ -37,29 +37,28 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public CustomerPage getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
-			ProcessingException, IllegalArgumentException, TimeoutException {
+	public CustomerPageDTO getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
+			ProcessingException, IllegalArgumentException, TimeoutException, SocketException {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
 		queryParms.put("pageSize", pageSize);
-		CustomerPageGaussDTO forEntity = restClient.getForEntity("ORCAMENTO_API", "clients", CustomerPageGaussDTO.class,
+
+		CustomerPageDTO customerPage = restClient.getForEntity("ORCAMENTO_API", "clients", CustomerPageDTO.class,
 				queryParms, null, MediaType.APPLICATION_JSON_TYPE);
-		return forEntity.toCustomerPage();
+		return customerPage;
+
 	}
 
 	@Override
-	public Optional<Customer> getByCodeAndStore(String code, String store) throws SocketTimeoutException,
-			ConnectException, ProcessingException, IllegalArgumentException, TimeoutException {
+	public Optional<CustomerDTO> getByCodeAndStore(String code, String store) throws SocketTimeoutException,
+			ConnectException, ProcessingException, IllegalArgumentException, TimeoutException, SocketException {
 		try {
 			Map<String, Object> pathParams = getMapInstance();
 			pathParams.put("code", code);
 			pathParams.put("codeStore", store);
-			return Optional
-					.of(restClient
-							.getForEntity("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
-									CustomerPageGaussDTO.class, null, pathParams, MediaType.APPLICATION_JSON_TYPE)
-							.getClients().get(0).toCustomer());
+			return Optional.of(restClient.getForEntity("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
+					CustomerPageDTO.class, null, pathParams, MediaType.APPLICATION_JSON_TYPE).getClients().get(0));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}
@@ -68,4 +67,5 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	private Map<String, Object> getMapInstance() {
 		return new HashMap<>();
 	}
+
 }

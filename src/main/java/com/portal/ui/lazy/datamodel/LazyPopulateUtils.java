@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.pojo.Page;
+import com.portal.dto.Page;
 
 public class LazyPopulateUtils {
 

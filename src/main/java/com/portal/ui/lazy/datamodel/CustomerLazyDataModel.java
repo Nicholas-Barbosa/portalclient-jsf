@@ -8,45 +8,45 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
-import com.portal.pojo.Customer;
+import com.portal.dto.CustomerDTO;
 
-public class CustomerLazyDataModel extends LazyDataModel<Customer> implements LazyOperations<Customer> {
+public class CustomerLazyDataModel extends LazyDataModel<CustomerDTO> implements LazyOperations<CustomerDTO> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8941653163666281143L;
 
-	private List<Customer> customers;
+	private List<CustomerDTO> customers;
 
 	public CustomerLazyDataModel() {
 		this.customers = new ArrayList<>();
 	}
 
-	public CustomerLazyDataModel(List<Customer> customers) {
+	public CustomerLazyDataModel(List<CustomerDTO> customers) {
 		super();
 		this.customers = customers;
 	}
 
 	@Override
-	public List<Customer> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+	public List<CustomerDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
 			Map<String, FilterMeta> filterBy) {
 		return customers;
 	}
 
 	@Override
-	public String getRowKey(Customer object) {
+	public String getRowKey(CustomerDTO object) {
 		// TODO Auto-generated method stub
 		return object.getCgc();
 	}
 
 	@Override
-	public Customer getRowData(String rowKey) {
-		return customers.parallelStream().filter((Customer x) -> x.getCgc().equals(rowKey)).findAny().orElse(null);
+	public CustomerDTO getRowData(String rowKey) {
+		return customers.parallelStream().filter((CustomerDTO x) -> x.getCgc().equals(rowKey)).findAny().orElse(null);
 	}
 
 	@Override
-	public void addCollection(List<Customer> list) {
+	public void addCollection(List<CustomerDTO> list) {
 		this.customers = new ArrayList<>(list);
 
 	}
@@ -58,7 +58,7 @@ public class CustomerLazyDataModel extends LazyDataModel<Customer> implements La
 	}
 
 	@Override
-	public List<Customer> getCollection() {
+	public List<CustomerDTO> getCollection() {
 		return this.customers == null ? new ArrayList<>() : customers;
 	}
 

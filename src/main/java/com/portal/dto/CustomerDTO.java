@@ -1,26 +1,42 @@
-package com.portal.pojo;
+package com.portal.dto;
 
 import java.io.Serializable;
 
-public class Customer implements Serializable{
+import javax.json.bind.annotation.JsonbProperty;
+
+public class CustomerDTO implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -9088263539208735631L;
+	private static final long serialVersionUID = 5152498286178192330L;
+	@JsonbProperty
 	private String address;
+	@JsonbProperty
 	private String code;
+	@JsonbProperty
 	private String store;
+	@JsonbProperty
 	private String state;
+	@JsonbProperty
 	private String cgc;
+	@JsonbProperty
 	private String blocked;
+	@JsonbProperty
 	private String name;
 
+	@JsonbProperty("fantasy_name")
 	private String fantasyName;
+	@JsonbProperty
 	private String city;
+	@JsonbProperty
 	private String table;
 
-	public Customer(String address, String code, String store, String state, String cgc, String blocked, String name,
+	public CustomerDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public CustomerDTO(String address, String code, String store, String state, String cgc, String blocked, String name,
 			String fantasyName, String city, String table) {
 		super();
 		this.address = address;
@@ -32,7 +48,6 @@ public class Customer implements Serializable{
 		this.name = name;
 		this.fantasyName = fantasyName;
 		this.city = city;
-		this.table = table;
 	}
 
 	public String getAddress() {
@@ -73,6 +88,13 @@ public class Customer implements Serializable{
 
 	public String getTable() {
 		return table;
+	}
+
+	@Override
+	public String toString() {
+		return "GssCustomerDTO [address=" + address + ", code=" + code + ", store=" + store + ", state=" + state
+				+ ", cgc=" + cgc + ", blocked=" + blocked + ", name=" + name + ", fantasyName=" + fantasyName
+				+ ", city=" + city + ", table=" + table + "]";
 	}
 
 }
