@@ -32,13 +32,13 @@ public class FacesFilter implements Filter {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 
 		if (!userPropertyHolder.isAuthenticated()
-				&& !httpRequest.getRequestURI().equals("/PortalAppClient/faces/login.xhtml")
+				&& !httpRequest.getRequestURI().contains("/faces/login.xhtml")
 				&& !httpRequest.getRequestURI().contains("resource")) {
 			((HttpServletResponse) response).sendRedirect("login.xhtml");
 
 		} else {
-		chain.doFilter(request, response);
-		 }
+			chain.doFilter(request, response);
+		}
 	}
 
 }

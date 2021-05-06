@@ -21,6 +21,7 @@ public class HoldMessageView implements Serializable {
 
 	public HoldMessageView() {
 		super();
+		System.out.println("hold message constructor!");
 	}
 
 	public String getLabel(String message) {

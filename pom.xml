@@ -47,8 +47,14 @@
 			<artifactId>krazo-core</artifactId>
 			<version>1.1.0</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.16.0</version>
+		</dependency>
 
-		
+
 	</dependencies>
 
 	<properties>
@@ -58,4 +64,8 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 	</properties>
+	<build>
+		<finalName>ROOT</finalName>
+
+	</build>
 </project>

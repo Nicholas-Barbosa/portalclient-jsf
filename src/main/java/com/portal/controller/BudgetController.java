@@ -5,29 +5,26 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.client.ResponseProcessingException;
 
 import org.primefaces.component.api.UIData;
-import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.UnselectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
+import com.portal.dto.BudgetEstimateDTO;
+import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.ItemQuoteBudgetForm;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
-import com.portal.dto.BudgetEstimateForm;
-import com.portal.dto.BudgetEstimateDTO;
 import com.portal.dto.SearchProductForm;
 import com.portal.repository.BudgetRepository;
 import com.portal.repository.CustomerRepository;
@@ -105,11 +102,17 @@ public class BudgetController implements Serializable {
 		this.items = new HashSet<>();
 	}
 
+	public void reEditItemQuantity() {
+		budgetEstimate = budgetRepository.recalculateEstimate(budgetEstimate);
+
+	}
+
 	public void generateQuote() {
 		BudgetEstimateForm budgetForm = new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(),
 				items);
 		try {
 			budgetEstimate = this.budgetRepository.estimate(budgetForm);
+			budgetEstimate.setStTotal();
 			facesHelper.info(null, holderMessage.label("estimativa_orcamento_gerado"), null);
 		} catch (ClientErrorException e) {
 			this.processingEntity = e.getResponse().readEntity(String.class);
@@ -184,12 +187,6 @@ public class BudgetController implements Serializable {
 
 	public void onPageProducts(PageEvent pageEvent) {
 		findProductByDescription(pageEvent.getPage() + 1);
-
-	}
-
-	public void onCellItemEdit(CellEditEvent<Integer> event) {
-		((ItemQuoteBudgetForm) items.parallelStream().collect(CopyOnWriteArrayList::new, List::add, List::addAll)
-				.get(event.getRowIndex())).setQuantity(event.getNewValue());
 
 	}
 

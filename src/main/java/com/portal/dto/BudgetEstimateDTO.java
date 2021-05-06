@@ -1,11 +1,19 @@
 package com.portal.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class BudgetEstimateDTO {
+public class BudgetEstimateDTO implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4987730225653316397L;
 
 	@JsonbProperty("client_code")
 	private String customerCode;
@@ -20,7 +28,35 @@ public class BudgetEstimateDTO {
 	private String customer;
 
 	@JsonbProperty("estimate")
-	private List<ResponseQuoteEstimatedValue> estimatedValues;
+	private List<EstimatedValueDTO> estimatedValues;
+
+	private BigDecimal stTotal;
+
+	public BudgetEstimateDTO() {
+
+	}
+
+	public BudgetEstimateDTO(String customerCode, BigDecimal liquidValue, BigDecimal grossValue, String customer,
+			List<EstimatedValueDTO> estimatedValues, BigDecimal stTotal) {
+		super();
+		this.customerCode = customerCode;
+		this.liquidValue = liquidValue;
+		this.grossValue = grossValue;
+		this.customer = customer;
+		this.estimatedValues = estimatedValues;
+		this.stTotal = stTotal;
+	}
+
+	public BudgetEstimateDTO(String customerCode, String customer, List<EstimatedValueDTO> estimatedValues) {
+		this.customerCode = customerCode;
+		this.customer = customer;
+		this.liquidValue = new BigDecimal(estimatedValues.parallelStream().map(e -> e.totale)
+				.collect(Collectors.summingDouble(v -> v.doubleValue())));
+		this.grossValue = new BigDecimal(estimatedValues.parallelStream().map(e -> e.totalGrossValue)
+				.collect(Collectors.summingDouble(v -> v.doubleValue())));
+		this.estimatedValues = new ArrayList<>(estimatedValues);
+		setStTotal();
+	}
 
 	public String getCustomerCode() {
 		return customerCode;
@@ -38,19 +74,25 @@ public class BudgetEstimateDTO {
 		return customer;
 	}
 
-	public List<ResponseQuoteEstimatedValue> getEstimatedValues() {
+	public List<EstimatedValueDTO> getEstimatedValues() {
 		return estimatedValues;
 	}
 
-	
+	public BigDecimal getStTotal() {
+		return stTotal;
+	}
+
+	public void setStTotal() {
+		stTotal = new BigDecimal(estimatedValues.stream().mapToLong(e -> e.getStValue().longValue()).sum());
+	}
+
 	@Override
 	public String toString() {
 		return "ResponseQuoteBudgetDTO [customerCode=" + customerCode + ", liquidValue=" + liquidValue + ", grossValue="
 				+ grossValue + ", customer=" + customer + "]";
 	}
 
-
-	public static class ResponseQuoteEstimatedValue {
+	public static class EstimatedValueDTO {
 
 		@JsonbProperty("unit_gross_value")
 		private BigDecimal unitGrossValue;
@@ -68,13 +110,38 @@ public class BudgetEstimateDTO {
 		private BigDecimal unitPrice;
 
 		@JsonbProperty("quantity")
-		private Integer quantity;
+		private int quantity;
 
 		@JsonbProperty("total_price")
 		private BigDecimal totale;
 
 		@JsonbProperty("st_value")
 		private BigDecimal stValue;
+
+		private BigDecimal unitStValue;
+
+		public EstimatedValueDTO() {
+			// TODO Auto-generated constructor stub
+		}
+
+		public EstimatedValueDTO(BigDecimal unitGrossValue, String productCode, String commercialCode,
+				BigDecimal unitPrice, int quantity, BigDecimal unitStValue) {
+			super();
+			this.unitGrossValue = unitGrossValue;
+			this.productCode = productCode;
+			this.commercialCode = commercialCode;
+			this.unitPrice = unitPrice;
+			this.quantity = quantity;
+			this.unitStValue = unitStValue;
+			calculateTotaleStValue();
+			calculateTotalGrossValue();
+			calculateTotalPrice();
+		}
+
+		public EstimatedValueDTO(EstimatedValueDTO est) {
+			this(est.unitGrossValue, est.productCode, est.commercialCode, est.unitPrice, est.quantity, est.unitStValue);
+
+		}
 
 		public BigDecimal getUnitGrossValue() {
 			return unitGrossValue;
@@ -96,8 +163,12 @@ public class BudgetEstimateDTO {
 			return unitPrice;
 		}
 
-		public Integer getQuantity() {
+		public int getQuantity() {
 			return quantity;
+		}
+
+		public void setQuantity(int quantity) {
+			this.quantity = quantity;
 		}
 
 		public BigDecimal getTotale() {
@@ -108,6 +179,38 @@ public class BudgetEstimateDTO {
 			return stValue;
 		}
 
+		public void setStValue(BigDecimal stValue) {
+			this.stValue = stValue;
+			discoverUnitStValue();
+		}
+
+		public BigDecimal getUnitStValue() {
+			return unitStValue;
+		}
+
+		public final void calculateTotalGrossValue() {
+			this.totalGrossValue = unitGrossValue.multiply(new BigDecimal(quantity));
+		}
+
+		public final void calculateTotalPrice() {
+			this.totale = unitPrice.multiply(new BigDecimal(quantity));
+		}
+
+		public final void discoverUnitStValue() {
+			this.unitStValue = stValue.divide(new BigDecimal(quantity));
+		}
+
+		public final void calculateTotaleStValue() {
+			if (unitStValue != null) {
+				this.stValue = unitStValue.multiply(new BigDecimal(quantity));
+			} else
+				throw new IllegalStateException("You must set unitStValue before call this method.");
+		}
+
+		public Object readResolve() {
+			System.out.println("read resolve");
+			return null;
+		}
 	}
 
 }

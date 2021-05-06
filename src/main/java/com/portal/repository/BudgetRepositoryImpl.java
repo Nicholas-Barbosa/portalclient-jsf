@@ -3,6 +3,8 @@ package com.portal.repository;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
@@ -11,8 +13,9 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
-import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimateDTO;
+import com.portal.dto.BudgetEstimateDTO.EstimatedValueDTO;
+import com.portal.dto.BudgetEstimateForm;
 
 public class BudgetRepositoryImpl implements BudgetRepository {
 
@@ -38,6 +41,14 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 		return restClient.post("ORCAMENTO_API", "estimate", BudgetEstimateDTO.class, null, null,
 				MediaType.APPLICATION_JSON_TYPE, form);
 
+	}
+
+	@Override
+	public BudgetEstimateDTO recalculateEstimate(BudgetEstimateDTO form) {
+		List<EstimatedValueDTO> values = form.getEstimatedValues().parallelStream().map(EstimatedValueDTO::new)
+				.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+
+		return new BudgetEstimateDTO(form.getCustomerCode(), form.getCustomer(), values);
 	}
 
 }

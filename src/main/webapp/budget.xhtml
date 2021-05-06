@@ -339,10 +339,9 @@
 											styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2" />
 										<p:button onclick="PF('dlgSelectProducts').show()"
 											icon="pi pi-list"
-											styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"/>
+											styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2" />
 									</f:facet>
-									<p:ajax event="cellEdit"
-										listener="#{budgetController.onCellItemEdit}" />
+
 									<p:column
 										headerText="#{holdMessageView.label('codigo_comercial')}">
 										<h:outputText value="#{item.commercialCode}" />
@@ -407,12 +406,12 @@
 			</p:dialog>
 		</div>
 
-		<div id="loaderQuote">
+		<div id="estimateLoad">
 			<div class="p-col" id="loaderProducts">
 				<i class="pi pi-spin pi-spinner" style="font-size: 8rem"></i>
 			</div>
 		</div>
-		<div class="p-grid" id="quoteContent">
+		<div class="p-grid" id="estimateContent">
 			<div class="p-grid panel-demo">
 				<div class="p-col-12">
 
@@ -430,9 +429,8 @@
 									styleClass="ui-button-help p-mr-2" />
 								<p:commandButton type="button" title="Print" icon="pi pi-print"
 									styleClass="ui-button-warning p-mr-2" />
-								<p:commandButton type="button" title="Delete"
-									icon="pi pi-pencil" styleClass="ui-button-danger"
-									onclick="editEstimate()" />
+								<p:commandButton type="button" title="Edit" icon="pi pi-pencil"
+									styleClass="ui-button-danger" onclick="editEstimate()" />
 
 							</p:toolbarGroup>
 
@@ -460,6 +458,14 @@
 										symbol="R$ " symbolPosition="p" readonly="true"
 										decimalSeparator="," thousandSeparator="." />
 								</div>
+								<div class="p-field p-col-12 p-md-6">
+									<p:outputLabel for="stT"
+										value="#{holdMessageView.label('valor_st')}" />
+									<p:inputNumber id="stT"
+										value="#{budgetController.budgetEstimate.stTotal}"
+										symbol="R$ " symbolPosition="p" readonly="true"
+										decimalSeparator="," thousandSeparator="." />
+								</div>
 								<div class="p-field p-col-12">
 									<p:outputLabel for="customer"
 										value="#{holdMessageView.label('cliente')}" />
@@ -472,16 +478,31 @@
 					</div>
 					<div class="card">
 						<h:form id="dtEstimateProducts">
+							<p:remoteCommand action="#" process="@none"
+								update="dtEstimateProducts" name="updateProducts" />
 							<p:dataTable
 								value="#{budgetController.budgetEstimate.estimatedValues}"
-								var="product">
+								var="product" editable="true" rowKey="#{product.commercialCode}"
+								id="dtProducts" editMode="cell">
+								<p:ajax event="cellEdit"
+									listener="#{budgetController.reEditItemQuantity()}"
+									process="@this" update="budgetEstimateForm"
+									oncomplete="updateProducts()" />
 								<p:column
 									headerText="#{holdMessageView.label('codigo_comercial')}">
 									<h:outputText value="#{product.commercialCode}" />
 								</p:column>
 								<p:column headerText="#{holdMessageView.label('quantidade')}">
-									<h:outputText value="#{product.quantity}">
-									</h:outputText>
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{product.quantity}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{product.quantity}" style="width:100%"
+												label="Name" />
+
+										</f:facet>
+									</p:cellEditor>
 								</p:column>
 								<p:column
 									headerText="#{holdMessageView.label('preco_bruto_unitario')}">
@@ -493,6 +514,12 @@
 								<p:column
 									headerText="#{holdMessageView.label('preco_bruto_total')}">
 									<h:outputText value="#{product.totalGrossValue}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('un_st_valor')}">
+									<h:outputText value="#{product.unitStValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -516,8 +543,9 @@
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
-							</p:dataTable>
 
+							</p:dataTable>
+							<p:commandButton value="update" update="dtProducts" />
 						</h:form>
 
 					</div>
@@ -535,22 +563,22 @@
 			$("#ItemContainarLoader").hide();
 			$("#loaderProducts").hide();
 			$("#divMsgProducts").hide();
-			$("#quoteContent").hide();
-			$("#loaderQuote").hide();
+			$("#estimateContent").hide();
+			$("#estimateLoad").hide();
 			
 			function editEstimate(){
-			$("#quoteContent").hide();
+			$("#estimateContent").hide();
 			$("#budgetForm").show();
 			}
 			function onStartQuote(){
 				$("#budgetForm").hide();
-				$("#loaderQuote").show();
+				$("#estimateLoad").show();
 				
 			}
 			function onCompleteQuote(xhr){
-				$("#loaderQuote").hide();
+				$("#estimateLoad").hide();
 				if(getResponseHeader(xhr)){
-					$("#quoteContent").show();
+					$("#estimateContent").show();
 				}else{
 					$("#budgetForm").show();
 					PF('exceptionDialog').show()

@@ -15,4 +15,6 @@ public interface BudgetRepository extends Serializable {
 
 	BudgetEstimateDTO estimate(BudgetEstimateForm form) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, SocketException, TimeoutException;
+
+	BudgetEstimateDTO recalculateEstimate(BudgetEstimateDTO form);
 }
