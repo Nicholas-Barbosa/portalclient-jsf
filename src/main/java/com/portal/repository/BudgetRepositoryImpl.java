@@ -3,8 +3,6 @@ package com.portal.repository;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
@@ -45,10 +43,9 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 
 	@Override
 	public BudgetEstimateDTO recalculateEstimate(BudgetEstimateDTO form) {
-		List<EstimatedValueDTO> values = form.getEstimatedValues().parallelStream().map(EstimatedValueDTO::new)
-				.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
-
-		return new BudgetEstimateDTO(form.getCustomerCode(), form.getCustomer(), values);
+		form.getEstimatedValues().parallelStream().forEach(EstimatedValueDTO::recalculateTotales);
+		form.reCalculateTotales();
+		return form;
 	}
 
 }

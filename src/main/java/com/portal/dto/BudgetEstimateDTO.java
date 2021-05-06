@@ -2,13 +2,12 @@ package com.portal.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class BudgetEstimateDTO implements Serializable{
+public class BudgetEstimateDTO implements Serializable {
 
 	/**
 	 * 
@@ -47,14 +46,11 @@ public class BudgetEstimateDTO implements Serializable{
 		this.stTotal = stTotal;
 	}
 
-	public BudgetEstimateDTO(String customerCode, String customer, List<EstimatedValueDTO> estimatedValues) {
-		this.customerCode = customerCode;
-		this.customer = customer;
+	public void reCalculateTotales() {
 		this.liquidValue = new BigDecimal(estimatedValues.parallelStream().map(e -> e.totale)
 				.collect(Collectors.summingDouble(v -> v.doubleValue())));
 		this.grossValue = new BigDecimal(estimatedValues.parallelStream().map(e -> e.totalGrossValue)
 				.collect(Collectors.summingDouble(v -> v.doubleValue())));
-		this.estimatedValues = new ArrayList<>(estimatedValues);
 		setStTotal();
 	}
 
@@ -124,25 +120,6 @@ public class BudgetEstimateDTO implements Serializable{
 			// TODO Auto-generated constructor stub
 		}
 
-		public EstimatedValueDTO(BigDecimal unitGrossValue, String productCode, String commercialCode,
-				BigDecimal unitPrice, int quantity, BigDecimal unitStValue) {
-			super();
-			this.unitGrossValue = unitGrossValue;
-			this.productCode = productCode;
-			this.commercialCode = commercialCode;
-			this.unitPrice = unitPrice;
-			this.quantity = quantity;
-			this.unitStValue = unitStValue;
-			calculateTotaleStValue();
-			calculateTotalGrossValue();
-			calculateTotalPrice();
-		}
-
-		public EstimatedValueDTO(EstimatedValueDTO est) {
-			this(est.unitGrossValue, est.productCode, est.commercialCode, est.unitPrice, est.quantity, est.unitStValue);
-
-		}
-
 		public BigDecimal getUnitGrossValue() {
 			return unitGrossValue;
 		}
@@ -188,6 +165,12 @@ public class BudgetEstimateDTO implements Serializable{
 			return unitStValue;
 		}
 
+		public void recalculateTotales() {
+			calculateTotaleStValue();
+			calculateTotalGrossValue();
+			calculateTotalPrice();
+		}
+
 		public final void calculateTotalGrossValue() {
 			this.totalGrossValue = unitGrossValue.multiply(new BigDecimal(quantity));
 		}
@@ -207,10 +190,6 @@ public class BudgetEstimateDTO implements Serializable{
 				throw new IllegalStateException("You must set unitStValue before call this method.");
 		}
 
-		public Object readResolve() {
-			System.out.println("read resolve");
-			return null;
-		}
 	}
 
 }
