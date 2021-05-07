@@ -42,10 +42,10 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	}
 
 	@Override
-	public void login(LoginForm loginForm)
-			throws SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException,SocketException {
+	public void login(LoginForm loginForm) throws SocketTimeoutException, ConnectException, IllegalArgumentException,
+			TimeoutException, SocketException {
 		// TODO Auto-generated method stub
-
+		System.out.println("Login!");
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("grant_type", "password");
 		queryParams.put("password", loginForm.getPassword());

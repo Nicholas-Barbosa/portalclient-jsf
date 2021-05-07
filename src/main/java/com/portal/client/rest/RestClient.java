@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
@@ -71,6 +72,8 @@ public interface RestClient extends Serializable {
 			throw new NotAuthorizedException(((NotFoundException) e.getCause()).getResponse());
 		} else if (e.getCause() instanceof ClientErrorException) {
 			throw new ClientErrorException(((ClientErrorException) e.getCause()).getResponse());
+		} else if (e.getCause() instanceof InternalServerErrorException) {
+			throw new InternalServerErrorException();
 		}
 	}
 }

@@ -14,36 +14,31 @@ public class BudgetEstimateDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 4987730225653316397L;
 
-	@JsonbProperty("client_code")
-	private String customerCode;
-
 	@JsonbProperty("liquid_order_value")
 	private BigDecimal liquidValue;
 
 	@JsonbProperty("gross_order_value")
 	private BigDecimal grossValue;
 
-	@JsonbProperty("client_description")
-	private String customer;
-
 	@JsonbProperty("estimate")
 	private List<EstimatedValueDTO> estimatedValues;
 
 	private BigDecimal stTotal;
 
+	private CustomerDTO customer;
+
 	public BudgetEstimateDTO() {
 
 	}
 
-	public BudgetEstimateDTO(String customerCode, BigDecimal liquidValue, BigDecimal grossValue, String customer,
-			List<EstimatedValueDTO> estimatedValues, BigDecimal stTotal) {
+	public BudgetEstimateDTO(BigDecimal liquidValue, BigDecimal grossValue, List<EstimatedValueDTO> estimatedValues,
+			BigDecimal stTotal, CustomerDTO customerDTO) {
 		super();
-		this.customerCode = customerCode;
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
-		this.customer = customer;
 		this.estimatedValues = estimatedValues;
 		this.stTotal = stTotal;
+		this.customer = new CustomerDTO(customer);
 	}
 
 	public void reCalculateTotales() {
@@ -54,20 +49,12 @@ public class BudgetEstimateDTO implements Serializable {
 		setStTotal();
 	}
 
-	public String getCustomerCode() {
-		return customerCode;
-	}
-
 	public BigDecimal getLiquidValue() {
 		return liquidValue;
 	}
 
 	public BigDecimal getGrossValue() {
 		return grossValue;
-	}
-
-	public String getCustomer() {
-		return customer;
 	}
 
 	public List<EstimatedValueDTO> getEstimatedValues() {
@@ -82,10 +69,19 @@ public class BudgetEstimateDTO implements Serializable {
 		stTotal = new BigDecimal(estimatedValues.stream().mapToLong(e -> e.getStValue().longValue()).sum());
 	}
 
+	public CustomerDTO getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(CustomerDTO customer) {
+		this.customer = new CustomerDTO(customer);
+
+	}
+
 	@Override
 	public String toString() {
-		return "ResponseQuoteBudgetDTO [customerCode=" + customerCode + ", liquidValue=" + liquidValue + ", grossValue="
-				+ grossValue + ", customer=" + customer + "]";
+		return "BudgetEstimateDTO [liquidValue=" + liquidValue + ", grossValue=" + grossValue + ", estimatedValues="
+				+ estimatedValues + ", stTotal=" + stTotal + ", customerDTO=" + customer + "]";
 	}
 
 	public static class EstimatedValueDTO {

@@ -1,16 +1,23 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.InternalServerErrorException;
 
 import org.primefaces.component.api.UIData;
 import org.primefaces.event.SelectEvent;
@@ -72,6 +79,7 @@ public class BudgetController implements Serializable {
 
 	private SearchProductForm searchProductForm;
 
+	private String headerExceptionDialog;
 	private String processingEntity;
 
 	private BudgetEstimateDTO budgetEstimate;
@@ -99,6 +107,7 @@ public class BudgetController implements Serializable {
 		this.lazyCustomers = new CustomerLazyDataModel();
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
 		this.searchProductForm = new SearchProductForm();
+		this.selectedProducts = new ArrayList<>();
 		this.items = new HashSet<>();
 	}
 
@@ -113,12 +122,20 @@ public class BudgetController implements Serializable {
 		try {
 			budgetEstimate = this.budgetRepository.estimate(budgetForm);
 			budgetEstimate.setStTotal();
+			budgetEstimate.setCustomer(selectedCustomer);
 			facesHelper.info(null, holderMessage.label("estimativa_orcamento_gerado"), null);
 		} catch (ClientErrorException e) {
 			this.processingEntity = e.getResponse().readEntity(String.class);
 			facesHelper.addHeaderForResponse("Backbone-Status", "Error");
+			this.headerExceptionDialog = holderMessage.label("erro_msg_servidor");
+		} catch (InternalServerErrorException e) {
+			this.processingEntity = holderMessage.label("erro_servidor_destino");
+			this.headerExceptionDialog = holderMessage.label("resposta_servidor");
+			facesHelper.addHeaderForResponse("Backbone-Status", "Error");
 		} catch (Exception e) {
+			e.printStackTrace();
 			facesHelper.exceptionMessage().addMessageByException(null, e);
+
 		}
 	}
 
@@ -191,13 +208,29 @@ public class BudgetController implements Serializable {
 	}
 
 	public void removeItem(ItemQuoteBudgetForm item) {
-		this.items.removeIf(currentItem -> currentItem.getCode().equals(item.getCode()));
+		ExecutorService executor = null;
+		try {
+			executor = Executors.newFixedThreadPool(2);
+			executor.submit(() -> this.items.removeIf(currentItem -> currentItem.getCode().equals(item.getCode())));
+			executor.submit(() -> this.selectedProducts.removeIf(p -> p.getCode().equals(item.getCode())));
+		} finally {
+			executor.shutdown();
+			try {
+				executor.awaitTermination(1, TimeUnit.SECONDS);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void removeTest() {
+		this.selectedProducts.clear();
 	}
 
 	public void onProductSelected(SelectEvent<ProductDTO> selectedProduct) {
 		ProductDTO product = selectedProduct.getObject();
 		items.add(new ItemQuoteBudgetForm(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
-				product.getDescriptionType(), 10));
+				product.getDescriptionType(), 1));
 
 	}
 
@@ -312,5 +345,9 @@ public class BudgetController implements Serializable {
 
 	public BudgetEstimateDTO getBudgetEstimate() {
 		return budgetEstimate;
+	}
+
+	public String getHeaderExceptionDialog() {
+		return headerExceptionDialog;
 	}
 }

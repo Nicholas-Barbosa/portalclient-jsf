@@ -24,7 +24,7 @@ public class ItemQuoteBudgetForm implements Comparable<ItemQuoteBudgetForm> {
 
 	public static ItemQuoteBudgetForm getInstanceFromProduct(ProductDTO product) {
 		return new ItemQuoteBudgetForm(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
-				product.getDescription(), 10);
+				product.getDescription(), 1);
 	}
 
 	public String getCode() {

@@ -12,7 +12,6 @@ com\portal\dto\BudgetEstimateForm.class
 com\portal\repository\BudgetRepositoryImpl.class
 com\portal\ui\lazy\datamodel\CustomerLazyDataModel.class
 com\portal\dto\SearchProductForm.class
-com\portal\dto\BudgetEstimateDTO$ResponseQuoteEstimatedValue.class
 com\portal\controller\LoginController.class
 com\portal\dto\ProductPageDTO.class
 com\portal\repository\CustomerRepositoryImpl.class
@@ -40,6 +39,7 @@ com\portal\service\view\HoldMessageView.class
 com\portal\service\faces\FacesHelper.class
 com\portal\service\ResourceBundleServiceImpl.class
 com\portal\ui\lazy\datamodel\LazyOperations.class
+com\portal\dto\BudgetEstimateDTO$EstimatedValueDTO.class
 com\portal\controller\BudgetController.class
 com\portal\security\api\TokenType.class
 com\portal\dto\CustomerDTO.class
@@ -63,6 +63,7 @@ com\portal\service\ResourceBundleService.class
 com\portal\controller\UserStylePreferences.class
 com\portal\repository\CustomerRepository.class
 com\portal\client\rest\SimpleRestClient.class
+com\portal\dto\Customer.class
 com\portal\jaxrs\filter\ContainerResponseFilter.class
 com\portal\cdi\qualifier\Simple.class
 com\portal\service\reflection\MethodAttributes.class

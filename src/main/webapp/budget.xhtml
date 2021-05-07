@@ -34,19 +34,15 @@
 								<p:messages id="messageCustomer" globalOnly="false"
 									showDetail="true" for="formClientTb:dtCustomer" />
 							</div>
-
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-
 		<div id="tryAgain">
 			<p:button value="#{holdMessageView.label('tentar_novamente')}"
 				onclick="initTablesCustomer()" />
 		</div>
-
 		<div class="p-grid table-demo" id="budgetForm">
 			<div class="p-col-12">
 				<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
@@ -63,9 +59,10 @@
 							process="@this" />
 
 						<p:dataTable var="customer"
-							value="#{budgetController.lazyCustomers}" rowSelectMode="add"
+							value="#{budgetController.lazyCustomers}"
 							rowKey="#{customer.cgc}"
-							selection="#{budgetController.selectedCustomer}" paginator="true"
+							selection="#{budgetController.selectedCustomer}"
+							selectionMode="single" paginator="true"
 							rows="#{budgetController.pageSizeForCustomers}"
 							paginatorAlwaysVisible="false" id="dtCustomer"
 							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
@@ -99,7 +96,6 @@
 								listener="#{budgetController.onCustomerSelected}"
 								process="@this" update=":selectedCustomerName"
 								oncomplete="selectedCustomer()" async="true" />
-							<p:column selectionMode="single" />
 
 							<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
 								<h:outputText value="#{customer.fantasyName}" />
@@ -186,6 +182,7 @@
 							</div>
 						</div>
 
+						
 					</div>
 
 				</div>
@@ -268,18 +265,20 @@
 									onsuccess="PF('blockDtableProducts').hide()"
 									update="growl msgDtProduct" />
 								<p:ajax event="rowSelect" async="true"
-									listener="#{budgetController.onProductSelected}" />
+									listener="#{budgetController.onProductSelected}"
+									update=":formItems:itemsBdgRequest :formProdutos:dtProducts:btnConfimrEstimate" />
 								<p:ajax event="rowUnselect"
-									listener="#{budgetController.unProductUnSelected}" />
+									listener="#{budgetController.unProductUnSelected}"
+									update=":formItems:itemsBdgRequest :formProdutos:dtProducts:btnConfimrEstimate" />
 								<f:facet name="header">
 									<p:commandButton
 										value="#{holdMessageView.label('confirmar_selecao')}"
-										
 										styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
 										action="#{budgetController.generateQuote}" process="@this"
 										update="growl exceptionDialog msgQuoteSuccess budgetEstimateForm dtEstimateProducts formItems"
-										oncomplete="onCompleteQuote(xhr)" onstart="onStartQuote()" />
-
+										oncomplete="onCompleteQuote(xhr)" onstart="onStartQuote()"
+										disabled="#{budgetController.selectedProducts.size() le 0}"
+										id="btnConfimrEstimate" />
 								</f:facet>
 								<p:column selectionMode="multiple" />
 								<p:column
@@ -300,6 +299,7 @@
 							<p:blockUI block="dtProducts" widgetVar="blockDtableProducts">
 								<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
 							</p:blockUI>
+
 						</h:form>
 					</div>
 					<div class="p-col" id="loaderProducts">
@@ -334,8 +334,9 @@
 							<h5>#{holdMessageView.label('items')}</h5>
 							<h:form id="formItems">
 								<p:dataTable value="#{budgetController.items}" paginator="true"
-									rows="10" var="item" paginatorAlwaysVisible="false"
-									editMode="cell" editable="true" rowKey="#{item.code}">
+									id="itemsBdgRequest" rows="10" var="item"
+									paginatorAlwaysVisible="false" editMode="cell" editable="true"
+									rowKey="#{item.code}">
 									<f:facet name="header">
 
 										<p:button onclick="showSearchProducts()" icon="pi pi-search"
@@ -368,7 +369,6 @@
 											<f:facet name="input">
 												<p:inputText value="#{item.quantity}" style="width:100%"
 													label="Name" />
-
 											</f:facet>
 										</p:cellEditor>
 
@@ -377,7 +377,7 @@
 										<p:commandButton icon="pi pi-trash"
 											styleClass="ui-button-secondary"
 											action="#{budgetController.removeItem(item)}" process="@this"
-											update="@form" />
+											update="@form formProdutos:dtProducts" />
 									</p:column>
 								</p:dataTable>
 
@@ -399,7 +399,7 @@
 				</div>
 			</div>
 			<p:dialog id="exceptionDialog"
-				header="#{holdMessageView.label('erro_msg_servidor')}!"
+				header="#{budgetController.headerExceptionDialog}"
 				widgetVar="exceptionDialog" height="500px" modal="true">
           
             Raw Object: <h:outputText
@@ -446,6 +446,35 @@
 						<h:form id="budgetEstimateForm">
 							<div class="ui-fluid p-formgrid p-grid">
 								<div class="p-field p-col-12 p-md-6">
+									<p:outputLabel for="customer"
+										value="#{holdMessageView.label('cliente')}" />
+									<p:inputText id="customer"
+										value="#{budgetController.budgetEstimate.customer.name}"
+										readonly="true" />
+								</div>
+								<div class="p-field p-col-12 p-md-6">
+									<p:outputLabel for="cgc" value="CGC" />
+									<p:inputText id="cgc"
+										value="#{budgetController.budgetEstimate.customer.cgc}"
+										readonly="true" />
+								</div>
+								<div class="p-field p-col-12 p-md-6">
+									<p:outputLabel for="address"
+										value="#{holdMessageView.label('endereco')}" />
+									<p:inputText id="address"
+										value="#{budgetController.budgetEstimate.customer.address}"
+										readonly="true" />
+								</div>
+
+								<div class="p-field p-col-12 p-md-6">
+									<p:outputLabel for="address"
+										value="#{holdMessageView.label('estado')}" />
+									<p:inputText id="state"
+										value="#{budgetController.budgetEstimate.customer.state}"
+										readonly="true" />
+								</div>
+
+								<div class="p-field p-col-12 p-md-6">
 									<p:outputLabel for="grossV"
 										value="#{holdMessageView.label('valor_bruto')}" />
 									<p:inputNumber id="grossV"
@@ -469,13 +498,7 @@
 										symbol="R$ " symbolPosition="p" readonly="true"
 										decimalSeparator="," thousandSeparator="." />
 								</div>
-								<div class="p-field p-col-12">
-									<p:outputLabel for="customer"
-										value="#{holdMessageView.label('cliente')}" />
-									<p:inputText id="customer"
-										value="#{budgetController.budgetEstimate.customer} - #{budgetController.budgetEstimate.customerCode}"
-										readonly="true" />
-								</div>
+
 							</div>
 						</h:form>
 					</div>

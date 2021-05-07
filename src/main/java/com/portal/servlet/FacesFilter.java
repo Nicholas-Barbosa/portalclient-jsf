@@ -19,6 +19,10 @@ public class FacesFilter implements Filter {
 
 	private final UserPropertyHolder userPropertyHolder;
 
+	public FacesFilter() {
+		this(null);
+	}
+
 	@Inject
 	public FacesFilter(UserPropertyHolder userPropertyHolder) {
 		super();
@@ -31,8 +35,7 @@ public class FacesFilter implements Filter {
 
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 
-		if (!userPropertyHolder.isAuthenticated()
-				&& !httpRequest.getRequestURI().contains("/faces/login.xhtml")
+		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("/faces/login.xhtml")
 				&& !httpRequest.getRequestURI().contains("resource")) {
 			((HttpServletResponse) response).sendRedirect("login.xhtml");
 

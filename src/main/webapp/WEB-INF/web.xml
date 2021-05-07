@@ -3,6 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+	<listener>
+		<listener-class>org.apache.webbeans.servlet.WebBeansConfigurationListener</listener-class>
+	</listener>
+
 	<display-name>PortalAppClient</display-name>
 	<context-param>
 		<param-name>primefaces.FONT_AWESOME</param-name>
@@ -12,7 +17,7 @@
 		<param-name>primefaces.THEME</param-name>
 		<param-value>rain-#{userStylePreferences.theme}</param-value>
 	</context-param>
-	
+
 	<context-param>
 		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
 		<param-value>0</param-value>

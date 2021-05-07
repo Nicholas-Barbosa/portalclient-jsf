@@ -50,6 +50,11 @@ public class CustomerDTO implements Serializable {
 		this.city = city;
 	}
 
+	public CustomerDTO(CustomerDTO customerDTO) {
+		this(customerDTO.address, customerDTO.code, customerDTO.store, customerDTO.state, customerDTO.cgc,
+				customerDTO.blocked, customerDTO.name, customerDTO.fantasyName, customerDTO.city, customerDTO.table);
+	}
+
 	public String getAddress() {
 		return address;
 	}

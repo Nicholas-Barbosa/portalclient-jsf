@@ -6,6 +6,9 @@
 	<artifactId>PortalAppClient</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
+
+
+
 	<dependencies>
 		<dependency>
 			<groupId>jakarta.platform</groupId>
@@ -23,8 +26,8 @@
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
 			<version>10.0.0</version>
-
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -63,9 +66,11 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<owb.version>2.0.20</owb.version>
+		<mojarra.version>2.3.14</mojarra.version>
 	</properties>
 	<build>
-		<finalName>ROOT</finalName>
+		<finalName>jva</finalName>
 
 	</build>
 </project>
