@@ -17,6 +17,7 @@ import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
+import com.portal.dto.NoPageCustomerResponseDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 
 public class CustomerRepositoryImpl implements CustomerRepository {
@@ -60,9 +61,8 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 			pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
 			pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
 			return Optional.of(restClient.getForEntity("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
-					CustomerPageDTO.class, null, pathParams, MediaType.APPLICATION_JSON_TYPE).getClients().get(0));
+					NoPageCustomerResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON_TYPE).getClients().get(0));
 		} catch (NotFoundException e) {
-			System.out.println("Not found handler!");
 			return Optional.empty();
 		}
 	}

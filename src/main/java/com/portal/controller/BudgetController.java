@@ -138,11 +138,13 @@ public class BudgetController implements Serializable {
 
 	public void findCustomerByCode() {
 		try {
-			System.out.println("customer " + customerRepository);
 			Optional<CustomerDTO> maybeCustomer = customerRepository.getByCodeAndStore(searchCustomerDTO);
 			maybeCustomer.ifPresentOrElse(c -> {
 				this.customerDTO = new CustomerDTO(c);
-			}, () -> facesHelper.error(null, holderMessage.label("nao_encontrado"), null));
+			}, () -> {
+				facesHelper.error(null, holderMessage.label("nao_encontrado"), null);
+				customerDTO = null;
+			});
 		} catch (Exception e) {
 			facesHelper.exceptionMessage().addMessageByException(null, e);
 		}

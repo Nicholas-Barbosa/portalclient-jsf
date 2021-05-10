@@ -48,16 +48,16 @@
 									id="customerStore" />
 								<p:message for="@previous" />
 							</div>
-							<p:remoteCommand process="@form" update="@form growl"
+							<p:remoteCommand process="@form"
+								update="@form growl :customerDTO"
 								action="#{budgetController.findCustomerByCode}"
-								name="findCustomerByCodeAndStore" />
+								name="findCustomerByCodeAndStore"
+								id="findCustomerByCodeAndStore" />
 
 						</div>
 					</h:form>
 					<h:form id="customerDTO">
 						<div class="ui-fluid p-formgrid p-grid">
-
-
 							<div class="p-field p-col-12 p-md-5">
 								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
 								<p:inputText
@@ -83,9 +83,10 @@
 									readonly="true" />
 							</div>
 						</div>
-
-
 					</h:form>
+					<p:blockUI block="customerDTO" widgetVar="blockCustomerDTOForm">
+						<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+					</p:blockUI>
 				</div>
 			</div>
 			<div id="divSearchProducts" class="p-col-12">
@@ -491,6 +492,9 @@
 			$("#estimateContent").hide();
 			$("#estimateLoad").hide();
 			
+			function onCompleteSearchCustomerByCodeAndStore(){
+				
+			}
 			function editEstimate(){
 			$("#estimateContent").hide();
 			$("#budgetForm").show();

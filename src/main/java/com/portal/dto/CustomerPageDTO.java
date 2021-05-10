@@ -24,6 +24,9 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 
 	private List<CustomerDTO> clients;
 
+	public CustomerPageDTO() {
+		// TODO Auto-generated constructor stub
+	}
 	@JsonbCreator
 	public CustomerPageDTO(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPages,
 			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
@@ -37,15 +40,11 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 	}
 
 	public List<CustomerDTO> getClients() {
+		System.out.println("clientes " +clients);
 		return new ArrayList<>(clients);
 	}
 
-	@Override
-	public String toString() {
-		return "CustomerPage [totalItems=" + totalItems + ", totalPages=" + totalPages + ", pageSize=" + pageSize
-				+ ", page=" + page + ", clients=" + clients + "]";
-	}
-
+	
 	@Override
 	public int getPageSize() {
 		// TODO Auto-generated method stub
@@ -74,6 +73,11 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 	public Collection<CustomerDTO> getContent() {
 		// TODO Auto-generated method stub
 		return clients;
+	}
+	@Override
+	public String toString() {
+		return "CustomerPage [totalItems=" + totalItems + ", totalPages=" + totalPages + ", pageSize=" + pageSize
+				+ ", page=" + page + ", clients=" + clients + "]";
 	}
 
 }

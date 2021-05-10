@@ -65,6 +65,15 @@
 			<scope>test</scope>
 		</dependency>
 
+
+		<dependency>
+			<groupId>fish.payara.extras</groupId>
+			<artifactId>payara-embedded-all</artifactId>
+			<version>5.201</version>
+			<type>jar</type>
+		</dependency>
+
+
 	</dependencies>
 
 	<properties>

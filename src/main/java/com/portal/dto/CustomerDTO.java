@@ -46,6 +46,7 @@ public class CustomerDTO implements Serializable {
 		this(customerDTO.address, customerDTO.code, customerDTO.store, customerDTO.state, customerDTO.cgc,
 				customerDTO.blocked, customerDTO.name, customerDTO.fantasyName, customerDTO.city, customerDTO.table);
 	}
+	
 
 	public String getAddress() {
 		return address;
@@ -89,9 +90,9 @@ public class CustomerDTO implements Serializable {
 
 	@Override
 	public String toString() {
-		return "GssCustomerDTO [address=" + address + ", code=" + code + ", store=" + store + ", state=" + state
-				+ ", cgc=" + cgc + ", blocked=" + blocked + ", name=" + name + ", fantasyName=" + fantasyName
-				+ ", city=" + city + ", table=" + table + "]";
+		return "CustomerDTO [address=" + address + ", code=" + code + ", store=" + store + ", state=" + state + ", cgc="
+				+ cgc + ", blocked=" + blocked + ", name=" + name + ", fantasyName=" + fantasyName + ", city=" + city
+				+ ", table=" + table + "]";
 	}
 
 }
