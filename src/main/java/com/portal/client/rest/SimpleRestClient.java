@@ -1,6 +1,5 @@
 package com.portal.client.rest;
 
-import java.io.InputStream;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.text.MessageFormat;
@@ -8,17 +7,16 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.portal.cdi.qualifier.Simple;
-import com.portal.service.JacksonHoldByteStream;
 
 @Simple
 public class SimpleRestClient implements RestClient {
@@ -28,28 +26,16 @@ public class SimpleRestClient implements RestClient {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private transient final JacksonHoldByteStream streamMapper;
-
-	public SimpleRestClient() {
-		this(null);
-
-	}
-
-	@Inject
-	public SimpleRestClient(JacksonHoldByteStream streamMapper) {
-		super();
-		this.streamMapper = streamMapper;
-	}
-
 	@Override
 	public <T> T getForEntity(String uri, Class<T> responseType, Object... params) {
 		// TODO Auto-generated method stub
 		Client client = ClientBuilder.newBuilder().readTimeout(10, TimeUnit.SECONDS).build();
 
 		Response response = client.target(MessageFormat.format(uri, params)).request().get();
-		T responseTyped = this.streamMapper.readValue((InputStream) response.getEntity(), responseType);
+		// T responseTyped = this.streamMapper.readValue((InputStream)
+		// response.getEntity(), responseType);
 
-		return responseTyped;
+		return null;
 	}
 
 	@Override
@@ -68,9 +54,11 @@ public class SimpleRestClient implements RestClient {
 					resource = resource.queryParam(key, queryParams.get(key));
 				}
 			}
-			Entity<E> entityRequest = requestBody != null ? Entity.entity(requestBody, mediaType) : null;
+			Entity<E> entityRequest = requestBody != null ? Entity.entity(requestBody, mediaType) : Entity.entity(null, mediaType);
 
-			return resource.request().post(entityRequest, responseType);
+			return resource.request().accept(mediaType).post(entityRequest, responseType);
+		} catch (ResponseProcessingException e) {
+			RestClient.super.handleResponseProcessingException(e);
 		} catch (ProcessingException e) {
 			RestClient.super.handleProcessingException(e);
 		} finally {

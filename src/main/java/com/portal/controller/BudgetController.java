@@ -244,6 +244,7 @@ public class BudgetController implements Serializable {
 		CustomerPageDTO customerPage;
 		try {
 			customerPage = this.customerRepository.getAllByPage(page, pageSizeForCustomers);
+			System.out.println("customer page "+ customerPage);
 			LazyPopulateUtils.populate(lazyCustomers, customerPage);
 		} catch (Exception e) {
 			this.facesHelper.addHeaderForResponse("Backbone-Status", "Error");

@@ -22,4 +22,12 @@ public interface ResourceBundleService {
 	 * @return
 	 */
 	String getMessage(String message, Locale locale);
+
+	/**
+	 * Init ResourceBundleSerive object, for subsequent calls in current session
+	 * scope.
+	 * 
+	 * @param locale
+	 */
+	void init(Locale locale);
 }

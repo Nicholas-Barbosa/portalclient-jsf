@@ -94,7 +94,7 @@
 
 							<p:ajax event="rowSelect"
 								listener="#{budgetController.onCustomerSelected}"
-								process="@this" update=":selectedCustomerName"
+								process="@this" update=":customerData"
 								oncomplete="selectedCustomer()" async="true" />
 
 							<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
@@ -171,20 +171,45 @@
 
 					</h:form>
 
-					<div class="p-grid ui-fluid" id="divSelectedCustomer">
-						<div class="p-col-12 p-md-4">
-							<div class="ui-inputgroup">
-								<p:button icon="pi pi-pencil" styleClass=" ui-button-help"
-									onclick="changeSelectedCustomer()" />
-								<p:inputText placeholder="customer"
-									value="#{budgetController.selectedCustomer.name}"
-									readonly="true" id="selectedCustomerName" />
+					<div id="divSelectedCustomer">
+						<h:form id="customerData">
+
+							<div class="ui-fluid p-formgrid p-grid">
+								<div class="p-field p-col-12 p-md-5">
+									<p:outputLabel value="#{holdMessageView.label('cliente')}" />
+									<p:inputText
+										value="#{budgetController.selectedCustomer.name} -#{budgetController.selectedCustomer.store}"
+										readonly="true" />
+								</div>
+								<div class="p-field p-col-12 p-md-3">
+									<p:outputLabel
+										value="#{holdMessageView.label('nome_fantasia')}"
+										for="fantasyName" />
+									<p:inputText
+										value="#{budgetController.selectedCustomer.fantasyName}"
+										readonly="true" id="fantasyName" />
+								</div>
+								<div class="p-field p-col-12 p-md-2">
+									<p:outputLabel value="CGC" for="cgc" />
+									<p:inputText value="#{budgetController.selectedCustomer.cgc}"
+										readonly="true" id="cgc" />
+								</div>
+								<div class="p-field p-col-12 p-col-12 p-md-5">
+									<p:outputLabel for="endereco"
+										value="#{holdMessageView.label('endereco')}" />
+									<p:inputText id="endereco"
+										value="#{budgetController.selectedCustomer.address}, #{budgetController.selectedCustomer.city}- #{budgetController.selectedCustomer.state}"
+										readonly="true" />
+								</div>
 							</div>
-						</div>
+							<div class="demo-container p-p-4">
+								<p:button icon="pi pi-pencil"
+									styleClass="ui-button-help p-d-block p-mx-auto"
+									onclick="changeSelectedCustomer()" />
+							</div>
 
-						
+						</h:form>
 					</div>
-
 				</div>
 			</div>
 			<div id="divSearchProducts" class="p-col-12">

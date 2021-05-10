@@ -57,6 +57,13 @@
 			<version>6.16.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.eclipse/yasson -->
+		<dependency>
+			<groupId>org.eclipse</groupId>
+			<artifactId>yasson</artifactId>
+			<version>2.0.2</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -66,11 +73,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
-		<owb.version>2.0.20</owb.version>
-		<mojarra.version>2.3.14</mojarra.version>
 	</properties>
 	<build>
-		<finalName>jva</finalName>
+		<finalName>portal</finalName>
 
 	</build>
 </project>

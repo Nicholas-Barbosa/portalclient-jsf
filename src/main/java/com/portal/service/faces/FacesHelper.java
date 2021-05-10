@@ -130,7 +130,7 @@ public class FacesHelper implements Serializable {
 				error(clientId, holderMessage.label("timeout_ler_response"),
 						holderMessage.label("timeout_ler_response_detalhes"));
 			} else
-				throw new RuntimeException(e);
+				e.printStackTrace();
 		}
 	}
 }

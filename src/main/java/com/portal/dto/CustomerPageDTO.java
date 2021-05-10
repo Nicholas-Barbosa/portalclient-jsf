@@ -3,6 +3,7 @@ package com.portal.dto;
 import java.util.Collection;
 import java.util.List;
 
+import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class CustomerPageDTO implements Page<CustomerDTO> {
@@ -12,27 +13,22 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 	 */
 	private static final long serialVersionUID = -1774399950276987596L;
 
-	@JsonbProperty("total_items")
 	private int totalItems;
 
-	@JsonbProperty("total_page")
 	private int totalPages;
 
-	@JsonbProperty("page_size")
 	private int pageSize;
 
-	@JsonbProperty
 	private int page;
 
-	@JsonbProperty("client")
 	private List<CustomerDTO> clients;
 
-	public CustomerPageDTO() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public CustomerPageDTO(int totalItems, int totalPages, int pageSize, int page, List<CustomerDTO> clients) {
+	@JsonbCreator
+	public CustomerPageDTO(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPages,
+			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
+			@JsonbProperty("client") List<CustomerDTO> clients) {
 		super();
+		System.out.println("creator!");
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
 		this.pageSize = pageSize;
@@ -46,8 +42,8 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 
 	@Override
 	public String toString() {
-		return "GssResponseClientsDTO [totalItems=" + totalItems + ", totalPages=" + totalPages + ", pageSize="
-				+ pageSize + ", page=" + page + ", clients=" + clients + "]";
+		return "CustomerPage [totalItems=" + totalItems + ", totalPages=" + totalPages + ", pageSize=" + pageSize
+				+ ", page=" + page + ", clients=" + clients + "]";
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.portal.dto;
 
 import java.io.Serializable;
 
+import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class CustomerDTO implements Serializable {
@@ -10,34 +11,25 @@ public class CustomerDTO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 5152498286178192330L;
-	@JsonbProperty
 	private String address;
-	@JsonbProperty
+
 	private String code;
-	@JsonbProperty
 	private String store;
-	@JsonbProperty
 	private String state;
-	@JsonbProperty
 	private String cgc;
-	@JsonbProperty
 	private String blocked;
-	@JsonbProperty
 	private String name;
 
-	@JsonbProperty("fantasy_name")
 	private String fantasyName;
-	@JsonbProperty
 	private String city;
-	@JsonbProperty
 	private String table;
 
-	public CustomerDTO() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public CustomerDTO(String address, String code, String store, String state, String cgc, String blocked, String name,
-			String fantasyName, String city, String table) {
+	@JsonbCreator
+	public CustomerDTO(@JsonbProperty("address") String address, @JsonbProperty("code") String code,
+			@JsonbProperty("store") String store, @JsonbProperty("state") String state,
+			@JsonbProperty("cgc") String cgc, @JsonbProperty("blocked") String blocked,
+			@JsonbProperty("name") String name, @JsonbProperty("fantasy_name") String fantasyName,
+			@JsonbProperty("city") String city, @JsonbProperty("table") String table) {
 		super();
 		this.address = address;
 		this.code = code;

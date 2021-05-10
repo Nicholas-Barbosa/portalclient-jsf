@@ -16,6 +16,7 @@ import com.portal.cdi.qualifier.Simple;
 import com.portal.client.rest.RestClient;
 import com.portal.dto.LoginForm;
 import com.portal.dto.LoginGssResponseDTO;
+import com.portal.properties.PropertiesReader;
 import com.portal.security.UserPropertyHolder;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
@@ -29,33 +30,38 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	private static final long serialVersionUID = -6233748924596132481L;
 	private final RestClient restClient;
 	private final UserPropertyHolder userPropertyHolder;
+	private final PropertiesReader propertiesReader;
 
 	public MainAuthenticationRepository() {
-		this(null, null);
+		this(null, null, null);
 	}
 
 	@Inject
-	public MainAuthenticationRepository(@Simple RestClient restClient, UserPropertyHolder userPropertyHolder) {
+	public MainAuthenticationRepository(@Simple RestClient restClient, UserPropertyHolder userPropertyHolder,
+			PropertiesReader propertiesReader) {
 		super();
 		this.restClient = restClient;
 		this.userPropertyHolder = userPropertyHolder;
+		this.propertiesReader = propertiesReader;
 	}
 
 	@Override
 	public void login(LoginForm loginForm) throws SocketTimeoutException, ConnectException, IllegalArgumentException,
 			TimeoutException, SocketException {
 		// TODO Auto-generated method stub
-		System.out.println("Login!");
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("grant_type", "password");
 		queryParams.put("password", loginForm.getPassword());
 		queryParams.put("username", loginForm.getUsername());
-		LoginGssResponseDTO doPost = restClient.doPost("http://192.168.0.201:8090/rest/api/oauth2/v1/token",
-				LoginGssResponseDTO.class, queryParams, null, null, MediaType.APPLICATION_JSON_TYPE);
+
+		String loginUrl = String.format("%s/%s", propertiesReader.getProperty("orcamento_api_url_teste"),
+				"api/oauth2/v1/token");
+		
+		LoginGssResponseDTO doPost = restClient.doPost(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
+				MediaType.APPLICATION_JSON_TYPE);
 		ServiceApi service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
-				"http://192.168.0.201:8090/rest", "v1/token", TokenType.Bearer, doPost.getAccessToken(),
-				doPost.getRefreshToken(), "password", "default", 1l, TimeUnit.HOURS);
-		System.out.println("service " + doPost);
+				propertiesReader.getProperty("orcamento_api_url_teste"), "v1/token", TokenType.Bearer,
+				doPost.getAccessToken(), doPost.getRefreshToken(), "password", "default", 1l, TimeUnit.HOURS);
 		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", service);
 
 	}

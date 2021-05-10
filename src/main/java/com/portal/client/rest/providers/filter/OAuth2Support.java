@@ -6,7 +6,9 @@ import javax.annotation.Priority;
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.ext.Provider;
 
+@Provider
 @Priority(10)
 public final class OAuth2Support implements ClientRequestFilter {
 
