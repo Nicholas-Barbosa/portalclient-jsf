@@ -16,16 +16,16 @@ import javax.ws.rs.client.ClientResponseContext;
 import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+
 @Provider
 @Priority(0)
 public class ExceptionLauncherFilter implements ClientResponseFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-		System.out.println("respinse status " + responseContext.getStatus());
 		switch (responseContext.getStatus()) {
 		case 404:
-			throw new NotFoundException();
+			throw new  NotFoundException();
 		case 500:
 			throw new InternalServerErrorException();
 		case 403:

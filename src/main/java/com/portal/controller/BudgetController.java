@@ -6,11 +6,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -28,17 +26,16 @@ import org.primefaces.model.LazyDataModel;
 import com.portal.dto.BudgetEstimateDTO;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.CustomerDTO;
-import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.ItemQuoteBudgetForm;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
+import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.dto.SearchProductForm;
 import com.portal.repository.BudgetRepository;
 import com.portal.repository.CustomerRepository;
 import com.portal.repository.ProductRepository;
 import com.portal.service.faces.FacesHelper;
 import com.portal.service.view.HoldMessageView;
-import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.ui.lazy.datamodel.ProductLazyDataModel;
 
@@ -53,9 +50,7 @@ public class BudgetController implements Serializable {
 
 	private transient UIData uiCustomerDataTable;
 
-	private CustomerDTO selectedCustomer;
-
-	private LazyDataModel<CustomerDTO> lazyCustomers;
+	private CustomerDTO customerDTO;
 
 	private LazyDataModel<ProductDTO> lazyProducts;
 
@@ -69,7 +64,7 @@ public class BudgetController implements Serializable {
 
 	private final BudgetRepository budgetRepository;
 
-	private String customerCode, customerStore, h5DivLoadCustomers, h5DivLoadProducts;
+	private String h5DivLoadCustomers, h5DivLoadProducts;
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
@@ -84,6 +79,8 @@ public class BudgetController implements Serializable {
 
 	private BudgetEstimateDTO budgetEstimate;
 
+	private SearchCustomerByCodeAndStoreDTO searchCustomerDTO;
+
 	public BudgetController() {
 		this(null, null, null, null, null);
 	}
@@ -93,22 +90,23 @@ public class BudgetController implements Serializable {
 			CustomerRepository customerRepository, ProductRepository productRepository,
 			BudgetRepository budgetRepository) {
 		super();
-
 		this.holderMessage = holderMessage;
 		this.facesHelper = facesService;
 		this.customerRepository = customerRepository;
 		this.productRepository = productRepository;
 		this.budgetRepository = budgetRepository;
+		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
+
 	}
 
 	@PostConstruct
 	public void init() {
 		this.lazyProducts = new ProductLazyDataModel();
-		this.lazyCustomers = new CustomerLazyDataModel();
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
 		this.searchProductForm = new SearchProductForm();
 		this.selectedProducts = new ArrayList<>();
 		this.items = new HashSet<>();
+
 	}
 
 	public void reEditItemQuantity() {
@@ -117,12 +115,11 @@ public class BudgetController implements Serializable {
 	}
 
 	public void generateQuote() {
-		BudgetEstimateForm budgetForm = new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(),
-				items);
+		BudgetEstimateForm budgetForm = new BudgetEstimateForm(customerDTO.getCode(), customerDTO.getStore(), items);
 		try {
 			budgetEstimate = this.budgetRepository.estimate(budgetForm);
 			budgetEstimate.setStTotal();
-			budgetEstimate.setCustomer(selectedCustomer);
+			budgetEstimate.setCustomer(customerDTO);
 			facesHelper.info(null, holderMessage.label("estimativa_orcamento_gerado"), null);
 		} catch (ClientErrorException e) {
 			this.processingEntity = e.getResponse().readEntity(String.class);
@@ -139,31 +136,15 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-	public void initTableCustomers() {
-		fetchCustomers(1);
-	}
-
-	public void onPageCustomerListener(PageEvent pageEvent) {
-		int page = pageEvent.getPage();
-		fetchCustomers(++page);
-	}
-
-	public void findCustomerByCodeAndStore() {
+	public void findCustomerByCode() {
 		try {
-			Optional<CustomerDTO> opCustomer = customerRepository.getByCodeAndStore(customerCode, customerStore);
-			opCustomer.ifPresentOrElse(c -> {
-				LazyPopulateUtils.populateSingleRow(lazyCustomers, c);
-			}, () -> {
-				this.facesHelper.error(null, holderMessage.label("nao_encontrado"), null);
-				((CustomerLazyDataModel) this.lazyCustomers).clearCollection();
-				this.lazyCustomers.setPageSize(0);
-				this.lazyCustomers.setRowCount(0);
-			});
-
+			System.out.println("customer " + customerRepository);
+			Optional<CustomerDTO> maybeCustomer = customerRepository.getByCodeAndStore(searchCustomerDTO);
+			maybeCustomer.ifPresentOrElse(c -> {
+				this.customerDTO = new CustomerDTO(c);
+			}, () -> facesHelper.error(null, holderMessage.label("nao_encontrado"), null));
 		} catch (Exception e) {
-			this.facesHelper.addHeaderForResponse("Backbone-Status", "Error");
 			facesHelper.exceptionMessage().addMessageByException(null, e);
-
 		}
 	}
 
@@ -240,19 +221,6 @@ public class BudgetController implements Serializable {
 
 	}
 
-	private void fetchCustomers(int page) {
-		CustomerPageDTO customerPage;
-		try {
-			customerPage = this.customerRepository.getAllByPage(page, pageSizeForCustomers);
-			System.out.println("customer page "+ customerPage);
-			LazyPopulateUtils.populate(lazyCustomers, customerPage);
-		} catch (Exception e) {
-			this.facesHelper.addHeaderForResponse("Backbone-Status", "Error");
-			facesHelper.exceptionMessage().addMessageByException("formClientTb:dtCustomer", e);
-		}
-
-	}
-
 	/**
 	 * Method triggered by rowSelect ajax event
 	 */
@@ -268,36 +236,12 @@ public class BudgetController implements Serializable {
 		this.uiCustomerDataTable = uiCustomerDataTable;
 	}
 
-	public CustomerDTO getSelectedCustomer() {
-		return selectedCustomer;
-	}
-
-	public void setSelectedCustomer(CustomerDTO selectedCustomer) {
-		this.selectedCustomer = selectedCustomer;
-	}
-
-	public LazyDataModel<CustomerDTO> getLazyCustomers() {
-		return lazyCustomers;
+	public CustomerDTO getCustomerDTO() {
+		return customerDTO;
 	}
 
 	public LazyDataModel<ProductDTO> getLazyProducts() {
 		return lazyProducts;
-	}
-
-	public String getCustomerCode() {
-		return customerCode;
-	}
-
-	public void setCustomerCode(String customerCode) {
-		this.customerCode = customerCode;
-	}
-
-	public String getCustomerStore() {
-		return customerStore;
-	}
-
-	public void setCustomerStore(String customerStore) {
-		this.customerStore = customerStore;
 	}
 
 	public Integer getPageSizeForCustomers() {
@@ -350,5 +294,9 @@ public class BudgetController implements Serializable {
 
 	public String getHeaderExceptionDialog() {
 		return headerExceptionDialog;
+	}
+
+	public SearchCustomerByCodeAndStoreDTO getSearchCustomerDTO() {
+		return searchCustomerDTO;
 	}
 }

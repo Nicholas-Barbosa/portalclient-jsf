@@ -11,13 +11,14 @@ import javax.ws.rs.ProcessingException;
 
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
+import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 
 public interface CustomerRepository extends Serializable {
 
 	CustomerPageDTO getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
 			ProcessingException,  TimeoutException, SocketException;
 
-	Optional<CustomerDTO> getByCodeAndStore(String code, String store) throws SocketTimeoutException, ConnectException,
+	Optional<CustomerDTO> getByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO) throws SocketTimeoutException, ConnectException,
 			ProcessingException,TimeoutException, SocketException;
 
 }

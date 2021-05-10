@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 
-import javax.annotation.Priority;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
@@ -40,7 +39,6 @@ public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
 		try {
-			System.out.println("Readfrom");
 			return jsonReader.fromJson(entityStream, type);
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);

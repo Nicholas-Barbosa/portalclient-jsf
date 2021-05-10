@@ -19,197 +19,73 @@
 
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
-		<div class="grid-demo" id="divLoadCustomers">
-			<div class="p-grid p-dir-col">
-				<div class="p-col-12">
-					<div class="card">
-						<h5>
-							<h:outputText value="#{budgetController.h5DivLoadCustomers}"
-								id="msgDivLoadCustomers" />
-						</h5>
-						<div class="p-grid">
-							<div class="p-col">
-								<i class="pi pi-spin pi-spinner" style="font-size: 8rem"
-									id="spinnerCustomer"></i>
-								<p:messages id="messageCustomer" globalOnly="false"
-									showDetail="true" for="formClientTb:dtCustomer" />
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="tryAgain">
-			<p:button value="#{holdMessageView.label('tentar_novamente')}"
-				onclick="initTablesCustomer()" />
-		</div>
-		<div class="p-grid table-demo" id="budgetForm">
+
+		<div class="p-grid">
 			<div class="p-col-12">
 				<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
 				<div class="card">
-					<h:form id="formClientTb">
-						<h5>
-							<h:outputText id="titleDtCustomer"
-								value="#{holdMessageView.label('selecione_cliente')}" />
-						</h5>
 
-						<p:remoteCommand name="rcCustomers"
-							action="#{budgetController.initTableCustomers}" value="remote"
-							update="@form messageCustomer msgDivLoadCustomers"
-							process="@this" />
+					<h:form>
+						<div class="p-formgroup-inline">
 
-						<p:dataTable var="customer"
-							value="#{budgetController.lazyCustomers}"
-							rowKey="#{customer.cgc}"
-							selection="#{budgetController.selectedCustomer}"
-							selectionMode="single" paginator="true"
-							rows="#{budgetController.pageSizeForCustomers}"
-							paginatorAlwaysVisible="false" id="dtCustomer"
-							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}">
-
-							<f:facet name="header">
-								<div class="customers-table-header">
-									<span style="font-weight: bold">CUSTOMERS</span>
-
-									<div class="ui-button-group">
-										<p:button icon="pi pi-search"
-											styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
-											onclick="PF('searchCustomer').show()" />
-
-										<p:commandButton icon="pi pi-refresh"
-											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
-											action="#{budgetController.initTableCustomers}"
-											update="@form messageCustomer msgDivLoadCustomers"
-											onstart="onStartProcessInDtCustomer()"
-											oncomplete="onCompleteProcessInDtCustomer(xhr)"
-											process="@this" />
-									</div>
-								</div>
-							</f:facet>
-
-							<p:ajax event="page"
-								listener="#{budgetController.onPageCustomerListener}"
-								process="@this" update="messageCustomer msgDivLoadCustomers"
-								oncomplete="onCompletePageCustomers(xhr)" />
-
-							<p:ajax event="rowSelect"
-								listener="#{budgetController.onCustomerSelected}"
-								process="@this" update=":customerData"
-								oncomplete="selectedCustomer()" async="true" />
-
-							<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
-								<h:outputText value="#{customer.fantasyName}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('store')}">
-								<h:outputText value="#{customer.store}" />
-							</p:column>
-
-							<p:column headerText="#{holdMessageView.label('cidade')}">
-								<h:outputText value="#{customer.city}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('tabela')}">
-								<h:outputText value="#{customer.table}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('endereco')}">
-								<h:outputText value="#{customer.address}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('estado')}">
-								<h:outputText value="#{customer.state}" />
-							</p:column>
-							<p:column headerText="cgc">
-								<h:outputText value="#{customer.cgc}" />
-							</p:column>
-
-							<p:column headerText="#{holdMessageView.label('nome')}">
-								<h:outputText value="#{customer.name}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('codigo')}">
-								<h:outputText value="#{customer.code}" />
-							</p:column>
-
-							<p:column headerText="#{holdMessageView.label('bloqueado')}">
-								<h:outputText value="#{customer.blocked}" />
-							</p:column>
-
-						</p:dataTable>
-
-
-						<p:blockUI block="dtCustomer" trigger="dtCustomer">
-							<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
-						</p:blockUI>
-
-						<p:dialog modal="true"
-							header="#{holdMessageView.label('procurar_cliente')}"
-							widgetVar="searchCustomer">
-							<div class="p-formgroup-inline">
-								<div class="p-field">
-									<p:inputText id="code" type="text" placeholder="Code"
-										value="#{budgetController.customerCode}">
-										<f:validateLength minimum="1" />
-									</p:inputText>
-									<p:message for="code" display="icon" />
-
-								</div>
-								<div class="p-field">
-									<p:inputText id="store" type="text" placeholder="Store"
-										value="#{budgetController.customerStore}">
-										<f:validateLength minimum="1" />
-									</p:inputText>
-									<p:message for="store" id="msgLastname" display="icon" />
-								</div>
-								<p:commandButton value="#{holdMessageView.label('enviar')}"
-									icon="pi pi-send"
-									action="#{budgetController.findCustomerByCodeAndStore}"
-									update="@form growl" onstart="onStartFindCustomer()"
-									oncomplete="onCompleteProcessInDtCustomer(xhr)"
-									validateClient="true" />
+							<div class="p-field ">
+								<p:outputLabel value="#{holdMessageView.label('codigo')}"
+									for="customerCode" />
+								<p:inputText value="#{budgetController.searchCustomerDTO.code}"
+									onkeypress="if(event.keyCode == 13){
+										findCustomerByCodeAndStore()
+									}"
+									id="customerCode" maxlength="6" />
+								<p:message for="@previous" />
 							</div>
+							<div class="p-field ">
+								<p:outputLabel value="#{holdMessageView.label('store')}"
+									for="customerStore" />
+								<p:inputText value="#{budgetController.searchCustomerDTO.store}"
+									onkeypress="if(event.keyCode == 13){
+										findCustomerByCodeAndStore()
+									}"
+									id="customerStore" />
+								<p:message for="@previous" />
+							</div>
+							<p:remoteCommand process="@form" update="@form growl"
+								action="#{budgetController.findCustomerByCode}"
+								name="findCustomerByCodeAndStore" />
 
-						</p:dialog>
+						</div>
+					</h:form>
+					<h:form id="customerDTO">
+						<div class="ui-fluid p-formgrid p-grid">
 
+
+							<div class="p-field p-col-12 p-md-5">
+								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
+								<p:inputText
+									value="#{budgetController.customerDTO.name} -#{budgetController.customerDTO.store}"
+									readonly="true" />
+							</div>
+							<div class="p-field p-col-12 p-md-3">
+								<p:outputLabel value="#{holdMessageView.label('nome_fantasia')}"
+									for="fantasyName" />
+								<p:inputText value="#{budgetController.customerDTO.fantasyName}"
+									readonly="true" id="fantasyName" />
+							</div>
+							<div class="p-field p-col-12 p-md-2">
+								<p:outputLabel value="CGC" for="cgc" />
+								<p:inputText value="#{budgetController.customerDTO.cgc}"
+									readonly="true" id="cgc" />
+							</div>
+							<div class="p-field p-col-12 p-col-12 p-md-5">
+								<p:outputLabel for="endereco"
+									value="#{holdMessageView.label('endereco')}" />
+								<p:inputText id="endereco"
+									value="#{budgetController.customerDTO.address}, #{budgetController.customerDTO.city}- #{budgetController.customerDTO.state}"
+									readonly="true" />
+							</div>
+						</div>
 
 
 					</h:form>
-
-					<div id="divSelectedCustomer">
-						<h:form id="customerData">
-
-							<div class="ui-fluid p-formgrid p-grid">
-								<div class="p-field p-col-12 p-md-5">
-									<p:outputLabel value="#{holdMessageView.label('cliente')}" />
-									<p:inputText
-										value="#{budgetController.selectedCustomer.name} -#{budgetController.selectedCustomer.store}"
-										readonly="true" />
-								</div>
-								<div class="p-field p-col-12 p-md-3">
-									<p:outputLabel
-										value="#{holdMessageView.label('nome_fantasia')}"
-										for="fantasyName" />
-									<p:inputText
-										value="#{budgetController.selectedCustomer.fantasyName}"
-										readonly="true" id="fantasyName" />
-								</div>
-								<div class="p-field p-col-12 p-md-2">
-									<p:outputLabel value="CGC" for="cgc" />
-									<p:inputText value="#{budgetController.selectedCustomer.cgc}"
-										readonly="true" id="cgc" />
-								</div>
-								<div class="p-field p-col-12 p-col-12 p-md-5">
-									<p:outputLabel for="endereco"
-										value="#{holdMessageView.label('endereco')}" />
-									<p:inputText id="endereco"
-										value="#{budgetController.selectedCustomer.address}, #{budgetController.selectedCustomer.city}- #{budgetController.selectedCustomer.state}"
-										readonly="true" />
-								</div>
-							</div>
-							<div class="demo-container p-p-4">
-								<p:button icon="pi pi-pencil"
-									styleClass="ui-button-help p-d-block p-mx-auto"
-									onclick="changeSelectedCustomer()" />
-							</div>
-
-						</h:form>
-					</div>
 				</div>
 			</div>
 			<div id="divSearchProducts" class="p-col-12">
@@ -607,7 +483,6 @@
 		<script type="text/javascript">
 			//<![CDATA[
 			$("#error").hide();
-			$("#divSelectedCustomer").hide();
 			$("#tryAgain").hide();
 			$("#divSearchProducts").hide();
 			$("#ItemContainarLoader").hide();
@@ -761,7 +636,7 @@
 			}
 
 			
-			initTablesCustomer();
+			
 		//	]]>
 		</script>
 	</ui:define>

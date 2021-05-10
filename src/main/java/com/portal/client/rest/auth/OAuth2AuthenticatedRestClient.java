@@ -79,7 +79,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 			}
 
-			Response rawResponse = resource.request().accept(MediaType.APPLICATION_JSON).get();
+			Response rawResponse = resource.request().accept(media).get();
 			T t = rawResponse.readEntity(responseType);
 			return t;
 		} catch (ResponseProcessingException e) {
@@ -89,9 +89,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 				return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
 			}
 			handleProcessingException(e);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
+		}  finally {
 			client.close();
 		}
 		return null;

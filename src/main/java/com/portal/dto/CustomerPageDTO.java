@@ -1,5 +1,6 @@
 package com.portal.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -28,16 +29,15 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
 			@JsonbProperty("client") List<CustomerDTO> clients) {
 		super();
-		System.out.println("creator!");
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
 		this.pageSize = pageSize;
 		this.page = page;
-		this.clients = clients;
+		this.clients = new ArrayList<>(clients);
 	}
 
 	public List<CustomerDTO> getClients() {
-		return clients;
+		return new ArrayList<>(clients);
 	}
 
 	@Override

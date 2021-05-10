@@ -61,14 +61,14 @@ public interface RestClient extends Serializable {
 			throw new ConnectException(e.getCause().getMessage());
 		} else if (e.getCause() instanceof SocketException) {
 			throw new SocketException();
+		} else if (e.getCause() instanceof NotFoundException) {
+			throw new NotFoundException(((NotFoundException) e.getCause()).getResponse());
 		}
 
 	}
 
 	default void handleResponseProcessingException(ResponseProcessingException e) {
-		if (e.getCause() instanceof NotFoundException) {
-			throw new NotFoundException(((NotFoundException) e.getCause()).getResponse());
-		} else if (e.getCause() instanceof NotAuthorizedException) {
+		if (e.getCause() instanceof NotAuthorizedException) {
 			throw new NotAuthorizedException(((NotFoundException) e.getCause()).getResponse());
 		} else if (e.getCause() instanceof ClientErrorException) {
 			throw new ClientErrorException(((ClientErrorException) e.getCause()).getResponse());
