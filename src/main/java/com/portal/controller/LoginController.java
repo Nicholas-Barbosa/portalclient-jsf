@@ -4,15 +4,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.MediaType;
 
-import com.portal.client.rest.providers.message.reader.JsonObjectMessageReaderWriter;
-import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.LoginForm;
-import com.portal.dto.LoginGssResponseDTO;
 import com.portal.repository.AuthenticationRepository;
 import com.portal.service.faces.FacesHelper;
 import com.portal.service.view.HoldMessageView;

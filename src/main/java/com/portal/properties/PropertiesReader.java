@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import javax.inject.Singleton;
+import javax.ejb.Singleton;
 
 @Singleton
 public class PropertiesReader {

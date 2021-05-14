@@ -7,14 +7,14 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class BudgetEstimateForm {
 
-	@JsonbProperty
+	@JsonbProperty("client")
 	private String client;
-	@JsonbProperty
+	@JsonbProperty("store")
 	private String store;
-	@JsonbProperty
-	private Set<ItemQuoteBudgetForm> items;
+	@JsonbProperty("items")
+	private Set<ItemEstimateBudgetForm> items;
 
-	public BudgetEstimateForm(String client, String store, Set<ItemQuoteBudgetForm> items) {
+	public BudgetEstimateForm(String client, String store, Set<ItemEstimateBudgetForm> items) {
 		super();
 		this.client = client;
 		this.store = store;
@@ -29,7 +29,7 @@ public class BudgetEstimateForm {
 		return store;
 	}
 
-	public Set<ItemQuoteBudgetForm> getItems() {
+	public Set<ItemEstimateBudgetForm> getItems() {
 		return new HashSet<>(items);
 	}
 

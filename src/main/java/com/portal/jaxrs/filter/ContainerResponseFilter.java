@@ -14,14 +14,12 @@ public class ContainerResponseFilter implements ContainerRequestFilter, javax.ws
 
 	@Override
 	public void filter(ContainerRequestContext requestContext) throws IOException {
-		System.out.println("container request filter!");
 
 	}
 
 	@Override
 	public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext)
 			throws IOException {
-		System.out.println("Response filter!");
 		
 	}
 

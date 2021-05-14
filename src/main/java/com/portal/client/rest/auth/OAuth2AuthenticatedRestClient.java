@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.providers.filter.OAuth2Support;
+import com.portal.exception.IllegalResponseStatusException;
 import com.portal.security.UserPropertyHolder;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
@@ -59,7 +60,6 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 		Client client = null;
 		try {
-
 			OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
 			client = getClientFollowingMediaType(media);
 			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
@@ -85,12 +85,15 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 		} catch (ResponseProcessingException e) {
 			handleResponseProcessingException(e);
 		} catch (ProcessingException e) {
-			if (e.getCause() instanceof IllegalArgumentException) {
+			if (e.getCause() instanceof IllegalArgumentException
+					|| e.getCause() instanceof IllegalResponseStatusException) {
 				return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
+
 			}
 			handleProcessingException(e);
-		}  finally {
-			client.close();
+		} finally {
+			if (client != null)
+				client.close();
 		}
 		return null;
 
@@ -115,18 +118,20 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 			WebTarget resource = client.target(service.getBasePath()).path(endpoint).register(oAuth2Provider);
 
-			return resource.request().post(Entity.entity(requestBody, media), responseType);
+			return resource.request().accept(media).post(Entity.entity(requestBody, media), responseType);
 		} catch (ResponseProcessingException e) {
 			handleResponseProcessingException(e);
 		} catch (ProcessingException e) {
-			if (e.getCause() instanceof IllegalArgumentException) {
+			if (e.getCause() instanceof IllegalArgumentException
+					|| e.getCause() instanceof IllegalResponseStatusException) {
 				return this.post(serviceApiKey, endpoint, responseType, queryParams, pathParams, media, requestBody);
+
 			}
+
 			handleProcessingException(e);
 
-		} catch (Exception e) {
-			e.printStackTrace();
 		} finally {
+			System.out.println("Close client");
 			client.close();
 		}
 		return null;

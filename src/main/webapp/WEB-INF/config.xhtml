@@ -20,7 +20,7 @@
                             <f:selectItem itemLabel="Light" itemValue="light" />
                             <f:selectItem itemLabel="Dark" itemValue="dark" />
                             <f:selectItem itemLabel="Dim" itemValue="dim" />
-                            <p:ajax onstart="PrimeFaces.RainConfigurator.beforeResourceChange()" update="config-form logolink footerlogolink  rightpanellogo"/>
+                            <p:ajax onstart="PrimeFaces.RainConfigurator.beforeResourceChange()" update="config-form  footerlogolink  rightpanellogo"/>
                         </p:selectOneRadio>
                     </div>
                 </p:outputPanel>
@@ -64,7 +64,7 @@
                             <f:selectItem itemLabel="Dark" itemValue="dark" itemDisabled="#{userStylePreferences.darkMode == 'dim'}" />
                             <f:selectItem itemLabel="Dim" itemValue="dim" itemDisabled="#{userStylePreferences.darkMode == 'dark'}"  />
                             <f:selectItem itemLabel="Colored" itemValue="colored" />
-                            <p:ajax update="logolink config-form"/>
+                            <p:ajax update="config-form"/>
                         </p:selectOneRadio>
                     </div>
                 </p:outputPanel>

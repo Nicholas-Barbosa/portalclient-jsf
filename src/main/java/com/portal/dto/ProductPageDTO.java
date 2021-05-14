@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class ProductPageDTO implements Page<ProductDTO> {
@@ -12,24 +13,25 @@ public class ProductPageDTO implements Page<ProductDTO> {
 	 * 
 	 */
 	private static final long serialVersionUID = 6631658017840393068L;
-	@JsonbProperty("total_items")
+
 	private int totalItems;
-	@JsonbProperty("total_pages")
+
 	private int totalPages;
-	@JsonbProperty("page_size")
+
 	private int pageSize;
-	@JsonbProperty
+
 	private int page;
 
-	@JsonbProperty
 	private List<ProductDTO> products;
 
 	public ProductPageDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductPageDTO(Integer totalItems, Integer totalPages, Integer pageSize, Integer page,
-			List<ProductDTO> products) {
+	@JsonbCreator
+	public ProductPageDTO(@JsonbProperty("total_items") Integer totalItems,
+			@JsonbProperty("total_page") Integer totalPages, @JsonbProperty("page_size") Integer pageSize,
+			@JsonbProperty("page") Integer page, @JsonbProperty("products") List<ProductDTO> products) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
@@ -64,7 +66,6 @@ public class ProductPageDTO implements Page<ProductDTO> {
 
 	@Override
 	public Collection<ProductDTO> getContent() {
-
 		return new ArrayList<>(products);
 	}
 

@@ -60,11 +60,33 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 			Map<String, Object> pathParams = getMapInstance();
 			pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
 			pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
-			return Optional.of(restClient.getForEntity("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
-					NoPageCustomerResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON_TYPE).getClients().get(0));
+			return Optional
+					.of(restClient
+							.getForEntity("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
+									NoPageCustomerResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON_TYPE)
+							.getClients().get(0));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}
+	}
+
+	@Override
+	public Optional<CustomerPageDTO> getByName(String name, int page, int pageSize) throws SocketTimeoutException,
+			ConnectException, ProcessingException, IllegalArgumentException, SocketException, TimeoutException {
+		try {
+			Map<String, Object> queryParams = getMapInstance();
+			queryParams.put("page", page);
+			queryParams.put("pageSize", pageSize);
+			queryParams.put("searchKey", name);
+			Optional<CustomerPageDTO> cPage = Optional.of(restClient.getForEntity("ORCAMENTO_API", "clients",
+					CustomerPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE));
+			
+			return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();
+		} catch (NotFoundException e) {
+			System.out.println("Not found!");
+			return Optional.empty();
+		}
+
 	}
 
 	private Map<String, Object> getMapInstance() {

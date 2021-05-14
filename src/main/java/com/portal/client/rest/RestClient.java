@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.rest.providers.filter.ExceptionLauncherFilter;
 import com.portal.client.rest.providers.message.reader.JsonObjectMessageReaderWriter;
+import com.portal.exception.IllegalResponseStatusException;
 
 public interface RestClient extends Serializable {
 
@@ -51,6 +52,7 @@ public interface RestClient extends Serializable {
 
 	default void handleProcessingException(ProcessingException e)
 			throws SocketTimeoutException, TimeoutException, IllegalArgumentException, SocketException {
+		System.out.println("Handle processing exception");
 		if (e.getCause() instanceof SocketTimeoutException) {
 			throw new SocketTimeoutException(e.getCause().getMessage());
 		} else if (e.getCause() instanceof TimeoutException) {
@@ -63,17 +65,27 @@ public interface RestClient extends Serializable {
 			throw new SocketException();
 		} else if (e.getCause() instanceof NotFoundException) {
 			throw new NotFoundException(((NotFoundException) e.getCause()).getResponse());
-		}
+		} else if (e.getCause() instanceof InternalServerErrorException) {
+			throw new InternalServerErrorException(((InternalServerErrorException) e.getCause()).getResponse());
+		} else if (e.getCause() instanceof ClientErrorException) {
+			throw new ClientErrorException(((ClientErrorException) e.getCause()).getResponse());
+		} else
+			throw e;
 
 	}
 
 	default void handleResponseProcessingException(ResponseProcessingException e) {
+		System.out.println("Handle response processing exdception " + e.getCause());
 		if (e.getCause() instanceof NotAuthorizedException) {
-			throw new NotAuthorizedException(((NotFoundException) e.getCause()).getResponse());
+			throw new NotAuthorizedException(((NotAuthorizedException) e.getCause()).getResponse());
 		} else if (e.getCause() instanceof ClientErrorException) {
 			throw new ClientErrorException(((ClientErrorException) e.getCause()).getResponse());
 		} else if (e.getCause() instanceof InternalServerErrorException) {
 			throw new InternalServerErrorException();
-		}
+		} else if (e.getCause() instanceof IllegalResponseStatusException) {
+			throw new IllegalResponseStatusException();
+
+		} else
+			throw e;
 	}
 }

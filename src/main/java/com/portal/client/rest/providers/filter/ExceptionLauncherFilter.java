@@ -17,15 +17,21 @@ import javax.ws.rs.client.ClientResponseFilter;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
+import com.portal.exception.IllegalResponseStatusException;
+
 @Provider
-@Priority(0)
 public class ExceptionLauncherFilter implements ClientResponseFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
+		if (responseContext.getStatus() == -1) {
+			System.err.println(requestContext.getUri().toString() + " retornou -1!");
+			responseContext.getHeaders().forEach((k, v) -> System.err.println(k + ":" + v));
+		}
+
 		switch (responseContext.getStatus()) {
 		case 404:
-			throw new  NotFoundException();
+			throw new NotFoundException();
 		case 500:
 			throw new InternalServerErrorException();
 		case 403:
@@ -36,6 +42,8 @@ public class ExceptionLauncherFilter implements ClientResponseFilter {
 		case 409:
 			Response response = Response.status(409).entity(readResponse(responseContext.getEntityStream())).build();
 			throw new ClientErrorException(response);
+		case -1:
+			throw new IllegalResponseStatusException();
 		}
 
 	}

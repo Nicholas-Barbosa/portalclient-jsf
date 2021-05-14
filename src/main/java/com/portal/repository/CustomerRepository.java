@@ -15,10 +15,12 @@ import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 
 public interface CustomerRepository extends Serializable {
 
-	CustomerPageDTO getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
-			ProcessingException,  TimeoutException, SocketException;
+	CustomerPageDTO getAllByPage(int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, ProcessingException, TimeoutException, SocketException;
 
-	Optional<CustomerDTO> getByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO) throws SocketTimeoutException, ConnectException,
-			ProcessingException,TimeoutException, SocketException;
+	Optional<CustomerDTO> getByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
+			throws SocketTimeoutException, ConnectException, ProcessingException, TimeoutException, SocketException;
 
+	Optional<CustomerPageDTO> getByName(String name, int page, int pageSize) throws SocketTimeoutException,
+			ConnectException, ProcessingException, IllegalArgumentException, SocketException, TimeoutException;
 }

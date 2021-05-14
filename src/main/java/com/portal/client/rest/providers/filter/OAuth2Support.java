@@ -22,6 +22,5 @@ public final class OAuth2Support implements ClientRequestFilter {
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
 		requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + this.token);
-
 	}
 }

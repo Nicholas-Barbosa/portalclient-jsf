@@ -24,6 +24,10 @@ public class CustomerDTO implements Serializable {
 	private String city;
 	private String table;
 
+	public CustomerDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@JsonbCreator
 	public CustomerDTO(@JsonbProperty("address") String address, @JsonbProperty("code") String code,
 			@JsonbProperty("store") String store, @JsonbProperty("state") String state,
@@ -46,7 +50,6 @@ public class CustomerDTO implements Serializable {
 		this(customerDTO.address, customerDTO.code, customerDTO.store, customerDTO.state, customerDTO.cgc,
 				customerDTO.blocked, customerDTO.name, customerDTO.fantasyName, customerDTO.city, customerDTO.table);
 	}
-	
 
 	public String getAddress() {
 		return address;

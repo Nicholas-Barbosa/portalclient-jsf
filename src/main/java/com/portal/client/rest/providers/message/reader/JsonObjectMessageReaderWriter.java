@@ -57,6 +57,7 @@ public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream)
 			throws IOException, WebApplicationException {
 		try {
+			System.out.println("Write!");
 			jsonReader.toJson(entityStream);
 		} catch (Exception e) {
 			throw new ProcessingException("Error while serializing Object or covariant: " + type.getName(), e);

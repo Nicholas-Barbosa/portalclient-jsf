@@ -2,9 +2,11 @@ package com.portal.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class BudgetEstimateDTO implements Serializable {
@@ -14,13 +16,10 @@ public class BudgetEstimateDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 4987730225653316397L;
 
-	@JsonbProperty("liquid_order_value")
 	private BigDecimal liquidValue;
 
-	@JsonbProperty("gross_order_value")
 	private BigDecimal grossValue;
 
-	@JsonbProperty("estimate")
 	private List<EstimatedValueDTO> estimatedValues;
 
 	private BigDecimal stTotal;
@@ -32,13 +31,29 @@ public class BudgetEstimateDTO implements Serializable {
 	}
 
 	public BudgetEstimateDTO(BigDecimal liquidValue, BigDecimal grossValue, List<EstimatedValueDTO> estimatedValues,
-			BigDecimal stTotal, CustomerDTO customerDTO) {
+			BigDecimal stTotal, CustomerDTO customer) {
+		super();
+		this.liquidValue = liquidValue;
+		this.grossValue = grossValue;
+		this.estimatedValues = new ArrayList<>(estimatedValues);
+		this.stTotal = stTotal;
+		this.customer = customer==null? new CustomerDTO() : new CustomerDTO(customer);
+	}
+
+	@JsonbCreator
+	public BudgetEstimateDTO(@JsonbProperty("liquid_order_value") BigDecimal liquidValue,
+			@JsonbProperty("gross_order_value") BigDecimal grossValue,
+			@JsonbProperty("estimate") List<EstimatedValueDTO> estimatedValues) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
 		this.estimatedValues = estimatedValues;
-		this.stTotal = stTotal;
-		this.customer = new CustomerDTO(customer);
+		setStTotal();
+
+	}
+
+	public BudgetEstimateDTO(BudgetEstimateDTO estimate) {
+		this(estimate.liquidValue, estimate.grossValue, estimate.estimatedValues, estimate.stTotal, estimate.customer);
 	}
 
 	public void reCalculateTotales() {
@@ -86,34 +101,45 @@ public class BudgetEstimateDTO implements Serializable {
 
 	public static class EstimatedValueDTO {
 
-		@JsonbProperty("unit_gross_value")
 		private BigDecimal unitGrossValue;
 
-		@JsonbProperty("total_gross_value")
 		private BigDecimal totalGrossValue;
 
-		@JsonbProperty("product_code")
 		private String productCode;
 
-		@JsonbProperty("commercial_code")
 		private String commercialCode;
 
-		@JsonbProperty("unit_price")
 		private BigDecimal unitPrice;
 
-		@JsonbProperty("quantity")
 		private int quantity;
 
-		@JsonbProperty("total_price")
 		private BigDecimal totale;
 
-		@JsonbProperty("st_value")
 		private BigDecimal stValue;
 
 		private BigDecimal unitStValue;
 
 		public EstimatedValueDTO() {
 			// TODO Auto-generated constructor stub
+		}
+
+		@JsonbCreator
+		public EstimatedValueDTO(@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
+				@JsonbProperty("total_gross_value") BigDecimal totalGrossValue,
+				@JsonbProperty("product_code") String productCode,
+				@JsonbProperty("commercial_code") String commercialCode,
+				@JsonbProperty("unit_price") BigDecimal unitPrice, @JsonbProperty("quantity") int quantity,
+				@JsonbProperty("total_price") BigDecimal totale, @JsonbProperty("st_value") BigDecimal stValue) {
+			super();
+			this.unitGrossValue = unitGrossValue;
+			this.totalGrossValue = totalGrossValue;
+			this.productCode = productCode;
+			this.commercialCode = commercialCode;
+			this.unitPrice = unitPrice;
+			this.quantity = quantity;
+			this.totale = totale;
+			this.stValue = stValue;
+			discoverUnitStValue();
 		}
 
 		public BigDecimal getUnitGrossValue() {

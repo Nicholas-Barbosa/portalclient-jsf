@@ -9,6 +9,7 @@ import java.util.concurrent.TimeoutException;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.ws.rs.InternalServerErrorException;
 
 import com.portal.service.view.HoldMessageView;
 
@@ -86,8 +87,8 @@ public class FacesHelper implements Serializable {
 		return this;
 	}
 
-	public FacesHelper addHeaderForResponse(String name, String value) {
-		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value);
+	public FacesHelper addHeaderForResponse(String name, Object value) {
+		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value.toString());
 		return this;
 	}
 
@@ -129,6 +130,8 @@ public class FacesHelper implements Serializable {
 			} else if (e instanceof TimeoutException || e instanceof SocketTimeoutException) {
 				error(clientId, holderMessage.label("timeout_ler_response"),
 						holderMessage.label("timeout_ler_response_detalhes"));
+			} else if (e instanceof InternalServerErrorException) {
+				error(clientId, holderMessage.label("erro_servidor_destino"), null);
 			} else
 				e.printStackTrace();
 		}

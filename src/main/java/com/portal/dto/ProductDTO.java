@@ -1,25 +1,28 @@
 package com.portal.dto;
 
+import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 public class ProductDTO {
 
-	@JsonbProperty
 	private String code;
-	@JsonbProperty("description_product_type")
+
 	private String descriptionType;
-	@JsonbProperty("commercial_code")
+
 	private String commercialCode;
-	@JsonbProperty("product_type")
+
 	private String type;
-	@JsonbProperty
+
 	private String description;
 
 	public ProductDTO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductDTO(String code, String descriptionType, String commercialCode, String type, String description) {
+	@JsonbCreator
+	public ProductDTO(@JsonbProperty("code") String code, @JsonbProperty("description_product_type") String descriptionType,
+			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("product_type") String type,
+			@JsonbProperty("description") String description) {
 		super();
 		this.code = code;
 		this.descriptionType = descriptionType;

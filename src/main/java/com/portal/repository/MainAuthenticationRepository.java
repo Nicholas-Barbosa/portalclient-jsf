@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
@@ -30,19 +31,19 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	private static final long serialVersionUID = -6233748924596132481L;
 	private final RestClient restClient;
 	private final UserPropertyHolder userPropertyHolder;
-	private final PropertiesReader propertiesReader;
+	@EJB
+	private PropertiesReader propertiesReader;
 
 	public MainAuthenticationRepository() {
-		this(null, null, null);
+		this(null, null);
 	}
 
 	@Inject
-	public MainAuthenticationRepository(@Simple RestClient restClient, UserPropertyHolder userPropertyHolder,
-			PropertiesReader propertiesReader) {
+	public MainAuthenticationRepository(@Simple RestClient restClient, UserPropertyHolder userPropertyHolder) {
 		super();
 		this.restClient = restClient;
 		this.userPropertyHolder = userPropertyHolder;
-		this.propertiesReader = propertiesReader;
+
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 
 		String loginUrl = String.format("%s/%s", propertiesReader.getProperty("orcamento_api_url_teste"),
 				"api/oauth2/v1/token");
-		
+
 		LoginGssResponseDTO doPost = restClient.doPost(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
 				MediaType.APPLICATION_JSON_TYPE);
 		ServiceApi service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),

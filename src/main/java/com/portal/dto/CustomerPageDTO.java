@@ -40,7 +40,6 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 	}
 
 	public List<CustomerDTO> getClients() {
-		System.out.println("clientes " +clients);
 		return new ArrayList<>(clients);
 	}
 

@@ -5,9 +5,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
 
-@Named
 @SessionScoped
 public class ResourceBundleServiceImpl implements Serializable, ResourceBundleService {
 

@@ -17,7 +17,7 @@ public class UserStylePreferences implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private String menuMode = "layout-static layout-static-active";
+	private String menuMode = "layout-slim";
 
 	private String darkMode = "dim";
 
