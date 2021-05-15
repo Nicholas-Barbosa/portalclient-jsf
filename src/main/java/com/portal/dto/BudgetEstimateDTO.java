@@ -20,7 +20,7 @@ public class BudgetEstimateDTO implements Serializable {
 
 	private BigDecimal grossValue;
 
-	private List<EstimatedValueDTO> estimatedValues;
+	private List<EstimatedItem> estimatedItemValues;
 
 	private BigDecimal stTotal;
 
@@ -30,12 +30,12 @@ public class BudgetEstimateDTO implements Serializable {
 
 	}
 
-	public BudgetEstimateDTO(BigDecimal liquidValue, BigDecimal grossValue, List<EstimatedValueDTO> estimatedValues,
+	public BudgetEstimateDTO(BigDecimal liquidValue, BigDecimal grossValue, List<EstimatedItem> estimatedValues,
 			BigDecimal stTotal, CustomerDTO customer) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
-		this.estimatedValues = new ArrayList<>(estimatedValues);
+		this.estimatedItemValues = new ArrayList<>(estimatedValues);
 		this.stTotal = stTotal;
 		this.customer = customer==null? new CustomerDTO() : new CustomerDTO(customer);
 	}
@@ -43,23 +43,23 @@ public class BudgetEstimateDTO implements Serializable {
 	@JsonbCreator
 	public BudgetEstimateDTO(@JsonbProperty("liquid_order_value") BigDecimal liquidValue,
 			@JsonbProperty("gross_order_value") BigDecimal grossValue,
-			@JsonbProperty("estimate") List<EstimatedValueDTO> estimatedValues) {
+			@JsonbProperty("estimate") List<EstimatedItem> estimatedValues) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
-		this.estimatedValues = estimatedValues;
+		this.estimatedItemValues = estimatedValues;
 		setStTotal();
 
 	}
 
 	public BudgetEstimateDTO(BudgetEstimateDTO estimate) {
-		this(estimate.liquidValue, estimate.grossValue, estimate.estimatedValues, estimate.stTotal, estimate.customer);
+		this(estimate.liquidValue, estimate.grossValue, estimate.estimatedItemValues, estimate.stTotal, estimate.customer);
 	}
 
 	public void reCalculateTotales() {
-		this.liquidValue = new BigDecimal(estimatedValues.parallelStream().map(e -> e.totale)
+		this.liquidValue = new BigDecimal(estimatedItemValues.parallelStream().map(e -> e.totale)
 				.collect(Collectors.summingDouble(v -> v.doubleValue())));
-		this.grossValue = new BigDecimal(estimatedValues.parallelStream().map(e -> e.totalGrossValue)
+		this.grossValue = new BigDecimal(estimatedItemValues.parallelStream().map(e -> e.totalGrossValue)
 				.collect(Collectors.summingDouble(v -> v.doubleValue())));
 		setStTotal();
 	}
@@ -72,8 +72,8 @@ public class BudgetEstimateDTO implements Serializable {
 		return grossValue;
 	}
 
-	public List<EstimatedValueDTO> getEstimatedValues() {
-		return estimatedValues;
+	public List<EstimatedItem> getEstimatedItemValues() {
+		return estimatedItemValues;
 	}
 
 	public BigDecimal getStTotal() {
@@ -81,7 +81,7 @@ public class BudgetEstimateDTO implements Serializable {
 	}
 
 	public void setStTotal() {
-		stTotal = new BigDecimal(estimatedValues.stream().mapToLong(e -> e.getStValue().longValue()).sum());
+		stTotal = new BigDecimal(estimatedItemValues.stream().mapToLong(e -> e.getStValue().longValue()).sum());
 	}
 
 	public CustomerDTO getCustomer() {
@@ -96,10 +96,10 @@ public class BudgetEstimateDTO implements Serializable {
 	@Override
 	public String toString() {
 		return "BudgetEstimateDTO [liquidValue=" + liquidValue + ", grossValue=" + grossValue + ", estimatedValues="
-				+ estimatedValues + ", stTotal=" + stTotal + ", customerDTO=" + customer + "]";
+				+ estimatedItemValues + ", stTotal=" + stTotal + ", customerDTO=" + customer + "]";
 	}
 
-	public static class EstimatedValueDTO {
+	public static class EstimatedItem {
 
 		private BigDecimal unitGrossValue;
 
@@ -119,12 +119,12 @@ public class BudgetEstimateDTO implements Serializable {
 
 		private BigDecimal unitStValue;
 
-		public EstimatedValueDTO() {
+		public EstimatedItem() {
 			// TODO Auto-generated constructor stub
 		}
 
 		@JsonbCreator
-		public EstimatedValueDTO(@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
+		public EstimatedItem(@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
 				@JsonbProperty("total_gross_value") BigDecimal totalGrossValue,
 				@JsonbProperty("product_code") String productCode,
 				@JsonbProperty("commercial_code") String commercialCode,
@@ -211,6 +211,33 @@ public class BudgetEstimateDTO implements Serializable {
 			} else
 				throw new IllegalStateException("You must set unitStValue before call this method.");
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((commercialCode == null) ? 0 : commercialCode.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			EstimatedItem other = (EstimatedItem) obj;
+			if (commercialCode == null) {
+				if (other.commercialCode != null)
+					return false;
+			} else if (!commercialCode.equals(other.commercialCode))
+				return false;
+			return true;
+		}
+		
+		
 
 	}
 

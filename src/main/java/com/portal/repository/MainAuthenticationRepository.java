@@ -55,14 +55,14 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		queryParams.put("password", loginForm.getPassword());
 		queryParams.put("username", loginForm.getUsername());
 
-		String loginUrl = String.format("%s/%s", propertiesReader.getProperty("orcamento_api_url_teste"),
-				"api/oauth2/v1/token");
+		String currentEniviromentUrl = propertiesReader.getProperty("orcamento_api_url_prod");
+		String loginUrl = String.format("%s/%s", currentEniviromentUrl, "api/oauth2/v1/token");
 
 		LoginGssResponseDTO doPost = restClient.doPost(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
 				MediaType.APPLICATION_JSON_TYPE);
 		ServiceApi service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
-				propertiesReader.getProperty("orcamento_api_url_teste"), "v1/token", TokenType.Bearer,
-				doPost.getAccessToken(), doPost.getRefreshToken(), "password", "default", 1l, TimeUnit.HOURS);
+				currentEniviromentUrl, "v1/token", TokenType.Bearer, doPost.getAccessToken(), doPost.getRefreshToken(),
+				"password", "default", 1l, TimeUnit.HOURS);
 		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", service);
 
 	}

@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.BudgetEstimateDTO;
-import com.portal.dto.BudgetEstimateDTO.EstimatedValueDTO;
+import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
 import com.portal.dto.BudgetEstimateForm;
 
 public class BudgetRepositoryImpl implements BudgetRepository {
@@ -41,9 +41,9 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 
 	}
 
-	@Override
+	
 	public BudgetEstimateDTO recalculateEstimate(BudgetEstimateDTO form) {
-		form.getEstimatedValues().parallelStream().forEach(EstimatedValueDTO::recalculateTotales);
+		form.getEstimatedItemValues().parallelStream().forEach(EstimatedItem::recalculateTotales);
 		form.reCalculateTotales();
 		return form;
 	}

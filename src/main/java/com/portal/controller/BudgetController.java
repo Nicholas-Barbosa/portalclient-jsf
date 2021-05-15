@@ -3,9 +3,7 @@ package com.portal.controller;
 import java.io.Serializable;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -14,17 +12,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
+import com.portal.dto.BudgetEstimateDTO;
+import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
+import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.ItemEstimateBudgetForm;
@@ -67,9 +68,9 @@ public class BudgetController implements Serializable {
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
-	private List<ProductDTO> selectedProducts;
+	private Set<ItemEstimateBudgetForm> originalItems;
 
-	private Set<ItemEstimateBudgetForm> backedItems;
+	private Set<ItemEstimateBudgetForm> preItems;
 
 	private SearchProductForm searchProductForm;
 
@@ -80,8 +81,12 @@ public class BudgetController implements Serializable {
 
 	private String nameCustomerToFind;
 
-	@EJB
+	@Inject
 	private BudgetService budgetService;
+
+	private CustomerDTO selectedCustomer;
+
+	private BudgetEstimateDTO budgetEstimateDTO;
 
 	public BudgetController() {
 		this(null, null, null, null, null);
@@ -97,28 +102,32 @@ public class BudgetController implements Serializable {
 		this.customerRepository = customerRepository;
 		this.productRepository = productRepository;
 		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-
+		this.searchProductForm = new SearchProductForm();
+		this.preItems = new HashSet<>();
+		originalItems = new HashSet<>();
+		this.lazyProducts = new ProductLazyDataModel();
+		this.lazyCustomers = new CustomerLazyDataModel();
 	}
 
 	@PostConstruct
 	public void init() {
-		this.lazyProducts = new ProductLazyDataModel();
-		this.lazyCustomers = new CustomerLazyDataModel();
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
-		this.searchProductForm = new SearchProductForm();
-		this.selectedProducts = new ArrayList<>();
-		this.backedItems = new HashSet<>();
-
 	}
 
-	public void reEditItemQuantity() {
-		budgetService.calculatePreEstiamte();
+	public void reEditItemQuantity(RowEditEvent<EstimatedItem> event) {
+		System.out.println("Original items " + originalItems.size());
+		new Thread(() -> originalItems.parallelStream()
+				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
+				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
+		;
+		budgetService.updateQuantity(budgetEstimateDTO, event.getObject());
 	}
 
 	public void generateQuote() {
 		try {
-			budgetService.estimateValues();
-			backedItems.clear();
+			budgetEstimateDTO = budgetService.estimate(
+					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems));
+			preItems.clear();
 		} catch (SocketTimeoutException | ProcessingException | IllegalArgumentException | SocketException
 				| TimeoutException e) {
 			facesHelper.exceptionMessage().addMessageByException(null, e);
@@ -134,7 +143,7 @@ public class BudgetController implements Serializable {
 			facesHelper.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		budgetService.setCustomer(event.getObject());
+		selectedCustomer = event.getObject();
 	}
 
 	public void findCustomerByName(int page) {
@@ -149,14 +158,14 @@ public class BudgetController implements Serializable {
 					CustomerDTO cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {
 						facesHelper.error("customerDTO", holderMessage.label("cliente_bloqueado"), null);
-						budgetService.setCustomer(null);
+						selectedCustomer = null;
 						return;
 					}
-					budgetService.setCustomer(cDTO);
+					selectedCustomer = cDTO;
 				}
 			}, () -> {
 				facesHelper.error(null, holderMessage.label("cliente_nao_encontrado"), null);
-				budgetService.setCustomer(null);
+				selectedCustomer = null;
 			});
 		} catch (SocketTimeoutException | ProcessingException | IllegalArgumentException | SocketException
 				| TimeoutException e) {
@@ -175,13 +184,13 @@ public class BudgetController implements Serializable {
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.getBlocked().equals("Sim")) {
 					facesHelper.error("customerDTO", holderMessage.label("cliente_bloqueado"), null);
-					budgetService.setCustomer(null);
+					selectedCustomer = null;
 				} else {
-					budgetService.setCustomer(c);
+					selectedCustomer = c;
 				}
 			}, () -> {
 				facesHelper.error("customerDTO", holderMessage.label("cliente_nao_encontrado"), null);
-				budgetService.setCustomer(null);
+				selectedCustomer = null;
 			});
 		} catch (ClientErrorException e) {
 			facesHelper.error("customerDTO", holderMessage.label("resposta_servidor"),
@@ -213,10 +222,9 @@ public class BudgetController implements Serializable {
 		try {
 			Optional<ProductDTO> product = productRepository.getByCode(searchProductForm.getCode());
 			product.ifPresentOrElse(presentProduct -> {
-				backedItems.add(ItemEstimateBudgetForm.getInstanceFromProduct(presentProduct));
+				preItems.add(ItemEstimateBudgetForm.of(presentProduct));
 			}, () -> {
 				facesHelper.error(null, holderMessage.label("nao_encontrado"), null);
-
 			});
 
 		} catch (Exception e) {
@@ -230,30 +238,19 @@ public class BudgetController implements Serializable {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
 
-	public void removeItem(ItemEstimateBudgetForm item) {
-		ExecutorService executor = null;
-		try {
-			executor = Executors.newFixedThreadPool(2);
-			executor.submit(
-					() -> this.backedItems.removeIf(currentItem -> currentItem.getCode().equals(item.getCode())));
-			executor.submit(() -> this.selectedProducts.removeIf(p -> p.getCode().equals(item.getCode())));
-		} finally {
-			executor.shutdown();
-			try {
-				executor.awaitTermination(1, TimeUnit.SECONDS);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
+	public void removePreItems(ItemEstimateBudgetForm item) {
+		this.preItems.removeIf(currentItem -> currentItem.getCode().equals(item.getCode()));
 	}
 
 	public void onProductSelected(ProductDTO productDTO) {
 		ExecutorService executorService = null;
 		try {
 			executorService = Executors.newFixedThreadPool(2);
-			executorService.execute(() -> backedItems.add(ItemEstimateBudgetForm.getInstanceFromProduct(productDTO)));
-			executorService.execute(() -> budgetService.addItem(productDTO));
+			executorService.execute(() -> preItems.add(ItemEstimateBudgetForm.of(productDTO)));
+			executorService.execute(() -> {
+				originalItems.add(ItemEstimateBudgetForm.of(productDTO));
+			});
+
 		} finally {
 			executorService.shutdown();
 			try {
@@ -284,20 +281,8 @@ public class BudgetController implements Serializable {
 		return h5DivLoadProducts;
 	}
 
-	public List<ProductDTO> getSelectedProducts() {
-		return selectedProducts;
-	}
-
-	public void setSelectedProducts(List<ProductDTO> selectedProducts) {
-		this.selectedProducts = selectedProducts;
-	}
-
-	public Set<ItemEstimateBudgetForm> getItems() {
-		return backedItems;
-	}
-
-	public void setItems(Set<ItemEstimateBudgetForm> items) {
-		this.backedItems = items;
+	public Set<ItemEstimateBudgetForm> getPreItems() {
+		return preItems;
 	}
 
 	public SearchProductForm getSearchProductForm() {
@@ -332,7 +317,11 @@ public class BudgetController implements Serializable {
 		return lazyCustomers;
 	}
 
-	public BudgetService getBudgetFacade() {
-		return budgetService;
+	public CustomerDTO getSelectedCustomer() {
+		return selectedCustomer;
+	}
+
+	public BudgetEstimateDTO getBudgetEstimateDTO() {
+		return budgetEstimateDTO;
 	}
 }

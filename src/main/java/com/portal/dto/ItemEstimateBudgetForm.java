@@ -26,7 +26,7 @@ public class ItemEstimateBudgetForm implements Comparable<ItemEstimateBudgetForm
 		this.quantity = quantity;
 	}
 
-	public static ItemEstimateBudgetForm getInstanceFromProduct(ProductDTO product) {
+	public static ItemEstimateBudgetForm of(ProductDTO product) {
 		return new ItemEstimateBudgetForm(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
 				product.getDescription(), 1);
 	}
@@ -90,6 +90,11 @@ public class ItemEstimateBudgetForm implements Comparable<ItemEstimateBudgetForm
 	public int compareTo(ItemEstimateBudgetForm o) {
 		// TODO Auto-generated method stub
 		return commercialCode.compareTo(o.commercialCode);
+	}
+
+	@Override
+	public String toString() {
+		return "ItemEstimateBudgetForm [code=" + code + ", quantity=" + quantity + "]";
 	}
 
 }

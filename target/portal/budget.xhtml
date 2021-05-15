@@ -30,38 +30,38 @@
 						onclick="PF('dlgSearchCustomer').show()" />
 					<h:form id="customerDTO">
 						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-md-5">
+							<div class="p-field p-col-12 p-md-4">
 								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
 								<p:inputText
-									value="#{budgetController.budgetFacade.customer.name}-#{budgetController.budgetFacade.customer.store}"
-									readonly="true" />
+									value="#{budgetController.selectedCustomer.name}-#{budgetController.selectedCustomer.store}"
+									readonly="true" styleClass="form-control-plaintext" />
 							</div>
 							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel value="#{holdMessageView.label('nome_fantasia')}"
 									for="fantasyName" />
 								<p:inputText
-									value="#{budgetController.budgetFacade.customer.fantasyName}"
+									value="#{budgetController.selectedCustomer.fantasyName}"
 									readonly="true" id="fantasyName" />
 							</div>
 							<div class="p-field p-col-12 p-md-2">
 								<p:outputLabel value="CGC" for="cgc" />
-								<p:inputText
-									value="#{budgetController.budgetFacade.customer.cgc}"
+								<p:inputText value="#{budgetController.selectedCustomer.cgc}"
 									readonly="true" id="cgc" />
 							</div>
-							<div class="p-field p-col-12 p-col-12 p-md-5">
+							<div class="p-field p-col-12 p-col-12 p-md-4">
 								<p:outputLabel for="endereco"
 									value="#{holdMessageView.label('endereco')}" />
 								<p:inputText id="endereco"
-									value="#{budgetController.budgetFacade.customer.address}, #{budgetController.budgetFacade.customer.city}- #{budgetController.budgetFacade.customer.state}"
+									value="#{budgetController.selectedCustomer.address}, #{budgetController.selectedCustomer.city}- #{budgetController.selectedCustomer.state}"
 									readonly="true" />
 							</div>
 						</div>
-						
+
 					</h:form>
 					<p:message id="msgErrorCustomer" for="customerDTO" />
 				</div>
 			</div>
+
 			<div class="p-col-12" id="selectProducts">
 				<div class="card">
 					<h5>#{holdMessageView.label('selecione_produtos')}</h5>
@@ -74,15 +74,16 @@
 									<p:dataTable value="#{budgetController.lazyProducts}"
 										var="product" paginator="true"
 										rows="#{budgetController.pageSizeForProducts}"
-										scrollable="true" scrollHeight="400" id="dtProducts"
+										scrollable="true" scrollHeight="450" id="dtProducts"
 										lazy="true"
 										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 										paginatorAlwaysVisible="false"
 										rowKey="#{product.commercialCode}" stripedRows="true"
-										size="small" reflow="true">
+										size="small" reflow="true" styleClass="ui-datatable-sm">
 										<p:ajax event="page"
 											listener="#{budgetController.onPageProducts}" process="@this"
-											update="growl" />
+											update="growl" onstart="detectLongProcess()"
+											oncomplete="onCompletePageProducts()" />
 
 										<p:column
 											headerText="#{holdMessageView.label('codigo_comercial')}">
@@ -102,13 +103,12 @@
 												update="formDtSelectedItems " />
 										</p:column>
 									</p:dataTable>
+
 								</h:form>
-								<p:blockUI block="formProdutos:dtProducts"
-									widgetVar="blockDtableProducts">
-									<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
-								</p:blockUI>
+
 							</div>
 						</div>
+
 						<div class="p-col-1">
 							<p:divider layout="vertical">
 								<b>SELECTED</b>
@@ -116,27 +116,27 @@
 						</div>
 						<div class="p-col-5 p-ai-center p-jc-center">
 							<h:form id="formDtSelectedItems">
-								<p:dataTable value="#{budgetController.items}" var="item"
-									paginator="true" rows="6" id="dtSelectedItems"
+								<p:dataTable value="#{budgetController.preItems}" var="item"
+									paginator="true" rows="4" id="dtSelectedItems"
 									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 									paginatorAlwaysVisible="false" rowKey="#{item.commercialCode}"
-									stripedRows="true" size="small" reflow="true" editable="true"
-									editMode="cell">
+									stripedRows="true" size="small" reflow="true"
+									styleClass="ui-datatable-sm">
 									<f:facet name="footer">
 										<p:commandButton value="#{holdMessageView.label('estimar')}"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
 											icon="pi pi-dollar"
-											disabled="#{budgetController.items.size() == 0}"
+											disabled="#{budgetController.preItems.size() == 0}"
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
 											oncomplete="onCompleteEstimate(xhr)"
 											action="#{budgetController.generateQuote}" process="@this"
-											update="budgetEstimateForm formItems" />
+											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems" />
 
 									</f:facet>
 									<p:column headerText="#{holdMessageView.label('descricao')}">
 										<h:outputText value="#{item.description}" />
 									</p:column>
-									<p:column headerText="#{holdMessageView.label('quantidade')}">
+									<!-- 	<p:column headerText="#{holdMessageView.label('quantidade')}">
 										<p:cellEditor>
 											<f:facet name="output">
 												<h:outputText value="#{item.quantity}" />
@@ -147,12 +147,12 @@
 											</f:facet>
 										</p:cellEditor>
 
-									</p:column>
+									</p:column> -->
 									<p:column>
-										<p:commandButton value="#{holdMessageView.label('remover')}"
-											icon="pi pi-times"
+										<p:commandButton icon="pi pi-times"
 											styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
-											process="@this" action="#{budgetController.removeItem(item)}"
+											process="@this"
+											action="#{budgetController.removePreItems(item)}"
 											update="formDtSelectedItems:dtSelectedItems" />
 									</p:column>
 								</p:dataTable>
@@ -162,94 +162,96 @@
 
 				</div>
 			</div>
-			<div class="p-col-12" id="divItensForm">
-				<div class="card">
-					<h5>#{holdMessageView.label('items')}</h5>
-					<h:form id="formItems">
-						<p:remoteCommand process="@none" update="dtItems" action="#"
-							name="updateDtItems" async="true" />
-						<p:dataTable
-							value="#{budgetController.budgetEstimate.estimatedValues}"
-							var="product" editable="true" rowKey="#{product.commercialCode}"
-							id="dtItems" rows="5" paginator="true" reflow="true" size="small">
-							<p:ajax event="rowEdit"
-								listener="#{budgetController.reEditItemQuantity()}"
-								update="budgetEstimateForm" />
+			<div id="divItensForm">
+				<div class="p-col-12">
+					<div class="card">
+						<h5>#{holdMessageView.label('items')}</h5>
+						<h:form id="formItems">
+							<p:remoteCommand process="@none" update="dtItems" action="#"
+								name="updateDtItems" async="true" />
+							<p:dataTable
+								value="#{budgetController.budgetEstimateDTO.estimatedItemValues}"
+								var="product" editable="true" rowKey="#{product.commercialCode}"
+								id="dtItems" rows="5" paginator="true" reflow="true"
+								size="small" styleClass="ui-datatable-sm"
+								paginatorAlwaysVisible="false" paginatorPosition="bottom">
+								<p:ajax event="rowEdit"
+									listener="#{budgetController.reEditItemQuantity}"
+									update="budgetEstimateForm" />
+								<f:facet name="header">
+									<div class="customers-table-header">
+										<p:button onclick="PF('searchProductDialog').show()"
+											icon="pi pi-plus"
+											styleClass="ui-button-raised ui-button-success" />
+									</div>
+								</f:facet>
 
-							<!-- 	<p:ajax event="cellEdit"
-								listener="#{budgetController.reEditItemQuantity()}"
-								process="@this" update="budgetEstimateForm"
-								oncomplete="updateDtItems()" /> -->
-							<f:facet name="header">
-								<p:button onclick="PF('searchProductDialog').show()"
-									icon="pi pi-plus"
-									styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2" />
-							</f:facet>
+								<p:column
+									headerText="#{holdMessageView.label('codigo_comercial')}">
+									<h:outputText value="#{product.commercialCode}" />
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('quantidade')}">
+									<p:cellEditor>
+										<f:facet name="output">
+											<h:outputText value="#{product.quantity}" />
+										</f:facet>
+										<f:facet name="input">
+											<p:inputText value="#{product.quantity}" style="width:100%"
+												label="Name" />
 
-							<p:column
-								headerText="#{holdMessageView.label('codigo_comercial')}">
-								<h:outputText value="#{product.commercialCode}" />
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('quantidade')}">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{product.quantity}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:inputText value="#{product.quantity}" style="width:100%"
-											label="Name" />
-
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column
-								headerText="#{holdMessageView.label('preco_bruto_unitario')}">
-								<h:outputText value="#{product.unitGrossValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column
-								headerText="#{holdMessageView.label('preco_bruto_total')}">
-								<h:outputText value="#{product.totalGrossValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('un_st_valor')}">
-								<h:outputText value="#{product.unitStValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('valor_st')}">
-								<h:outputText value="#{product.stValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('preco_unitario')}">
-								<h:outputText value="#{product.unitPrice}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="#{holdMessageView.label('total')}">
-								<h:outputText value="#{product.totale}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column style="width:2rem">
-								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-									saveTitle="Save Row" />
-							</p:column>
-						</p:dataTable>
-
-
-					</h:form>
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column
+									headerText="#{holdMessageView.label('preco_bruto_unitario')}">
+									<h:outputText value="#{product.unitGrossValue}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column
+									headerText="#{holdMessageView.label('preco_bruto_total')}">
+									<h:outputText value="#{product.totalGrossValue}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('un_st_valor')}">
+									<h:outputText value="#{product.unitStValue}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('valor_st')}">
+									<h:outputText value="#{product.stValue}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column
+									headerText="#{holdMessageView.label('preco_unitario')}">
+									<h:outputText value="#{product.unitPrice}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="#{holdMessageView.label('total')}">
+									<h:outputText value="#{product.totale}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column style="width:2rem">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+										saveTitle="Save Row" />
+								</p:column>
+							</p:dataTable>
 
 
+						</h:form>
+
+
+					</div>
 				</div>
 			</div>
 			<div class="p-col-12" id="estimatedTotals">
@@ -257,29 +259,29 @@
 					<p:messages globalOnly="true" id="msgQuoteSuccess" />
 					<h:form id="budgetEstimateForm">
 						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-md-6">
+							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="grossV"
 									value="#{holdMessageView.label('valor_bruto')}" />
 								<p:inputNumber id="grossV"
-									value="#{budgetController.budgetEstimate.grossValue}"
+									value="#{budgetController.budgetEstimateDTO.grossValue}"
 									symbol="R$ " symbolPosition="p" readonly="true"
 									decimalSeparator="," thousandSeparator="." />
 							</div>
-							<div class="p-field p-col-12 p-md-6">
+							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="liquidV"
 									value="#{holdMessageView.label('valor_liquido')}" />
 								<p:inputNumber id="liquidV"
-									value="#{budgetController.budgetEstimate.liquidValue}"
+									value="#{budgetController.budgetEstimateDTO.liquidValue}"
 									symbol="R$ " symbolPosition="p" readonly="true"
 									decimalSeparator="," thousandSeparator="." />
 							</div>
-							<div class="p-field p-col-12 p-md-6">
+							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="stT"
 									value="#{holdMessageView.label('valor_st')}" />
 								<p:inputNumber id="stT"
-									value="#{budgetController.budgetEstimate.stTotal}" symbol="R$ "
-									symbolPosition="p" readonly="true" decimalSeparator=","
-									thousandSeparator="." />
+									value="#{budgetController.budgetEstimateDTO.stTotal}"
+									symbol="R$ " symbolPosition="p" readonly="true"
+									decimalSeparator="," thousandSeparator="." />
 							</div>
 
 						</div>
@@ -358,34 +360,41 @@
 			</p:tabView>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="50%">
+		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="50%"
+			responsive="true">
 			<h:form id="fomrSelectCustomer">
 				<p:dataTable var="customer"
 					value="#{budgetController.lazyCustomers}" paginator="true" rows="5"
-					reflow="true" size="small" selectionMode="single">
+					reflow="true" size="small" selectionMode="single"
+					id="dtSelectCustomers">
 					<p:ajax event="rowSelect"
 						oncomplete="
 						if(xhr.getResponseHeader('customer-isBlocked') != 'true')
 							PF('dlgSelectCustomer').hide();"
 						update="growl :customerDTO msgErrorDtCustomer"
-						listener="#{budgetController.selectProduct}" />
+						listener="#{budgetController.selectCustomer}" />
 					<p:column headerText="#{holdMessageView.label('codigo')}">
 						<h:outputText value="#{customer.code}" />
 					</p:column>
 					<p:column headerText="#{holdMessageView.label('nome')}">
 						<h:outputText value="#{customer.name}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
+					<p:column headerText="#{holdMessageView.label('nome_fantasia')}"
+						responsivePriority="4">
 						<h:outputText value="#{customer.fantasyName}" />
 					</p:column>
 					<p:column headerText="CGC">
 						<h:outputText value="#{customer.cgc}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('endereco')}">
+					<p:column headerText="#{holdMessageView.label('endereco')}"
+						responsivePriority="4">
 						<h:outputText
 							value="#{customer.address},#{customer.city}-#{customer.state}" />
 					</p:column>
 				</p:dataTable>
+				<p:blockUI block="dtSelectCustomers" trigger="dtSelectCustomers">
+					<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+				</p:blockUI>
 			</h:form>
 			<p:message id="msgErrorDtCustomer" for="fomrSelectCustomer" />
 		</p:dialog>
@@ -449,9 +458,10 @@
 
 		</p:dialog>
 
-		<p:dialog header="Loading..." modal="true" closable="false"
+		<p:dialog header="Loading" modal="true" closable="false"
 			widgetVar="globalLoadDlg">
-			<i class="pi pi-spin pi-spinner" style="font-size: 8rem"></i>
+			<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+			<div>A long-running process has been detected. Please wait...</div>
 		</p:dialog>
 		<script type="text/javascript">
 			//<![CDATA[
@@ -465,6 +475,30 @@
 			$("#estimateLoad").hide();
 			$("#selectProducts").hide();
 			
+			
+			var processFinished=false;
+			
+			function detectLongProcess(){
+				processFinished=false;
+				setTimeout( function() {
+					if(processFinished==false){
+					 	PF('globalLoadDlg').show();
+					 	setInterval( function() {
+							if(processFinished==true)
+							 	PF('globalLoadDlg').hide();
+							}, 1 );
+					}
+						
+					}, 450 );
+			}
+			function concludeLongProcess(){
+				processFinished=true;
+			}
+			
+			function onCompletePageProducts(){
+			 	processFinished=true;
+				
+			}
 			function onCompleteEstimate(xhr){
 				 PF('globalLoadDlg').hide()
 				$("#divItensForm").show();
@@ -496,19 +530,9 @@
 					PF('exceptionDialog').show()
 				}
 			}
-			function onPageProducts(){
-				$("#loaderProducts").show();
-				$("#productsDtable").hide();
-			}
 			
-			function onCompletePageProducts(xhr){
-				$("#loaderProducts").hide();
-				if(getResponseHeader(xhr)){
-					$("#productsDtable").show();
-				}else{
-					("#divMsgProducts").show();
-				}
-			}
+			
+			
 			
 			function showSearchProducts(){
 				$("#divSearchProducts").show();
