@@ -113,6 +113,10 @@ public class BudgetController implements Serializable {
 	public void init() {
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
 	}
+	
+	public void exportReport() {
+		
+	}
 
 	public void reEditItemQuantity(RowEditEvent<EstimatedItem> event) {
 		System.out.println("Original items " + originalItems.size());
@@ -139,7 +143,7 @@ public class BudgetController implements Serializable {
 
 	public void selectCustomer(SelectEvent<CustomerDTO> event) {
 		if (event.getObject().getBlocked().equals("Sim")) {
-			facesHelper.error("fomrSelectCustomer", holderMessage.label("cliente_bloqueado"), null);
+			facesHelper.error(null, holderMessage.label("cliente_bloqueado"), null);
 			facesHelper.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
@@ -157,7 +161,7 @@ public class BudgetController implements Serializable {
 					System.out.println("Is present " + maybeCustomer.isPresent());
 					CustomerDTO cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {
-						facesHelper.error("customerDTO", holderMessage.label("cliente_bloqueado"), null);
+						facesHelper.error(null, holderMessage.label("cliente_bloqueado"), null);
 						selectedCustomer = null;
 						return;
 					}
@@ -183,7 +187,7 @@ public class BudgetController implements Serializable {
 			Optional<CustomerDTO> maybeCustomer = customerRepository.getByCodeAndStore(searchCustomerDTO);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.getBlocked().equals("Sim")) {
-					facesHelper.error("customerDTO", holderMessage.label("cliente_bloqueado"), null);
+					facesHelper.error(null, holderMessage.label("cliente_bloqueado"), null);
 					selectedCustomer = null;
 				} else {
 					selectedCustomer = c;

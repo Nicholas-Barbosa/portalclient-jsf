@@ -44,7 +44,7 @@
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
-	<field name="customer.name" class="java.lang.String"/>
+	<field name="customerReportDTO.name" class="java.lang.String"/>
 	<field name="liquidValue" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[liquidValue]]></fieldDescription>
 	</field>
@@ -54,10 +54,10 @@
 	<field name="grossValue" class="java.math.BigDecimal">
 		<fieldDescription><![CDATA[grossValue]]></fieldDescription>
 	</field>
-	<field name="customer.cgc" class="java.lang.String"/>
-	<field name="customer.address" class="java.lang.String"/>
-	<field name="customer.city" class="java.lang.String"/>
-	<field name="customer.state" class="java.lang.String"/>
+	<field name="customerReportDTO.cgc" class="java.lang.String"/>
+	<field name="customerReportDTO.address" class="java.lang.String"/>
+	<field name="customerReportDTO.city" class="java.lang.String"/>
+	<field name="customerReportDTO.state" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -90,7 +90,7 @@
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{customer.name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{customerReportDTO.name}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="40" width="50" height="19" uuid="12743758-612a-4079-91ec-e9f9519f0f00"/>
@@ -102,12 +102,12 @@
 			<textField>
 				<reportElement x="50" y="40" width="505" height="19" uuid="23cd1444-8084-4b7e-b9ac-7f39ff5efbcb"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{customer.address}+", "+$F{customer.city}+" - "+$F{customer.state}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{customerReportDTO.address}+", "+$F{customerReportDTO.city}+" - "+$F{customerReportDTO.state}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="50" y="21" width="504" height="18" uuid="b4356649-2709-44e0-9e96-c913705703b7"/>
 				<textElement verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{customer.cgc}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{customerReportDTO.cgc}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="21" width="50" height="18" uuid="e58bc60b-1990-4d50-99a0-7539c74fdd20"/>
@@ -268,7 +268,7 @@
 		</band>
 	</detail>
 	<summary>
-		<band height="102" splitType="Stretch">
+		<band height="89" splitType="Stretch">
 			<staticText>
 				<reportElement x="1" y="0" width="70" height="22" uuid="343664aa-7c3c-46b3-978c-45444ec83507"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
