@@ -30,31 +30,25 @@
 						onclick="PF('dlgSearchCustomer').show()" />
 					<h:form id="customerDTO">
 						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-md-4">
+							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
 								<p:inputText
 									value="#{budgetController.selectedCustomer.name}-#{budgetController.selectedCustomer.store}"
-									readonly="true" styleClass="form-control-plaintext" />
+									readonly="true" />
 							</div>
-							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel value="#{holdMessageView.label('nome_fantasia')}"
-									for="fantasyName" />
-								<p:inputText
-									value="#{budgetController.selectedCustomer.fantasyName}"
-									readonly="true" id="fantasyName" />
-							</div>
-							<div class="p-field p-col-12 p-md-2">
+							<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 								<p:outputLabel value="CGC" for="cgc" />
 								<p:inputText value="#{budgetController.selectedCustomer.cgc}"
 									readonly="true" id="cgc" />
 							</div>
-							<div class="p-field p-col-12 p-col-12 p-md-4">
+							<div class="p-field p-col-12 p-xl-5 p-lg-5 p-md-12">
 								<p:outputLabel for="endereco"
 									value="#{holdMessageView.label('endereco')}" />
 								<p:inputText id="endereco"
 									value="#{budgetController.selectedCustomer.address}, #{budgetController.selectedCustomer.city}- #{budgetController.selectedCustomer.state}"
 									readonly="true" />
 							</div>
+
 						</div>
 
 					</h:form>
@@ -79,7 +73,8 @@
 										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 										paginatorAlwaysVisible="false"
 										rowKey="#{product.commercialCode}" stripedRows="true"
-										size="small" reflow="true" styleClass="ui-datatable-sm">
+										size="small" reflow="true" styleClass="ui-datatable-sm"
+										paginatorPosition="bottom">
 										<p:ajax event="page"
 											listener="#{budgetController.onPageProducts}" process="@this"
 											update="growl" onstart="detectLongProcess()"
@@ -121,14 +116,14 @@
 									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 									paginatorAlwaysVisible="false" rowKey="#{item.commercialCode}"
 									stripedRows="true" size="small" reflow="true"
-									styleClass="ui-datatable-sm">
+									styleClass="ui-datatable-sm" paginatorPosition="bottom">
 									<f:facet name="footer">
 										<p:commandButton value="#{holdMessageView.label('estimar')}"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
 											icon="pi pi-dollar"
 											disabled="#{budgetController.preItems.size() == 0}"
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
-											oncomplete="onCompleteEstimate(xhr)"
+											oncomplete="onCompleteEstimate()"
 											action="#{budgetController.generateQuote}" process="@this"
 											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems" />
 
@@ -167,14 +162,14 @@
 					<div class="card">
 						<h5>#{holdMessageView.label('items')}</h5>
 						<h:form id="formItems">
-							<p:remoteCommand process="@none" update="dtItems" action="#"
-								name="updateDtItems" async="true" />
+							<p:remoteCommand name="updateDtItems" action="#" process="@none"
+								update="dtItems" />
 							<p:dataTable
 								value="#{budgetController.budgetEstimateDTO.estimatedItemValues}"
 								var="product" editable="true" rowKey="#{product.commercialCode}"
-								id="dtItems" rows="5" paginator="true" reflow="true"
-								size="small" styleClass="ui-datatable-sm"
-								paginatorAlwaysVisible="false" paginatorPosition="bottom">
+								id="dtItems" reflow="true" size="small"
+								styleClass="ui-datatable-sm" scrollable="true"
+								scrollHeight="10vh">
 								<p:ajax event="rowEdit"
 									listener="#{budgetController.reEditItemQuantity}"
 									update="budgetEstimateForm" />
@@ -268,14 +263,6 @@
 									decimalSeparator="," thousandSeparator="." />
 							</div>
 							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="liquidV"
-									value="#{holdMessageView.label('valor_liquido')}" />
-								<p:inputNumber id="liquidV"
-									value="#{budgetController.budgetEstimateDTO.liquidValue}"
-									symbol="R$ " symbolPosition="p" readonly="true"
-									decimalSeparator="," thousandSeparator="." />
-							</div>
-							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="stT"
 									value="#{holdMessageView.label('valor_st')}" />
 								<p:inputNumber id="stT"
@@ -283,6 +270,15 @@
 									symbol="R$ " symbolPosition="p" readonly="true"
 									decimalSeparator="," thousandSeparator="." />
 							</div>
+							<div class="p-field p-col-12 p-md-3">
+								<p:outputLabel for="liquidV"
+									value="#{holdMessageView.label('valor_liquido')}" />
+								<p:inputNumber id="liquidV"
+									value="#{budgetController.budgetEstimateDTO.liquidValue}"
+									symbol="R$ " symbolPosition="p" readonly="true"
+									decimalSeparator="," thousandSeparator="." />
+							</div>
+
 
 						</div>
 					</h:form>
@@ -294,7 +290,7 @@
 
 		<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 			header="#{holdMessageView.label('busca_de_cliente')}"
-			positionType="absolute">
+			positionType="absolute" responsive="true">
 			<p:tabView>
 				<p:tab title="#{holdMessageView.label('palavra_chave')}">
 					<h5>
@@ -400,7 +396,8 @@
 		</p:dialog>
 
 
-		<p:dialog widgetVar="searchProductDialog" modal="true">
+		<p:dialog widgetVar="searchProductDialog" modal="true"
+			responsive="true">
 			<p:tabView>
 				<p:tab title="#{holdMessageView.label('palavra_chave')}">
 					<h:form>
@@ -459,7 +456,7 @@
 		</p:dialog>
 
 		<p:dialog header="Loading" modal="true" closable="false"
-			widgetVar="globalLoadDlg">
+			widgetVar="globalLoadDlg" responsive="true">
 			<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
 			<div>A long-running process has been detected. Please wait...</div>
 		</p:dialog>
@@ -483,9 +480,11 @@
 				setTimeout( function() {
 					if(processFinished==false){
 					 	PF('globalLoadDlg').show();
-					 	setInterval( function() {
-							if(processFinished==true)
+					 let interval =	setInterval( function() {
+							if(processFinished==true){
 							 	PF('globalLoadDlg').hide();
+								clearInterval(interval);
+							}
 							}, 1 );
 					}
 						

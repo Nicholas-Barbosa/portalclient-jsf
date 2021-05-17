@@ -37,7 +37,7 @@ public class BudgetEstimateDTO implements Serializable {
 		this.grossValue = grossValue;
 		this.estimatedItemValues = new ArrayList<>(estimatedValues);
 		this.stTotal = stTotal;
-		this.customer = customer==null? new CustomerDTO() : new CustomerDTO(customer);
+		this.customer = customer == null ? new CustomerDTO() : new CustomerDTO(customer);
 	}
 
 	@JsonbCreator
@@ -53,7 +53,12 @@ public class BudgetEstimateDTO implements Serializable {
 	}
 
 	public BudgetEstimateDTO(BudgetEstimateDTO estimate) {
-		this(estimate.liquidValue, estimate.grossValue, estimate.estimatedItemValues, estimate.stTotal, estimate.customer);
+		this(estimate.liquidValue, estimate.grossValue, estimate.estimatedItemValues, estimate.stTotal,
+				estimate.customer);
+	}
+
+	public BudgetEstimateDTO(CustomerDTO customer) {
+		this.customer = customer;
 	}
 
 	public void reCalculateTotales() {
@@ -99,7 +104,14 @@ public class BudgetEstimateDTO implements Serializable {
 				+ estimatedItemValues + ", stTotal=" + stTotal + ", customerDTO=" + customer + "]";
 	}
 
-	public static class EstimatedItem {
+	public static class EstimatedItem implements Serializable{
+
+		
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -8265751772406946002L;
 
 		private BigDecimal unitGrossValue;
 
@@ -235,6 +247,14 @@ public class BudgetEstimateDTO implements Serializable {
 			} else if (!commercialCode.equals(other.commercialCode))
 				return false;
 			return true;
+		}
+
+		@Override
+		public String toString() {
+			return "EstimatedItem [unitGrossValue=" + unitGrossValue + ", totalGrossValue=" + totalGrossValue
+					+ ", productCode=" + productCode + ", commercialCode=" + commercialCode + ", unitPrice=" + unitPrice
+					+ ", quantity=" + quantity + ", totale=" + totale + ", stValue=" + stValue + ", unitStValue="
+					+ unitStValue + "]";
 		}
 		
 		
