@@ -1,5 +1,8 @@
 package com.portal.service.faces;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -7,12 +10,14 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 
 import com.portal.service.view.HoldMessageView;
 
+@javax.enterprise.context.SessionScoped
 public class FacesHelper implements Serializable {
 
 	/**
@@ -22,6 +27,8 @@ public class FacesHelper implements Serializable {
 
 	private final ExceptionMessageHandler exceptionMessageHandler;
 
+	private final FacesDownloadStream facesDownloadStream;
+
 	public FacesHelper() {
 		this(null);
 	}
@@ -29,6 +36,7 @@ public class FacesHelper implements Serializable {
 	@Inject
 	public FacesHelper(HoldMessageView holdMessageView) {
 		this.exceptionMessageHandler = new ExceptionMessageHandler(holdMessageView);
+		this.facesDownloadStream = new FacesDownloadStream();
 	}
 
 	/**
@@ -96,6 +104,10 @@ public class FacesHelper implements Serializable {
 		return exceptionMessageHandler;
 	}
 
+	public FacesDownloadStream downloadHelper() {
+		return facesDownloadStream;
+	}
+
 	public class ExceptionMessageHandler implements Serializable {
 
 		/**
@@ -134,6 +146,29 @@ public class FacesHelper implements Serializable {
 				error(clientId, holderMessage.label("erro_servidor_destino"), null);
 			} else
 				e.printStackTrace();
+		}
+	}
+
+	public class FacesDownloadStream{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -7668992201844561919L;
+
+		public void downloadPdf(String fileName, byte[] streams) throws IOException {
+			FacesContext currentInstance = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = currentInstance.getExternalContext();
+
+			externalContext.setResponseContentType("application/pdf");
+			externalContext.setResponseContentLength(streams.length);
+
+			try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
+				outputStream.write(streams);
+			} finally {
+				currentInstance.responseComplete();
+			}
+
 		}
 	}
 }

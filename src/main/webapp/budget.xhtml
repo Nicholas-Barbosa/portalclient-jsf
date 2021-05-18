@@ -22,15 +22,19 @@
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
 
 		<div class="card" id="toolsForBudget">
-			<p:toolbar id="tb">
-				<f:facet name="left">
+			<h:form>
+				<p:toolbar id="tb">
+					<f:facet name="left">
 
-					<p:commandButton type="button" title="Print" icon="pi pi-share-alt"
-						styleClass="ui-button-help" />
-				</f:facet>
+						<p:commandButton  title="Print"
+							icon="pi pi-share-alt" styleClass="ui-button-help"
+							action="#{budgetController.exportReport}" ajax="false"/>
+					</f:facet>
 
-			</p:toolbar>
-			<p:sticky target="tb" />
+				</p:toolbar>
+				<p:sticky target="tb" />
+			</h:form>
+
 		</div>
 		<div class="p-grid">
 			<div class="p-col-12">

@@ -1,5 +1,6 @@
 package com.portal.controller;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -26,6 +27,8 @@ import org.primefaces.model.LazyDataModel;
 import com.portal.dto.BudgetEstimateDTO;
 import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
 import com.portal.dto.BudgetEstimateForm;
+import com.portal.dto.BudgetJasperReportDTO;
+import com.portal.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.ItemEstimateBudgetForm;
@@ -33,6 +36,7 @@ import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.dto.SearchProductForm;
+import com.portal.jasper.service.BudgetReport;
 import com.portal.repository.BudgetRepository;
 import com.portal.repository.CustomerRepository;
 import com.portal.repository.ProductRepository;
@@ -88,6 +92,9 @@ public class BudgetController implements Serializable {
 
 	private BudgetEstimateDTO budgetEstimateDTO;
 
+	@Inject
+	private BudgetReport budgetReport;
+
 	public BudgetController() {
 		this(null, null, null, null, null);
 	}
@@ -113,9 +120,19 @@ public class BudgetController implements Serializable {
 	public void init() {
 		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
 	}
-	
+
 	public void exportReport() {
-		
+		try {
+			BudgetJasperReportDTO jasperDTO = new BudgetJasperReportDTO(budgetEstimateDTO.getLiquidValue(),
+					budgetEstimateDTO.getGrossValue(), budgetEstimateDTO.getStTotal(),
+					new CustomerJasperReportDTO(selectedCustomer.getName(), selectedCustomer.getCity(),
+							selectedCustomer.getAddress(), selectedCustomer.getState(), selectedCustomer.getCgc()),
+					budgetEstimateDTO.getEstimatedItemValues());
+			byte[] btes = budgetReport.toPdf(jasperDTO);
+			facesHelper.downloadHelper().downloadPdf("budget.pdf", btes);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void reEditItemQuantity(RowEditEvent<EstimatedItem> event) {

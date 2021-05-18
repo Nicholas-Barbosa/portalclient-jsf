@@ -41,6 +41,7 @@
 		<field name="totale" class="java.math.BigDecimal"/>
 	</subDataset>
 	<parameter name="itemsCollection" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<parameter name="logoGaussPath" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -70,9 +71,9 @@
 				</textElement>
 				<text><![CDATA[Gauss Indústria Auto-Peças]]></text>
 			</staticText>
-			<image>
+			<image isUsingCache="true">
 				<reportElement x="0" y="0" width="150" height="38" uuid="3ed48395-75ef-4f63-b834-45a605fb7d9a"/>
-				<imageExpression><![CDATA["src/main/webapp/resources/gauss.png"]]></imageExpression>
+				<imageExpression><![CDATA[$P{logoGaussPath}]]></imageExpression>
 			</image>
 		</band>
 	</title>
