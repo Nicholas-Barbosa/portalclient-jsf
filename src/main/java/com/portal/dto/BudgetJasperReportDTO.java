@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.asn1.cmc.GetCert;
+
 import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
 
 public class BudgetJasperReportDTO implements Serializable {
@@ -67,13 +69,15 @@ public class BudgetJasperReportDTO implements Serializable {
 		private String city;
 		private String address;
 		private String state;
+		private String cgc;
 
-		public CustomerJasperReportDTO(String name, String city, String address, String state) {
+		public CustomerJasperReportDTO(String name, String city, String address, String state, String cgc) {
 			super();
 			this.name = name;
 			this.city = city;
 			this.address = address;
 			this.state = state;
+			this.cgc = cgc;
 		}
 
 		public String getName() {
@@ -92,6 +96,9 @@ public class BudgetJasperReportDTO implements Serializable {
 			return state;
 		}
 
+		public String getCgc() {
+			return cgc;
+		}
 	}
 
 }

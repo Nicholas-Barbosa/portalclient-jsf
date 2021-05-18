@@ -21,9 +21,19 @@
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
 
+		<div class="card" id="toolsForBudget">
+			<p:toolbar id="tb">
+				<f:facet name="left">
+
+					<p:commandButton type="button" title="Print" icon="pi pi-share-alt"
+						styleClass="ui-button-help" />
+				</f:facet>
+
+			</p:toolbar>
+			<p:sticky target="tb" />
+		</div>
 		<div class="p-grid">
 			<div class="p-col-12">
-				<h5>#{holdMessageView.getLabel('novo_orcamento')}</h5>
 				<div class="card">
 
 					<p:button icon="pi pi-search"
@@ -67,14 +77,14 @@
 										process="@none" name="updateDtProducts" />
 									<p:dataTable value="#{budgetController.lazyProducts}"
 										var="product" paginator="true"
-										rows="#{budgetController.pageSizeForProducts}"
-										scrollable="true" scrollHeight="450" id="dtProducts"
+										rows="#{budgetController.pageSizeForProducts}" id="dtProducts"
 										lazy="true"
 										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 										paginatorAlwaysVisible="false"
 										rowKey="#{product.commercialCode}" stripedRows="true"
 										size="small" reflow="true" styleClass="ui-datatable-sm"
-										paginatorPosition="bottom">
+										paginatorPosition="bottom"
+										style="max-height:40vh; overflow-y: auto">
 										<p:ajax event="page"
 											listener="#{budgetController.onPageProducts}" process="@this"
 											update="growl" onstart="detectLongProcess()"
@@ -112,12 +122,13 @@
 						<div class="p-col-5 p-ai-center p-jc-center">
 							<h:form id="formDtSelectedItems">
 								<p:dataTable value="#{budgetController.preItems}" var="item"
-									paginator="true" rows="4" id="dtSelectedItems"
-									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-									paginatorAlwaysVisible="false" rowKey="#{item.commercialCode}"
+									id="dtSelectedItems" rowKey="#{item.commercialCode}"
 									stripedRows="true" size="small" reflow="true"
-									styleClass="ui-datatable-sm" paginatorPosition="bottom">
-									<f:facet name="footer">
+									styleClass="ui-datatable-sm" paginator="true" rows="10"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									paginatorAlwaysVisible="false"
+									style="max-height:40vh; overflow-y: auto">
+									<f:facet name="header">
 										<p:commandButton value="#{holdMessageView.label('estimar')}"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
 											icon="pi pi-dollar"
@@ -180,11 +191,10 @@
 									listener="#{budgetController.reEditItemQuantity}"
 									update="budgetEstimateForm" />
 								<f:facet name="header">
-									<div class="customers-table-header">
-										<p:button onclick="PF('searchProductDialog').show()"
-											icon="pi pi-plus"
-											styleClass="ui-button-raised ui-button-success" />
-									</div>
+									<p:button onclick="PF('searchProductDialog').show()"
+										icon="pi pi-plus"
+										styleClass="ui-button-raised ui-button-success p-mr-2" />
+
 								</f:facet>
 
 								<p:column
@@ -478,7 +488,7 @@
 			$("#estimateContent").hide();
 			$("#estimateLoad").hide();
 			$("#selectProducts").hide();
-			
+			$("#toolsForBudget").hide();
 			
 			var processFinished=false;
 			
@@ -510,6 +520,7 @@
 				$("#divItensForm").show();
 				$("#selectProducts").hide();
 				$("#estimatedTotals").show();
+				$("#toolsForBudget").show();
 				updateDtItems();
 			}
 			
