@@ -20,6 +20,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
+import com.portal.dto.NoPageProductResponseDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 
@@ -47,9 +48,9 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
-			ProductPageDTO productPage = authRestClient.getForEntity("ORCAMENTO_API", "products/{code}",
-					ProductPageDTO.class, null, pathParmas, MediaType.APPLICATION_JSON_TYPE);
-			return Optional.of(((List<ProductDTO>) productPage.getContent()).get(0));
+			NoPageProductResponseDTO productPage = authRestClient.getForEntity("ORCAMENTO_API", "products/{code}",
+					NoPageProductResponseDTO.class, null, pathParmas, MediaType.APPLICATION_JSON_TYPE);
+			return Optional.of((productPage.getProducts()).get(0));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}

@@ -151,18 +151,13 @@ public class FacesHelper implements Serializable {
 
 	public class FacesDownloadStream{
 
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = -7668992201844561919L;
-
 		public void downloadPdf(String fileName, byte[] streams) throws IOException {
 			FacesContext currentInstance = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = currentInstance.getExternalContext();
 
 			externalContext.setResponseContentType("application/pdf");
 			externalContext.setResponseContentLength(streams.length);
-
+			externalContext.setResponseHeader("Content-Disposition", String.format("%s;%s=%s", "inline","filename",fileName));
 			try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
 				outputStream.write(streams);
 			} finally {

@@ -86,7 +86,7 @@ public class BudgetEstimateDTO implements Serializable {
 	}
 
 	public void setStTotal() {
-		stTotal = new BigDecimal(estimatedItemValues.stream().mapToLong(e -> e.getStValue().longValue()).sum());
+		stTotal = new BigDecimal(estimatedItemValues.stream().mapToDouble(e -> e.getStValue().doubleValue()).sum());
 	}
 
 	public CustomerDTO getCustomer() {

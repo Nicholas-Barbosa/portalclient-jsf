@@ -25,7 +25,7 @@ class BudgetReportImplTest {
 	@Test
 	void test() {
 		BudgetJasperReportDTO budgetDTO = new BudgetJasperReportDTO(new BigDecimal(12.99), new BigDecimal(20.98),
-				new BigDecimal(90), new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373"),
+				new BigDecimal(49.530000000000001136868377216160297393798828125), new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373"),
 				List.of(new EstimatedItem(new BigDecimal(10), new BigDecimal(10), "GX901", "AB001", new BigDecimal(10),
 						20, new BigDecimal(10), new BigDecimal(10))));
 		BudgetReport budgetReport = new BudgetReportImpl(new ReportService());

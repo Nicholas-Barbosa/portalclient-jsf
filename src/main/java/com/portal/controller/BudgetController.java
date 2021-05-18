@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,6 +30,7 @@ import com.portal.dto.BudgetJasperReportDTO;
 import com.portal.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
+import com.portal.dto.DownloadStreamsForm;
 import com.portal.dto.ItemEstimateBudgetForm;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
@@ -95,6 +95,8 @@ public class BudgetController implements Serializable {
 	@Inject
 	private BudgetReport budgetReport;
 
+	private DownloadStreamsForm downloadStreamsForm;
+
 	public BudgetController() {
 		this(null, null, null, null, null);
 	}
@@ -114,11 +116,7 @@ public class BudgetController implements Serializable {
 		originalItems = new HashSet<>();
 		this.lazyProducts = new ProductLazyDataModel();
 		this.lazyCustomers = new CustomerLazyDataModel();
-	}
-
-	@PostConstruct
-	public void init() {
-		this.h5DivLoadCustomers = holderMessage.label("carregando_clientes");
+		this.downloadStreamsForm = new DownloadStreamsForm();
 	}
 
 	public void exportReport() {
@@ -129,14 +127,13 @@ public class BudgetController implements Serializable {
 							selectedCustomer.getAddress(), selectedCustomer.getState(), selectedCustomer.getCgc()),
 					budgetEstimateDTO.getEstimatedItemValues());
 			byte[] btes = budgetReport.toPdf(jasperDTO);
-			facesHelper.downloadHelper().downloadPdf("budget.pdf", btes);
-		} catch (IOException e) {
+			facesHelper.downloadHelper().downloadPdf(downloadStreamsForm.getName(), btes);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void reEditItemQuantity(RowEditEvent<EstimatedItem> event) {
-		System.out.println("Original items " + originalItems.size());
 		new Thread(() -> originalItems.parallelStream()
 				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
 				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
@@ -244,6 +241,7 @@ public class BudgetController implements Serializable {
 			Optional<ProductDTO> product = productRepository.getByCode(searchProductForm.getCode());
 			product.ifPresentOrElse(presentProduct -> {
 				preItems.add(ItemEstimateBudgetForm.of(presentProduct));
+				facesHelper.info(null, holderMessage.label("produto_selecionado"), null);
 			}, () -> {
 				facesHelper.error(null, holderMessage.label("nao_encontrado"), null);
 			});
@@ -344,5 +342,9 @@ public class BudgetController implements Serializable {
 
 	public BudgetEstimateDTO getBudgetEstimateDTO() {
 		return budgetEstimateDTO;
+	}
+
+	public DownloadStreamsForm getDownloadStreamsForm() {
+		return downloadStreamsForm;
 	}
 }

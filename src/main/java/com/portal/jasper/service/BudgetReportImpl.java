@@ -1,5 +1,9 @@
 package com.portal.jasper.service;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +33,16 @@ public class BudgetReportImpl implements BudgetReport {
 	@Override
 	public byte[] toPdf(BudgetJasperReportDTO budget) {
 		// TODO Auto-generated method stub
+		
+		
 		Map<String, Object> params = new HashMap<>();
 		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
-		params.put("logoGaussPath", "C:\\Users\\nicho\\OneDrive\\Documentos\\JavaWorkspace\\JakartaEE Workspace\\PortalAppClient\\src\\main\\webapp\\resources\\gauss.png");
+		try {
+			params.put("logoGaussPath", getClass().getResource("/report/images/gauss.png").toURI().getPath());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
 				budget);
 	}

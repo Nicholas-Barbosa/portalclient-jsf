@@ -2,10 +2,12 @@ package com.portal.jasper;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.Singleton;
 
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -25,8 +27,10 @@ public class ReportService {
 	 */
 	public byte[] exportToPdf(InputStream compiledReport, Map<String, Object> params, Object dataSource) {
 		try (compiledReport) {
+			params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "br"));
 			JasperPrint filledDocument = JasperFillManager.fillReport(compiledReport, params,
 					new JRBeanCollectionDataSource(List.of(dataSource)));
+
 			return JasperExportManager.exportReportToPdf(filledDocument);
 		} catch (Exception e) {
 			e.printStackTrace();

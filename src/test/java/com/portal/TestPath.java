@@ -3,6 +3,7 @@ package com.portal;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -16,9 +17,8 @@ class TestPath {
 	}
 
 	@Test
-	void test() {
-		InputStream in = getClass().getResourceAsStream("/report/budgetEstimate.jasper");
-		System.out.println(in);
+	void test() throws URISyntaxException {
+		System.out.println(getClass().getResource("/report/images/gauss.png").toURI().getPath());
 	}
 
 }

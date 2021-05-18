@@ -25,10 +25,8 @@
 			<h:form>
 				<p:toolbar id="tb">
 					<f:facet name="left">
-
-						<p:commandButton  title="Print"
-							icon="pi pi-share-alt" styleClass="ui-button-help"
-							action="#{budgetController.exportReport}" ajax="false"/>
+						<p:button title="Print" icon="pi pi-share-alt"
+							styleClass="ui-button-help" onclick="PF('downloadDialog').show()" />
 					</f:facet>
 
 				</p:toolbar>
@@ -308,6 +306,36 @@
 
 		</div>
 
+		<p:dialog header="Download" widgetVar="downloadDialog" modal="true"
+			responsive="true">
+			<h:form>
+				<div class="ui-fluid p-formgrid p-grid">
+					<div class="p-field p-col-12 p-md-6">
+						<p:outputLabel for="fileName"
+							value="#{holdMessageView.label('nome_arquivo')}" />
+						<p:inputText id="fileName"
+							value="#{budgetController.downloadStreamsForm.name}" />
+					</div>
+
+					<div class="p-field p-col-12 p-md-6">
+						<p:outputLabel for="fileType"
+							value="#{holdMessageView.label('tipo')}" />
+						<p:selectOneMenu id="fileType"
+							value="#{budgetController.downloadStreamsForm.contentType}">
+							<f:selectItem itemLabel="Select One" itemValue=""
+								noSelectionOption="true" />
+							<f:selectItem itemLabel="PDF" itemValue="pdf" />
+						</p:selectOneMenu>
+					</div>
+
+					<div class="demo-container p-p-4">
+						<p:commandButton icon="pi pi-download"
+							action="#{budgetController.exportReport}" process="@form"
+							ajax="false" />
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
 		<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 			header="#{holdMessageView.label('busca_de_cliente')}"
 			positionType="absolute" responsive="true">
@@ -450,11 +478,8 @@
 								</p:inputText>
 								<p:message for="code" />
 							</div>
-							<p:commandButton value="#{holdMessageView.label('enviar')}"
-								icon="pi pi-send" process="@form" update="@form growl"
-								action="#{budgetController.findProductByCode}"
-								onstart="onStartSearchProduct()"
-								oncomplete="onCompleteSearchProduct()" />
+							<p:commandButton icon="pi pi-send" process="@form" update="growl"
+								action="#{budgetController.findProductByCode}" ajax="true" />
 
 						</div>
 
@@ -481,6 +506,7 @@
 			<div>A long-running process has been detected. Please wait...</div>
 		</p:dialog>
 
+
 		<script type="text/javascript">
 			//<![CDATA[
 			$("#error").hide();
@@ -496,6 +522,13 @@
 			
 			var processFinished=false;
 			
+			function startDownloadStreams(){
+				PF('globalLoadDlg').show();
+			}
+			function completeDownloadStreams(){
+				console.log('complete!')
+				PF('globalLoadDlg').hide();
+			}
 			function detectLongProcess(){
 				processFinished=false;
 				setTimeout( function() {
