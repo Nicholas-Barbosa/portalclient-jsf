@@ -1,24 +1,20 @@
 package com.portal.controller;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 
@@ -78,7 +74,7 @@ public class BudgetController implements Serializable {
 
 	private Set<ItemEstimateBudgetForm> originalItems;
 
-	private Set<ItemEstimateBudgetForm> preItems;
+	private Set<ItemEstimateBudgetForm> selectItems;
 
 	private SearchProductForm searchProductForm;
 
@@ -101,9 +97,6 @@ public class BudgetController implements Serializable {
 
 	private DownloadStreamsForm downloadStreamsForm;
 
-	@Inject
-	private HttpSession httpSession;
-
 	public BudgetController() {
 		this(null, null, null, null, null);
 	}
@@ -119,18 +112,27 @@ public class BudgetController implements Serializable {
 		this.productRepository = productRepository;
 		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 		this.searchProductForm = new SearchProductForm();
-		this.preItems = new HashSet<>();
+		this.selectItems = new HashSet<>();
 		originalItems = new HashSet<>();
 		this.lazyProducts = new ProductLazyDataModel();
 		this.lazyCustomers = new CustomerLazyDataModel();
 		this.downloadStreamsForm = new DownloadStreamsForm();
 	}
 
-	
-	public void invalidSession() {
-		httpSession.invalidate();
-	}
+	public void clearBudgetForm() throws InterruptedException {
+		ExecutorService executor = null;
+		try {
+			executor = Executors.newFixedThreadPool(4);
+			executor.execute(() -> selectedCustomer = null);
+			executor.execute(() -> originalItems.clear());
+			executor.execute(() -> selectItems.clear());
+			executor.execute(() -> budgetEstimateDTO = null);
+		} finally {
+			executor.shutdown();
+			executor.awaitTermination(100, TimeUnit.MILLISECONDS);
+		}
 
+	}
 
 	public void exportReport() {
 		try {
@@ -156,9 +158,10 @@ public class BudgetController implements Serializable {
 
 	public void generateQuote() {
 		try {
+			new Thread(() -> selectItems.clear()).start();
 			budgetEstimateDTO = budgetService.estimate(
 					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems));
-			preItems.clear();
+
 		} catch (SocketTimeoutException | ProcessingException | IllegalArgumentException | SocketException
 				| TimeoutException e) {
 			facesHelper.exceptionMessage().addMessageByException(null, e);
@@ -253,7 +256,7 @@ public class BudgetController implements Serializable {
 		try {
 			Optional<ProductDTO> product = productRepository.getByCode(searchProductForm.getCode());
 			product.ifPresentOrElse(presentProduct -> {
-				preItems.add(ItemEstimateBudgetForm.of(presentProduct));
+				selectItems.add(ItemEstimateBudgetForm.of(presentProduct));
 				facesHelper.info(null, holderMessage.label("produto_selecionado"), null);
 			}, () -> {
 				facesHelper.error(null, holderMessage.label("nao_encontrado"), null);
@@ -270,15 +273,15 @@ public class BudgetController implements Serializable {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
 
-	public void removePreItems(ItemEstimateBudgetForm item) {
-		this.preItems.removeIf(currentItem -> currentItem.getCode().equals(item.getCode()));
+	public void removeSelectedItem(ItemEstimateBudgetForm item) {
+		this.selectItems.removeIf(currentItem -> currentItem.getCode().equals(item.getCode()));
 	}
 
 	public void onProductSelected(ProductDTO productDTO) {
 		ExecutorService executorService = null;
 		try {
 			executorService = Executors.newFixedThreadPool(2);
-			executorService.execute(() -> preItems.add(ItemEstimateBudgetForm.of(productDTO)));
+			executorService.execute(() -> selectItems.add(ItemEstimateBudgetForm.of(productDTO)));
 			executorService.execute(() -> {
 				originalItems.add(ItemEstimateBudgetForm.of(productDTO));
 			});
@@ -313,8 +316,8 @@ public class BudgetController implements Serializable {
 		return h5DivLoadProducts;
 	}
 
-	public Set<ItemEstimateBudgetForm> getPreItems() {
-		return preItems;
+	public Set<ItemEstimateBudgetForm> getSelectItems() {
+		return selectItems;
 	}
 
 	public SearchProductForm getSearchProductForm() {
