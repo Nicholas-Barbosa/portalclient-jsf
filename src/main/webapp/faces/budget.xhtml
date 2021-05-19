@@ -7,6 +7,7 @@
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
 
+
 	</ui:define>
 
 	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
@@ -19,8 +20,11 @@
 	</ui:define>
 
 	<ui:define name="content">
+
+
+
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
-		
+
 		<div class="card" id="toolsForBudget">
 			<h:form>
 				<p:toolbar id="tb">
@@ -407,11 +411,11 @@
 		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="50%"
 			responsive="true">
 			<h:form id="fomrSelectCustomer">
+
 				<p:dataTable var="customer"
 					value="#{budgetController.lazyCustomers}" paginator="true" rows="5"
-					reflow="true" size="small" selectionMode="single"
-					id="dtSelectCustomers" rowsPerPageTemplate="5,10,{ShowAll|'All'}"
-					paginatorTemplate="bottom">
+					size="small" selectionMode="single" id="dtSelectCustomers"
+					rowStyleClass="#{customer.blocked eq 'Sim' ? 'cheap' : null}">
 					<p:ajax event="rowSelect"
 						oncomplete="
 						if(xhr.getResponseHeader('customer-isBlocked') != 'true')
@@ -425,7 +429,7 @@
 						<h:outputText value="#{customer.name}" />
 					</p:column>
 					<p:column headerText="#{holdMessageView.label('nome_fantasia')}"
-						responsivePriority="4">
+						responsivePriority="6">
 						<h:outputText value="#{customer.fantasyName}" />
 					</p:column>
 					<p:column headerText="CGC">
@@ -435,6 +439,9 @@
 						responsivePriority="4">
 						<h:outputText
 							value="#{customer.address},#{customer.city}-#{customer.state}" />
+					</p:column>
+					<p:column headerText="#{holdMessageView.label('bloqueado')}">
+						<h:outputText value="#{customer.blocked}" />
 					</p:column>
 				</p:dataTable>
 				<p:blockUI block="dtSelectCustomers" trigger="dtSelectCustomers">
@@ -506,6 +513,14 @@
 			<div>A long-running process has been detected. Please wait...</div>
 		</p:dialog>
 
+
+		<style type="text/css">
+.cheap {
+	background-color: #ff9999 !important;
+	background-image: none !important;
+	color: #000000 !important;
+}
+</style>
 
 		<script type="text/javascript">
 			//<![CDATA[

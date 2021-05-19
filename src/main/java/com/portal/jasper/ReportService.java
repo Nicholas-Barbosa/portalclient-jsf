@@ -27,7 +27,6 @@ public class ReportService {
 	 */
 	public byte[] exportToPdf(InputStream compiledReport, Map<String, Object> params, Object dataSource) {
 		try (compiledReport) {
-			params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "br"));
 			JasperPrint filledDocument = JasperFillManager.fillReport(compiledReport, params,
 					new JRBeanCollectionDataSource(List.of(dataSource)));
 
