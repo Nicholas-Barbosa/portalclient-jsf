@@ -296,7 +296,7 @@
 			<line>
 				<reportElement x="1" y="44" width="551" height="1" uuid="b7d4c482-6c56-4912-af1a-ee4a562856e7"/>
 			</line>
-			<textField pattern="#,##0.###;#,##0.###-">
+			<textField pattern="¤#,##0.00#;¤(#,##0.00#-)">
 				<reportElement x="72" y="48" width="74" height="18" uuid="8e1b04da-5c1c-4e38-bcd5-0fd71153e65a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{stTotal}]]></textFieldExpression>

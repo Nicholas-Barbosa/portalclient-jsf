@@ -45,7 +45,7 @@ import com.portal.repository.BudgetRepository;
 import com.portal.repository.CustomerRepository;
 import com.portal.repository.ProductRepository;
 import com.portal.service.BudgetService;
-import com.portal.service.faces.FacesHelper;
+import com.portal.service.faces.FacesService;
 import com.portal.service.view.HoldMessageView;
 import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.ui.lazy.datamodel.LazyPopulateUtils;
@@ -66,7 +66,7 @@ public class BudgetController implements Serializable {
 
 	private final HoldMessageView holderMessage;
 
-	private final FacesHelper facesHelper;
+	private final FacesService facesHelper;
 
 	private final CustomerRepository customerRepository;
 
@@ -109,7 +109,7 @@ public class BudgetController implements Serializable {
 	}
 
 	@Inject
-	public BudgetController(HoldMessageView holderMessage, FacesHelper facesService,
+	public BudgetController(HoldMessageView holderMessage, FacesService facesService,
 			CustomerRepository customerRepository, ProductRepository productRepository,
 			BudgetRepository budgetRepository) {
 		super();
@@ -126,10 +126,7 @@ public class BudgetController implements Serializable {
 		this.downloadStreamsForm = new DownloadStreamsForm();
 	}
 
-	public void throwSqlException() throws IOException {
-		throw new NullPointerException();
-	}
-
+	
 	public void invalidSession() {
 		httpSession.invalidate();
 	}

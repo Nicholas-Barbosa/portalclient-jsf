@@ -20,17 +20,7 @@
 
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
-		<h:form>
-			<p:commandButton value="Invalidate session"
-				action="#{budgetController.invalidSession}" />
-
-			<p:commandButton value="perform some action"
-				actionListener="#{budgetController.exportReport}" />
-
-			<p:commandButton value="throw SQL exception"
-				action="#{budgetController.throwSqlException}" />
-			
-		</h:form>
+		
 		<div class="card" id="toolsForBudget">
 			<h:form>
 				<p:toolbar id="tb">

@@ -8,9 +8,21 @@
 		<from-view-id>/login.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>BUDGET_PREVIEW</from-outcome>
-			<to-view-id>/budget.xhtml</to-view-id>
+			<to-view-id>/faces/budget.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
 
+	<!-- <lifecycle> <phase-listener>com.portal.security.servlet.filter.FacesAjaxFilter</phase-listener> 
+		</lifecycle> -->
+
+	<application>
+		<el-resolver>
+			org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver</el-resolver>
+	</application>
+	<factory>
+		<exception-handler-factory>
+			org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
+		</exception-handler-factory>
+	</factory>
 </faces-config>

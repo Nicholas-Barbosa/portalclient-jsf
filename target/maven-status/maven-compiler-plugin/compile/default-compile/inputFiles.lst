@@ -1,5 +1,7 @@
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\auth\OAuth2AuthenticatedRestClient.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\servlet\filter\FacesFilter.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\domain\Customer.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\traffic\UserTraffic.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\FormBudgetDTO.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\UserStylePreferences.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\ResourceBundleServiceImpl.java
@@ -8,20 +10,19 @@ C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppCl
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ErrorGaussDTO.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\resource\PassivateResource.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\properties\PropertiesReader.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\UserAuthenticationHolder.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\resource\HelloResource.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\cdi\qualifier\OAuth2RestAuth.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\BudgetController.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\resource\DownloadResource.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\LoginGssResponseDTO.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\GssCustomerBudgetFormDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\RestAuthentication.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\CustomerPageDTO.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jasper\service\BudgetReportImpl.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\Page.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\LoginController.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BudgetEstimateDTO.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BudgetJasperReportDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\faces\FacesService.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\view\HoldMessageView.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\BudgetService.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\RestClient.java
@@ -42,10 +43,9 @@ C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppCl
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\reflection\MethodAttributes.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\listener\SessionListener.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\PayaraEmbeddedInit.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\servlet\filter\FacesAjaxFilter.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\BudgetRepositoryImpl.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\api\ServiceApi.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\ServicesApis.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\servlet\FacesFilter.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\NoPageCustomerResponseDTO.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\ProductRepositoryImpl.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\BudgetRepository.java
@@ -54,7 +54,6 @@ C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppCl
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\BudgetServiceImpl.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BudgetEstimateForm.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\providers\message\reader\JsonObjectMessageReaderWriter.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\faces\FacesHelper.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\domain\Budget.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\SimpleRestClient.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jasper\ReportService.java
@@ -77,7 +76,6 @@ C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppCl
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ejb\PassivationBean.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\CdiController.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ProductPageDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\JasperService.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\domain\Product.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\listener\ServletRequestListener.java
 C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\api\OAuth2ServiceApi.java
