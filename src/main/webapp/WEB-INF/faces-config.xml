@@ -8,12 +8,15 @@
 		<from-view-id>/login.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>BUDGET_PREVIEW</from-outcome>
-			<to-view-id>/budget.xhtml</to-view-id>
+			<to-view-id>/faces/budget.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
-	<lifecycle>
-		<phase-listener>com.portal.security.servlet.filter.FacesAjaxFilter</phase-listener>
-	</lifecycle>
+
+	<!-- <lifecycle> <phase-listener>com.portal.security.servlet.filter.FacesAjaxFilter</phase-listener> 
+		</lifecycle> -->
+	<factory>
+		<exception-handler-factory>org.omnifaces.exceptionhandler.FullAjaxExceptionHandlerFactory</exception-handler-factory>
+	</factory>
 
 </faces-config>

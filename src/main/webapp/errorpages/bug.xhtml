@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="shortcut icon"
+			href="resources/rain-layout/images/favicon.ico" type="image/x-icon"></link>
+	</f:facet>
+	<title>FarAway - Bug</title>
+</h:head>
+
+<h:body styleClass="exception-body error">
+	<div class="exception-image">
+		<p:graphicImage name="images/pages/bg-header-error.png"
+			library="rain-layout" />
+	</div>
+	<div class="exception-card">
+		<h1>
+			Há um <span>BUG</span> em algum lugar!
+		</h1>
+		<p:graphicImage name="images/pages/asset-error.svg"
+			library="rain-layout" />
+		<span>Date/time:</span>
+		<p:linkButton value="GO TO DASHBOARD" />
+	</div>
+	<ul>
+		<li>User agent: #{header['user-agent']}</li>
+		<li>User IP: #{request.remoteAddr}</li>
+		<li>Request URI:
+			#{requestScope['javax.servlet.error.request_uri']}</li>
+		<li>Ajax request: #{facesContext.partialViewContext.ajaxRequest ?
+			'Yes' : 'No'}</li>
+		<li>Status code:
+			#{requestScope['javax.servlet.error.status_code']}</li>
+		<li>Exception type:
+			#{requestScope['javax.servlet.error.exception_type']}</li>
+		<li>Exception message:
+			#{requestScope['javax.servlet.error.message']}</li>
+		<li>Exception UUID:
+			#{requestScope['org.omnifaces.exception_uuid']}</li>
+	</ul>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+</h:body>
+
+</html>

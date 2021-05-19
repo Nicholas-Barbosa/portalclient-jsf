@@ -19,6 +19,9 @@ public class FacesFilter implements Filter {
 
 	private final UserPropertyHolder userPropertyHolder;
 
+	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
+
 	public FacesFilter() {
 		this(null);
 	}
@@ -33,24 +36,22 @@ public class FacesFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("/faces/login.xhtml")
-				&& !httpRequest.getRequestURI().contains("resource")) {
+		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
-
 			if (isAjaxRequest(httpRequest)) {
-				httpResponse.setHeader("redirect-to-login", "yes");
-				chain.doFilter(httpRequest, response);
+				// httpResponse.setHeader("redirect-to-login", "yes");
+				// chain.doFilter(httpRequest, response);
+				httpResponse.setContentType("text/html;charset=UTF-8");
+				httpResponse.getWriter().format(AJAX_REDIRECT_XML, httpRequest.getContextPath() + "/login.xhtml");
 				return;
 			}
-			httpResponse.sendRedirect("login.xhtml");
-
+			httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.xhtml");
 		} else {
 			chain.doFilter(request, response);
 		}
 	}
 
 	private boolean isAjaxRequest(HttpServletRequest httpRequest) {
-		String header = httpRequest.getHeader("X-Requested-With");
-		return header != null ? header.contains("XMLHttpRequest") : false;
+		return "partial/ajax".equals(httpRequest.getHeader("Faces-Request"));
 	}
 }

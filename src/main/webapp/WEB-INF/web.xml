@@ -30,12 +30,13 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>FacesServlet</servlet-name>
-		<url-pattern>/faces/*</url-pattern>
+		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 
+
 	<error-page>
-		<error-code>401</error-code>
-		<location>/faces/login.xhtml</location>
+		<exception-type>java.lang.RuntimeException</exception-type>
+		<location>/errorpages/bug.xhtml</location>
 	</error-page>
 	<!-- <web-app> <context-param> <param-name>org.jboss.weld.development</param-name> 
 		<param-value>true</param-value> </context-param> </web-app> -->

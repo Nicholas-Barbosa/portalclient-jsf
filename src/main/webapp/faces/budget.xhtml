@@ -2,7 +2,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="./WEB-INF/template.xhtml">
+	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -14,19 +14,25 @@
 	<ui:define name="viewname">
 		<li>#{holdMessageView.getLabel('compras_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/budget">#{holdMessageView.getLabel('orcamento_message')}</p:link>
+		<li><p:link outcome="/faces/budget">#{holdMessageView.getLabel('orcamento_message')}</p:link>
 		</li>
 	</ui:define>
 
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
-		<p:commandButton value="Invalidate session"
-			action="#{budgetController.invalidSession}" />
+		<h:form>
+			<p:commandButton value="Invalidate session"
+				action="#{budgetController.invalidSession}" />
 
-		<p:commandButton value="perform some action"
-			actionListener="#{budgetController.exportReport}" />
-		<p:commandButton value="teste redirect"
-			action="#{budgetController.testeRedirect}" />
+			<p:commandButton value="perform some action"
+				actionListener="#{budgetController.exportReport}" />
+
+			<p:commandButton value="perform some action with-no ajax"
+				actionListener="#{budgetController.exportReport}" ajax="false" />
+
+			<p:commandButton value="throw SQL exception"
+				action="#{budgetController.throwSqlException}" />
+		</h:form>
 		<div class="card" id="toolsForBudget">
 			<h:form>
 				<p:toolbar id="tb">

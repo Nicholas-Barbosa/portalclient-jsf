@@ -24,15 +24,16 @@ public class FacesAjaxFilter implements PhaseListener {
 	@Override
 	public void beforePhase(PhaseEvent event) {
 		// TODO Auto-generated method stub
+		System.out.println("Before phase");
 		FacesContext currentRequest = FacesContext.getCurrentInstance();
 		PartialViewContext partialView = currentRequest.getPartialViewContext();
 		HttpServletResponse response = (HttpServletResponse) currentRequest.getExternalContext().getResponse();
 		if (partialView.isAjaxRequest()) {
 			String redirectHedaer = response.getHeader("redirect-to-login");
-			if (redirectHedaer != null && redirectHedaer.equals("yes")) {
+			if (redirectHedaer != null) {
 				try {
 					ExternalContext ec = currentRequest.getExternalContext();
-					ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
+					ec.redirect(ec.getRequestContextPath() + "/login.xhtml");
 					ec.setResponseStatus(401);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block

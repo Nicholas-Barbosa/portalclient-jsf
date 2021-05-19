@@ -12,12 +12,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import javax.annotation.PreDestroy;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
@@ -126,19 +126,14 @@ public class BudgetController implements Serializable {
 		this.downloadStreamsForm = new DownloadStreamsForm();
 	}
 
+	public void throwSqlException() throws IOException {
+		throw new NullPointerException();
+	}
+
 	public void invalidSession() {
 		httpSession.invalidate();
 	}
 
-	public void testeRedirect() {
-		try {
-			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-			ec.redirect(ec.getRequestContextPath() + "/faces/login.xhtml");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
 
 	public void exportReport() {
 		try {
