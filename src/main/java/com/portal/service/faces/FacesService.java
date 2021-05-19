@@ -167,7 +167,7 @@ public class FacesService implements Serializable {
 			externalContext.setResponseContentType("application/pdf");
 			externalContext.setResponseContentLength(streams.length);
 			externalContext.setResponseHeader("Content-Disposition",
-					String.format("%s;%s=%s", "inline", "filename", fileName));
+					String.format("%s;%s=%s","attachment", "filename", fileName));
 			try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
 				outputStream.write(streams);
 			} finally {
