@@ -12,5 +12,8 @@
 			<redirect />
 		</navigation-case>
 	</navigation-rule>
+	<lifecycle>
+		<phase-listener>com.portal.security.servlet.filter.FacesAjaxFilter</phase-listener>
+	</lifecycle>
 
 </faces-config>

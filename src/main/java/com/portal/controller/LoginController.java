@@ -14,6 +14,10 @@ import com.portal.service.view.HoldMessageView;
 @Named
 public class LoginController {
 
+	/**
+	 * 
+	 */
+
 	private final HoldMessageView holdMessageView;
 
 	private final AuthenticationRepository authenticationRepository;
@@ -35,6 +39,7 @@ public class LoginController {
 		this.authenticationRepository = authenticationRepository;
 
 		this.facesService = facesService;
+		System.out.println("Login controller!");
 	}
 
 	public String authenticate() {

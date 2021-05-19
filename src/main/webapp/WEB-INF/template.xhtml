@@ -45,7 +45,7 @@
 			style="width:32px;height:32px;position:fixed;right:7px;bottom:7px">
 			<f:facet name="start">
 				<i class="pi pi-spin pi-spinner layout-ajax-loader-icon"
-					aria-hidden="true"  style="font-size: 2rem"/>
+					aria-hidden="true" style="font-size: 2rem" />
 			</f:facet>
 
 			<f:facet name="complete">
@@ -60,6 +60,18 @@
 		library="rain-layout" />
 	<h:outputStylesheet
 		name="css/demo-#{userStylePreferences.darkMode}.css" library="demo" />
+
+	<script>
+		$(document).on('pfAjaxComplete', function(xhr, status) {
+			//if (status.status === 401) {
+			console.log(status)
+			console.log(xhr)
+			console.log('redireciona!')
+			//}
+
+		})
+	</script>
 </h:body>
 
 </html>
+

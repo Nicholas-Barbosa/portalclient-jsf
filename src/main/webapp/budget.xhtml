@@ -20,7 +20,13 @@
 
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
+		<p:commandButton value="Invalidate session"
+			action="#{budgetController.invalidSession}" />
 
+		<p:commandButton value="perform some action"
+			actionListener="#{budgetController.exportReport}" />
+		<p:commandButton value="teste redirect"
+			action="#{budgetController.testeRedirect}" />
 		<div class="card" id="toolsForBudget">
 			<h:form>
 				<p:toolbar id="tb">
@@ -32,8 +38,8 @@
 				</p:toolbar>
 				<p:sticky target="tb" />
 			</h:form>
-
 		</div>
+
 		<div class="p-grid">
 			<div class="p-col-12">
 				<div class="card">

@@ -1,4 +1,4 @@
-package com.portal.servlet;
+package com.portal.security.servlet.filter;
 
 import java.io.IOException;
 
@@ -32,16 +32,25 @@ public class FacesFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
-
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-
 		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("/faces/login.xhtml")
 				&& !httpRequest.getRequestURI().contains("resource")) {
-			((HttpServletResponse) response).sendRedirect("login.xhtml");
+			HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+			if (isAjaxRequest(httpRequest)) {
+				httpResponse.setHeader("redirect-to-login", "yes");
+				chain.doFilter(httpRequest, response);
+				return;
+			}
+			httpResponse.sendRedirect("login.xhtml");
 
 		} else {
 			chain.doFilter(request, response);
 		}
 	}
 
+	private boolean isAjaxRequest(HttpServletRequest httpRequest) {
+		String header = httpRequest.getHeader("X-Requested-With");
+		return header != null ? header.contains("XMLHttpRequest") : false;
+	}
 }
