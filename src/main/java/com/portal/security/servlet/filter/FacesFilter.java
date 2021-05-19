@@ -11,6 +11,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
 
 import com.portal.security.UserPropertyHolder;
 
@@ -39,8 +40,6 @@ public class FacesFilter implements Filter {
 		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			if (isAjaxRequest(httpRequest)) {
-				// httpResponse.setHeader("redirect-to-login", "yes");
-				// chain.doFilter(httpRequest, response);
 				httpResponse.setContentType("text/html;charset=UTF-8");
 				httpResponse.getWriter().format(AJAX_REDIRECT_XML, httpRequest.getContextPath() + "/login.xhtml");
 				return;

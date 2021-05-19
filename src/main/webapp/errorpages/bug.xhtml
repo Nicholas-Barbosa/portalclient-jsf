@@ -29,24 +29,16 @@
 		</h1>
 		<p:graphicImage name="images/pages/asset-error.svg"
 			library="rain-layout" />
-		<span>Date/time:</span>
+		<span>Date/time: </span>
 		<p:linkButton value="GO TO DASHBOARD" />
 	</div>
 	<ul>
 		<li>User agent: #{header['user-agent']}</li>
 		<li>User IP: #{request.remoteAddr}</li>
-		<li>Request URI:
-			#{requestScope['javax.servlet.error.request_uri']}</li>
-		<li>Ajax request: #{facesContext.partialViewContext.ajaxRequest ?
-			'Yes' : 'No'}</li>
-		<li>Status code:
-			#{requestScope['javax.servlet.error.status_code']}</li>
-		<li>Exception type:
-			#{requestScope['javax.servlet.error.exception_type']}</li>
-		<li>Exception message:
-			#{requestScope['javax.servlet.error.message']}</li>
-		<li>Exception UUID:
-			#{requestScope['org.omnifaces.exception_uuid']}</li>
+		<li>Exception type: #{pfExceptionHandler.type}</li>
+		<li>Exception message: #{pfExceptionHandler.message}</li>
+
+
 	</ul>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
