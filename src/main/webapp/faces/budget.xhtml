@@ -448,6 +448,9 @@
 							PF('dlgSelectCustomer').hide();"
 						update="growl :customerDTO"
 						listener="#{budgetController.selectCustomer}" />
+					<p:ajax event="page" listener="#{budgetController.onPageCustomers}"
+						async="true" onstart="detectLongProcess()"
+						oncomplete="onCompletePageProducts()" process="@this" />
 					<p:column headerText="#{holdMessageView.label('codigo')}">
 						<h:outputText value="#{customer.code}" />
 					</p:column>

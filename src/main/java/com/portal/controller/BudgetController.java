@@ -122,8 +122,6 @@ public class BudgetController implements Serializable {
 	public void removeEstimatedItem(EstimatedItem item) {
 		new Thread(() -> originalItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
 		new Thread(() -> selectItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
-//		originalItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()));
-//		selectItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()));
 		budgetService.removeItem(budgetEstimateDTO, item);
 	}
 
@@ -189,15 +187,19 @@ public class BudgetController implements Serializable {
 		selectedCustomer = event.getObject();
 	}
 
+	public void onPageCustomers(PageEvent pageEvent) {
+		System.out.println("On page customers!");
+		findCustomerByName(pageEvent.getPage() + 1);
+	}
+
 	public void findCustomerByName(int page) {
 		try {
-			Optional<CustomerPageDTO> maybeCustomer = this.customerRepository.getByName(nameCustomerToFind, 0, 5);
+			Optional<CustomerPageDTO> maybeCustomer = this.customerRepository.getByName(nameCustomerToFind, page, 5);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.totalItems() > 1) {
 					facesHelper.addHeaderForResponse("customers", c.totalItems());
 					LazyPopulateUtils.populate(lazyCustomers, c);
 				} else {
-					System.out.println("Is present " + maybeCustomer.isPresent());
 					CustomerDTO cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {
 						facesHelper.error(null, holderMessage.label("cliente_bloqueado"), null);
