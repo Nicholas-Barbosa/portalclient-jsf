@@ -28,10 +28,23 @@ public class BudgetReportImpl implements BudgetReport {
 	}
 
 	@Override
+	public byte[] export(BudgetJasperReportDTO budget, String type) {
+		switch (type.toUpperCase()) {
+		case "PDF":
+			return toPdf(budget);
+
+		case "EXCEL":
+			
+			return null;
+		default:
+			throw new IllegalArgumentException("Invalid type. Onlye PDF and EXCEL");
+		}
+	}
+
+	@Override
 	public byte[] toPdf(BudgetJasperReportDTO budget) {
 		// TODO Auto-generated method stub
-		
-		
+
 		Map<String, Object> params = new HashMap<>();
 		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
 		try {

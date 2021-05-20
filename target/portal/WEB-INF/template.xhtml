@@ -52,6 +52,20 @@
 				<h:outputText value="" />
 			</f:facet>
 		</p:ajaxStatus>
+		<p:remoteCommand action="#{session.invalidate}"
+			name="invalidateSession" process="@this" update="@none" async="true" />
+		<p:idleMonitor timeout="420000"
+			onidle="PF('idleDialog').show();invalidateSession()" />
+		<p:dialog header="#{holdMessageView.label('tempo_limite')}"
+			widgetVar="idleDialog" modal="true" closable="false">
+			<h:outputText value="#{holdMessageView.label('tempo_limite_ocioso')}" />
+			<h:form>
+				<p:commandButton styleClass="ui-button-warning p-mr-2 p-mb-2"
+					icon="pi pi-arrow-right" action="#" process="@none" update="@none"
+					ajax="false" />
+			</h:form>
+		</p:dialog>
+
 		<div class="layout-mask modal-in"></div>
 	</div>
 	<h:outputStylesheet name="css/primeicons.css" library="rain-layout" />
@@ -61,7 +75,7 @@
 	<h:outputStylesheet
 		name="css/demo-#{userStylePreferences.darkMode}.css" library="demo" />
 
-
+	
 </h:body>
 
 </html>

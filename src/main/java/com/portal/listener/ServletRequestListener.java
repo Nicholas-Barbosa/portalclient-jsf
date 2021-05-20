@@ -15,5 +15,6 @@ public class ServletRequestListener implements javax.servlet.ServletRequestListe
 	@Override
 	public void requestInitialized(ServletRequestEvent sre) {
 		resourceService.init(sre.getServletRequest().getLocale());
+
 	}
 }

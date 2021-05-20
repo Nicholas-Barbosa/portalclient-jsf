@@ -44,7 +44,6 @@ public class LoginController {
 	public String authenticate() {
 		try {
 			this.authenticationRepository.login(loginForm);
-			System.out.println("previoues page " + previousPage);
 			return "BUDGET_PREVIEW";
 		} catch (NotAuthorizedException e) {
 			this.facesService.error(null, holdMessageView.label("nao_encontrado"),

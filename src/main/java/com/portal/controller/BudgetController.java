@@ -119,6 +119,14 @@ public class BudgetController implements Serializable {
 		this.downloadStreamsForm = new DownloadStreamsForm();
 	}
 
+	public void removeEstimatedItem(EstimatedItem item) {
+		new Thread(() -> originalItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
+		new Thread(() -> selectItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
+//		originalItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()));
+//		selectItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()));
+		budgetService.removeItem(budgetEstimateDTO, item);
+	}
+
 	public void clearBudgetForm() throws InterruptedException {
 		ExecutorService executor = null;
 		try {
@@ -223,12 +231,11 @@ public class BudgetController implements Serializable {
 					selectedCustomer = c;
 				}
 			}, () -> {
-				facesHelper.error("customerDTO", holderMessage.label("cliente_nao_encontrado"), null);
+				facesHelper.error(null, holderMessage.label("cliente_nao_encontrado"), null);
 				selectedCustomer = null;
 			});
 		} catch (ClientErrorException e) {
-			facesHelper.error("customerDTO", holderMessage.label("resposta_servidor"),
-					e.getResponse().getEntity().toString());
+			facesHelper.error(null, holderMessage.label("resposta_servidor"), e.getResponse().getEntity().toString());
 		} catch (Exception e) {
 			facesHelper.exceptionMessage().addMessageByException(null, e);
 		}

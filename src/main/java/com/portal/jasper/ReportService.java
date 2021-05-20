@@ -37,4 +37,8 @@ public class ReportService {
 		return null;
 	}
 
+	public byte[] exportToExcel() {
+		return null;
+	}
+
 }

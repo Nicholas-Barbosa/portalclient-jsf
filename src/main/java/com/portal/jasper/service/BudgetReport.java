@@ -4,5 +4,7 @@ import com.portal.dto.BudgetJasperReportDTO;
 
 public interface BudgetReport {
 
+	byte[] export(BudgetJasperReportDTO budget,String type);
+
 	byte[] toPdf(BudgetJasperReportDTO budget);
 }

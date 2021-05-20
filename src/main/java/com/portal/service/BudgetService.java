@@ -34,4 +34,6 @@ public interface BudgetService {
 	 * @return
 	 */
 	BudgetEstimateDTO updateQuantity(BudgetEstimateDTO budget, EstimatedItem estimatedItemValue);
+
+	void removeItem(BudgetEstimateDTO budget, EstimatedItem item);
 }

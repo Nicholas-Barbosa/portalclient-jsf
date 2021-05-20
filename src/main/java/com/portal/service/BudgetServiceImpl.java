@@ -55,4 +55,10 @@ public class BudgetServiceImpl implements BudgetService {
 		budget.reCalculateTotales();
 		return null;
 	}
+
+	@Override
+	public void removeItem(BudgetEstimateDTO budget, EstimatedItem item) {
+		budget.getEstimatedItemValues().remove(item);
+		budget.reCalculateTotales();
+	}
 }
