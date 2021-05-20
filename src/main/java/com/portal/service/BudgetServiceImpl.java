@@ -11,6 +11,7 @@ import javax.ws.rs.ProcessingException;
 
 import com.portal.dto.BudgetEstimateDTO;
 import com.portal.dto.BudgetEstimateForm;
+import com.portal.exception.ItemOutOfStockException;
 import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
 import com.portal.repository.BudgetRepository;
 
@@ -45,20 +46,26 @@ public class BudgetServiceImpl implements BudgetService {
 	@Override
 	public BudgetEstimateDTO updateQuantity(BudgetEstimateDTO budget) {
 		budget.getEstimatedItemValues().parallelStream().forEach(EstimatedItem::recalculateTotales);
-		budget.reCalculateTotales();
+		budget.calcultaTotals();
 		return null;
 	}
+
 	@Override
 	public BudgetEstimateDTO updateQuantity(BudgetEstimateDTO budget, EstimatedItem estimatedItemValue) {
 		budget.getEstimatedItemValues().parallelStream().filter(es -> es.equals(estimatedItemValue))
 				.forEach(EstimatedItem::recalculateTotales);
-		budget.reCalculateTotales();
+		budget.calcultaTotals();
 		return null;
 	}
 
 	@Override
 	public void removeItem(BudgetEstimateDTO budget, EstimatedItem item) {
 		budget.getEstimatedItemValues().remove(item);
-		budget.reCalculateTotales();
+		budget.calcultaTotals();
+	}
+	@Override
+	public void checkQuantityPolicies(BudgetEstimateDTO budget) throws ItemOutOfStockException {
+		//String[]itemsOutOfStock = budget.getEstimatedItemValues().parallelStream().filter(i -> i.get)
+		
 	}
 }

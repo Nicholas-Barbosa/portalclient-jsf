@@ -10,6 +10,7 @@ import javax.ws.rs.ProcessingException;
 import com.portal.dto.BudgetEstimateDTO;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
+import com.portal.exception.ItemOutOfStockException;
 
 public interface BudgetService {
 
@@ -36,4 +37,6 @@ public interface BudgetService {
 	BudgetEstimateDTO updateQuantity(BudgetEstimateDTO budget, EstimatedItem estimatedItemValue);
 
 	void removeItem(BudgetEstimateDTO budget, EstimatedItem item);
+
+	void checkQuantityPolicies(BudgetEstimateDTO budget) throws ItemOutOfStockException;
 }

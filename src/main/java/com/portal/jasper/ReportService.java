@@ -46,8 +46,7 @@ public class ReportService {
 					new JRBeanCollectionDataSource(List.of(dataSource)));
 			SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
 			configuration.setOnePagePerSheet(true);
-			configuration.setIgnoreGraphics(false);
-			configuration.setFontSizeFixEnabled(true);
+			configuration.setSheetNames(new String[] { "budget-sheet-1" });
 			JRXlsxExporter excelExporter = new JRXlsxExporter();
 			excelExporter.setExporterInput(new SimpleExporterInput(filledDocument));
 

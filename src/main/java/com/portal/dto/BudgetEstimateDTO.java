@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbCreator;
@@ -23,6 +26,8 @@ public class BudgetEstimateDTO implements Serializable {
 	private List<EstimatedItem> estimatedItemValues;
 
 	private BigDecimal stTotal;
+
+	private BigDecimal totalDiscount;
 
 	private CustomerDTO customer;
 
@@ -61,14 +66,6 @@ public class BudgetEstimateDTO implements Serializable {
 		this.customer = customer;
 	}
 
-	public void reCalculateTotales() {
-		this.liquidValue = new BigDecimal(estimatedItemValues.parallelStream().map(e -> e.totale)
-				.collect(Collectors.summingDouble(v -> v.doubleValue())));
-		this.grossValue = new BigDecimal(estimatedItemValues.parallelStream().map(e -> e.totalGrossValue)
-				.collect(Collectors.summingDouble(v -> v.doubleValue())));
-		setStTotal();
-	}
-
 	public BigDecimal getLiquidValue() {
 		return liquidValue;
 	}
@@ -85,10 +82,6 @@ public class BudgetEstimateDTO implements Serializable {
 		return stTotal;
 	}
 
-	public void setStTotal() {
-		stTotal = new BigDecimal(estimatedItemValues.stream().mapToDouble(e -> e.getStValue().doubleValue()).sum());
-	}
-
 	public CustomerDTO getCustomer() {
 		return customer;
 	}
@@ -98,15 +91,51 @@ public class BudgetEstimateDTO implements Serializable {
 
 	}
 
+	public BigDecimal getTotalDiscount() {
+		return totalDiscount;
+	}
+
+	/**
+	 * Calculate totales for liquid, gross , st total and discount.
+	 */
+	public void calcultaTotals() {
+		ExecutorService executor = null;
+		try {
+			executor = Executors.newFixedThreadPool(4);
+			executor.execute(() -> this.liquidValue = new BigDecimal(estimatedItemValues.parallelStream()
+					.map(e -> e.totale).collect(Collectors.summingDouble(v -> v.doubleValue()))));
+			executor.execute(() -> this.grossValue = new BigDecimal(estimatedItemValues.parallelStream()
+					.map(e -> e.totalGrossValue).collect(Collectors.summingDouble(v -> v.doubleValue()))));
+			executor.execute(() -> setStTotal());
+			executor.execute(() -> calculateTotalDiscount());
+		} finally {
+			executor.shutdown();
+			try {
+				executor.awaitTermination(10, TimeUnit.MICROSECONDS);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+	}
+
+	public final void calculateTotalDiscount() {
+		this.totalDiscount = new BigDecimal(estimatedItemValues.parallelStream().map(e -> e.discount)
+				.collect(Collectors.summingDouble(v -> v.doubleValue())));
+	}
+
+	public void setStTotal() {
+		stTotal = new BigDecimal(estimatedItemValues.stream().mapToDouble(e -> e.getStValue().doubleValue()).sum());
+	}
+
 	@Override
 	public String toString() {
 		return "BudgetEstimateDTO [liquidValue=" + liquidValue + ", grossValue=" + grossValue + ", estimatedValues="
 				+ estimatedItemValues + ", stTotal=" + stTotal + ", customerDTO=" + customer + "]";
 	}
 
-	public static class EstimatedItem implements Serializable{
-
-		
+	public static class EstimatedItem implements Serializable {
 
 		/**
 		 * 
@@ -131,6 +160,10 @@ public class BudgetEstimateDTO implements Serializable {
 
 		private BigDecimal unitStValue;
 
+		private BigDecimal discount;
+
+		private int avaliableStock;
+
 		public EstimatedItem() {
 			// TODO Auto-generated constructor stub
 		}
@@ -141,7 +174,9 @@ public class BudgetEstimateDTO implements Serializable {
 				@JsonbProperty("product_code") String productCode,
 				@JsonbProperty("commercial_code") String commercialCode,
 				@JsonbProperty("unit_price") BigDecimal unitPrice, @JsonbProperty("quantity") int quantity,
-				@JsonbProperty("total_price") BigDecimal totale, @JsonbProperty("st_value") BigDecimal stValue) {
+				@JsonbProperty("total_price") BigDecimal totale, @JsonbProperty("st_value") BigDecimal stValue,
+				@JsonbProperty("line_discount") BigDecimal discount,
+				@JsonbProperty("available_stock") int avaliableStock) {
 			super();
 			this.unitGrossValue = unitGrossValue;
 			this.totalGrossValue = totalGrossValue;
@@ -151,6 +186,8 @@ public class BudgetEstimateDTO implements Serializable {
 			this.quantity = quantity;
 			this.totale = totale;
 			this.stValue = stValue;
+			this.discount = discount;
+			this.avaliableStock = avaliableStock;
 			discoverUnitStValue();
 		}
 
@@ -197,6 +234,14 @@ public class BudgetEstimateDTO implements Serializable {
 
 		public BigDecimal getUnitStValue() {
 			return unitStValue;
+		}
+
+		public BigDecimal getDiscount() {
+			return discount;
+		}
+
+		public int getAvaliableStock() {
+			return avaliableStock;
 		}
 
 		public void recalculateTotales() {
@@ -256,8 +301,6 @@ public class BudgetEstimateDTO implements Serializable {
 					+ ", quantity=" + quantity + ", totale=" + totale + ", stValue=" + stValue + ", unitStValue="
 					+ unitStValue + "]";
 		}
-		
-		
 
 	}
 

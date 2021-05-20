@@ -26,7 +26,7 @@ public class ItemEstimateBudgetForm implements Comparable<ItemEstimateBudgetForm
 		this.quantity = quantity;
 	}
 
-	public static ItemEstimateBudgetForm of(ProductDTO product) {
+	public static ItemEstimateBudgetForm of(ProductQueryDTO product) {
 		return new ItemEstimateBudgetForm(product.getCode(), product.getDescriptionType(), product.getCommercialCode(),
 				product.getDescription(), 1);
 	}

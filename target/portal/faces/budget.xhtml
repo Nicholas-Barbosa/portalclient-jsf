@@ -26,7 +26,7 @@
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
 
 		<div class="card">
-			<h:form>
+			<h:form id="budgetToolsForm">
 				<p:toolbar id="tb">
 					<f:facet name="left">
 						<p:commandButton type="button" title="Print" icon="pi pi-print"
@@ -155,7 +155,7 @@
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
 											oncomplete="onCompleteEstimate()"
 											action="#{budgetController.generateQuote}" process="@this"
-											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems" />
+											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems budgetToolsForm" />
 
 									</f:facet>
 									<p:column headerText="#{holdMessageView.label('descricao')}">
@@ -199,7 +199,6 @@
 								value="#{budgetController.budgetEstimateDTO.estimatedItemValues}"
 								var="product" editable="true" rowKey="#{product.commercialCode}"
 								id="dtItems" reflow="true" size="small"
-								styleClass="ui-datatable-sm"
 								style="max-height:30vh; overflow-y: auto;">
 								<!-- rows="5" paginator="true"
 								paginatorAlwaysVisible="false"
@@ -271,9 +270,18 @@
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
+
+								<p:column>
+									<p:commandButton icon="pi pi-times"
+										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
+										title="Remover"
+										action="#{budgetController.removeEstimatedItem(product)}"
+										update="formItems:dtItems budgetEstimateForm" />
+								</p:column>
 								<p:column style="width:2rem">
 									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
 										saveTitle="Save Row" />
+
 								</p:column>
 							</p:dataTable>
 
@@ -342,6 +350,7 @@
 							<f:selectItem itemLabel="Select One" itemValue=""
 								noSelectionOption="true" />
 							<f:selectItem itemLabel="PDF" itemValue="pdf" />
+							<f:selectItem itemLabel="Excel" itemValue="excel" />
 						</p:selectOneMenu>
 					</div>
 
@@ -409,7 +418,7 @@
 								<p:message for="@previous" />
 							</div>
 							<p:remoteCommand process="@form"
-								update="@form growl :customerDTO"
+								update="fomrSelectCustomer growl"
 								action="#{budgetController.findCustomerByCode}"
 								name="findCustomerByCodeAndStore"
 								id="findCustomerByCodeAndStore"
@@ -421,35 +430,39 @@
 			</p:tabView>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="50%"
-			responsive="true">
+		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="55vw"
+			responsive="true"
+			header="#{holdMessageView.label('escolha_cliente')}">
+
 			<h:form id="fomrSelectCustomer">
 
 				<p:dataTable var="customer"
 					value="#{budgetController.lazyCustomers}" paginator="true" rows="5"
 					size="small" selectionMode="single" id="dtSelectCustomers"
-					rowStyleClass="#{customer.blocked eq 'Sim' ? 'cheap' : null}">
+					rowStyleClass="#{customer.blocked eq 'Sim' ? 'cheap' : null}"
+					style="max-height:40vh" reflow="true">
 					<p:ajax event="rowSelect"
 						oncomplete="
 						if(xhr.getResponseHeader('customer-isBlocked') != 'true')
 							PF('dlgSelectCustomer').hide();"
 						update="growl :customerDTO"
 						listener="#{budgetController.selectCustomer}" />
+					<p:ajax event="page" listener="#{budgetController.onPageCustomers}"
+						async="true" onstart="detectLongProcess()"
+						oncomplete="onCompletePageProducts()" process="@this" />
 					<p:column headerText="#{holdMessageView.label('codigo')}">
 						<h:outputText value="#{customer.code}" />
 					</p:column>
 					<p:column headerText="#{holdMessageView.label('nome')}">
 						<h:outputText value="#{customer.name}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('nome_fantasia')}"
-						responsivePriority="6">
+					<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
 						<h:outputText value="#{customer.fantasyName}" />
 					</p:column>
 					<p:column headerText="CGC">
 						<h:outputText value="#{customer.cgc}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('endereco')}"
-						responsivePriority="4">
+					<p:column headerText="#{holdMessageView.label('endereco')}">
 						<h:outputText
 							value="#{customer.address},#{customer.city}-#{customer.state}" />
 					</p:column>
@@ -461,6 +474,7 @@
 					<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
 				</p:blockUI>
 			</h:form>
+
 		</p:dialog>
 
 

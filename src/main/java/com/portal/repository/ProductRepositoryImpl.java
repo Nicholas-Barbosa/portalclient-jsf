@@ -21,8 +21,8 @@ import javax.ws.rs.core.MediaType;
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.NoPageProductResponseDTO;
-import com.portal.dto.ProductDTO;
-import com.portal.dto.ProductPageDTO;
+import com.portal.dto.ProductQueryDTO;
+import com.portal.dto.ProductQueryPageDTO;
 
 @SessionScoped
 public class ProductRepositoryImpl implements ProductRepository, Serializable {
@@ -43,7 +43,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Optional<ProductDTO> getByCode(String code) throws SocketTimeoutException, ConnectException,
+	public Optional<ProductQueryDTO> getByCode(String code) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, TimeoutException, SocketException {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
@@ -58,18 +58,18 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public ProductPageDTO getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
+	public ProductQueryPageDTO getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, TimeoutException, SocketException {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
-		ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.getForEntity("ORCAMENTO_API", "products",
-				ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
+		ProductQueryPageDTO productPageDto = (ProductQueryPageDTO) authRestClient.getForEntity("ORCAMENTO_API", "products",
+				ProductQueryPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
 
 		return productPageDto;
 	}
 
 	@Override
-	public Optional<ProductPageDTO> getByDescription(int page, int pageSize, String description)
+	public Optional<ProductQueryPageDTO> getByDescription(int page, int pageSize, String description)
 			throws SocketTimeoutException, ConnectException, ProcessingException, IllegalArgumentException,
 			TimeoutException, SocketException {
 		Map<String, Object> queryParams = new HashMap<>();
@@ -78,8 +78,8 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		queryParams.put("searchKey", description);
 
 		try {
-			ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.getForEntity("ORCAMENTO_API", "products",
-					ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
+			ProductQueryPageDTO productPageDto = (ProductQueryPageDTO) authRestClient.getForEntity("ORCAMENTO_API", "products",
+					ProductQueryPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
 			return Optional.of(productPageDto);
 		} catch (NotFoundException e) {
 			return Optional.empty();

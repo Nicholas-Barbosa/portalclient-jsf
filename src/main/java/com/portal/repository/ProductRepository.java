@@ -8,16 +8,16 @@ import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ProcessingException;
 
-import com.portal.dto.ProductDTO;
-import com.portal.dto.ProductPageDTO;
+import com.portal.dto.ProductQueryDTO;
+import com.portal.dto.ProductQueryPageDTO;
 
 public interface ProductRepository {
 
-	Optional<ProductDTO> getByCode(String code) throws SocketTimeoutException, ConnectException, ProcessingException, TimeoutException,SocketException;
+	Optional<ProductQueryDTO> getByCode(String code) throws SocketTimeoutException, ConnectException, ProcessingException, TimeoutException,SocketException;
 
-	ProductPageDTO getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
+	ProductQueryPageDTO getAllByPage(int page, int pageSize) throws SocketTimeoutException, ConnectException,
 			ProcessingException, TimeoutException,SocketException;
 
-	Optional<ProductPageDTO> getByDescription(int page, int pageSize, String description) throws SocketTimeoutException,
+	Optional<ProductQueryPageDTO> getByDescription(int page, int pageSize, String description) throws SocketTimeoutException,
 			ConnectException, ProcessingException, TimeoutException,SocketException;
 }

@@ -1,11 +1,14 @@
 package com.portal.service;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 
+@Named
 @SessionScoped
 public class ResourceBundleServiceImpl implements Serializable, ResourceBundleService {
 
@@ -28,11 +31,17 @@ public class ResourceBundleServiceImpl implements Serializable, ResourceBundleSe
 	}
 
 	@Override
+	public String getMessage(String message, Object... arguments) {
+		// TODO Auto-generated method stub
+		return MessageFormat.format(resourceBundle.getString(message), arguments);
+	}
+
+	@Override
 	public void init(Locale locale) {
 		if (defualtLocale != null) {
 			if (!defualtLocale.equals(locale))
 				resourceBundle = ResourceBundle.getBundle("message", locale);
-		}else
+		} else
 			resourceBundle = ResourceBundle.getBundle("message", locale);
 	}
 

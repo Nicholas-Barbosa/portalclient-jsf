@@ -8,6 +8,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import com.portal.dto.BudgetJasperReportDTO;
+import com.portal.http.ContentType;
 import com.portal.jasper.ReportService;
 
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -28,12 +29,12 @@ public class BudgetReportImpl implements BudgetReport {
 	}
 
 	@Override
-	public byte[] export(BudgetJasperReportDTO budget, String type) {
-		switch (type.toUpperCase()) {
-		case "PDF":
+	public byte[] export(BudgetJasperReportDTO budget, ContentType type) {
+		switch (type) {
+		case PDF:
 			return toPdf(budget);
 
-		case "EXCEL":
+		case EXCEL:
 			return toExcel(budget);
 		default:
 			throw new IllegalArgumentException("Invalid type. Onlye PDF and EXCEL");

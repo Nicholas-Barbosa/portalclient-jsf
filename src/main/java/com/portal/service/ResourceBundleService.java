@@ -23,6 +23,8 @@ public interface ResourceBundleService {
 	 */
 	String getMessage(String message, Locale locale);
 
+	String getMessage(String message, Object... arguments);
+
 	/**
 	 * Init ResourceBundleSerive object, for subsequent calls in current session
 	 * scope.
@@ -30,4 +32,5 @@ public interface ResourceBundleService {
 	 * @param locale
 	 */
 	void init(Locale locale);
+
 }

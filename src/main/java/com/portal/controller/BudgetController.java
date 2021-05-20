@@ -32,8 +32,8 @@ import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.DownloadStreamsForm;
 import com.portal.dto.ItemEstimateBudgetForm;
-import com.portal.dto.ProductDTO;
-import com.portal.dto.ProductPageDTO;
+import com.portal.dto.ProductQueryDTO;
+import com.portal.dto.ProductQueryPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.dto.SearchProductForm;
 import com.portal.jasper.service.BudgetReport;
@@ -56,7 +56,7 @@ public class BudgetController implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private LazyDataModel<ProductDTO> lazyProducts;
+	private LazyDataModel<ProductQueryDTO> lazyProducts;
 
 	private LazyDataModel<CustomerDTO> lazyCustomers;
 
@@ -97,6 +97,8 @@ public class BudgetController implements Serializable {
 
 	private DownloadStreamsForm downloadStreamsForm;
 
+	private EstimatedItem selectedItemToViewStock;
+
 	public BudgetController() {
 		this(null, null, null, null, null);
 	}
@@ -117,6 +119,10 @@ public class BudgetController implements Serializable {
 		this.lazyProducts = new ProductLazyDataModel();
 		this.lazyCustomers = new CustomerLazyDataModel();
 		this.downloadStreamsForm = new DownloadStreamsForm();
+	}
+
+	public void throwRuntimeException() {
+		throw new NullPointerException();
 	}
 
 	public void removeEstimatedItem(EstimatedItem item) {
@@ -149,7 +155,7 @@ public class BudgetController implements Serializable {
 					budgetEstimateDTO.getEstimatedItemValues());
 			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
 			facesHelper.downloadHelper().download(downloadStreamsForm.getName(), btes,
-					downloadStreamsForm.getContentType().equals("excel") ? ContentType.EXCEL : ContentType.PDF);
+					downloadStreamsForm.getContentType());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -188,7 +194,6 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onPageCustomers(PageEvent pageEvent) {
-		System.out.println("On page customers!");
 		findCustomerByName(pageEvent.getPage() + 1);
 	}
 
@@ -239,14 +244,16 @@ public class BudgetController implements Serializable {
 			});
 		} catch (ClientErrorException e) {
 			facesHelper.error(null, holderMessage.label("resposta_servidor"), e.getResponse().getEntity().toString());
-		} catch (Exception e) {
+			selectedCustomer = null;
+		} catch (SocketTimeoutException | ProcessingException | SocketException | TimeoutException e) {
 			facesHelper.exceptionMessage().addMessageByException(null, e);
+			selectedCustomer = null;
 		}
 	}
 
 	public void findProductByDescription(int page) {
 		try {
-			Optional<ProductPageDTO> maybeProduct = productRepository.getByDescription(page, pageSizeForProducts,
+			Optional<ProductQueryPageDTO> maybeProduct = productRepository.getByDescription(page, pageSizeForProducts,
 					searchProductForm.getDescription());
 			maybeProduct.ifPresentOrElse(p -> {
 				LazyPopulateUtils.populate(lazyProducts, p);
@@ -264,7 +271,7 @@ public class BudgetController implements Serializable {
 
 	public void findProductByCode() {
 		try {
-			Optional<ProductDTO> product = productRepository.getByCode(searchProductForm.getCode());
+			Optional<ProductQueryDTO> product = productRepository.getByCode(searchProductForm.getCode());
 			product.ifPresentOrElse(presentProduct -> {
 				selectItems.add(ItemEstimateBudgetForm.of(presentProduct));
 				facesHelper.info(null, holderMessage.label("produto_selecionado"), null);
@@ -287,7 +294,7 @@ public class BudgetController implements Serializable {
 		this.selectItems.removeIf(currentItem -> currentItem.getCode().equals(item.getCode()));
 	}
 
-	public void onProductSelected(ProductDTO productDTO) {
+	public void onProductSelected(ProductQueryDTO productDTO) {
 		ExecutorService executorService = null;
 		try {
 			executorService = Executors.newFixedThreadPool(2);
@@ -306,7 +313,7 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-	public LazyDataModel<ProductDTO> getLazyProducts() {
+	public LazyDataModel<ProductQueryDTO> getLazyProducts() {
 		return lazyProducts;
 	}
 
@@ -372,5 +379,13 @@ public class BudgetController implements Serializable {
 
 	public DownloadStreamsForm getDownloadStreamsForm() {
 		return downloadStreamsForm;
+	}
+
+	public EstimatedItem getSelectedItemToViewStock() {
+		return selectedItemToViewStock;
+	}
+
+	public void setSelectedItemToViewStock(EstimatedItem selectedItemToViewStock) {
+		this.selectedItemToViewStock = selectedItemToViewStock;
 	}
 }
