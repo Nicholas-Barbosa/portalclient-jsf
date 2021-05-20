@@ -276,7 +276,8 @@
 									<p:commandButton icon="pi pi-times"
 										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 										title="Remover"
-										action="#{budgetController.removeEstimatedItem(product)}" update="formItems:dtItems budgetEstimateForm"/>
+										action="#{budgetController.removeEstimatedItem(product)}"
+										update="formItems:dtItems budgetEstimateForm" />
 								</p:column>
 								<p:column style="width:2rem">
 									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
@@ -350,6 +351,7 @@
 							<f:selectItem itemLabel="Select One" itemValue=""
 								noSelectionOption="true" />
 							<f:selectItem itemLabel="PDF" itemValue="pdf" />
+							<f:selectItem itemLabel="Excel" itemValue="excel" />
 						</p:selectOneMenu>
 					</div>
 

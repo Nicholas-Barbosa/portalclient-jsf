@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.InternalServerErrorException;
 
+import com.portal.http.ContentType;
 import com.portal.service.view.HoldMessageView;
 
 @Stateless
@@ -160,6 +161,20 @@ public class FacesService implements Serializable {
 
 	public class FacesDownloadStream {
 
+		public void download(String fileName, byte[] streams, ContentType contentType) throws IOException {
+			switch (contentType) {
+			case EXCEL:
+				System.out.println("download excel");
+				downloadExcel(fileName, streams);
+				break;
+
+			case PDF:
+				downloadPdf(fileName, streams);
+				break;
+			}
+			
+		}
+
 		public void downloadPdf(String fileName, byte[] streams) throws IOException {
 			FacesContext currentInstance = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = currentInstance.getExternalContext();
@@ -167,7 +182,23 @@ public class FacesService implements Serializable {
 			externalContext.setResponseContentType("application/pdf");
 			externalContext.setResponseContentLength(streams.length);
 			externalContext.setResponseHeader("Content-Disposition",
-					String.format("%s;%s=%s","attachment", "filename", fileName));
+					String.format("%s;%s=%s", "attachment", "filename", fileName));
+			try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
+				outputStream.write(streams);
+			} finally {
+				currentInstance.responseComplete();
+			}
+
+		}
+
+		public void downloadExcel(String fileName, byte[] streams) throws IOException {
+			FacesContext currentInstance = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = currentInstance.getExternalContext();
+
+			externalContext.setResponseContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+			externalContext.setResponseContentLength(streams.length);
+			externalContext.setResponseHeader("Content-Disposition",
+					String.format("%s;%s=%s", "attachment", "filename", fileName));
 			try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
 				outputStream.write(streams);
 			} finally {

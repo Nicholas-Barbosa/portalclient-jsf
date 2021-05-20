@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.annotation.Priority;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
@@ -24,10 +23,6 @@ public class ExceptionLauncherFilter implements ClientResponseFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-		if (responseContext.getStatus() == -1) {
-			System.err.println(requestContext.getUri().toString() + " retornou -1!");
-			responseContext.getHeaders().forEach((k, v) -> System.err.println(k + ":" + v));
-		}
 
 		switch (responseContext.getStatus()) {
 		case 404:

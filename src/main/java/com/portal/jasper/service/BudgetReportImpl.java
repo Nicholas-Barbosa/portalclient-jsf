@@ -34,8 +34,7 @@ public class BudgetReportImpl implements BudgetReport {
 			return toPdf(budget);
 
 		case "EXCEL":
-			
-			return null;
+			return toExcel(budget);
 		default:
 			throw new IllegalArgumentException("Invalid type. Onlye PDF and EXCEL");
 		}
@@ -49,12 +48,29 @@ public class BudgetReportImpl implements BudgetReport {
 		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
 		try {
 			params.put("logoGaussPath", getClass().getResource("/report/images/gauss.png").toURI().getPath());
+			return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
+					budget);
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
-				budget);
+		return null;
+	}
+
+	@Override
+	public byte[] toExcel(BudgetJasperReportDTO budget) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
+		try {
+			params.put("logoGaussPath", getClass().getResource("/report/images/gauss.png").toURI().getPath());
+			return reportService.exportToExcel(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
+					budget);
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return null;
 	}
 
 }

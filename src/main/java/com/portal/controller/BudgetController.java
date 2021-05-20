@@ -6,7 +6,6 @@ import java.net.SocketTimeoutException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +27,7 @@ import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetJasperReportDTO;
 import com.portal.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
+import com.portal.http.ContentType;
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.DownloadStreamsForm;
@@ -149,8 +149,9 @@ public class BudgetController implements Serializable {
 					new CustomerJasperReportDTO(selectedCustomer.getName(), selectedCustomer.getCity(),
 							selectedCustomer.getAddress(), selectedCustomer.getState(), selectedCustomer.getCgc()),
 					budgetEstimateDTO.getEstimatedItemValues());
-			byte[] btes = budgetReport.toPdf(jasperDTO);
-			facesHelper.downloadHelper().downloadPdf(downloadStreamsForm.getName(), btes);
+			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
+			facesHelper.downloadHelper().download(downloadStreamsForm.getName(), btes,
+					downloadStreamsForm.getContentType().equals("excel") ? ContentType.EXCEL : ContentType.PDF);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

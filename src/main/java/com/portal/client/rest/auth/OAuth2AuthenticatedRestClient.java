@@ -131,7 +131,6 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			handleProcessingException(e);
 
 		} finally {
-			System.out.println("Close client");
 			client.close();
 		}
 		return null;
