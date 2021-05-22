@@ -54,7 +54,7 @@
 		</p:ajaxStatus>
 		<p:remoteCommand action="#{session.invalidate}"
 			name="invalidateSession" process="@this" update="@none" async="true" />
-		<p:idleMonitor timeout="420000"
+		<p:idleMonitor timeout="600000"
 			onidle="PF('idleDialog').show();invalidateSession()" />
 		<p:dialog header="#{holdMessageView.label('tempo_limite')}"
 			widgetVar="idleDialog" modal="true" closable="false">

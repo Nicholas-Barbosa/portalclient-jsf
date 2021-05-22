@@ -12,6 +12,7 @@ import javax.ejb.EJBException;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
@@ -162,9 +163,9 @@ public class BudgetController implements Serializable {
 
 	public void estimate() {
 		try {
-			new Thread(() -> selectedProducts.clear()).start();
 			budgetEstimateDTO = budgetService.estimate(
 					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems));
+			new Thread(() -> selectedProducts.clear()).start();
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 		} catch (EJBException e) {

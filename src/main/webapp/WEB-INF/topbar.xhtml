@@ -8,9 +8,9 @@
 	<div class="layout-topbar">
 		<div class="layout-topbar-wrapper">
 			<div class="layout-topbar-left">
-			  <h:link id="logolink" styleClass="layout-topbar-logo">
-                   <p:graphicImage name="Webp.net-resizeimage-gausslg.png" />
-                </h:link>
+				<h:link id="logolink" styleClass="layout-topbar-logo">
+					<p:graphicImage name="Webp.net-resizeimage-gausslg.png" />
+				</h:link>
 			</div>
 			<div class="layout-topbar-right">
 				<div class="menu-button-wrapper">
@@ -23,8 +23,13 @@
 						</div>
 					</a>
 				</div>
-
-
+				<ul class="layout-topbar-actions">
+					<li class="topbar-item notifications"><a href="#"> <i
+							class="topbar-icon pi pi-power-off" onclick="logout();"> </i>
+					</a></li>
+				</ul>
+				<p:remoteCommand action="#{session.invalidate}" process="@this"
+					name="logout" oncomplete="window.location='/portal/login.xhtml'" />
 			</div>
 		</div>
 

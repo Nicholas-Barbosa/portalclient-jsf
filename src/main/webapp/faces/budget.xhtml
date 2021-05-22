@@ -6,8 +6,6 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
-
-
 	</ui:define>
 
 	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
@@ -21,10 +19,7 @@
 
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
-		<h:form>
-			<p:commandButton value="opne dlg"
-				action="#{budgetController.openViewInDialog}" />
-		</h:form>
+
 		<div class="card">
 			<h:form id="budgetToolsForm">
 				<p:toolbar id="tb">
