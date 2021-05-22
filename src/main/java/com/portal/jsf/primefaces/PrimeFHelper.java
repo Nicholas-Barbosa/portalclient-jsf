@@ -21,6 +21,6 @@ public class PrimeFHelper {
 		options.put("modal", true);
 		options.put("draggable", true);
 		options.put("fitViewport", true);
-		PrimeFaces.current().dialog().openDynamic("response", options, null);
+		PrimeFaces.current().dialog().openDynamic("clientError", options, null);
 	}
 }

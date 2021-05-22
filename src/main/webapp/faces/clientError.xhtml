@@ -7,7 +7,7 @@
 
 <h:head>
 
-	<title>Error</title>
+	<title>#{resourceBundleServiceImpl.getMessage('erro_cliente_titulo')}</title>
 </h:head>
 
 <h:body>
@@ -15,7 +15,7 @@
 	<div class="card">
 		<p>
 			<h:outputText
-				value="#{resourceBundleServiceImpl.getMessage('servidor_resposta_imprevisivel')}" />
+				value="#{resourceBundleServiceImpl.getMessage('erro_cliente_requisicao')}" />
 		</p>
 		<br />
 		<ul>

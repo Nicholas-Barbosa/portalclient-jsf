@@ -23,7 +23,6 @@ public class ExceptionLauncherFilter implements ClientResponseFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-		System.out.println("Status " + responseContext.getStatus());
 		switch (responseContext.getStatus()) {
 		case 404:
 			String responseTxt = readResponse(responseContext.getEntityStream());

@@ -16,7 +16,6 @@ public class ClientErrorExceptionController {
 
 	@PostConstruct
 	public void initResponse() {
-		System.out.println("Post construct!");
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		response = (Response) sessionMap.get("response");
 		sessionMap.remove("response");
