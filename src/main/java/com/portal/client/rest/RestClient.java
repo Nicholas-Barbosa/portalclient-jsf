@@ -9,18 +9,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.rest.providers.filter.ExceptionLauncherFilter;
 import com.portal.client.rest.providers.message.reader.JsonObjectMessageReaderWriter;
-import com.portal.exception.IllegalResponseStatusException;
 
 public interface RestClient extends Serializable {
 
@@ -38,8 +33,7 @@ public interface RestClient extends Serializable {
 			TimeoutException, IllegalArgumentException, ConnectException, SocketException;
 
 	<T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
-			E requestBody, MediaType mediaType) throws SocketTimeoutException, TimeoutException,
-			IllegalArgumentException, ConnectException, SocketException;
+			E requestBody, MediaType mediaType);
 
 	default Client getClientFollowingMediaType(MediaType media) {
 		Client client = media == MediaType.APPLICATION_JSON_TYPE
@@ -50,42 +44,8 @@ public interface RestClient extends Serializable {
 		return client;
 	}
 
-	default void handleProcessingException(ProcessingException e)
-			throws SocketTimeoutException, TimeoutException, IllegalArgumentException, SocketException {
-		System.out.println("Handle processing exception");
-		if (e.getCause() instanceof SocketTimeoutException) {
-			throw new SocketTimeoutException(e.getCause().getMessage());
-		} else if (e.getCause() instanceof TimeoutException) {
-			throw new TimeoutException(e.getCause().getMessage());
-		} else if (e.getCause() instanceof IllegalArgumentException) {
-			throw new IllegalArgumentException(e.getCause().getMessage());
-		} else if (e.getCause() instanceof ConnectException) {
-			throw new ConnectException(e.getCause().getMessage());
-		} else if (e.getCause() instanceof SocketException) {
-			throw new SocketException();
-		} else if (e.getCause() instanceof NotFoundException) {
-			throw new NotFoundException(((NotFoundException) e.getCause()).getResponse());
-		} else if (e.getCause() instanceof InternalServerErrorException) {
-			throw new InternalServerErrorException(((InternalServerErrorException) e.getCause()).getResponse());
-		} else if (e.getCause() instanceof ClientErrorException) {
-			throw new ClientErrorException(((ClientErrorException) e.getCause()).getResponse());
-		} else
-			throw e;
-
-	}
-
-	default void handleResponseProcessingException(ResponseProcessingException e) {
-		System.out.println("Handle response processing exdception " + e.getCause());
-		if (e.getCause() instanceof NotAuthorizedException) {
-			throw new NotAuthorizedException(((NotAuthorizedException) e.getCause()).getResponse());
-		} else if (e.getCause() instanceof ClientErrorException) {
-			throw new ClientErrorException(((ClientErrorException) e.getCause()).getResponse());
-		} else if (e.getCause() instanceof InternalServerErrorException) {
-			throw new InternalServerErrorException();
-		} else if (e.getCause() instanceof IllegalResponseStatusException) {
-			throw new IllegalResponseStatusException();
-
-		} else
-			throw e;
+	default void depurateProcessingException(ProcessingException p) {
+		if (p.getCause() instanceof ClientErrorException)
+			throw (ClientErrorException) p.getCause();
 	}
 }

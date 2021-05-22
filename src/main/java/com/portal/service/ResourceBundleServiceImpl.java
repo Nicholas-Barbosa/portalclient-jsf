@@ -19,9 +19,7 @@ public class ResourceBundleServiceImpl implements Serializable, ResourceBundleSe
 	@Override
 	public String getMessage(String message) {
 		// TODO Auto-generated method stub
-		if (resourceBundle != null)
-			return resourceBundle.getString(message);
-		throw new IllegalStateException("ResourceBundle not initialized!");
+		return resourceBundle.getString(message);
 	}
 
 	@Override

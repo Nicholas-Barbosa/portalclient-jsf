@@ -23,10 +23,12 @@ public class ExceptionLauncherFilter implements ClientResponseFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-
+		System.out.println("Status " + responseContext.getStatus());
 		switch (responseContext.getStatus()) {
 		case 404:
-			throw new NotFoundException();
+			String responseTxt = readResponse(responseContext.getEntityStream());
+			Response responseNotFound = Response.status(404).entity(responseTxt).build();
+			throw new NotFoundException(responseNotFound);
 		case 500:
 			throw new InternalServerErrorException();
 		case 403:

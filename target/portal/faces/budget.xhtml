@@ -20,9 +20,6 @@
 	</ui:define>
 
 	<ui:define name="content">
-
-
-
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
 
 		<div class="card">
@@ -140,8 +137,8 @@
 						</div>
 						<div class="p-col-5 p-ai-center p-jc-center">
 							<h:form id="formDtSelectedItems">
-								<p:dataTable value="#{budgetController.selectItems}" var="item"
-									id="dtSelectedItems" rowKey="#{item.commercialCode}"
+								<p:dataTable value="#{budgetController.selectedProducts}"
+									var="item" id="dtSelectedItems" rowKey="#{item.commercialCode}"
 									stripedRows="true" size="small" reflow="true"
 									styleClass="ui-datatable-sm" paginator="true" rows="10"
 									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
@@ -151,7 +148,7 @@
 										<p:commandButton value="#{holdMessageView.label('estimar')}"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
 											icon="pi pi-dollar"
-											disabled="#{budgetController.selectItems.size() == 0}"
+											disabled="#{budgetController.selectedProducts.size() == 0}"
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
 											oncomplete="onCompleteEstimate()"
 											action="#{budgetController.generateQuote}" process="@this"
@@ -195,16 +192,11 @@
 						<h:form id="formItems">
 							<p:remoteCommand name="updateDtItems" action="#" process="@none"
 								update="dtItems" />
-							<p:dataTable
-								value="#{budgetController.budgetEstimateDTO.estimatedItemValues}"
+							<p:dataTable value="#{budgetController.budgetEstimateDTO.items}"
 								var="product" editable="true" rowKey="#{product.commercialCode}"
 								id="dtItems" reflow="true" size="small"
-								style="max-height:30vh; overflow-y: auto;">
-								<!-- rows="5" paginator="true"
-								paginatorAlwaysVisible="false"
-								currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-								rowsPerPageTemplate="5,10,{ShowAll|'All'}"
-								paginatorTemplate="bottom" -->
+								style="max-height:30vh; overflow-y: auto;" stickyHeader="true">
+
 								<p:ajax event="rowEdit"
 									listener="#{budgetController.reEditItemQuantity}"
 									update="budgetEstimateForm" />
@@ -258,6 +250,13 @@
 									</h:outputText>
 								</p:column>
 								<p:column
+									headerText="#{resourceBundleServiceImpl.getMessage('desconto')}">
+									<h:outputText value="#{product.discount}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column
 									headerText="#{holdMessageView.label('preco_unitario')}">
 									<h:outputText value="#{product.unitPrice}">
 										<f:convertNumber currencySymbol="R$" type="currency"
@@ -271,16 +270,29 @@
 									</h:outputText>
 								</p:column>
 
+
+								<p:column style="width:2rem">
+									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+										saveTitle="Save Row" />
+								</p:column>
 								<p:column>
+									<p:commandButton
+										action="#{estimatedItemStockView.setMsgAvaliableStock(product)}"
+										update="labelItemStock" icon="pi pi-th-large" title="Estoque"
+										styleClass="rounded-button ui-button-success ui-button-flat p-mr-2 p-mb-2"
+										id="viewStock" />
+									<p:overlayPanel for="viewStock" style="max-width:10vw">
+										<p>
+											<h:outputText
+												value="#{estimatedItemStockView.msgAvaliableStock}"
+												id="labelItemStock" />
+										</p>
+									</p:overlayPanel>
 									<p:commandButton icon="pi pi-times"
 										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 										title="Remover"
 										action="#{budgetController.removeEstimatedItem(product)}"
 										update="formItems:dtItems budgetEstimateForm" />
-								</p:column>
-								<p:column style="width:2rem">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-										saveTitle="Save Row" />
 
 								</p:column>
 							</p:dataTable>
@@ -349,8 +361,8 @@
 							value="#{budgetController.downloadStreamsForm.contentType}">
 							<f:selectItem itemLabel="Select One" itemValue=""
 								noSelectionOption="true" />
-							<f:selectItem itemLabel="PDF" itemValue="pdf" />
-							<f:selectItem itemLabel="Excel" itemValue="excel" />
+							<f:selectItem itemLabel="PDF" itemValue="PDF" />
+							<f:selectItem itemLabel="Excel-xlsx" itemValue="EXCEL" />
 						</p:selectOneMenu>
 					</div>
 
@@ -430,7 +442,7 @@
 			</p:tabView>
 		</p:dialog>
 
-		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="55vw"
+		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="70vw"
 			responsive="true"
 			header="#{holdMessageView.label('escolha_cliente')}">
 

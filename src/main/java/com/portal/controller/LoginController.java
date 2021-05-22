@@ -1,14 +1,17 @@
 package com.portal.controller;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.ProcessingException;
 
 import com.portal.dto.LoginForm;
+import com.portal.jsf.faces.FacesHelper;
+import com.portal.jsf.faces.ProcessingExceptionMessageHelper;
 import com.portal.repository.AuthenticationRepository;
-import com.portal.service.faces.FacesService;
-import com.portal.service.view.HoldMessageView;
+import com.portal.service.ResourceBundleService;
 
 @RequestScoped
 @Named
@@ -18,27 +21,22 @@ public class LoginController {
 	 * 
 	 */
 
-	private final HoldMessageView holdMessageView;
-
 	private final AuthenticationRepository authenticationRepository;
-	private final FacesService facesService;
+	private final ResourceBundleService resourceBundleService;
 	private LoginForm loginForm;
 	private String headerDlgMessage;
 	private String previousPage;
-
-	public LoginController() {
-		this(null, null, null);
-	}
+	@EJB
+	private ProcessingExceptionMessageHelper processingExceptionMessageHelper;
 
 	@Inject
-	public LoginController(HoldMessageView holdMessageView, AuthenticationRepository authenticationRepository,
-			FacesService facesService) {
-		super();
-		this.holdMessageView = holdMessageView;
-		this.headerDlgMessage = this.holdMessageView.label("auteticando_usuario");
-		this.loginForm = new LoginForm();
+	public LoginController(AuthenticationRepository authenticationRepository,
+			ResourceBundleService resourceBundleService) {
 		this.authenticationRepository = authenticationRepository;
-		this.facesService = facesService;
+		this.resourceBundleService = resourceBundleService;
+		this.headerDlgMessage = this.resourceBundleService.getMessage("auteticando_usuario");
+		this.loginForm = new LoginForm();
+
 	}
 
 	public String authenticate() {
@@ -46,10 +44,11 @@ public class LoginController {
 			this.authenticationRepository.login(loginForm);
 			return "BUDGET_PREVIEW";
 		} catch (NotAuthorizedException e) {
-			this.facesService.error(null, holdMessageView.label("nao_encontrado"),
-					holdMessageView.label("usuario_nao_encontrado"));
-		} catch (Exception e) {
-			facesService.exceptionMessage().addMessageByException(null, e);
+			FacesHelper.error(null, resourceBundleService.getMessage("nao_encontrado"),
+					resourceBundleService.getMessage("usuario_nao_encontrado"));
+
+		} catch (ProcessingException e) {
+			processingExceptionMessageHelper.displayMessage(e, null);
 		}
 		return null;
 

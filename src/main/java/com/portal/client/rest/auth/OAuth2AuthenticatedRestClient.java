@@ -2,19 +2,14 @@ package com.portal.client.rest.auth;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -45,16 +40,9 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	}
 
 	@Override
-	public <T> T getForEntity(String uri, Class<T> responseType, Object... queryParams) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public <T> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, MediaType media)
-			throws ProcessingException, SocketTimeoutException, ConnectException, IllegalArgumentException,
-			TimeoutException, SocketException {
+			throws ProcessingException {
 
 		OAuth2ServiceApi oAuthApi = getService(serviceApiKey);
 
@@ -82,34 +70,23 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			Response rawResponse = resource.request().accept(media).get();
 			T t = rawResponse.readEntity(responseType);
 			return t;
-		} catch (ResponseProcessingException e) {
-			handleResponseProcessingException(e);
 		} catch (ProcessingException e) {
-			if (e.getCause() instanceof IllegalArgumentException
-					|| e.getCause() instanceof IllegalResponseStatusException) {
+			if (e.getCause() instanceof IllegalResponseStatusException) {
 				return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
-
 			}
-			handleProcessingException(e);
+			depurateProcessingException(e);
+			throw e;
+			// handleProcessingException(e);
 		} finally {
 			if (client != null)
 				client.close();
 		}
-		return null;
 
-	}
-
-	@Override
-	public <T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, E requestBody, MediaType typeForRequest) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
 	public <T, U> T post(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, MediaType media, U requestBody) throws ProcessingException,
-			SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException, SocketException {
+			Map<String, Object> pathParams, MediaType media, U requestBody) throws ProcessingException {
 		Client client = null;
 		OAuth2ServiceApi service = getService(serviceApiKey);
 		try {
@@ -119,21 +96,18 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			WebTarget resource = client.target(service.getBasePath()).path(endpoint).register(oAuth2Provider);
 
 			return resource.request().accept(media).post(Entity.entity(requestBody, media), responseType);
-		} catch (ResponseProcessingException e) {
-			handleResponseProcessingException(e);
+
 		} catch (ProcessingException e) {
-			if (e.getCause() instanceof IllegalArgumentException
-					|| e.getCause() instanceof IllegalResponseStatusException) {
+			if (e.getCause() instanceof IllegalResponseStatusException) {
 				return this.post(serviceApiKey, endpoint, responseType, queryParams, pathParams, media, requestBody);
 
 			}
-
-			handleProcessingException(e);
+			depurateProcessingException(e);
+			throw e;
 
 		} finally {
 			client.close();
 		}
-		return null;
 	}
 
 	private OAuth2ServiceApi getService(String key) {

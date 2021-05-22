@@ -18,11 +18,17 @@
 
 	<application>
 		<el-resolver>
-			org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver</el-resolver>
+			org.primefaces.application.exceptionhandler.PrimeExceptionHandlerELResolver
+		</el-resolver>
+		<action-listener>org.primefaces.application.DialogActionListener</action-listener>
+		<navigation-handler>
+			org.primefaces.application.DialogNavigationHandler
+		</navigation-handler>
+		<view-handler>org.primefaces.application.DialogViewHandler</view-handler>
 	</application>
 	<factory>
 		<exception-handler-factory>
-			org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory
-		</exception-handler-factory>
+			org.primefaces.application.exceptionhandler.PrimeExceptionHandlerFactory</exception-handler-factory>
 	</factory>
+
 </faces-config>

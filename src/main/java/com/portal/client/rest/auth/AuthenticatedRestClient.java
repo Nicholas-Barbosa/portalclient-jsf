@@ -1,10 +1,6 @@
 package com.portal.client.rest.auth;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
@@ -24,10 +20,22 @@ public interface AuthenticatedRestClient extends RestClient {
 	 * @return
 	 */
 	<T> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, MediaType media) throws ProcessingException, SocketTimeoutException,
-			ConnectException, IllegalArgumentException, TimeoutException, SocketException;
+			Map<String, Object> pathParams, MediaType media) throws ProcessingException;
 
 	<T, U> T post(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, MediaType media, U requestBody) throws ProcessingException,
-			SocketTimeoutException, ConnectException, IllegalArgumentException, TimeoutException, SocketException;
+			Map<String, Object> pathParams, MediaType media, U requestBody) throws ProcessingException;
+
+	@Override
+	default <T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, E requestBody, MediaType mediaType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	default <T> T getForEntity(String uri, Class<T> responseType, Object... queryParams) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

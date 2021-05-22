@@ -4,7 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
+import com.portal.dto.EstimatedItem;
 import com.portal.service.ResourceBundleServiceImpl;
 
 @RequestScoped

@@ -1,7 +1,5 @@
 package com.portal.ejb;
 
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -10,7 +8,6 @@ import javax.ejb.PostActivate;
 import javax.ejb.PrePassivate;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.ejb.StatefulTimeout;
 
 @Stateful
 //@StatefulTimeout(unit = TimeUnit.SECONDS, value = 0)
@@ -19,7 +16,7 @@ public class EjbFacade {
 	/**
 	 * 
 	 */
-	//private static final long serialVersionUID = 5219439203892710914L;
+	// private static final long serialVersionUID = 5219439203892710914L;
 
 	private String hello;
 

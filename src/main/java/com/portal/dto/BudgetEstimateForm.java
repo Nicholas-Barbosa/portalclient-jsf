@@ -7,30 +7,31 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class BudgetEstimateForm {
 
-	@JsonbProperty("client")
 	private String client;
-	@JsonbProperty("store")
-	private String store;
-	@JsonbProperty("items")
-	private Set<ItemEstimateBudgetForm> items;
 
-	public BudgetEstimateForm(String client, String store, Set<ItemEstimateBudgetForm> items) {
-		super();
+	private String store;
+
+	private Set<ItemFormDTO> itemsForm;
+
+	public BudgetEstimateForm(String client, String store, Set<ItemFormDTO> items) {
 		this.client = client;
 		this.store = store;
-		this.items = new HashSet<>(items);
+		this.itemsForm = new HashSet<>(items);
 	}
 
+	@JsonbProperty("client")
 	public String getClient() {
 		return client;
 	}
 
+	@JsonbProperty("store")
 	public String getStore() {
 		return store;
 	}
 
-	public Set<ItemEstimateBudgetForm> getItems() {
-		return new HashSet<>(items);
+	@JsonbProperty("items")
+	public Set<ItemFormDTO> getItemsForm() {
+		return new HashSet<>(itemsForm);
 	}
 
 }

@@ -1,31 +1,16 @@
 package com.portal.service;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
-
 import javax.ws.rs.ProcessingException;
 
-import com.portal.dto.BudgetEstimateDTO;
 import com.portal.dto.BudgetEstimateForm;
-import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
-import com.portal.exception.ItemOutOfStockException;
+import com.portal.dto.BudgetEstimatedDTO;
+import com.portal.dto.EstimatedItem;
 
 public interface BudgetService {
 
 	void findAll(int page, int pageSize);
 
-	BudgetEstimateDTO estimate(BudgetEstimateForm budgetEstimateForm) throws SocketTimeoutException, ConnectException,
-			ProcessingException, IllegalArgumentException, SocketException, TimeoutException;
-
-	/**
-	 * Update all items from budget
-	 * 
-	 * @param budget
-	 * @return
-	 */
-	BudgetEstimateDTO updateQuantity(BudgetEstimateDTO budget);
+	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm) throws ProcessingException;
 
 	/**
 	 * Update items from budget which items are equal in term of equals.
@@ -34,9 +19,9 @@ public interface BudgetService {
 	 * @param estimatedItemValue
 	 * @return
 	 */
-	BudgetEstimateDTO updateQuantity(BudgetEstimateDTO budget, EstimatedItem estimatedItemValue);
+	void updateQuantity(BudgetEstimatedDTO budget, EstimatedItem estimatedItemValue);
 
-	void removeItem(BudgetEstimateDTO budget, EstimatedItem item);
+	void removeItem(BudgetEstimatedDTO budget, EstimatedItem item);
 
-	void checkQuantityPolicies(BudgetEstimateDTO budget) throws ItemOutOfStockException;
+	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 }

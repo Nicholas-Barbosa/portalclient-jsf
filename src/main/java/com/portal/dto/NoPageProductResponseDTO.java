@@ -8,15 +8,15 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class NoPageProductResponseDTO {
 
-	private List<ProductQueryDTO> products;
+	private List<ProductDTO> products;
 
 	@JsonbCreator
-	public NoPageProductResponseDTO(@JsonbProperty("products") List<ProductQueryDTO> products) {
+	public NoPageProductResponseDTO(@JsonbProperty("products") List<ProductDTO> products) {
 		super();
 		this.products = new ArrayList<>(products);
 	}
 
-	public List<ProductQueryDTO> getProducts() {
+	public List<ProductDTO> getProducts() {
 		return new ArrayList<>(products);
 	}
 

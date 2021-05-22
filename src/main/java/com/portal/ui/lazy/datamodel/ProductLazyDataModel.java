@@ -8,42 +8,42 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
-import com.portal.dto.ProductQueryDTO;
+import com.portal.dto.ProductDTO;
 
-public class ProductLazyDataModel extends LazyDataModel<ProductQueryDTO> implements LazyOperations<ProductQueryDTO> {
+public class ProductLazyDataModel extends LazyDataModel<ProductDTO> implements LazyOperations<ProductDTO> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2915731141483345370L;
 
-	private List<ProductQueryDTO> products;
+	private List<ProductDTO> products;
 
 	public ProductLazyDataModel() {
 		this.products = new ArrayList<>();
 	}
 
 	@Override
-	public List<ProductQueryDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+	public List<ProductDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
 			Map<String, FilterMeta> filterBy) {
 		// TODO Auto-generated method stub
 		return products;
 	}
 
 	@Override
-	public String getRowKey(ProductQueryDTO object) {
+	public String getRowKey(ProductDTO object) {
 		// TODO Auto-generated method stub
 		return object.getCommercialCode();
 	}
 
 	@Override
-	public ProductQueryDTO getRowData(String rowKey) {
-		return products.parallelStream().filter((ProductQueryDTO p) -> p.getCommercialCode().equals(rowKey)).findAny()
+	public ProductDTO getRowData(String rowKey) {
+		return products.parallelStream().filter((ProductDTO p) -> p.getCommercialCode().equals(rowKey)).findAny()
 				.orElse(null);
 	}
 
 	@Override
-	public void addCollection(List<ProductQueryDTO> list) {
+	public void addCollection(List<ProductDTO> list) {
 		products = new ArrayList<>(list);
 
 	}
@@ -55,7 +55,7 @@ public class ProductLazyDataModel extends LazyDataModel<ProductQueryDTO> impleme
 	}
 
 	@Override
-	public List<ProductQueryDTO> getCollection() {
+	public List<ProductDTO> getCollection() {
 		// TODO Auto-generated method stub
 		return new ArrayList<>(products);
 	}

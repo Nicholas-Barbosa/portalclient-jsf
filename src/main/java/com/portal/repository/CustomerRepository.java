@@ -1,11 +1,7 @@
 package com.portal.repository;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ProcessingException;
 
@@ -15,12 +11,10 @@ import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 
 public interface CustomerRepository extends Serializable {
 
-	CustomerPageDTO getAllByPage(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, ProcessingException, TimeoutException, SocketException;
+	CustomerPageDTO getAllByPage(int page, int pageSize) throws ProcessingException;
 
 	Optional<CustomerDTO> getByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
-			throws SocketTimeoutException, ConnectException, ProcessingException, TimeoutException, SocketException;
+			throws ProcessingException;
 
-	Optional<CustomerPageDTO> getByName(String name, int page, int pageSize) throws SocketTimeoutException,
-			ConnectException, ProcessingException, IllegalArgumentException, SocketException, TimeoutException;
+	Optional<CustomerPageDTO> getByName(String name, int page, int pageSize) throws ProcessingException;
 }

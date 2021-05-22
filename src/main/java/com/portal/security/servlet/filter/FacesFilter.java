@@ -3,6 +3,8 @@ package com.portal.security.servlet.filter;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,6 +27,16 @@ public class FacesFilter implements Filter {
 
 	public FacesFilter() {
 		this(null);
+	}
+
+	@PostConstruct
+	public void filterConstruct() {
+		System.out.println("Filter construct!");
+	}
+
+	@PreDestroy
+	public void filterDestroyed() {
+		System.out.println("filter destroyed");
 	}
 
 	@Inject

@@ -2,10 +2,8 @@ package com.portal.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.portal.dto.BudgetEstimateDTO.EstimatedItem;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BudgetJasperReportDTO implements Serializable {
 
@@ -22,16 +20,16 @@ public class BudgetJasperReportDTO implements Serializable {
 
 	private CustomerJasperReportDTO customerReportDTO;
 
-	private List<EstimatedItem> items;
+	private Set<EstimatedItem> items;
 
 	public BudgetJasperReportDTO(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
-			CustomerJasperReportDTO customerReportDTO, List<EstimatedItem> items) {
+			CustomerJasperReportDTO customerReportDTO, Set<EstimatedItem> items) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
 		this.stTotal = stTotal;
 		this.customerReportDTO = customerReportDTO;
-		this.items = new ArrayList<>(items);
+		this.items = new HashSet<>(items);
 	}
 
 	public static long getSerialversionuid() {
@@ -54,8 +52,8 @@ public class BudgetJasperReportDTO implements Serializable {
 		return customerReportDTO;
 	}
 
-	public List<EstimatedItem> getItems() {
-		return new ArrayList<>(items);
+	public Set<EstimatedItem> getItems() {
+		return new HashSet<>(items);
 	}
 
 	public static class CustomerJasperReportDTO implements Serializable {
