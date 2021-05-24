@@ -25,6 +25,9 @@ class BudgetReportImplTest {
 	private final EstimatedItem item = new EstimatedItem(new BigDecimal(135.98), new BigDecimal(900),
 			new BigDecimal(135.98), new BigDecimal(900), new BigDecimal(18.89), new BigDecimal(12.89),
 			new BigDecimal(0), 0, 234);
+	{
+		item.setDescription("BOBINA DE IGNICAO GC4029");
+	}
 
 	@Test
 	void test() {

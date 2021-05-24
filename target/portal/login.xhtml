@@ -54,11 +54,10 @@
 					update="@form messages dlgLoading"
 					oncomplete="PF('dlgLoading').hide();finishedLoginProcess=true;"
 					ajax="true" />
+
 				<p:messages id="messages" showDetail="true" closable="true"
 					globalOnly="true" />
 			</h:form>
-
-
 		</div>
 		<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
 			widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"

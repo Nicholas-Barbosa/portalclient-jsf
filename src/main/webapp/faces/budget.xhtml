@@ -49,17 +49,23 @@
 		<div class="p-grid">
 			<div class="p-col-12">
 				<div class="card">
-
-					<p:button icon="pi pi-search"
-						styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
-						onclick="PF('dlgSearchCustomer').show()" />
 					<h:form id="customerDTO">
 						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+							<!-- 	<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
 								<p:inputText
 									value="#{budgetController.selectedCustomer.name}-#{budgetController.selectedCustomer.store}"
 									readonly="true" />
+							</div> -->
+							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
+								<div class="ui-inputgroup">
+									<p:inputText
+										value="#{budgetController.selectedCustomer.name}-#{budgetController.selectedCustomer.store}"
+										readonly="true" />
+									<p:button icon="pi pi-search" styleClass="ui-button-warning"
+										onclick="PF('dlgSearchCustomer').show()" />
+								</div>
 							</div>
 							<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 								<p:outputLabel value="CGC" for="cgc" />
@@ -141,7 +147,7 @@
 									styleClass="ui-datatable-sm" paginator="true" rows="10"
 									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 									paginatorAlwaysVisible="false"
-									style="max-height:40vh; overflow-y: auto">
+									style="max-height:40vh; overflow-y: auto" stickyHeader="true">
 									<f:facet name="header">
 										<p:commandButton value="#{holdMessageView.label('estimar')}"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
@@ -173,7 +179,7 @@
 										<p:commandButton icon="pi pi-times"
 											styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
 											process="@this"
-											action="#{budgetController.removeSelectedItem(item)}"
+											action="#{budgetController.removeSelectedProduct(item)}"
 											update="formDtSelectedItems:dtSelectedItems" />
 									</p:column>
 								</p:dataTable>

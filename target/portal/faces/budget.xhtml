@@ -6,8 +6,6 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
-
-
 	</ui:define>
 
 	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
@@ -51,17 +49,23 @@
 		<div class="p-grid">
 			<div class="p-col-12">
 				<div class="card">
-
-					<p:button icon="pi pi-search"
-						styleClass="rounded-button ui-button-success p-mr-2 p-mb-2"
-						onclick="PF('dlgSearchCustomer').show()" />
 					<h:form id="customerDTO">
 						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+							<!-- 	<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
 								<p:inputText
 									value="#{budgetController.selectedCustomer.name}-#{budgetController.selectedCustomer.store}"
 									readonly="true" />
+							</div> -->
+							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
+								<div class="ui-inputgroup">
+									<p:inputText
+										value="#{budgetController.selectedCustomer.name}-#{budgetController.selectedCustomer.store}"
+										readonly="true" />
+									<p:button icon="pi pi-search" styleClass="ui-button-warning"
+										onclick="PF('dlgSearchCustomer').show()" />
+								</div>
 							</div>
 							<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 								<p:outputLabel value="CGC" for="cgc" />
@@ -143,15 +147,16 @@
 									styleClass="ui-datatable-sm" paginator="true" rows="10"
 									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 									paginatorAlwaysVisible="false"
-									style="max-height:40vh; overflow-y: auto">
+									style="max-height:40vh; overflow-y: auto" stickyHeader="true">
 									<f:facet name="header">
 										<p:commandButton value="#{holdMessageView.label('estimar')}"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
 											icon="pi pi-dollar"
 											disabled="#{budgetController.selectedProducts.size() == 0}"
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
-											oncomplete="onCompleteEstimate()"
-											action="#{budgetController.generateQuote}" process="@this"
+											oncomplete="onCompleteEstimate(xhr);
+											"
+											action="#{budgetController.estimate}" process="@this"
 											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems budgetToolsForm" />
 
 									</f:facet>
@@ -174,14 +179,13 @@
 										<p:commandButton icon="pi pi-times"
 											styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
 											process="@this"
-											action="#{budgetController.removeSelectedItem(item)}"
+											action="#{budgetController.removeSelectedProduct(item)}"
 											update="formDtSelectedItems:dtSelectedItems" />
 									</p:column>
 								</p:dataTable>
 							</h:form>
 						</div>
 					</div>
-
 				</div>
 			</div>
 
@@ -536,15 +540,6 @@
 			</p:tabView>
 
 		</p:dialog>
-		<p:dialog id="exceptionDialog"
-			header="#{budgetController.headerExceptionDialog}"
-			widgetVar="exceptionDialog" height="500px" modal="true">
-          
-            Raw Object: <h:outputText
-				value="#{budgetController.processingEntity}" escape="false" />
-			<br />
-
-		</p:dialog>
 
 		<p:dialog header="Loading" modal="true" closable="false"
 			widgetVar="globalLoadDlg" responsive="true">
@@ -578,188 +573,68 @@
 			$("#estimateLoad").hide();
 			$("#selectProducts").hide();
 			$("#btnPrintBudget").hide();
-			
-			var processFinished=false;
-			
-			function startDownloadStreams(){
-				PF('globalLoadDlg').show();
-			}
-			function completeDownloadStreams(){
-				console.log('complete!')
-				PF('globalLoadDlg').hide();
-			}
-			function detectLongProcess(){
-				processFinished=false;
-				setTimeout( function() {
-					if(processFinished==false){
-					 	PF('globalLoadDlg').show();
-					 let interval =	setInterval( function() {
-							if(processFinished==true){
-							 	PF('globalLoadDlg').hide();
-								clearInterval(interval);
-							}
-							}, 1 );
-					}
-						
-					}, 450 );
-			}
-			function concludeLongProcess(){
-				processFinished=true;
-			}
-			
-			function onCompletePageProducts(){
-			 	processFinished=true;
-				
-			}
-			function onCompleteEstimate(xhr){
-				 PF('globalLoadDlg').hide()
-				$("#divItensForm").show();
-				$("#selectProducts").hide();
-				$("#estimatedTotals").show();
-				$("#toolsForBudget").show();
-				updateDtItems();
-			}
-			
-			function onStartSearchProducts(){
-				PF('globalLoadDlg').show();
-			}
-	
-			function editEstimate(){
-			$("#estimateContent").hide();
-			$("#budgetForm").show();
-			}
-			function onStartQuote(){
-				PF('dlgSelectProducts').hide()
-				$("#budgetForm").hide();
-				$("#estimateLoad").show();
-				
-			}
-			function onCompleteQuote(xhr){
-				$("#estimateLoad").hide();
-				if(getResponseHeader(xhr)){
-					$("#estimateContent").show();
-				}else{
-					$("#budgetForm").show();
-					PF('exceptionDialog').show()
-				}
-			}
-			
-			
-			
-			
-			function showSearchProducts(){
-				$("#divSearchProducts").show();
-			}
-			function initTablesCustomer() {
-				$("#budgetForm").hide();
-				$("#divLoadCustomers").show();
-				let promise = rcCustomers();
-				let reslPromCustomer = handleCustomerPromise(promise);
-			
-				const promises = [reslPromCustomer];
-				Promise.all(promises).then((results) => {
-						$("#budgetForm").show();
-						$("#tryAgain").hide();
-					
-				}).catch(e=>{
-					$("#tryAgain").show();
-				})
 
+			var processFinished = false;
 
-			}
-	
-			function handleCustomerPromise(promise) {
-				return new Promise((resolve, reject) => {
-					promise.then(value => {
-						customerOk = getResponseHeader(value.jqXHR);
-						if (customerOk) {							
-							resolve("customerOk")
-							$("#divLoadCustomers").hide();													
-						} else {							
-							customerOk = false;
-							reject("customerError")
-							$("#spinnerCustomer").hide();
-						}
-						
-					})
-				})
-			}
-			
-			function selectedCustomer() {
-				setTimeout(function () {
-					$("#formClientTb").hide();
-					$("#divSelectedCustomer").show();
-
-				}, 4)
-			}
-			function changeSelectedCustomer() {
-				$("#formClientTb").show();
-				$("#divSelectedCustomer").hide();
-
-			}
-
-			function onStartFindCustomer() {
-				PF('searchCustomer').hide();
-				$("#budgetForm").hide();
-				$("#divLoadCustomers").show();
-				$("#spinnerCustomer").show();
-
-			}
-			
-			function onStartProcessInDtCustomer() {
-				$("#budgetForm").hide();
-				$("#divLoadCustomers").show();
-				$("#spinnerCustomer").show();
-			}
-
-			function onCompleteProcessInDtCustomer(xhr) {
-				$("#spinnerCustomer").hide();
-				if(getResponseHeader(xhr)){
-					$("#budgetForm").show();
-					$("#divLoadCustomers").hide();
-				}else{
-					$("#budgetForm").hide();
-				}
-			}
-			
-			function onCompletePageCustomers(xhr){
-				if(getResponseHeader(xhr)==false){
-					$("#divLoadCustomers").show();	
-					$("#spinnerCustomer").hide();
-					$("#budgetForm").hide();
-					$("#tryAgain").show();
-					
-				}
-			}
-			
-			
-			function onCompleteSearchProduct(){
-				$("#ItemContainerContent").show();
-				$("#ItemContainarLoader").hide();
-			}
-			function onCompleteSearchProductByDescription(xhr){
+			function onCompleteSearchProductByDescription(xhr) {
 				PF('globalLoadDlg').hide();
 				PF('searchProductDialog').hide();
-				if(getResponseHeader(xhr)){			
+				if (getResponseHeader(xhr)) {
 					$("#selectProducts").show();
 					$("#divItensForm").hide();
 					$("#estimatedTotals").hide();
 					updateDtProducts();
 				}
 			}
+
+			function startDownloadStreams() {
+				PF('globalLoadDlg').show();
+			}
+			function completeDownloadStreams() {
+				console.log('complete!')
+				PF('globalLoadDlg').hide();
+			}
+			function detectLongProcess() {
+				processFinished = false;
+				setTimeout(function() {
+					if (processFinished == false) {
+						PF('globalLoadDlg').show();
+						let interval = setInterval(function() {
+							if (processFinished == true) {
+								PF('globalLoadDlg').hide();
+								clearInterval(interval);
+							}
+						}, 1);
+					}
+
+				}, 450);
+			}
+			function concludeLongProcess() {
+				processFinished = true;
+			}
+
+			function onCompletePageProducts() {
+				processFinished = true;
+
+			}
+			function onCompleteEstimate(xhr) {
+				PF('globalLoadDlg').hide()
+				if (getResponseHeader(xhr)) {
+					$("#divItensForm").show();
+					$("#selectProducts").hide();
+					$("#estimatedTotals").show();
+					$("#toolsForBudget").show();
+					updateDtItems();
+					return;
+				}
+
+			}
+
 			function getResponseHeader(xhr) {
 				return xhr.getResponseHeader("Backbone-Status") != "Error";
 			}
-			
-			function hideBudgetFormAndShowError() {
-				$("#error").show();
-				$("#budgetForm").hide();
 
-			}
-
-			
-			
-		//	]]>
+			//	]]>
 		</script>
 	</ui:define>
 

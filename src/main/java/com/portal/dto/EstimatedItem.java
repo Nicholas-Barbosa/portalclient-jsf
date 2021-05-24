@@ -27,11 +27,10 @@ public class EstimatedItem extends BaseProductDTO {
 
 	@JsonbCreator
 	public EstimatedItem(@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
-			@JsonbProperty("total_gross_value") BigDecimal totalGrossValue,
-			@JsonbProperty("product_code") String code, @JsonbProperty("commercial_code") String commercialCode,
-			@JsonbProperty("unit_price") BigDecimal unitPrice, @JsonbProperty("quantity") int quantity,
-			@JsonbProperty("total_price") BigDecimal totale, @JsonbProperty("st_value") BigDecimal stValue,
-			@JsonbProperty("line_discount") BigDecimal discount,
+			@JsonbProperty("total_gross_value") BigDecimal totalGrossValue, @JsonbProperty("product_code") String code,
+			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("unit_price") BigDecimal unitPrice,
+			@JsonbProperty("quantity") int quantity, @JsonbProperty("total_price") BigDecimal totale,
+			@JsonbProperty("st_value") BigDecimal stValue, @JsonbProperty("line_discount") BigDecimal discount,
 			@JsonbProperty("available_stock") Integer avaliableStock) {
 		super(code, null, commercialCode, null, null, null);
 		this.avaliableStock = avaliableStock;
@@ -46,7 +45,6 @@ public class EstimatedItem extends BaseProductDTO {
 		this.unitStValue = stValue.divide(new BigDecimal(quantity));
 	}
 
-	
 	public EstimatedItem(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice, BigDecimal totale,
 			BigDecimal stValue, BigDecimal unitStValue, BigDecimal discount, int quantity, Integer avaliableStock) {
 		super();
@@ -61,6 +59,14 @@ public class EstimatedItem extends BaseProductDTO {
 		this.avaliableStock = avaliableStock;
 	}
 
+	public void setSuperAttributes(String description, int multiple) {
+		super.setDescription(description);
+		super.setMultiple(multiple);
+	}
+
+	public void setDescription(String description) {
+		super.setDescription(description);
+	}
 
 	public BigDecimal getUnitGrossValue() {
 		return unitGrossValue;

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 
+import com.portal.dto.BaseProductDTO;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
 import com.portal.dto.EstimatedItem;
@@ -37,6 +39,18 @@ public class BudgetServiceImpl implements BudgetService {
 	public void findAll(int page, int pageSize) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm,
+			Collection<? extends BaseProductDTO> products) throws ProcessingException {
+		BudgetEstimatedDTO dto = this.estimate(budgetEstimateForm);
+		dto.getItems().parallelStream().forEach(ei -> {
+			BaseProductDTO baseProductDTO = products.parallelStream()
+					.filter(p -> p.getCommercialCode().equals(ei.getCommercialCode())).findAny().get();
+			ei.setSuperAttributes(baseProductDTO.getDescription(), baseProductDTO.getMultiple());
+		});
+		return dto;
 	}
 
 	@Override
@@ -79,14 +93,15 @@ public class BudgetServiceImpl implements BudgetService {
 
 	private void bulkUpdateValues(BudgetEstimatedDTO oldBudget) {
 		Set<EstimatedItem> itemsToCalculate = oldBudget.getItems();
-		BigDecimal liquidValue = new BigDecimal(oldBudget.getItems().parallelStream().map(e -> e.getTotale())
+		BigDecimal liquidValue = new BigDecimal(itemsToCalculate.parallelStream().map(e -> e.getTotale())
 				.collect(Collectors.summingDouble(v -> v.doubleValue())));
-		BigDecimal grossValue = new BigDecimal(oldBudget.getItems().parallelStream()
+		BigDecimal grossValue = new BigDecimal(itemsToCalculate.parallelStream()
 				.map(e -> e.getTotalGrossValue().doubleValue()).collect(Collectors.summingDouble(v -> v)));
-		BigDecimal stTotal = new BigDecimal(oldBudget.getItems().parallelStream().map(e -> e.getStValue().doubleValue())
+		BigDecimal stTotal = new BigDecimal(itemsToCalculate.parallelStream().map(e -> e.getStValue().doubleValue())
 				.collect(Collectors.summingDouble(v -> v)));
 		BigDecimal totalDiscount = new BigDecimal(itemsToCalculate.parallelStream()
 				.map(e -> e.getDiscount().doubleValue()).collect(Collectors.summingDouble(v -> v)));
 		oldBudget.bulkUpdateTotales(liquidValue, grossValue, stTotal, totalDiscount);
 	}
+
 }

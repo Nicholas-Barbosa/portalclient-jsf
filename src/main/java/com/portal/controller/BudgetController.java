@@ -1,7 +1,9 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -12,7 +14,6 @@ import javax.ejb.EJBException;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.Response;
@@ -30,7 +31,6 @@ import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.DownloadStreamsForm;
 import com.portal.dto.EstimatedItem;
-import com.portal.dto.ItemEstimateBudgetForm;
 import com.portal.dto.ItemFormDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
@@ -117,14 +117,8 @@ public class BudgetController implements Serializable {
 		this.budgetReport = budgetReport;
 		this.responseController = responseController;
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
-		this.lazyProducts = new ProductLazyDataModel();
-		this.lazyCustomers = new CustomerLazyDataModel();
-		this.selectedProducts = new HashSet<>();
-		originalItems = new HashSet<>();
-		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-		this.downloadStreamsForm = new DownloadStreamsForm();
-		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-		this.searchProductForm = new SearchProductForm();
+
+		bulkObjectsCreationsInBackGround();
 	}
 
 	public void openViewInDialog() {
@@ -135,13 +129,15 @@ public class BudgetController implements Serializable {
 		ExecutorService executor = null;
 		try {
 			executor = Executors.newFixedThreadPool(4);
-			executor.execute(() -> selectedCustomer = null);
+			executor.execute(() -> {
+				selectedCustomer = null;
+				budgetEstimateDTO = null;
+			});
 			executor.execute(() -> originalItems.clear());
 			executor.execute(() -> selectedProducts.clear());
-			executor.execute(() -> budgetEstimateDTO = null);
 		} finally {
 			executor.shutdown();
-			executor.awaitTermination(20, TimeUnit.MILLISECONDS);
+			executor.awaitTermination(5, TimeUnit.MILLISECONDS);
 		}
 
 	}
@@ -163,9 +159,11 @@ public class BudgetController implements Serializable {
 
 	public void estimate() {
 		try {
+
 			budgetEstimateDTO = budgetService.estimate(
-					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems));
-			new Thread(() -> selectedProducts.clear()).start();
+					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems),
+					selectedProducts);
+			 new Thread(() -> selectedProducts.clear()).start();
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 		} catch (EJBException e) {
@@ -303,9 +301,10 @@ public class BudgetController implements Serializable {
 		budgetService.removeItem(budgetEstimateDTO, item);
 	}
 
-	public void removeSelectProduct(ItemEstimateBudgetForm item) {
-		// this.selectItems.removeIf(currentItem ->
-		// currentItem.getCode().equals(item.getCode()));
+	public void removeSelectedProduct(ProductDTO product) {
+		new Thread(() -> originalItems.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
+				.start();
+		this.selectedProducts.remove(product);
 	}
 
 	public void onProductSelected(ProductDTO productDTO) {
@@ -325,6 +324,19 @@ public class BudgetController implements Serializable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	private void bulkObjectsCreationsInBackGround() {
+		new Thread(() -> {
+			this.lazyProducts = new ProductLazyDataModel();
+			this.lazyCustomers = new CustomerLazyDataModel();
+			this.selectedProducts = new HashSet<>();
+			originalItems = new HashSet<>();
+			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
+			this.downloadStreamsForm = new DownloadStreamsForm();
+			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
+			this.searchProductForm = new SearchProductForm();
+		}).start();
 	}
 
 	public LazyDataModel<ProductDTO> getLazyProducts() {
