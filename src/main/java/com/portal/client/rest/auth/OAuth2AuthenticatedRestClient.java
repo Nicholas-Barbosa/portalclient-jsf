@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -17,26 +18,22 @@ import javax.ws.rs.core.Response;
 import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.providers.filter.OAuth2Support;
 import com.portal.exception.IllegalResponseStatusException;
-import com.portal.security.UserPropertyHolder;
+import com.portal.security.UserManagerProperties;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
 
 @OAuth2RestAuth
+@Stateless
 public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, Serializable {
 
 	private static final long serialVersionUID = 2516211534967007393L;
 
-	private final UserPropertyHolder userPropertyHolder;
-
-	public OAuth2AuthenticatedRestClient() {
-		this(null);
-	}
+	private final UserManagerProperties userManagerProperties;
 
 	@Inject
-	public OAuth2AuthenticatedRestClient(UserPropertyHolder userPropertyHolder) {
+	public OAuth2AuthenticatedRestClient(UserManagerProperties userManagerProperties) {
 		super();
-		this.userPropertyHolder = userPropertyHolder;
-
+		this.userManagerProperties = userManagerProperties;
 	}
 
 	@Override
@@ -74,7 +71,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			if (e.getCause() instanceof IllegalResponseStatusException) {
 				return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
 			}
-			depurateProcessingException(e);
+			checkIfClientErrorException(e);
 			throw e;
 			// handleProcessingException(e);
 		} finally {
@@ -102,7 +99,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 				return this.post(serviceApiKey, endpoint, responseType, queryParams, pathParams, media, requestBody);
 
 			}
-			depurateProcessingException(e);
+			checkIfClientErrorException(e);
 			throw e;
 
 		} finally {
@@ -111,8 +108,8 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	}
 
 	private OAuth2ServiceApi getService(String key) {
-		if (userPropertyHolder.containsService(key)) {
-			ServiceApi service = userPropertyHolder.findServiceApi(key);
+		if (userManagerProperties.containsService(key)) {
+			ServiceApi service = userManagerProperties.findServiceApi(key);
 			if (service instanceof OAuth2ServiceApi) {
 				return (OAuth2ServiceApi) service;
 			} else

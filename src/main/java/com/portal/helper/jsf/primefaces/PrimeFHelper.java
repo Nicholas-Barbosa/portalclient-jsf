@@ -1,4 +1,4 @@
-package com.portal.jsf.primefaces;
+package com.portal.helper.jsf.primefaces;
 
 import java.util.HashMap;
 import java.util.Map;

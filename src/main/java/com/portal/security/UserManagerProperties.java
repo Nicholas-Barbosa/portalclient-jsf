@@ -9,7 +9,7 @@ import javax.enterprise.context.SessionScoped;
 import com.portal.security.api.ServiceApi;
 
 @SessionScoped
-public class UserPropertyHolder implements Serializable {
+public class UserManagerProperties implements Serializable {
 
 	/**
 	 * 

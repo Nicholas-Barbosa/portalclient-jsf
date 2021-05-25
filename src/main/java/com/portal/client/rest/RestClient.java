@@ -44,7 +44,7 @@ public interface RestClient extends Serializable {
 		return client;
 	}
 
-	default void depurateProcessingException(ProcessingException p) {
+	default void checkIfClientErrorException(ProcessingException p) {
 		if (p.getCause() instanceof ClientErrorException)
 			throw (ClientErrorException) p.getCause();
 	}

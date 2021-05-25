@@ -3,8 +3,6 @@ package com.portal.security.servlet.filter;
 import java.io.IOException;
 import java.net.URI;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -15,32 +13,19 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.portal.security.UserPropertyHolder;
+import com.portal.security.UserManagerProperties;
 
 @WebFilter(value = "/faces/*")
 public class FacesFilter implements Filter {
 
-	private final UserPropertyHolder userPropertyHolder;
+	private final UserManagerProperties userPropertyHolder;
 
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
-	public FacesFilter() {
-		this(null);
-	}
-
-	@PostConstruct
-	public void filterConstruct() {
-		System.out.println("Filter construct!");
-	}
-
-	@PreDestroy
-	public void filterDestroyed() {
-		System.out.println("filter destroyed");
-	}
 
 	@Inject
-	public FacesFilter(UserPropertyHolder userPropertyHolder) {
+	public FacesFilter(UserManagerProperties userPropertyHolder) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
 	}

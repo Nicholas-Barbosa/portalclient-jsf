@@ -8,8 +8,8 @@ import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ProcessingException;
 
 import com.portal.dto.LoginForm;
-import com.portal.jsf.faces.FacesHelper;
-import com.portal.jsf.faces.ProcessingExceptionMessageHelper;
+import com.portal.helper.jsf.faces.FacesHelper;
+import com.portal.helper.jsf.faces.ProcessingExceptionMessageHelper;
 import com.portal.repository.AuthenticationRepository;
 import com.portal.service.ResourceBundleService;
 

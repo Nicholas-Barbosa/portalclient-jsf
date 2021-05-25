@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -13,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 
-import com.portal.dto.BaseProductDTO;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
 import com.portal.dto.EstimatedItem;
@@ -42,20 +40,19 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm,
-			Collection<? extends BaseProductDTO> products) throws ProcessingException {
-		BudgetEstimatedDTO dto = this.estimate(budgetEstimateForm);
-		dto.getItems().parallelStream().forEach(ei -> {
-			BaseProductDTO baseProductDTO = products.parallelStream()
-					.filter(p -> p.getCommercialCode().equals(ei.getCommercialCode())).findAny().get();
-			ei.setSuperAttributes(baseProductDTO.getDescription(), baseProductDTO.getMultiple());
-		});
-		return dto;
-	}
-
-	@Override
 	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm) throws ProcessingException {
-		return budgetRepository.estimate(budgetEstimateForm);
+		BudgetEstimatedDTO dto = budgetRepository.estimate(budgetEstimateForm);
+		new Thread(() -> {
+			dto.getItems().parallelStream().forEach(e -> {
+				budgetEstimateForm.getItemsForm().parallelStream()
+						.filter(i -> i.getCommercialCode().equals(e.getCommercialCode())).findFirst()
+						.ifPresent((baseProduct) -> {
+							e.setSuperAttributes(baseProduct.getDescription(), baseProduct.getMultiple());
+						});
+
+			});
+		}).start();
+		return dto;
 	}
 
 	@Override
@@ -87,9 +84,6 @@ public class BudgetServiceImpl implements BudgetService {
 		return unitValue.multiply(new BigDecimal(quantity));
 	}
 
-	private BigDecimal calculateUnitValue(int quantity, BigDecimal total) {
-		return total.divide(new BigDecimal(quantity));
-	}
 
 	private void bulkUpdateValues(BudgetEstimatedDTO oldBudget) {
 		Set<EstimatedItem> itemsToCalculate = oldBudget.getItems();

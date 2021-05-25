@@ -1,4 +1,4 @@
-package com.portal.jsf.faces;
+package com.portal.helper.jsf.faces;
 
 import java.net.ConnectException;
 import java.net.SocketException;

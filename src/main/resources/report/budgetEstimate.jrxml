@@ -82,7 +82,7 @@
 				<text><![CDATA[Gauss Indústria Auto-Peças]]></text>
 			</staticText>
 			<image isUsingCache="true">
-				<reportElement x="0" y="0" width="150" height="38" uuid="3ed48395-75ef-4f63-b834-45a605fb7d9a"/>
+				<reportElement x="0" y="0" width="180" height="38" uuid="3ed48395-75ef-4f63-b834-45a605fb7d9a"/>
 				<imageExpression><![CDATA[$P{logoGaussPath}]]></imageExpression>
 			</image>
 		</band>
@@ -289,7 +289,7 @@
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement x="0" y="2" width="800" height="20" forecolor="#116AF0" uuid="3675df20-e713-4e50-9efb-34b70fbad74c"/>
+				<reportElement x="0" y="4" width="800" height="20" forecolor="#116AF0" uuid="3675df20-e713-4e50-9efb-34b70fbad74c"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>

@@ -14,7 +14,7 @@ import com.portal.client.rest.RestClient;
 import com.portal.dto.LoginForm;
 import com.portal.dto.LoginGssResponseDTO;
 import com.portal.properties.PropertiesReader;
-import com.portal.security.UserPropertyHolder;
+import com.portal.security.UserManagerProperties;
 import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
 import com.portal.security.api.TokenType;
@@ -26,7 +26,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	 */
 	private static final long serialVersionUID = -6233748924596132481L;
 	private final RestClient restClient;
-	private final UserPropertyHolder userPropertyHolder;
+	private final UserManagerProperties userPropertyHolder;
 	@EJB
 	private PropertiesReader propertiesReader;
 
@@ -35,7 +35,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	}
 
 	@Inject
-	public MainAuthenticationRepository(@Simple RestClient restClient, UserPropertyHolder userPropertyHolder) {
+	public MainAuthenticationRepository(@Simple RestClient restClient, UserManagerProperties userPropertyHolder) {
 		super();
 		this.restClient = restClient;
 		this.userPropertyHolder = userPropertyHolder;

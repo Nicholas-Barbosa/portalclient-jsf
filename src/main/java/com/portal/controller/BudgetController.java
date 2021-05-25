@@ -1,9 +1,7 @@
 package com.portal.controller;
 
 import java.io.Serializable;
-import java.text.NumberFormat;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +14,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.core.Response;
 
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
@@ -36,13 +33,14 @@ import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.dto.SearchProductForm;
+import com.portal.helper.jsf.faces.FacesHelper;
+import com.portal.helper.jsf.faces.ProcessingExceptionMessageHelper;
+import com.portal.helper.jsf.primefaces.PrimeFHelper;
 import com.portal.jasper.service.BudgetReport;
-import com.portal.jsf.faces.FacesHelper;
-import com.portal.jsf.faces.ProcessingExceptionMessageHelper;
-import com.portal.jsf.primefaces.PrimeFHelper;
 import com.portal.repository.CustomerRepository;
 import com.portal.repository.ProductRepository;
 import com.portal.service.BudgetService;
+import com.portal.service.ProductService;
 import com.portal.service.ResourceBundleService;
 import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.ui.lazy.datamodel.LazyPopulateUtils;
@@ -70,6 +68,8 @@ public class BudgetController implements Serializable {
 	private final ClientErrorExceptionController responseController;
 
 	private final ProcessingExceptionMessageHelper processingExceptionMessageHelper;
+
+	private final ProductService productService;
 
 	private LazyDataModel<ProductDTO> lazyProducts;
 
@@ -101,14 +101,14 @@ public class BudgetController implements Serializable {
 	private EstimatedItem selectedItemToViewStock;
 
 	public BudgetController() {
-		this(null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerRepository customerRepository,
 			ProductRepository productRepository, BudgetService budgetService, BudgetReport budgetReport,
 			ClientErrorExceptionController responseController,
-			ProcessingExceptionMessageHelper processingExceptionMessageHelper) {
+			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
 		super();
 		this.resourceBundleService = resourceBundleService;
 		this.customerRepository = customerRepository;
@@ -117,12 +117,8 @@ public class BudgetController implements Serializable {
 		this.budgetReport = budgetReport;
 		this.responseController = responseController;
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
-
+		this.productService = productService;
 		bulkObjectsCreationsInBackGround();
-	}
-
-	public void openViewInDialog() {
-		PrimeFHelper.openClientErrorExceptionView(Response.status(201).entity("OK NICHOLAS!").build());
 	}
 
 	public void clearBudgetForm() throws InterruptedException {
@@ -161,16 +157,18 @@ public class BudgetController implements Serializable {
 		try {
 
 			budgetEstimateDTO = budgetService.estimate(
-					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems),
-					selectedProducts);
-			 new Thread(() -> selectedProducts.clear()).start();
+					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems));
+			new Thread(() -> selectedProducts.clear()).start();
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 		} catch (EJBException e) {
-			if (e.getCause() instanceof ClientErrorException) {
+			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+			if (e.getCause() instanceof ProcessingException)
+				processingExceptionMessageHelper.displayMessage((ProcessingException) e.getCause(), null);
+			else if (e.getCause() instanceof ClientErrorException) {
 				ClientErrorException not = (ClientErrorException) e.getCause();
 				PrimeFHelper.openClientErrorExceptionView(not.getResponse());
-				FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+
 			} else
 				throw e;
 		}
@@ -213,6 +211,7 @@ public class BudgetController implements Serializable {
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 		} catch (ClientErrorException e) {
+			System.out.println("cause " + e.getCause());
 			FacesHelper.error("customerDTO", resourceBundleService.getMessage("resposta_servidor"),
 					e.getResponse().getEntity().toString());
 		} catch (Exception e) {
@@ -264,10 +263,11 @@ public class BudgetController implements Serializable {
 
 	public void findProductByCode() {
 		try {
-			Optional<ProductDTO> product = productRepository.getByCode(searchProductForm.getCode());
+			Optional<ProductDTO> product = productService.findByCode(searchProductForm.getCode());
 			product.ifPresentOrElse(presentProduct -> {
-				new Thread(() -> originalItems
-						.add(new ItemFormDTO(presentProduct.getCode(), presentProduct.getMultiple()))).start();
+				new Thread(() -> originalItems.add(new ItemFormDTO(presentProduct.getCommercialCode(),
+						presentProduct.getDescription(), presentProduct.getMultiple(), presentProduct.getMultiple())))
+								.start();
 				selectedProducts.add(presentProduct);
 				FacesHelper.info(null, resourceBundleService.getMessage("produto_selecionado"), null);
 			}, () -> {
@@ -313,13 +313,14 @@ public class BudgetController implements Serializable {
 			executorService = Executors.newFixedThreadPool(2);
 			executorService.execute(() -> selectedProducts.add(productDTO));
 			executorService.execute(() -> {
-				originalItems.add(new ItemFormDTO(productDTO.getCommercialCode(), productDTO.getMultiple()));
+				originalItems.add(new ItemFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
+						productDTO.getMultiple(), productDTO.getMultiple()));
 			});
 
 		} finally {
 			executorService.shutdown();
 			try {
-				executorService.awaitTermination(100, TimeUnit.MILLISECONDS);
+				executorService.awaitTermination(10, TimeUnit.MILLISECONDS);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -365,10 +366,6 @@ public class BudgetController implements Serializable {
 
 	public SearchProductForm getSearchProductForm() {
 		return searchProductForm;
-	}
-
-	public void setSearchProductForm(SearchProductForm searchProductForm) {
-		this.searchProductForm = searchProductForm;
 	}
 
 	public String getProcessingEntity() {

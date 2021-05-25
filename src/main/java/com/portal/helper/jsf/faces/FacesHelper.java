@@ -1,4 +1,4 @@
-package com.portal.jsf.faces;
+package com.portal.helper.jsf.faces;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;

@@ -1,10 +1,7 @@
 package com.portal.service;
 
-import java.util.Collection;
-
 import javax.ws.rs.ProcessingException;
 
-import com.portal.dto.BaseProductDTO;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
 import com.portal.dto.EstimatedItem;
@@ -14,9 +11,6 @@ public interface BudgetService {
 	void findAll(int page, int pageSize);
 
 	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm) throws ProcessingException;
-
-	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm, Collection<? extends BaseProductDTO> products)
-			throws ProcessingException;
 
 	/**
 	 * Update items from budget which items are equal in term of equals.

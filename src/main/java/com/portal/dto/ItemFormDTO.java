@@ -2,20 +2,19 @@ package com.portal.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ItemFormDTO {
+public class ItemFormDTO extends BaseProductDTO {
 
-	private String commercialCode;
 	private int quantity;
 
-	public ItemFormDTO(String commercialCode, int quantity) {
-		this.commercialCode = commercialCode;
+	public ItemFormDTO(String commercialCode, String description, int multiple, int quantity) {
+		super(null, null, commercialCode, null, description, multiple);
 		this.quantity = quantity;
 	}
 
 	@JsonbProperty("product_code")
 	public String getCommercialCode() {
 		// TODO Auto-generated method stub
-		return commercialCode;
+		return super.getCommercialCode();
 	}
 
 	@JsonbProperty

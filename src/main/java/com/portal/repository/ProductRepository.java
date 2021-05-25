@@ -4,12 +4,12 @@ import java.util.Optional;
 
 import javax.ws.rs.ProcessingException;
 
-import com.portal.dto.ProductDTO;
+import com.portal.dto.NoPageProductResponseDTO;
 import com.portal.dto.ProductPageDTO;
 
 public interface ProductRepository {
 
-	Optional<ProductDTO> getByCode(String code) throws ProcessingException;
+	NoPageProductResponseDTO getByCode(String code) throws ProcessingException;
 
 	ProductPageDTO getAllByPage(int page, int pageSize) throws ProcessingException;
 

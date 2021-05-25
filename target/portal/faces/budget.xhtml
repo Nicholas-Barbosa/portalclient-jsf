@@ -109,7 +109,12 @@
 											listener="#{budgetController.onPageProducts}" process="@this"
 											update="growl" onstart="detectLongProcess()"
 											oncomplete="onCompletePageProducts()" />
+										<f:facet name="header">
+											<p:button onclick="PF('searchProductDialog').show()"
+												icon="pi pi-plus"
+												styleClass="ui-button-raised ui-button-success p-mr-2" />
 
+										</f:facet>
 										<p:column
 											headerText="#{holdMessageView.label('codigo_comercial')}">
 											<h:outputText value="#{product.commercialCode}" />
@@ -154,10 +159,9 @@
 											icon="pi pi-dollar"
 											disabled="#{budgetController.selectedProducts.size() == 0}"
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
-											oncomplete="onCompleteEstimate(xhr);
-											"
+											oncomplete="onCompleteEstimate(xhr);"
 											action="#{budgetController.estimate}" process="@this"
-											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems budgetToolsForm" />
+											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems budgetToolsForm growl" />
 
 									</f:facet>
 									<p:column headerText="#{holdMessageView.label('descricao')}">
