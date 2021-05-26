@@ -26,7 +26,6 @@ public class ExceptionLauncherFilter implements ClientResponseFilter {
 		switch (responseContext.getStatus()) {
 		case 404:
 			String responseTxt = readResponse(responseContext.getEntityStream());
-			System.out.println("404 " + responseTxt);
 			Response responseNotFound = Response.status(404).entity(responseTxt).build();
 			throw new NotFoundException(responseNotFound);
 		case 500:

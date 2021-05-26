@@ -145,6 +145,9 @@
 									<p:column headerText="#{holdMessageView.label('codigo')}">
 										<h:outputText value="#{item.commercialCode}" />
 									</p:column>
+									<p:column headerText="#{holdMessageView.label('descricao')}">
+										<h:outputText value="#{item.description}" />
+									</p:column>
 									<p:column headerText="#{holdMessageView.label('quantidade')}">
 										<p:cellEditor>
 											<f:facet name="output">
@@ -284,7 +287,7 @@
 							<p:dataTable value="#{budgetController.budgetEstimateDTO.items}"
 								var="product" editable="true" rowKey="#{product.commercialCode}"
 								id="dtItems" reflow="true" size="small"
-								style="max-height:30vh; overflow-y: auto;" stickyHeader="true">
+								style="max-height:30vh; overflow-y: auto;">
 
 								<p:ajax event="rowEdit"
 									listener="#{budgetController.reEditItemQuantity}"
@@ -304,6 +307,10 @@
 								<p:column
 									headerText="#{holdMessageView.label('codigo_comercial')}">
 									<h:outputText value="#{product.commercialCode}" />
+								</p:column>
+
+								<p:column headerText="#{holdMessageView.label('descricao')}">
+									<h:outputText value="#{product.description}" />
 								</p:column>
 								<p:column headerText="#{holdMessageView.label('quantidade')}">
 									<p:cellEditor>

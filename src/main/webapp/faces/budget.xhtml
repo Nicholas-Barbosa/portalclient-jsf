@@ -181,7 +181,7 @@
 					<h5>#{holdMessageView.label('selecione_produtos')}</h5>
 					<div class="p-grid">
 						<div class="p-col-5 p-d-flex p-ai-center p-jc-center">
-							<div class="ui-fluid">
+							<div class="ui-fluid" style="flex: 1">
 								<h:form id="formProdutos">
 									<p:remoteCommand update="formProdutos:dtProducts"
 										process="@none" name="updateDtProducts" />
@@ -192,9 +192,8 @@
 										paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
 										paginatorAlwaysVisible="false"
 										rowKey="#{product.commercialCode}" stripedRows="true"
-										size="small" reflow="true" styleClass="ui-datatable-sm"
-										paginatorPosition="bottom"
-										style="max-height:40vh; overflow-y: auto">
+										size="small" paginatorPosition="bottom" scrollable="true"
+										widgetVar="dtSelectProducts" reflow="true">
 										<p:ajax event="page"
 											listener="#{budgetController.onPageProducts}" process="@this"
 											update="growl" onstart="detectLongProcess()"
@@ -228,7 +227,9 @@
 												update="formDtSelectedItems " />
 										</p:column>
 									</p:dataTable>
-
+									<p:button
+										onclick="turnDtScrollBodyResponsive('dtSelectProducts','40vh');"
+										value="Deixar responsivo" />
 								</h:form>
 
 							</div>
@@ -240,14 +241,17 @@
 							</p:divider>
 						</div>
 						<div class="p-col-5 p-ai-center p-jc-center">
+
 							<h:form id="formDtSelectedItems">
+
 								<p:dataTable value="#{budgetController.selectedProducts}"
-									var="item" id="dtSelectedItems" rowKey="#{item.commercialCode}"
-									stripedRows="true" size="small" reflow="true"
-									styleClass="ui-datatable-sm" paginator="true" rows="10"
+									var="item" paginator="true" rows="10" id="dtSelectedItems"
 									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
-									paginatorAlwaysVisible="false"
-									style="max-height:40vh; overflow-y: auto" stickyHeader="true">
+									paginatorAlwaysVisible="false" rowKey="#{item.commercialCode}"
+									stripedRows="true" size="small" reflow="true"
+									paginatorPosition="bottom"
+									style="max-height:45vh;overflow-y: auto" stickyHeader="true"
+									stickyTopAt=".layout-topbar" widgetVar="dtSelectedItems">
 									<f:facet name="header">
 										<p:commandButton value="#{holdMessageView.label('estimar')}"
 											styleClass="rounded-button ui-button-help p-mr-2 p-mb-2"
@@ -271,142 +275,144 @@
 											update="formDtSelectedItems:dtSelectedItems" />
 									</p:column>
 								</p:dataTable>
+
 							</h:form>
+
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div id="divItensForm">
-				<div class="p-col-12">
-					<div class="card">
-						<h5>#{holdMessageView.label('items')}</h5>
-						<h:form id="formEstimatedItems">
-							<p:remoteCommand name="updateDtItems" action="#" process="@none"
-								update="dtItems" />
-							<p:dataTable value="#{budgetController.budgetEstimateDTO.items}"
-								var="product" editable="true" rowKey="#{product.commercialCode}"
-								id="dtItems" reflow="true" size="small"
-								style="max-height:30vh; overflow-y: auto;">
+			<div class="p-col-12" id="divItensForm">
+				<div class="card">
 
-								<p:ajax event="rowEdit"
-									listener="#{budgetController.reEditItemQuantity}"
-									update="budgetEstimatedTotales" />
-								<f:facet name="header">
-									<p:splitButton
-										onclick="$('#divSearchProductByCode').show();$('#divItensForm').hide();$('#estimatedTotals').hide();"
-										icon="pi pi-plus"
-										styleClass="ui-button-raised ui-button-success p-mr-2">
-										<p:menuitem
-											value="#{resourceBundleServiceImpl.getMessage('descricao')}"
-											onclick="PF('searchProductDialog').show()" />
-									</p:splitButton>
+					<h5>#{holdMessageView.label('items')}</h5>
+					<h:form id="formEstimatedItems">
+						<p:remoteCommand name="updateDtItems" action="#" process="@none"
+							update="dtItems" />
+						<p:dataTable value="#{budgetController.budgetEstimateDTO.items}"
+							var="product" editable="true" rowKey="#{product.commercialCode}"
+							id="dtItems" reflow="true" size="small"
+							style="max-height:45vh;overflow-y: auto" stickyHeader="true"
+							stickyTopAt="">
 
-								</f:facet>
+							<p:ajax event="rowEdit"
+								listener="#{budgetController.reEditItemQuantity}"
+								update="budgetEstimatedTotales" />
+							<f:facet name="header">
+								<p:splitButton
+									onclick="$('#divSearchProductByCode').show();$('#divItensForm').hide();$('#estimatedTotals').hide();"
+									icon="pi pi-plus"
+									styleClass="ui-button-raised ui-button-success p-mr-2">
+									<p:menuitem
+										value="#{resourceBundleServiceImpl.getMessage('descricao')}"
+										onclick="PF('searchProductDialog').show()" />
+								</p:splitButton>
 
-								<p:column
-									headerText="#{holdMessageView.label('codigo_comercial')}">
-									<h:outputText value="#{product.commercialCode}" />
-								</p:column>
+							</f:facet>
 
-								<p:column headerText="#{holdMessageView.label('descricao')}">
-									<h:outputText value="#{product.description}" />
-								</p:column>
-								<p:column headerText="#{holdMessageView.label('quantidade')}">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{product.quantity}" />
-										</f:facet>
-										<f:facet name="input">
-											<p:inputText value="#{product.quantity}" style="width:100%"
-												label="Name" />
+							<p:column
+								headerText="#{holdMessageView.label('codigo_comercial')}">
+								<h:outputText value="#{product.commercialCode}" />
+							</p:column>
 
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column
-									headerText="#{holdMessageView.label('preco_bruto_unitario')}">
-									<h:outputText value="#{product.unitGrossValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{holdMessageView.label('preco_bruto_total')}">
-									<h:outputText value="#{product.totalGrossValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column headerText="#{holdMessageView.label('un_st_valor')}">
-									<h:outputText value="#{product.unitStValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column headerText="#{holdMessageView.label('valor_st')}">
-									<h:outputText value="#{product.stValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('desconto')}">
-									<h:outputText value="#{product.discount}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{holdMessageView.label('preco_unitario')}">
-									<h:outputText value="#{product.unitPrice}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column headerText="#{holdMessageView.label('total')}">
-									<h:outputText value="#{product.totale}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
+							<p:column headerText="#{holdMessageView.label('descricao')}">
+								<h:outputText value="#{product.description}" />
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('quantidade')}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{product.quantity}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputText value="#{product.quantity}" style="width:100%"
+											label="Name" />
 
-
-								<p:column style="width:2rem">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-										saveTitle="Save Row" />
-								</p:column>
-								<p:column>
-									<p:commandButton
-										action="#{estimatedItemStockView.setMsgAvaliableStock(product)}"
-										update="labelItemStock" icon="pi pi-th-large" title="Estoque"
-										styleClass="rounded-button ui-button-success ui-button-flat p-mr-2 p-mb-2"
-										id="viewStock" />
-									<p:overlayPanel for="viewStock" style="max-width:10vw">
-										<p>
-											<h:outputText
-												value="#{estimatedItemStockView.msgAvaliableStock}"
-												id="labelItemStock" />
-										</p>
-									</p:overlayPanel>
-									<p:commandButton icon="pi pi-times"
-										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
-										title="Remover"
-										action="#{budgetController.removeEstimatedItem(product)}"
-										update="formEstimatedItems:dtItems budgetEstimatedTotales" />
-
-								</p:column>
-							</p:dataTable>
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column
+								headerText="#{holdMessageView.label('preco_bruto_unitario')}">
+								<h:outputText value="#{product.unitGrossValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{holdMessageView.label('preco_bruto_total')}">
+								<h:outputText value="#{product.totalGrossValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('un_st_valor')}">
+								<h:outputText value="#{product.unitStValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('valor_st')}">
+								<h:outputText value="#{product.stValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('desconto')}">
+								<h:outputText value="#{product.discount}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('preco_unitario')}">
+								<h:outputText value="#{product.unitPrice}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="#{holdMessageView.label('total')}">
+								<h:outputText value="#{product.totale}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
 
 
-						</h:form>
+							<p:column style="width:2rem">
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									saveTitle="Save Row" />
+							</p:column>
+							<p:column>
+								<p:commandButton
+									action="#{estimatedItemStockView.setMsgAvaliableStock(product)}"
+									update="labelItemStock" icon="pi pi-th-large" title="Estoque"
+									styleClass="rounded-button ui-button-success ui-button-flat p-mr-2 p-mb-2"
+									id="viewStock" />
+								<p:overlayPanel for="viewStock" style="max-width:10vw">
+									<p>
+										<h:outputText
+											value="#{estimatedItemStockView.msgAvaliableStock}"
+											id="labelItemStock" />
+									</p>
+								</p:overlayPanel>
+								<p:commandButton icon="pi pi-times"
+									styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
+									title="Remover"
+									action="#{budgetController.removeEstimatedItem(product)}"
+									update="formEstimatedItems:dtItems budgetEstimatedTotales" />
+
+							</p:column>
+						</p:dataTable>
 
 
-					</div>
+					</h:form>
+
+
 				</div>
 			</div>
 			<div class="p-col-12" id="estimatedTotals">
 				<div class="card">
+
 					<p:messages globalOnly="true" id="msgQuoteSuccess" />
 					<h:form id="budgetEstimatedTotales">
 						<div class="ui-fluid p-formgrid p-grid">
@@ -437,9 +443,9 @@
 						</div>
 					</h:form>
 				</div>
+
+
 			</div>
-
-
 		</div>
 
 
@@ -651,6 +657,10 @@
 			$("#divSearchProductByCode").hide();
 			var processFinished = false;
 
+			function turnDtScrollBodyResponsive(clientId, maxHeight) {
+				PF(clientId).scrollBody[0].style.setProperty('max-height',
+						maxHeight);
+			}
 			function onCompleteLazilyEstimate(xhr) {
 				if (getResponseHeader(xhr)) {
 					if (xhr.getResponseHeader('products-not-found') == 'true') {
@@ -670,7 +680,11 @@
 					$("#selectProducts").show();
 					$("#divItensForm").hide();
 					$("#estimatedTotals").hide();
-					updateDtProducts();
+					updateDtProducts().then(r=>{
+						turnDtScrollBodyResponsive('dtSelectProducts', '40vh');
+					});
+					
+
 				}
 			}
 
@@ -712,6 +726,7 @@
 					$("#estimatedTotals").show();
 					$("#toolsForBudget").show();
 					updateDtItems();
+
 					return;
 				}
 
