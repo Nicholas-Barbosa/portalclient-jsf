@@ -62,4 +62,10 @@ public class CustomerLazyDataModel extends LazyDataModel<CustomerDTO> implements
 		return this.customers == null ? new ArrayList<>() : customers;
 	}
 
+	@Override
+	public void turnCollectionElegibleToGB() {
+		this.customers = null;
+
+	}
+
 }

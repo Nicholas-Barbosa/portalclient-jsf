@@ -63,7 +63,6 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 				}
 
 			}
-
 			Response rawResponse = resource.request().accept(media).get();
 			T t = rawResponse.readEntity(responseType);
 			return t;

@@ -19,6 +19,8 @@ public class ProductDTO extends BaseProductDTO {
 		
 	}
 	
-	
+	public ProductDTO(String commercialCode,int quantity) {
+		super(commercialCode, null, null, quantity);
+	}
 
 }

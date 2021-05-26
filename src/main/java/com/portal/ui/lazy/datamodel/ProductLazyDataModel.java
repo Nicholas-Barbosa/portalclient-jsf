@@ -60,4 +60,10 @@ public class ProductLazyDataModel extends LazyDataModel<ProductDTO> implements L
 		return new ArrayList<>(products);
 	}
 
+	@Override
+	public void turnCollectionElegibleToGB() {
+		this.products = null;
+
+	}
+
 }

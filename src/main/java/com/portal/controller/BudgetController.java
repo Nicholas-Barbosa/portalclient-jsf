@@ -43,6 +43,7 @@ import com.portal.service.CustomerService;
 import com.portal.service.ProductService;
 import com.portal.service.ResourceBundleService;
 import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
+import com.portal.ui.lazy.datamodel.LazyOperations;
 import com.portal.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.ui.lazy.datamodel.ProductLazyDataModel;
 
@@ -77,7 +78,7 @@ public class BudgetController implements Serializable {
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
-	private Set<ItemFormDTO> originalItems;
+	private Set<ItemFormDTO> itemsForm;
 
 	private Set<ProductDTO> selectedProducts;
 
@@ -119,15 +120,16 @@ public class BudgetController implements Serializable {
 		bulkObjectsCreationsInBackGround();
 	}
 
+	
 	public void clearBudgetForm() throws InterruptedException {
 		ExecutorService executor = null;
 		try {
-			executor = Executors.newFixedThreadPool(4);
+			executor = Executors.newFixedThreadPool(3);
 			executor.execute(() -> {
 				selectedCustomer = null;
 				budgetEstimateDTO = null;
 			});
-			executor.execute(() -> originalItems.clear());
+			executor.execute(() -> itemsForm.clear());
 			executor.execute(() -> selectedProducts.clear());
 		} finally {
 			executor.shutdown();
@@ -153,9 +155,13 @@ public class BudgetController implements Serializable {
 
 	public void estimate() {
 		try {
+			new Thread(() -> {
+				selectedProducts.clear();
+				LazyOperations<?> lazy = (LazyOperations<?>) lazyProducts;
+				lazy.turnCollectionElegibleToGB();
+			}).start();
 			budgetEstimateDTO = budgetService.estimate(
-					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems));
-			new Thread(() -> selectedProducts.clear()).start();
+					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsForm));
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 		} catch (EJBException e) {
@@ -179,6 +185,8 @@ public class BudgetController implements Serializable {
 			return;
 		}
 		selectedCustomer = event.getObject();
+		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
+		lazy.turnCollectionElegibleToGB();
 	}
 
 	public void onPageCustomers(PageEvent pageEvent) {
@@ -247,7 +255,7 @@ public class BudgetController implements Serializable {
 				presentProduct.setQuantity(findProductByCodeDTO.getQuantity());
 				selectedProducts.add(presentProduct);
 				findProductByCodeDTO = new FindProductByCodeDTO();
-				new Thread(() -> originalItems.add(new ItemFormDTO(presentProduct.getCommercialCode(),
+				new Thread(() -> itemsForm.add(new ItemFormDTO(presentProduct.getCommercialCode(),
 						presentProduct.getDescription(), presentProduct.getMultiple(), presentProduct.getQuantity())))
 								.start();
 				FacesHelper.info(null, resourceBundleService.getMessage("produto_selecionado"), null);
@@ -285,7 +293,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void reEditItemQuantity(RowEditEvent<EstimatedItem> event) {
-		new Thread(() -> originalItems.parallelStream()
+		new Thread(() -> itemsForm.parallelStream()
 				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
 				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
 
@@ -294,14 +302,12 @@ public class BudgetController implements Serializable {
 	}
 
 	public void removeEstimatedItem(EstimatedItem item) {
-		new Thread(() -> originalItems.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
-		new Thread(() -> selectedProducts.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode())))
-				.start();
+		new Thread(() -> itemsForm.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
 		budgetService.removeItem(budgetEstimateDTO, item);
 	}
 
 	public void removeSelectedProduct(ProductDTO product) {
-		new Thread(() -> originalItems.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
+		new Thread(() -> itemsForm.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
 				.start();
 		this.selectedProducts.remove(product);
 	}
@@ -312,7 +318,7 @@ public class BudgetController implements Serializable {
 			executorService = Executors.newFixedThreadPool(2);
 			executorService.execute(() -> selectedProducts.add(productDTO));
 			executorService.execute(() -> {
-				originalItems.add(new ItemFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
+				itemsForm.add(new ItemFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
 						productDTO.getMultiple(), productDTO.getMultiple()));
 			});
 
@@ -331,7 +337,7 @@ public class BudgetController implements Serializable {
 			this.lazyProducts = new ProductLazyDataModel();
 			this.lazyCustomers = new CustomerLazyDataModel();
 			this.selectedProducts = new HashSet<>();
-			originalItems = new HashSet<>();
+			itemsForm = new HashSet<>();
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 			this.downloadStreamsForm = new DownloadStreamsForm();
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();

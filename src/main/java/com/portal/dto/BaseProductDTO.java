@@ -1,6 +1,6 @@
 package com.portal.dto;
 
-public class BaseProductDTO {
+public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	private String code;
 
@@ -124,6 +124,12 @@ public class BaseProductDTO {
 		} else if (!commercialCode.equals(other.commercialCode))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(BaseProductDTO o) {
+		// TODO Auto-generated method stub
+		return commercialCode.compareToIgnoreCase(o.commercialCode);
 	}
 
 }

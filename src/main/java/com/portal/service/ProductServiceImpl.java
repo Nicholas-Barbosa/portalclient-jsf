@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize) {
 		// TODO Auto-generated method stub
-		return productRepository.getByDescription(pageSize, pageSize, descriptio);
+		return productRepository.getByDescription(page, pageSize, descriptio);
 	}
 
 	@Override
