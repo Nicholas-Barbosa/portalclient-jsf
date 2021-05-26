@@ -58,7 +58,6 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", description);
-		System.out.println("descriptuon in reposirotyu " + description);
 		try {
 			ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.getForEntity("ORCAMENTO_API", "products",
 					ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);

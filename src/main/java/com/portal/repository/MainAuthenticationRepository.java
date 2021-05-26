@@ -50,7 +50,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		queryParams.put("password", loginForm.getPassword());
 		queryParams.put("username", loginForm.getUsername());
 
-		String currentEniviromentUrl = propertiesReader.getProperty("orcamento_api_url_prod");
+		String currentEniviromentUrl = propertiesReader.getProperty("orcamento_api_url_teste");
 		String loginUrl = String.format("%s/%s", currentEniviromentUrl, "api/oauth2/v1/token");
 
 		LoginGssResponseDTO doPost = restClient.doPost(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,

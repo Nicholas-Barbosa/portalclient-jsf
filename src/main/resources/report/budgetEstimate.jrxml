@@ -82,7 +82,7 @@
 				<text><![CDATA[Gauss Indústria Auto-Peças]]></text>
 			</staticText>
 			<image isUsingCache="true">
-				<reportElement x="0" y="0" width="180" height="38" uuid="3ed48395-75ef-4f63-b834-45a605fb7d9a"/>
+				<reportElement x="0" y="0" width="170" height="30" uuid="3ed48395-75ef-4f63-b834-45a605fb7d9a"/>
 				<imageExpression><![CDATA[$P{logoGaussPath}]]></imageExpression>
 			</image>
 		</band>
@@ -134,7 +134,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="117" splitType="Stretch">
+		<band height="102" splitType="Stretch">
 			<componentElement>
 				<reportElement x="0" y="41" width="800" height="40" uuid="c891ceaa-2b1a-4c29-97de-ad70a961fdb6">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>

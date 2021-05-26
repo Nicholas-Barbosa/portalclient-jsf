@@ -13,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
 
 import org.primefaces.event.RowEditEvent;
@@ -120,7 +121,6 @@ public class BudgetController implements Serializable {
 		bulkObjectsCreationsInBackGround();
 	}
 
-	
 	public void clearBudgetForm() throws InterruptedException {
 		ExecutorService executor = null;
 		try {
@@ -164,16 +164,12 @@ public class BudgetController implements Serializable {
 					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsForm));
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
-		} catch (EJBException e) {
 			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
-			if (e.getCause() instanceof ProcessingException)
-				processingExceptionMessageHelper.displayMessage((ProcessingException) e.getCause(), null);
-			else if (e.getCause() instanceof ClientErrorException) {
-				ClientErrorException not = (ClientErrorException) e.getCause();
-				PrimeFHelper.openClientErrorExceptionView(not.getResponse());
+		} catch (ClientErrorException e) {
+			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+			ClientErrorException not = (ClientErrorException) e;
+			PrimeFHelper.openClientErrorExceptionView(not.getResponse());
 
-			} else
-				throw e;
 		}
 
 	}
@@ -307,8 +303,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void removeSelectedProduct(ProductDTO product) {
-		new Thread(() -> itemsForm.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
-				.start();
+		new Thread(() -> itemsForm.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode()))).start();
 		this.selectedProducts.remove(product);
 	}
 
