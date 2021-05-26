@@ -14,10 +14,12 @@ public class UserManagerProperties implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6271296356737609480L;
+
 	private String name;
 	private final Map<String, ServiceApi> authenticatedServices = new ConcurrentHashMap<>();
 
+	
 	/**
 	 * Register this service to the hash table.
 	 * 

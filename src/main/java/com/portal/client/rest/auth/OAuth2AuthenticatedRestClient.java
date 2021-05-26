@@ -6,7 +6,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -23,7 +23,7 @@ import com.portal.security.api.OAuth2ServiceApi;
 import com.portal.security.api.ServiceApi;
 
 @OAuth2RestAuth
-@Stateless
+@ApplicationScoped
 public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, Serializable {
 
 	private static final long serialVersionUID = 2516211534967007393L;

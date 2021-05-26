@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PreDestroy;
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -40,6 +41,11 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		this.restClient = restClient;
 		this.userPropertyHolder = userPropertyHolder;
 
+	}
+
+	@PreDestroy
+	public void destroy() {
+		System.out.println("destroy!");
 	}
 
 	@Override

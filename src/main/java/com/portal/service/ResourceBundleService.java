@@ -2,7 +2,7 @@ package com.portal.service;
 
 import java.util.Locale;
 
-public interface ResourceBundleService {
+public interface ResourceBundleService extends ServiceSerializable{
 
 	/**
 	 * Will retrieve a message from a resource bundle witch contains the locale

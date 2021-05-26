@@ -31,7 +31,7 @@
 						<p:commandButton title="Restore2" icon="pi pi-times"
 							styleClass="ui-button-danger"
 							action="#{budgetController.clearBudgetForm}"
-							update="customerDTO formProdutos formDtSelectedItems formItems budgetEstimateForm">
+							update="customerDTO formProdutos formDtSelectedItems formEstimatedItems:dtItems budgetEstimatedTotales">
 							<p:confirm type="popup"
 								header="#{holdMessageView.label('confirmacao')}"
 								message="#{holdMessageView.label('restaurar_budget_form')}"
@@ -83,6 +83,105 @@
 						</div>
 
 					</h:form>
+				</div>
+			</div>
+
+			<div class="p-col-12" id="divSearchProductByCode">
+				<div class="card">
+					<h5>#{resourceBundleServiceImpl.getMessage('busca_pelo_codigo')}</h5>
+					<p:button icon="pi pi-replay"
+						styleClass="rounded-button ui-button-outlined p-mr-2 p-mb-2"
+						onclick="$('#divSearchProductByCode').hide();$('#divItensForm').show();$('#estimatedTotals').show();" />
+					<div class="p-grid">
+						<div class="p-col-5 p-d-flex p-ai-center p-jc-center">
+							<h:form id="formSearchProductByCode">
+								<div class="p-formgroup-inline">
+									<div class="p-field">
+										<p:inputText type="text"
+											placeholder="#{holdMessageView.label('codigo_comercial')}"
+											value="#{budgetController.findProductByCodeDTO.code}"
+											id="code">
+
+										</p:inputText>
+										<p:message for="@previous" />
+									</div>
+									<div class="p-field">
+										<p:spinner id="basic"
+											placeholder="#{resourceBundleServiceImpl.getMessage('quantidade')}"
+											value="#{budgetController.findProductByCodeDTO.quantity}" />
+										<p:message for="@previous" />
+									</div>
+
+									<p:commandButton icon="pi pi-angle-double-right"
+										styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+										process="@form" action="#{budgetController.findProductByCode}"
+										update="growl @obs(findProductByCode) @form"
+										onstart="PF('block').show()" oncomplete="PF('block').hide()" />
+									<p:blockUI block="formSearchProductByCode" widgetVar="block">
+										<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+									</p:blockUI>
+								</div>
+							</h:form>
+						</div>
+						<div class="p-col-1">
+							<p:divider layout="vertical">
+								<b>#{resourceBundleServiceImpl.getMessage('selecionados').toUpperCase()}
+								</b>
+							</p:divider>
+						</div>
+						<div class="p-col-5 p-ai-center p-jc-center">
+							<h:form>
+								<p:dataTable value="#{budgetController.selectedProducts}"
+									var="item" id="dtSelectedItems" rowKey="#{item.commercialCode}"
+									stripedRows="true" size="small" reflow="true"
+									styleClass="ui-datatable-sm" paginator="true" rows="10"
+									paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+									paginatorAlwaysVisible="false"
+									style="max-height:40vh; overflow-y: auto" stickyHeader="true">
+									<f:facet name="header">
+										<p:commandButton
+											styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+											icon="pi pi-check"
+											disabled="#{budgetController.selectedProducts.size() == 0}"
+											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
+											oncomplete="if(getResponseHeader(xhr)){
+													$('#divSearchProductByCode').hide();$('#divItensForm').show();$('#estimatedTotals').show();
+													updateDtItems();
+												}
+												PF('globalLoadDlg').hide();
+											"
+											action="#{budgetController.estimate}" process="@this"
+											update="@form budgetEstimatedTotales budgetToolsForm growl" />
+
+									</f:facet>
+									<p:column headerText="#{holdMessageView.label('descricao')}">
+										<h:outputText value="#{item.description}" />
+									</p:column>
+									<p:column headerText="#{holdMessageView.label('quantidade')}">
+										<p:cellEditor>
+											<f:facet name="output">
+												<h:outputText value="#{item.quantity}" />
+											</f:facet>
+											<f:facet name="input">
+												<p:spinner id="modelInput2" value="#{item.quantity}"
+													style="width:100%" />
+											</f:facet>
+										</p:cellEditor>
+
+									</p:column>
+									<p:column>
+										<p:commandButton icon="pi pi-times"
+											styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
+											process="@this"
+											action="#{budgetController.removeSelectedProduct(item)}"
+											update="@form" />
+									</p:column>
+									<p:autoUpdate on="findProductByCode" />
+								</p:dataTable>
+							</h:form>
+						</div>
+
+					</div>
 				</div>
 			</div>
 
@@ -161,7 +260,7 @@
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
 											oncomplete="onCompleteEstimate(xhr);"
 											action="#{budgetController.estimate}" process="@this"
-											update="budgetEstimateForm formItems formDtSelectedItems:dtSelectedItems budgetToolsForm growl" />
+											update="budgetEstimatedTotales formEstimatedItems:dtItems formDtSelectedItems:dtSelectedItems budgetToolsForm growl" />
 
 									</f:facet>
 									<p:column headerText="#{holdMessageView.label('descricao')}">
@@ -197,7 +296,7 @@
 				<div class="p-col-12">
 					<div class="card">
 						<h5>#{holdMessageView.label('items')}</h5>
-						<h:form id="formItems">
+						<h:form id="formEstimatedItems">
 							<p:remoteCommand name="updateDtItems" action="#" process="@none"
 								update="dtItems" />
 							<p:dataTable value="#{budgetController.budgetEstimateDTO.items}"
@@ -207,11 +306,16 @@
 
 								<p:ajax event="rowEdit"
 									listener="#{budgetController.reEditItemQuantity}"
-									update="budgetEstimateForm" />
+									update="budgetEstimatedTotales" />
 								<f:facet name="header">
-									<p:button onclick="PF('searchProductDialog').show()"
+									<p:splitButton
+										onclick="$('#divSearchProductByCode').show();$('#divItensForm').hide();$('#estimatedTotals').hide();"
 										icon="pi pi-plus"
-										styleClass="ui-button-raised ui-button-success p-mr-2" />
+										styleClass="ui-button-raised ui-button-success p-mr-2">
+										<p:menuitem
+											value="#{resourceBundleServiceImpl.getMessage('descricao')}"
+											onclick="PF('searchProductDialog').show()" />
+									</p:splitButton>
 
 								</f:facet>
 
@@ -300,7 +404,7 @@
 										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 										title="Remover"
 										action="#{budgetController.removeEstimatedItem(product)}"
-										update="formItems:dtItems budgetEstimateForm" />
+										update="formEstimatedItems:dtItems budgetEstimatedTotales" />
 
 								</p:column>
 							</p:dataTable>
@@ -315,7 +419,7 @@
 			<div class="p-col-12" id="estimatedTotals">
 				<div class="card">
 					<p:messages globalOnly="true" id="msgQuoteSuccess" />
-					<h:form id="budgetEstimateForm">
+					<h:form id="budgetEstimatedTotales">
 						<div class="ui-fluid p-formgrid p-grid">
 							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="grossV"
@@ -341,8 +445,6 @@
 									symbol="R$ " symbolPosition="p" readonly="true"
 									decimalSeparator="," thousandSeparator="." />
 							</div>
-
-
 						</div>
 					</h:form>
 				</div>
@@ -501,6 +603,7 @@
 		<p:dialog widgetVar="searchProductDialog" modal="true"
 			responsive="true">
 			<p:tabView>
+
 				<p:tab title="#{holdMessageView.label('palavra_chave')}">
 					<h:form>
 						<h5>
@@ -510,7 +613,7 @@
 						<div class="p-formgroup-inline">
 							<div class="p-field">
 								<p:inputText type="text" placeholder="keyword"
-									value="#{budgetController.searchProductForm.description}" />
+									value="#{budgetController.findProductByDescriptionDTO.description}" />
 							</div>
 							<p:commandButton value="#{holdMessageView.label('enviar')}"
 								icon="pi pi-send"
@@ -519,25 +622,6 @@
 								onstart="PF('globalLoadDlg').show();"
 								oncomplete="onCompleteSearchProductByDescription(xhr)" />
 						</div>
-					</h:form>
-				</p:tab>
-				<p:tab title="#{holdMessageView.label('codigo_comercial')}">
-					<h:form>
-						<div class="p-formgroup-inline">
-							<div class="p-field">
-								<p:inputText type="text"
-									placeholder="#{holdMessageView.label('codigo_comercial')}"
-									value="#{budgetController.searchProductForm.code}" id="code">
-									<f:validateLength minimum="1" />
-								</p:inputText>
-								<p:message for="code" />
-							</div>
-							<p:commandButton icon="pi pi-send" process="@form" update="growl"
-								action="#{budgetController.findProductByCode}" ajax="true" />
-
-						</div>
-
-
 					</h:form>
 				</p:tab>
 
@@ -577,7 +661,7 @@
 			$("#estimateLoad").hide();
 			$("#selectProducts").hide();
 			$("#btnPrintBudget").hide();
-
+			$("#divSearchProductByCode").hide();
 			var processFinished = false;
 
 			function onCompleteSearchProductByDescription(xhr) {

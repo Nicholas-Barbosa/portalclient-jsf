@@ -5,9 +5,9 @@ import java.util.Optional;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 
-public interface ProductService {
+public interface ProductService extends ServiceSerializable{
 
-	ProductPageDTO findByDescription(String descriptio, int page, int pageSize);
+	Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize);
 
 	Optional<ProductDTO> findByCode(String code);
 }

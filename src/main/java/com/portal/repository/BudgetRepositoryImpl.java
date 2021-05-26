@@ -1,5 +1,6 @@
 package com.portal.repository;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
@@ -9,6 +10,7 @@ import com.portal.client.rest.auth.AuthenticatedRestClient;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
 
+@ApplicationScoped
 public class BudgetRepositoryImpl implements BudgetRepository {
 
 	/**

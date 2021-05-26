@@ -6,7 +6,7 @@ import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
 import com.portal.dto.EstimatedItem;
 
-public interface BudgetService {
+public interface BudgetService extends ServiceSerializable{
 
 	void findAll(int page, int pageSize);
 

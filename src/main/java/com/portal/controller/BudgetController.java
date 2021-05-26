@@ -28,18 +28,18 @@ import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.DownloadStreamsForm;
 import com.portal.dto.EstimatedItem;
+import com.portal.dto.FindProductByCodeDTO;
+import com.portal.dto.FindProductByDescriptionDTO;
 import com.portal.dto.ItemFormDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.dto.SearchProductForm;
 import com.portal.helper.jsf.faces.FacesHelper;
 import com.portal.helper.jsf.faces.ProcessingExceptionMessageHelper;
 import com.portal.helper.jsf.primefaces.PrimeFHelper;
 import com.portal.jasper.service.BudgetReport;
-import com.portal.repository.CustomerRepository;
-import com.portal.repository.ProductRepository;
 import com.portal.service.BudgetService;
+import com.portal.service.CustomerService;
 import com.portal.service.ProductService;
 import com.portal.service.ResourceBundleService;
 import com.portal.ui.lazy.datamodel.CustomerLazyDataModel;
@@ -57,9 +57,7 @@ public class BudgetController implements Serializable {
 
 	private final ResourceBundleService resourceBundleService;
 
-	private final CustomerRepository customerRepository;
-
-	private final ProductRepository productRepository;
+	private final CustomerService customerService;
 
 	private final BudgetService budgetService;
 
@@ -83,7 +81,7 @@ public class BudgetController implements Serializable {
 
 	private Set<ProductDTO> selectedProducts;
 
-	private SearchProductForm searchProductForm;
+	private FindProductByDescriptionDTO findProductByDescriptionDTO;
 
 	private String headerExceptionDialog;
 	private String processingEntity;
@@ -100,19 +98,19 @@ public class BudgetController implements Serializable {
 
 	private EstimatedItem selectedItemToViewStock;
 
+	private FindProductByCodeDTO findProductByCodeDTO;
+
 	public BudgetController() {
-		this(null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null);
 	}
 
 	@Inject
-	public BudgetController(ResourceBundleService resourceBundleService, CustomerRepository customerRepository,
-			ProductRepository productRepository, BudgetService budgetService, BudgetReport budgetReport,
-			ClientErrorExceptionController responseController,
+	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
+			BudgetService budgetService, BudgetReport budgetReport, ClientErrorExceptionController responseController,
 			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
 		super();
 		this.resourceBundleService = resourceBundleService;
-		this.customerRepository = customerRepository;
-		this.productRepository = productRepository;
+		this.customerService = customerService;
 		this.budgetService = budgetService;
 		this.budgetReport = budgetReport;
 		this.responseController = responseController;
@@ -155,7 +153,6 @@ public class BudgetController implements Serializable {
 
 	public void estimate() {
 		try {
-
 			budgetEstimateDTO = budgetService.estimate(
 					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), originalItems));
 			new Thread(() -> selectedProducts.clear()).start();
@@ -190,7 +187,7 @@ public class BudgetController implements Serializable {
 
 	public void findCustomerByName(int page) {
 		try {
-			Optional<CustomerPageDTO> maybeCustomer = this.customerRepository.getByName(nameCustomerToFind, page, 5);
+			Optional<CustomerPageDTO> maybeCustomer = this.customerService.findByName(nameCustomerToFind, page, 5);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.totalItems() > 1) {
 					FacesHelper.addHeaderForResponse("customers", c.totalItems());
@@ -221,7 +218,7 @@ public class BudgetController implements Serializable {
 
 	public void findCustomerByCode() {
 		try {
-			Optional<CustomerDTO> maybeCustomer = customerRepository.getByCodeAndStore(searchCustomerDTO);
+			Optional<CustomerDTO> maybeCustomer = customerService.findByCodeAndStore(searchCustomerDTO);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.getBlocked().equals("Sim")) {
 					FacesHelper.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
@@ -243,10 +240,32 @@ public class BudgetController implements Serializable {
 		}
 	}
 
+	public void findProductByCode() {
+		try {
+			Optional<ProductDTO> product = productService.findByCode(findProductByCodeDTO.getCode());
+			product.ifPresentOrElse(presentProduct -> {
+				presentProduct.setQuantity(findProductByCodeDTO.getQuantity());
+				selectedProducts.add(presentProduct);
+				findProductByCodeDTO = new FindProductByCodeDTO();
+				new Thread(() -> originalItems.add(new ItemFormDTO(presentProduct.getCommercialCode(),
+						presentProduct.getDescription(), presentProduct.getMultiple(), presentProduct.getQuantity())))
+								.start();
+				FacesHelper.info(null, resourceBundleService.getMessage("produto_selecionado"), null);
+			}, () -> {
+				FacesHelper.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
+			});
+
+		} catch (ProcessingException p) {
+			processingExceptionMessageHelper.displayMessage(p, null);
+			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+			// e.printStackTrace();
+		}
+	}
+
 	public void findProductByDescription(int page) {
 		try {
-			Optional<ProductPageDTO> maybeProduct = productRepository.getByDescription(page, pageSizeForProducts,
-					searchProductForm.getDescription());
+			Optional<ProductPageDTO> maybeProduct = productService
+					.findByDescription(findProductByDescriptionDTO.getDescription(), page, pageSizeForProducts);
 			maybeProduct.ifPresentOrElse(p -> {
 				LazyPopulateUtils.populate(lazyProducts, p);
 			}, () -> {
@@ -261,26 +280,6 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-	public void findProductByCode() {
-		try {
-			Optional<ProductDTO> product = productService.findByCode(searchProductForm.getCode());
-			product.ifPresentOrElse(presentProduct -> {
-				new Thread(() -> originalItems.add(new ItemFormDTO(presentProduct.getCommercialCode(),
-						presentProduct.getDescription(), presentProduct.getMultiple(), presentProduct.getMultiple())))
-								.start();
-				selectedProducts.add(presentProduct);
-				FacesHelper.info(null, resourceBundleService.getMessage("produto_selecionado"), null);
-			}, () -> {
-				FacesHelper.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-			});
-
-		} catch (ProcessingException p) {
-			processingExceptionMessageHelper.displayMessage(p, null);
-			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
-			// e.printStackTrace();
-		}
-	}
-
 	public void onPageProducts(PageEvent pageEvent) {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
@@ -288,7 +287,7 @@ public class BudgetController implements Serializable {
 	public void reEditItemQuantity(RowEditEvent<EstimatedItem> event) {
 		new Thread(() -> originalItems.parallelStream()
 				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
-				.forEach(i -> i.changeQuantity(event.getObject().getQuantity()))).start();
+				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
 
 		budgetService.updateQuantity(budgetEstimateDTO, event.getObject());
 
@@ -327,7 +326,7 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-	private void bulkObjectsCreationsInBackGround() {
+	private final void bulkObjectsCreationsInBackGround() {
 		new Thread(() -> {
 			this.lazyProducts = new ProductLazyDataModel();
 			this.lazyCustomers = new CustomerLazyDataModel();
@@ -336,7 +335,8 @@ public class BudgetController implements Serializable {
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 			this.downloadStreamsForm = new DownloadStreamsForm();
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-			this.searchProductForm = new SearchProductForm();
+			this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
+			findProductByCodeDTO = new FindProductByCodeDTO();
 		}).start();
 	}
 
@@ -364,8 +364,8 @@ public class BudgetController implements Serializable {
 		return selectedProducts;
 	}
 
-	public SearchProductForm getSearchProductForm() {
-		return searchProductForm;
+	public FindProductByDescriptionDTO getFindProductByDescriptionDTO() {
+		return findProductByDescriptionDTO;
 	}
 
 	public String getProcessingEntity() {
@@ -414,5 +414,9 @@ public class BudgetController implements Serializable {
 
 	public ClientErrorExceptionController getResponseController() {
 		return responseController;
+	}
+
+	public FindProductByCodeDTO getFindProductByCodeDTO() {
+		return findProductByCodeDTO;
 	}
 }

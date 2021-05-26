@@ -1,6 +1,7 @@
 package com.portal.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
@@ -42,7 +43,7 @@ public class EstimatedItem extends BaseProductDTO {
 		this.discount = discount;
 		this.quantity = quantity;
 		this.avaliableStock = avaliableStock;
-		this.unitStValue = stValue.divide(new BigDecimal(quantity));
+		this.unitStValue = stValue.divide(new BigDecimal(quantity),2,RoundingMode.HALF_UP);
 	}
 
 	public EstimatedItem(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice, BigDecimal totale,

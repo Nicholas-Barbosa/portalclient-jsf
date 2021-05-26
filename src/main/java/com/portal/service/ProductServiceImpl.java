@@ -2,7 +2,7 @@ package com.portal.service;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.dto.NoPageProductResponseDTO;
@@ -10,16 +10,20 @@ import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.repository.ProductRepository;
 
-@Stateless
+@ApplicationScoped
 public class ProductServiceImpl implements ProductService {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7904939451132445103L;
 	@Inject
 	private ProductRepository productRepository;
 
 	@Override
-	public ProductPageDTO findByDescription(String descriptio, int page, int pageSize) {
+	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize) {
 		// TODO Auto-generated method stub
-		return null;
+		return productRepository.getByDescription(pageSize, pageSize, descriptio);
 	}
 
 	@Override

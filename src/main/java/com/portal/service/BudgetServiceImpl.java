@@ -8,7 +8,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 
@@ -17,9 +17,13 @@ import com.portal.dto.BudgetEstimatedDTO;
 import com.portal.dto.EstimatedItem;
 import com.portal.repository.BudgetRepository;
 
-@Stateless
+@ApplicationScoped
 public class BudgetServiceImpl implements BudgetService {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4268548772630741803L;
 	@Inject
 	private BudgetRepository budgetRepository;
 
@@ -83,7 +87,6 @@ public class BudgetServiceImpl implements BudgetService {
 	private BigDecimal calculateTotalPerQuantity(int quantity, BigDecimal unitValue) {
 		return unitValue.multiply(new BigDecimal(quantity));
 	}
-
 
 	private void bulkUpdateValues(BudgetEstimatedDTO oldBudget) {
 		Set<EstimatedItem> itemsToCalculate = oldBudget.getItems();

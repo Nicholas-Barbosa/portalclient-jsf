@@ -14,6 +14,8 @@ public class BaseProductDTO {
 
 	private Integer multiple;
 
+	private int quantity;
+
 	public BaseProductDTO() {
 		// TODO Auto-generated constructor stub
 	}
@@ -27,6 +29,14 @@ public class BaseProductDTO {
 		this.type = type;
 		this.description = description;
 		this.multiple = multiple;
+	}
+
+	public BaseProductDTO(String commercialCode, String description, Integer multiple, int quantity) {
+		super();
+		this.commercialCode = commercialCode;
+		this.description = description;
+		this.multiple = multiple;
+		this.quantity = quantity;
 	}
 
 	public String getCode() {
@@ -75,6 +85,14 @@ public class BaseProductDTO {
 
 	protected void setMultiple(Integer multiple) {
 		this.multiple = multiple;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public int getQuantity() {
+		return quantity;
 	}
 
 	@Override

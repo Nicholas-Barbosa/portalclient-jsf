@@ -1,6 +1,5 @@
 package com.portal.service;
 
-import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -10,7 +9,7 @@ import javax.inject.Named;
 
 @Named
 @SessionScoped
-public class ResourceBundleServiceImpl implements Serializable, ResourceBundleService {
+public class ResourceBundleServiceImpl implements ResourceBundleService {
 
 	private static final long serialVersionUID = 1L;
 	private ResourceBundle resourceBundle;

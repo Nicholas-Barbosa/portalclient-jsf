@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
@@ -16,6 +17,7 @@ import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.NoPageCustomerResponseDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
 
+@ApplicationScoped
 public class CustomerRepositoryImpl implements CustomerRepository {
 
 	/**

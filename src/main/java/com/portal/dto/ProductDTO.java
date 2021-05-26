@@ -15,6 +15,10 @@ public class ProductDTO extends BaseProductDTO {
 			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("product_type") String type,
 			@JsonbProperty("description") String description, @JsonbProperty("multiple") Integer multiple) {
 		super(code, descriptionType, commercialCode, type, description, multiple);
+		
+		
 	}
+	
+	
 
 }
