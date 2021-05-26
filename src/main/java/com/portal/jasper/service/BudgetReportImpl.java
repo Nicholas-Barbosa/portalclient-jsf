@@ -50,7 +50,7 @@ public class BudgetReportImpl implements BudgetReport {
 		Map<String, Object> params = new HashMap<>();
 		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
 
-		params.put("logoGaussPath", CDG_LOGO);
+		params.put("logoGaussPath", GAUSS_LOGO);
 		return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
 				budget);
 
@@ -60,7 +60,7 @@ public class BudgetReportImpl implements BudgetReport {
 	public byte[] toExcel(BudgetJasperReportDTO budget) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
-		params.put("logoGaussPath", CDG_LOGO);
+		params.put("logoGaussPath", GAUSS_LOGO);
 		return reportService.exportToExcel(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
 				budget);
 
