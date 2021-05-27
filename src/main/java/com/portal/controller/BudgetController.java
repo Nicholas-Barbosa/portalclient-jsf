@@ -8,12 +8,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.ejb.EJBException;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.ProcessingException;
 
 import org.primefaces.event.RowEditEvent;
@@ -102,6 +100,8 @@ public class BudgetController implements Serializable {
 
 	private FindProductByCodeDTO findProductByCodeDTO;
 
+	private ProductDTO selectedProduct;
+
 	public BudgetController() {
 		this(null, null, null, null, null, null, null);
 	}
@@ -118,7 +118,7 @@ public class BudgetController implements Serializable {
 		this.responseController = responseController;
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
-		bulkObjectsCreationsInBackGround();
+		bulkInstantiationObjectsInBackGround();
 	}
 
 	public void clearBudgetForm() throws InterruptedException {
@@ -244,26 +244,35 @@ public class BudgetController implements Serializable {
 		}
 	}
 
+	public void confirmSelectedProduct() {
+		this.selectedProducts.add(selectedProduct);
+		new Thread(() -> {
+			this.itemsForm.add(new ItemFormDTO(selectedProduct.getCommercialCode(), selectedProduct.getDescription(),
+					selectedProduct.getMultiple(), selectedProduct.getQuantity()));
+			this.selectedProduct = null;
+		}).start();
+
+	}
+
 	public void findProductByCode() {
 		try {
 			Optional<ProductDTO> product = productService.findByCode(findProductByCodeDTO.getCode());
 			product.ifPresentOrElse(presentProduct -> {
-				presentProduct.setQuantity(findProductByCodeDTO.getQuantity());
-				selectedProducts.add(presentProduct);
-				findProductByCodeDTO = new FindProductByCodeDTO();
-				new Thread(() -> itemsForm.add(new ItemFormDTO(presentProduct.getCommercialCode(),
-						presentProduct.getDescription(), presentProduct.getMultiple(), presentProduct.getQuantity())))
-								.start();
-				FacesHelper.info(null, resourceBundleService.getMessage("produto_selecionado"), null);
+				FacesHelper.addHeaderForResponse("product-found", true);
+				selectedProduct = new ProductDTO(presentProduct);
+				selectedProduct.setQuantity(selectedProduct.getMultiple());
+
 			}, () -> {
 				FacesHelper.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
+				selectedProduct = null;
 			});
-
+			findProductByCodeDTO = new FindProductByCodeDTO();
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
 			// e.printStackTrace();
 		}
+
 	}
 
 	public void findProductByDescription(int page) {
@@ -308,26 +317,13 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onProductSelected(ProductDTO productDTO) {
-		ExecutorService executorService = null;
-		try {
-			executorService = Executors.newFixedThreadPool(2);
-			executorService.execute(() -> selectedProducts.add(productDTO));
-			executorService.execute(() -> {
-				itemsForm.add(new ItemFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
-						productDTO.getMultiple(), productDTO.getMultiple()));
-			});
+		selectedProducts.add(productDTO);
+		itemsForm.add(new ItemFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
+				productDTO.getMultiple(), productDTO.getMultiple()));
 
-		} finally {
-			executorService.shutdown();
-			try {
-				executorService.awaitTermination(10, TimeUnit.MILLISECONDS);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
-	private final void bulkObjectsCreationsInBackGround() {
+	private final void bulkInstantiationObjectsInBackGround() {
 		new Thread(() -> {
 			this.lazyProducts = new ProductLazyDataModel();
 			this.lazyCustomers = new CustomerLazyDataModel();
@@ -362,7 +358,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public Set<ProductDTO> getSelectedProducts() {
-		return selectedProducts;
+		return new HashSet<>(selectedProducts);
 	}
 
 	public FindProductByDescriptionDTO getFindProductByDescriptionDTO() {
@@ -419,5 +415,9 @@ public class BudgetController implements Serializable {
 
 	public FindProductByCodeDTO getFindProductByCodeDTO() {
 		return findProductByCodeDTO;
+	}
+
+	public ProductDTO getSelectedProduct() {
+		return selectedProduct;
 	}
 }

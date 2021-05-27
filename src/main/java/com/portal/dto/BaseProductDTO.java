@@ -39,6 +39,19 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.quantity = quantity;
 	}
 
+	
+	public BaseProductDTO(String code, String descriptionType, String commercialCode, String type, String description,
+			Integer multiple, int quantity) {
+		super();
+		this.code = code;
+		this.descriptionType = descriptionType;
+		this.commercialCode = commercialCode;
+		this.type = type;
+		this.description = description;
+		this.multiple = multiple;
+		this.quantity = quantity;
+	}
+
 	public String getCode() {
 		return code;
 	}

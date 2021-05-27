@@ -4,7 +4,7 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class ItemFormDTO extends BaseProductDTO {
 
-	public ItemFormDTO(String commercialCode, String description, int multiple, int quantity) {
+	public ItemFormDTO(String commercialCode, String description, Integer multiple, int quantity) {
 		super(commercialCode, description, multiple, quantity);
 
 	}

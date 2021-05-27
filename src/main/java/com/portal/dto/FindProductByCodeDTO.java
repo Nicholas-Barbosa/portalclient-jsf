@@ -1,14 +1,11 @@
 package com.portal.dto;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 
 public class FindProductByCodeDTO {
 
-	@NotBlank
+	@NotEmpty
 	private String code;
-	@Min(1)
-	private int quantity;
 
 	public String getCode() {
 		return code;
@@ -16,14 +13,6 @@ public class FindProductByCodeDTO {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
 	}
 
 }
