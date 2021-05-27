@@ -2,7 +2,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml">
+	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -178,7 +179,7 @@
 											icon="pi pi-plus"
 											styleClass="ui-button-raised ui-button-success p-mr-2" />
 										<p:button
-											onclick="$('#selectProducts').hide();
+											onclick="updateDtItems(); $('#selectProducts').hide();
 												$('#divItensForm').show();
 												$('#estimatedTotals').show();"
 											icon="pi pi-undo"
@@ -280,7 +281,11 @@
 								</p:splitButton>
 
 							</f:facet>
-
+							<f:facet name="footer">
+								<span class="p-text-bold">Há
+									#{fn:length(budgetController.budgetEstimateDTO.items)}
+									produtos.</span>
+							</f:facet>
 							<p:column
 								headerText="#{holdMessageView.label('codigo_comercial')}">
 								<h:outputText value="#{product.commercialCode}" />
@@ -377,7 +382,10 @@
 						</p:dataTable>
 
 					</h:form>
-
+					<p:blockUI block="formEstimatedItems" widgetVar="blockItems"
+						blocked="#{budgetController.selectedCustomer.code == null}">
+						<i class="pi pi-lock" style="font-size: 3rem" />
+					</p:blockUI>
 				</div>
 			</div>
 
@@ -529,8 +537,11 @@
 								PF('globalLoadDlg').show()"
 								oncomplete="PF('globalLoadDlg').hide();
 								let customers = xhr.getResponseHeader('customers');
-								if(customers > 1)
-									PF('dlgSelectCustomer').show();"
+								if(customers > 1){
+									PF('dlgSelectCustomer').show();
+									return;
+								}
+								PF('blockItems').hide();"
 								update="fomrSelectCustomer growl" />
 						</div>
 					</h:form>
@@ -584,8 +595,12 @@
 					style="max-height:40vh" reflow="true">
 					<p:ajax event="rowSelect"
 						oncomplete="
-						if(xhr.getResponseHeader('customer-isBlocked') != 'true')
-							PF('dlgSelectCustomer').hide();"
+						if(xhr.getResponseHeader('customer-isBlocked') != 'true'){
+							PF('dlgSelectCustomer').hide();
+							PF('blockItems').hide();
+							return;
+							}
+							PF('blockItems').show();"
 						update="growl :customerDTO"
 						listener="#{budgetController.selectCustomer}" />
 					<p:ajax event="page" listener="#{budgetController.onPageCustomers}"
@@ -620,30 +635,27 @@
 
 
 		<p:dialog widgetVar="searchProductDialog" modal="true"
-			responsive="true">
-			<p:tabView>
+			responsive="true"
+			header="#{resourceBundleServiceImpl.getMessage('palavra_chave')}">
 
-				<p:tab title="#{holdMessageView.label('palavra_chave')}">
-					<h:form>
-						<h5>
-							<h:outputText
-								value="#{holdMessageView.label('busca_produtos_chave_descricao')}" />
-						</h5>
-						<div class="p-formgroup-inline">
-							<div class="p-field">
-								<p:inputText type="text" placeholder="keyword"
-									value="#{budgetController.findProductByDescriptionDTO.description}" />
-							</div>
-							<p:commandButton icon="pi pi-send"
-								action="#{budgetController.findProductByDescription(1)}"
-								update="growl :formProdutos" process="@form"
-								onstart="PF('globalLoadDlg').show();"
-								oncomplete="onCompleteSearchProductByDescription(xhr)" />
-						</div>
-					</h:form>
-				</p:tab>
+			<h:form>
+				<h5>
+					<h:outputText
+						value="#{holdMessageView.label('busca_produtos_chave_descricao')}" />
+				</h5>
+				<div class="p-formgroup-inline">
+					<div class="p-field">
+						<p:inputText type="text" placeholder="keyword"
+							value="#{budgetController.findProductByDescriptionDTO.description}" />
+					</div>
+					<p:commandButton icon="pi pi-send"
+						action="#{budgetController.findProductByDescription(1)}"
+						update="growl :formProdutos" process="@form"
+						onstart="PF('globalLoadDlg').show();"
+						oncomplete="onCompleteSearchProductByDescription(xhr)" />
+				</div>
+			</h:form>
 
-			</p:tabView>
 
 		</p:dialog>
 
