@@ -1,6 +1,12 @@
 package com.portal.jaxrs.resource;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.util.Base64;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -33,5 +39,17 @@ public class DownloadResource {
 				.header("Content-Type", "application/pdf").entity(budgetReport.toPdf(budgetDTO)).build();
 
 		return response;
+	}
+
+	@GET
+	@Path("/base64")
+	public Response downloadBase64() {
+		try (InputStream in = new BufferedInputStream(
+				new FileInputStream("C:\\Users\\nicho\\OneDrive\\Documentos\\filledReports\\budget.pdf"))) {
+			return Response.ok().entity(Base64.getEncoder().encode(in.readAllBytes()))
+					.header("Content-Type", "application/pdf").build();
+		} catch (IOException e) {
+			return Response.status(500).build();
+		}
 	}
 }
