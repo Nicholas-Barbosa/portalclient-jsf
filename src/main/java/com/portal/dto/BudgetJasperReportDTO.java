@@ -20,10 +20,10 @@ public class BudgetJasperReportDTO implements Serializable {
 
 	private CustomerJasperReportDTO customerReportDTO;
 
-	private Set<EstimatedItem> items;
+	private Set<EstimatedItemDTO> items;
 
 	public BudgetJasperReportDTO(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
-			CustomerJasperReportDTO customerReportDTO, Set<EstimatedItem> items) {
+			CustomerJasperReportDTO customerReportDTO, Set<EstimatedItemDTO> items) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
@@ -52,7 +52,7 @@ public class BudgetJasperReportDTO implements Serializable {
 		return customerReportDTO;
 	}
 
-	public Set<EstimatedItem> getItems() {
+	public Set<EstimatedItemDTO> getItems() {
 		return new HashSet<>(items);
 	}
 

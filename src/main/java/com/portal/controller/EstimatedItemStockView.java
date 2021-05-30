@@ -4,7 +4,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.dto.EstimatedItem;
+import com.portal.dto.EstimatedItemDTO;
 import com.portal.service.ResourceBundleServiceImpl;
 
 @RequestScoped
@@ -20,7 +20,7 @@ public class EstimatedItemStockView {
 		return msgAvaliableStock;
 	}
 
-	public void setMsgAvaliableStock(EstimatedItem estimatedItem) {
+	public void setMsgAvaliableStock(EstimatedItemDTO estimatedItem) {
 		this.msgAvaliableStock = resourceBundleServiceImpl.getMessage("quantiade_em_estoque",
 				estimatedItem.getAvaliableStock(), estimatedItem.getCommercialCode());
 	}

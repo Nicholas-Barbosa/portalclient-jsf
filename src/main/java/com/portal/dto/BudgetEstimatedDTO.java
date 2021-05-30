@@ -25,7 +25,7 @@ public class BudgetEstimatedDTO implements Serializable {
 
 	private CustomerDTO customer;
 
-	private Set<EstimatedItem> items;
+	private Set<EstimatedItemDTO> items;
 
 	public BudgetEstimatedDTO() {
 		// TODO Auto-generated constructor stub
@@ -34,7 +34,7 @@ public class BudgetEstimatedDTO implements Serializable {
 	@JsonbCreator
 	public BudgetEstimatedDTO(@JsonbProperty("liquid_order_value") BigDecimal liquidValue,
 			@JsonbProperty("gross_order_value") BigDecimal grossValue,
-			@JsonbProperty("estimate") Set<EstimatedItem> items) {
+			@JsonbProperty("estimate") Set<EstimatedItemDTO> items) {
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
 		this.items = new HashSet<>(items);
@@ -42,7 +42,7 @@ public class BudgetEstimatedDTO implements Serializable {
 	}
 
 	public BudgetEstimatedDTO(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
-			BigDecimal totalDiscount, Set<EstimatedItem> items) {
+			BigDecimal totalDiscount, Set<EstimatedItemDTO> items) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
@@ -79,11 +79,11 @@ public class BudgetEstimatedDTO implements Serializable {
 		return customer;
 	}
 
-	public Set<EstimatedItem> getItems() {
+	public Set<EstimatedItemDTO> getItems() {
 		return new HashSet<>(items);
 	}
 
-	public void removeItem(EstimatedItem item) {
+	public void removeItem(EstimatedItemDTO item) {
 		this.items.remove(item);
 	}
 //	public void calcultaTotals() {

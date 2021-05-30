@@ -1,10 +1,13 @@
 package com.portal.google.cloud.storage;
 
+import java.util.List;
+import java.util.stream.Stream;
+
+import com.google.cloud.storage.Blob;
+
 public interface BucketClient {
 
-	byte[] getObject(String objectName);
-	
-	byte[] deflate(byte[]inflated);
-	
-	byte[]inflate(byte[]deflated);
+	Blob getObject(String blob);
+
+	Stream<Blob> getObjects(List<String> blobs);
 }

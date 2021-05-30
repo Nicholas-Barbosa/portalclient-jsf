@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 
 import com.portal.dto.BudgetJasperReportDTO;
 import com.portal.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
-import com.portal.dto.EstimatedItem;
+import com.portal.dto.EstimatedItemDTO;
 import com.portal.jasper.service.BudgetReport;
 
 @Path("/download")
@@ -27,7 +27,7 @@ public class DownloadResource {
 
 	@GET
 	public Response download() {
-		final EstimatedItem item = new EstimatedItem(new BigDecimal(135.98), new BigDecimal(900),
+		final EstimatedItemDTO item = new EstimatedItemDTO(new BigDecimal(135.98), new BigDecimal(900),
 				new BigDecimal(135.98), new BigDecimal(900), new BigDecimal(18.89), new BigDecimal(12.89),
 				new BigDecimal(0), 0, 234);
 

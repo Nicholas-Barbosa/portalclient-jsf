@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class EstimatedItem extends BaseProductDTO {
+public class EstimatedItemDTO extends ProductWithImageDTO {
 
 	private BigDecimal unitGrossValue;
 
@@ -27,7 +27,7 @@ public class EstimatedItem extends BaseProductDTO {
 	private Integer avaliableStock;
 
 	@JsonbCreator
-	public EstimatedItem(@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
+	public EstimatedItemDTO(@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
 			@JsonbProperty("total_gross_value") BigDecimal totalGrossValue, @JsonbProperty("product_code") String code,
 			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("unit_price") BigDecimal unitPrice,
 			@JsonbProperty("quantity") int quantity, @JsonbProperty("total_price") BigDecimal totale,
@@ -46,7 +46,7 @@ public class EstimatedItem extends BaseProductDTO {
 		this.unitStValue = stValue.divide(new BigDecimal(quantity),2,RoundingMode.HALF_UP);
 	}
 
-	public EstimatedItem(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice, BigDecimal totale,
+	public EstimatedItemDTO(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice, BigDecimal totale,
 			BigDecimal stValue, BigDecimal unitStValue, BigDecimal discount, int quantity, Integer avaliableStock) {
 		super();
 		this.unitGrossValue = unitGrossValue;

@@ -26,7 +26,7 @@ import com.portal.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
 import com.portal.dto.DownloadStreamsForm;
-import com.portal.dto.EstimatedItem;
+import com.portal.dto.EstimatedItemDTO;
 import com.portal.dto.FindProductByCodeDTO;
 import com.portal.dto.FindProductByDescriptionDTO;
 import com.portal.dto.ItemFormDTO;
@@ -96,7 +96,7 @@ public class BudgetController implements Serializable {
 
 	private DownloadStreamsForm downloadStreamsForm;
 
-	private EstimatedItem selectedItemToViewStock;
+	private EstimatedItemDTO selectedItemToViewStock;
 
 	private FindProductByCodeDTO findProductByCodeDTO;
 
@@ -297,7 +297,7 @@ public class BudgetController implements Serializable {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
 
-	public void reEditItemQuantity(RowEditEvent<EstimatedItem> event) {
+	public void reEditItemQuantity(RowEditEvent<EstimatedItemDTO> event) {
 		new Thread(() -> itemsForm.parallelStream()
 				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
 				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
@@ -306,7 +306,7 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public void removeEstimatedItem(EstimatedItem item) {
+	public void removeEstimatedItem(EstimatedItemDTO item) {
 		new Thread(() -> itemsForm.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
 		budgetService.removeItem(budgetEstimateDTO, item);
 	}
@@ -401,11 +401,11 @@ public class BudgetController implements Serializable {
 		return downloadStreamsForm;
 	}
 
-	public EstimatedItem getSelectedItemToViewStock() {
+	public EstimatedItemDTO getSelectedItemToViewStock() {
 		return selectedItemToViewStock;
 	}
 
-	public void setSelectedItemToViewStock(EstimatedItem selectedItemToViewStock) {
+	public void setSelectedItemToViewStock(EstimatedItemDTO selectedItemToViewStock) {
 		this.selectedItemToViewStock = selectedItemToViewStock;
 	}
 

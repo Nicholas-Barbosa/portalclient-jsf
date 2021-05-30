@@ -4,7 +4,7 @@ import javax.ws.rs.ProcessingException;
 
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
-import com.portal.dto.EstimatedItem;
+import com.portal.dto.EstimatedItemDTO;
 
 public interface BudgetService extends ServiceSerializable{
 
@@ -19,9 +19,9 @@ public interface BudgetService extends ServiceSerializable{
 	 * @param estimatedItemValue
 	 * @return
 	 */
-	void updateQuantity(BudgetEstimatedDTO budget, EstimatedItem estimatedItemValue);
+	void updateQuantity(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue);
 
-	void removeItem(BudgetEstimatedDTO budget, EstimatedItem item);
+	void removeItem(BudgetEstimatedDTO budget, EstimatedItemDTO item);
 
 	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 
