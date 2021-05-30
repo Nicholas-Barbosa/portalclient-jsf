@@ -4,19 +4,14 @@ import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 
-import com.google.cloud.storage.Blob;
 import com.portal.cdi.qualifier.ProductBucket;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
@@ -109,10 +104,4 @@ public class BudgetServiceImpl implements BudgetService {
 		oldBudget.bulkUpdateTotales(liquidValue, grossValue, stTotal, totalDiscount);
 	}
 
-	private void setImagesForProducts(Set<EstimatedItemDTO> items) {
-		Stream<Blob> blobs = bucketClient.getObjects(items.parallelStream().map(i -> i.getCommercialCode())
-				.collect(CopyOnWriteArrayList::new, List::add, List::addAll));
-		Map<String, byte[]>productsBlob = 
-		items.parallelStream().forEach(e -> e.setImage(null));
-	}
 }

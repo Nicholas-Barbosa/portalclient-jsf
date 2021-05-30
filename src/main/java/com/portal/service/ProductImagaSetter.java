@@ -1,6 +1,7 @@
 package com.portal.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
@@ -20,6 +21,5 @@ public class ProductImagaSetter {
 	public void setImage(Collection<? extends ProductWithImageDTO> products) {
 		Stream<Blob> productBlobs = bucketClient.getObjects(products.parallelStream().map(p -> p.getCommercialCode())
 				.collect(CopyOnWriteArrayList::new, List::add, List::addAll));
-
 	}
 }

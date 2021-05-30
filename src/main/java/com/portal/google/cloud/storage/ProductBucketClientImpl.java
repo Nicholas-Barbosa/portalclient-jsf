@@ -1,6 +1,7 @@
 package com.portal.google.cloud.storage;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
 import javax.ejb.Singleton;
@@ -24,13 +25,17 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 
 	@Override
 	public Blob getObject(String objectName) {
-		return super.getObject(objectName);
+		return super.getObject(formatBlobName(objectName));
 	}
 
 	@Override
 	public Stream<Blob> getObjects(List<String> blobs) {
 		// TODO Auto-generated method stub
-		return super.getObject(blobs);
+		return super.getObject(blobs.parallelStream().map(this::formatBlobName).collect(CopyOnWriteArrayList::new,
+				List::add, List::addAll));
 	}
 
+	private String formatBlobName(String blobName) {
+		return String.format("%s/%s.JPG", "imagens_tratadas", blobName);
+	}
 }
