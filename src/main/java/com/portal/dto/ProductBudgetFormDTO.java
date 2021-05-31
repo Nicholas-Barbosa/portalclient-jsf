@@ -2,22 +2,37 @@ package com.portal.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductBudgetFormDTO extends BaseProductDTO {
+public class ProductBudgetFormDTO {
 
-	public ProductBudgetFormDTO(String commercialCode, String description, Integer multiple, int quantity) {
-		super(commercialCode, description, multiple, quantity);
+	private int quantity;
+	private final String commercialCode;
+	private final BaseProductDTO productDTO;
 
+	public ProductBudgetFormDTO(int quantity, String commercialCode, BaseProductDTO productDTO) {
+		super();
+		this.quantity = quantity;
+		this.commercialCode = commercialCode;
+		this.productDTO = new BaseProductDTO(productDTO);
 	}
 
 	@JsonbProperty("product_code")
 	public String getCommercialCode() {
 		// TODO Auto-generated method stub
-		return super.getCommercialCode();
+		return commercialCode;
 	}
 
 	@JsonbProperty
 	public int getQuantity() {
 		// TODO Auto-generated method stub
-		return super.getQuantity();
+		return quantity;
 	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	public BaseProductDTO getProductDTO() {
+		return new BaseProductDTO(productDTO);
+	}
+
 }

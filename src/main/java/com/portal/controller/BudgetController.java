@@ -33,6 +33,8 @@ import com.portal.dto.ProductBudgetFormDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.google.cloud.storage.manager.BucketStateManager;
+import com.portal.google.cloud.storage.manager.ProductBucketStateManager.State;
 import com.portal.helper.jsf.faces.FacesHelper;
 import com.portal.helper.jsf.faces.ProcessingExceptionMessageHelper;
 import com.portal.helper.jsf.primefaces.PrimeFHelper;
@@ -69,6 +71,8 @@ public class BudgetController implements Serializable {
 
 	private final ProductService productService;
 
+	private final BucketStateManager imageManagerLifeCycle;
+
 	private LazyDataModel<ProductDTO> lazyProducts;
 
 	private LazyDataModel<CustomerDTO> lazyCustomers;
@@ -103,13 +107,14 @@ public class BudgetController implements Serializable {
 	private ProductDTO selectedProduct;
 
 	public BudgetController() {
-		this(null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, BudgetReport budgetReport, ClientErrorExceptionController responseController,
-			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
+			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
+			BucketStateManager imageManager) {
 		super();
 		this.resourceBundleService = resourceBundleService;
 		this.customerService = customerService;
@@ -119,6 +124,11 @@ public class BudgetController implements Serializable {
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		bulkInstantiationObjectsInBackGround();
+		this.imageManagerLifeCycle = imageManager;
+	}
+
+	public State checkCurrentProductBucketState(String code) {
+		return imageManagerLifeCycle.getState(code);
 	}
 
 	public void loadImageFromSelectedProduct() {
@@ -132,6 +142,7 @@ public class BudgetController implements Serializable {
 			executor.execute(() -> {
 				selectedCustomer = null;
 				budgetEstimateDTO = null;
+				selectedProduct = null;
 			});
 			executor.execute(() -> itemsForm.clear());
 			executor.execute(() -> selectedProducts.clear());
@@ -251,8 +262,8 @@ public class BudgetController implements Serializable {
 	public void confirmSelectedProduct() {
 		this.selectedProducts.add(selectedProduct);
 		new Thread(() -> {
-			this.itemsForm.add(new ProductBudgetFormDTO(selectedProduct.getCommercialCode(),
-					selectedProduct.getDescription(), selectedProduct.getMultiple(), selectedProduct.getQuantity()));
+			this.itemsForm.add(new ProductBudgetFormDTO(selectedProduct.getQuantity(),
+					selectedProduct.getCommercialCode(), selectedProduct));
 			this.selectedProduct = null;
 		}).start();
 
@@ -322,8 +333,7 @@ public class BudgetController implements Serializable {
 
 	public void onProductSelected(ProductDTO productDTO) {
 		selectedProducts.add(productDTO);
-		itemsForm.add(new ProductBudgetFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
-				productDTO.getMultiple(), productDTO.getMultiple()));
+		itemsForm.add(new ProductBudgetFormDTO(productDTO.getMultiple(), productDTO.getCommercialCode(), productDTO));
 
 	}
 

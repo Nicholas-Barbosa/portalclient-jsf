@@ -53,7 +53,18 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.description = description;
 		this.multiple = multiple;
 		this.quantity = quantity;
-		this.info = new ProductInfoDTO(info);
+		this.info = info;
+	}
+
+	public BaseProductDTO(BaseProductDTO b) {
+		this.code = b.code;
+		this.descriptionType = b.descriptionType;
+		this.commercialCode = b.commercialCode;
+		this.type = b.type;
+		this.description = b.description;
+		this.multiple = b.multiple;
+		this.quantity = b.quantity;
+		this.info = b.info;
 	}
 
 	public String getCode() {
@@ -114,6 +125,10 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	public ProductInfoDTO getInfo() {
 		return info;
+	}
+
+	public void setInfo(ProductInfoDTO info) {
+		this.info = info;
 	}
 
 	@Override

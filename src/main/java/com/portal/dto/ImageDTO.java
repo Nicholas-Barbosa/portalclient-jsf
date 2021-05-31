@@ -1,20 +1,20 @@
 package com.portal.dto;
 
-public class ProductInfoDTO {
+public class ImageDTO {
 
 	private byte[] image;
 
-	public ProductInfoDTO() {
+	public ImageDTO() {
 		this.image = new byte[0];
 	}
 
-	public ProductInfoDTO(byte[] image) {
+	public ImageDTO(byte[] image) {
 		super();
 		this.image = image.clone();
 	}
 
-	public ProductInfoDTO(ProductInfoDTO info) {
-		this.image = info.image == null? new byte[0] : info.image.clone();
+	public ImageDTO(ImageDTO info) {
+		this.image = info.image == null ? new byte[0] : info.image.clone();
 	}
 
 	public byte[] getImage() {

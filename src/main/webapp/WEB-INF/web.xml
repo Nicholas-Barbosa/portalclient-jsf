@@ -38,8 +38,12 @@
 		<exception-type>java.lang.RuntimeException</exception-type>
 		<location>/errorpages/bug.xhtml</location>
 	</error-page>
-	<!-- <web-app> <context-param> <param-name>org.jboss.weld.development</param-name> 
-		<param-value>true</param-value> </context-param> </web-app> -->
+
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException
+		</exception-type>
+		<location>/errorpages/viewExpired.xhtml</location>
+	</error-page>
 
 
 </web-app>

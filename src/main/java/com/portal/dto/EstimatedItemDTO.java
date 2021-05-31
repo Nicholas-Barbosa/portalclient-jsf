@@ -61,9 +61,10 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		this.avaliableStock = avaliableStock;
 	}
 
-	public void setSuperAttributes(String description, int multiple) {
-		super.setDescription(description);
-		super.setMultiple(multiple);
+	public void setBaseProductAttr(BaseProductDTO base) {
+		super.setDescription(base.getDescription());
+		super.setMultiple(base.getMultiple());
+		super.setInfo(base.getInfo());
 	}
 
 	public void setDescription(String description) {

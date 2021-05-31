@@ -26,7 +26,6 @@ public class BudgetServiceImpl implements BudgetService {
 	private static final long serialVersionUID = -4268548772630741803L;
 	@Inject
 	private BudgetRepository budgetRepository;
-	
 
 	public BudgetEstimatedDTO estimateValues(BudgetEstimateForm form) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, SocketException, TimeoutException {
@@ -47,12 +46,12 @@ public class BudgetServiceImpl implements BudgetService {
 	@Override
 	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm) throws ProcessingException {
 		BudgetEstimatedDTO dto = budgetRepository.estimate(budgetEstimateForm);
-		
+
 		dto.getItems().parallelStream().forEach(e -> {
 			budgetEstimateForm.getItemsForm().parallelStream()
-					.filter(i -> i.getCommercialCode().equals(e.getCommercialCode())).findFirst()
-					.ifPresent((baseProduct) -> {
-						e.setSuperAttributes(baseProduct.getDescription(), baseProduct.getMultiple());
+					.filter(i -> i.getCommercialCode().equals(e.getCommercialCode())).findAny()
+					.ifPresent((productForm) -> {
+						e.setBaseProductAttr(productForm.getProductDTO());
 					});
 
 		});
