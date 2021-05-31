@@ -7,9 +7,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
@@ -36,7 +33,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
 			NoPageProductResponseDTO product = authRestClient.getForEntity("ORCAMENTO_API", "products/{code}",
-					NoPageProductResponseDTO.class, null, pathParmas, MediaType.APPLICATION_JSON_TYPE);
+					NoPageProductResponseDTO.class, null, pathParmas, MediaType.APPLICATION_JSON);
 			return product;
 		} catch (NotFoundException e) {
 			return null;
@@ -49,7 +46,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
 		ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.getForEntity("ORCAMENTO_API", "products",
-				ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
+				ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON);
 
 		return productPageDto;
 	}
@@ -63,7 +60,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		queryParams.put("searchKey", description);
 		try {
 			ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.getForEntity("ORCAMENTO_API", "products",
-					ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON_TYPE);
+					ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON);
 			return Optional.of(productPageDto);
 		} catch (NotFoundException e) {
 			return Optional.empty();

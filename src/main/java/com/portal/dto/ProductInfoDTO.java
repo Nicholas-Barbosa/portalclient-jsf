@@ -18,7 +18,6 @@ public class ProductInfoDTO {
 	}
 
 	public byte[] getImage() {
-		System.out.println("get image!");
 		return image.clone();
 	}
 

@@ -54,7 +54,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		String loginUrl = String.format("%s/%s", currentEniviromentUrl, "api/oauth2/v1/token");
 
 		LoginGssResponseDTO doPost = restClient.doPost(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
-				MediaType.APPLICATION_JSON_TYPE);
+				MediaType.APPLICATION_JSON);
 		ServiceApi service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
 				currentEniviromentUrl, "v1/token", TokenType.Bearer, doPost.getAccessToken(), doPost.getRefreshToken(),
 				"password", "default", 1l, TimeUnit.HOURS);

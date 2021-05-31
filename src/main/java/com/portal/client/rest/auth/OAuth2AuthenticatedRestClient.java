@@ -12,7 +12,6 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
@@ -38,7 +37,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 	@Override
 	public <T> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, MediaType media)
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media)
 			throws ProcessingException {
 
 		OAuth2ServiceApi oAuthApi = getService(serviceApiKey);
@@ -82,7 +81,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 	@Override
 	public <T, U> T post(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, MediaType media, U requestBody) throws ProcessingException {
+			Map<String, Object> pathParams, String media, U requestBody) throws ProcessingException {
 		Client client = null;
 		OAuth2ServiceApi service = getService(serviceApiKey);
 		try {

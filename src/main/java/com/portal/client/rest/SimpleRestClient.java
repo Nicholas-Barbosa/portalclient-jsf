@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.Simple;
 
@@ -25,7 +24,7 @@ public class SimpleRestClient implements RestClient {
 
 	@Override
 	public <T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, E requestBody, MediaType mediaType) {
+			Map<String, Object> pathParams, E requestBody, String mediaType) {
 		Client client = null;
 		try {
 			client = getClientFollowingMediaType(mediaType);

@@ -32,7 +32,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	@Override
 	public BudgetEstimatedDTO estimate(BudgetEstimateForm form) throws ProcessingException {
 		return restClient.post("ORCAMENTO_API", "estimate", BudgetEstimatedDTO.class, null, null,
-				MediaType.APPLICATION_JSON_TYPE, form);
+				MediaType.APPLICATION_JSON, form);
 
 	}
 
