@@ -16,7 +16,7 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	private int quantity;
 
-	public ProductInfoDTO info;
+	private ProductInfoDTO info;
 
 	public BaseProductDTO() {
 		// TODO Auto-generated constructor stub

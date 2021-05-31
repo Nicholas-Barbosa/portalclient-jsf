@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
 	public Optional<ProductDTO> findByCode(String code) {
 		NoPageProductResponseDTO noPage = productRepository.getByCode(code);
 		if (noPage != null) {
-		//	this.loadImage(noPage.getProducts().get(0));
+			// this.loadImage(noPage.getProducts().get(0));
 			return Optional.of(noPage.getProducts().get(0));
 		}
 		return Optional.empty();
@@ -72,7 +72,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public void loadImage(ProductDTO productDTO) {
-		this.loadImage(List.of(productDTO));
+		Blob object = bucketClient.getObject(productDTO.getCommercialCode());
+		byte[] imageStreams = object == null ? new byte[0] : object.getContent();
+		productDTO.getInfo().setImage(imageStreams);
 
 	}
 

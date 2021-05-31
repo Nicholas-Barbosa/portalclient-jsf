@@ -15,7 +15,7 @@ public abstract class AbstractBucketClientOperations {
 		this.bucket = bucket;
 	}
 
-	protected Blob getObject(String blob) {
+	protected Blob getObject(String blob)  {
 		Blob objectOnStrage = bucket.get(blob);
 		return objectOnStrage;
 	}
