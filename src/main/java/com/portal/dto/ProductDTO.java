@@ -24,6 +24,6 @@ public class ProductDTO extends BaseProductDTO {
 
 	public ProductDTO(BaseProductDTO p) {
 		super(p.getCode(), p.getDescriptionType(), p.getCommercialCode(), p.getType(), p.getDescription(),
-				p.getMultiple(), p.getQuantity());
+				p.getMultiple(), p.getQuantity(), p.getInfo());
 	}
 }

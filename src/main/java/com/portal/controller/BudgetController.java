@@ -29,7 +29,7 @@ import com.portal.dto.DownloadStreamsForm;
 import com.portal.dto.EstimatedItemDTO;
 import com.portal.dto.FindProductByCodeDTO;
 import com.portal.dto.FindProductByDescriptionDTO;
-import com.portal.dto.ItemFormDTO;
+import com.portal.dto.ProductBudgetFormDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
@@ -77,7 +77,7 @@ public class BudgetController implements Serializable {
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
-	private Set<ItemFormDTO> itemsForm;
+	private Set<ProductBudgetFormDTO> itemsForm;
 
 	private Set<ProductDTO> selectedProducts;
 
@@ -119,6 +119,10 @@ public class BudgetController implements Serializable {
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		bulkInstantiationObjectsInBackGround();
+	}
+
+	public void loadImageFromSelectedProduct() {
+		this.productService.loadImage(selectedProduct);
 	}
 
 	public void clearBudgetForm() throws InterruptedException {
@@ -247,8 +251,8 @@ public class BudgetController implements Serializable {
 	public void confirmSelectedProduct() {
 		this.selectedProducts.add(selectedProduct);
 		new Thread(() -> {
-			this.itemsForm.add(new ItemFormDTO(selectedProduct.getCommercialCode(), selectedProduct.getDescription(),
-					selectedProduct.getMultiple(), selectedProduct.getQuantity()));
+			this.itemsForm.add(new ProductBudgetFormDTO(selectedProduct.getCommercialCode(),
+					selectedProduct.getDescription(), selectedProduct.getMultiple(), selectedProduct.getQuantity()));
 			this.selectedProduct = null;
 		}).start();
 
@@ -318,7 +322,7 @@ public class BudgetController implements Serializable {
 
 	public void onProductSelected(ProductDTO productDTO) {
 		selectedProducts.add(productDTO);
-		itemsForm.add(new ItemFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
+		itemsForm.add(new ProductBudgetFormDTO(productDTO.getCommercialCode(), productDTO.getDescription(),
 				productDTO.getMultiple(), productDTO.getMultiple()));
 
 	}

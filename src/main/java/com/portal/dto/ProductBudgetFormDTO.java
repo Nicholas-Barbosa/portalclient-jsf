@@ -1,10 +1,11 @@
 package com.portal.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 
-public class ItemFormDTO extends BaseProductDTO {
+public class ProductBudgetFormDTO extends BaseProductDTO {
 
-	public ItemFormDTO(String commercialCode, String description, Integer multiple, int quantity) {
+	public ProductBudgetFormDTO(String commercialCode, String description, Integer multiple, int quantity) {
 		super(commercialCode, description, multiple, quantity);
 
 	}
@@ -21,4 +22,9 @@ public class ItemFormDTO extends BaseProductDTO {
 		return super.getQuantity();
 	}
 
+	@Override
+	@JsonbTransient
+	public ProductInfoDTO getInfo() {
+		return super.getInfo();
+	}
 }

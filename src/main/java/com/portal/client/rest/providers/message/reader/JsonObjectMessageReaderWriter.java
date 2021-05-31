@@ -8,6 +8,7 @@ import java.lang.reflect.Type;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.Produces;
@@ -65,4 +66,7 @@ public class JsonObjectMessageReaderWriter implements MessageBodyReader<Object>,
 
 	}
 
+	private JsonbConfig jsonbConfig() {
+		return null;
+	}
 }

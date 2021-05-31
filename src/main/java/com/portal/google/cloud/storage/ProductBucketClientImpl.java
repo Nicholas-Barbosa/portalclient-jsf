@@ -4,14 +4,14 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Stream;
 
-import javax.ejb.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.StorageOptions;
 import com.portal.cdi.qualifier.ProductBucket;
 
-@Singleton
+@ApplicationScoped
 @ProductBucket
 public class ProductBucketClientImpl extends AbstractBucketClientOperations implements BucketClient {
 

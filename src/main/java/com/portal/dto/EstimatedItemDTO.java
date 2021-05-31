@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class EstimatedItemDTO extends ProductWithImageDTO {
+public class EstimatedItemDTO extends BaseProductDTO {
 
 	private BigDecimal unitGrossValue;
 
@@ -43,11 +43,12 @@ public class EstimatedItemDTO extends ProductWithImageDTO {
 		this.discount = discount;
 		this.quantity = quantity;
 		this.avaliableStock = avaliableStock;
-		this.unitStValue = stValue.divide(new BigDecimal(quantity),2,RoundingMode.HALF_UP);
+		this.unitStValue = stValue.divide(new BigDecimal(quantity), 2, RoundingMode.HALF_UP);
 	}
 
-	public EstimatedItemDTO(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice, BigDecimal totale,
-			BigDecimal stValue, BigDecimal unitStValue, BigDecimal discount, int quantity, Integer avaliableStock) {
+	public EstimatedItemDTO(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice,
+			BigDecimal totale, BigDecimal stValue, BigDecimal unitStValue, BigDecimal discount, int quantity,
+			Integer avaliableStock) {
 		super();
 		this.unitGrossValue = unitGrossValue;
 		this.totalGrossValue = totalGrossValue;

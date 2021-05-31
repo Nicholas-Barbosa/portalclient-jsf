@@ -16,6 +16,8 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	private int quantity;
 
+	public ProductInfoDTO info;
+
 	public BaseProductDTO() {
 		// TODO Auto-generated constructor stub
 	}
@@ -29,6 +31,7 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.type = type;
 		this.description = description;
 		this.multiple = multiple;
+		this.info = new ProductInfoDTO();
 	}
 
 	public BaseProductDTO(String commercialCode, String description, Integer multiple, int quantity) {
@@ -37,11 +40,11 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.description = description;
 		this.multiple = multiple;
 		this.quantity = quantity;
+		this.info = new ProductInfoDTO();
 	}
 
-	
 	public BaseProductDTO(String code, String descriptionType, String commercialCode, String type, String description,
-			Integer multiple, int quantity) {
+			Integer multiple, int quantity, ProductInfoDTO info) {
 		super();
 		this.code = code;
 		this.descriptionType = descriptionType;
@@ -50,6 +53,7 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.description = description;
 		this.multiple = multiple;
 		this.quantity = quantity;
+		this.info = new ProductInfoDTO(info);
 	}
 
 	public String getCode() {
@@ -106,6 +110,10 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	public int getQuantity() {
 		return quantity;
+	}
+
+	public ProductInfoDTO getInfo() {
+		return info;
 	}
 
 	@Override

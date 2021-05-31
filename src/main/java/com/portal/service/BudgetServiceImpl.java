@@ -12,11 +12,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 
-import com.portal.cdi.qualifier.ProductBucket;
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
 import com.portal.dto.EstimatedItemDTO;
-import com.portal.google.cloud.storage.BucketClient;
 import com.portal.repository.BudgetRepository;
 
 @ApplicationScoped
@@ -28,8 +26,7 @@ public class BudgetServiceImpl implements BudgetService {
 	private static final long serialVersionUID = -4268548772630741803L;
 	@Inject
 	private BudgetRepository budgetRepository;
-	@ProductBucket
-	private BucketClient bucketClient;
+	
 
 	public BudgetEstimatedDTO estimateValues(BudgetEstimateForm form) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, SocketException, TimeoutException {
@@ -50,7 +47,7 @@ public class BudgetServiceImpl implements BudgetService {
 	@Override
 	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm) throws ProcessingException {
 		BudgetEstimatedDTO dto = budgetRepository.estimate(budgetEstimateForm);
-
+		
 		dto.getItems().parallelStream().forEach(e -> {
 			budgetEstimateForm.getItemsForm().parallelStream()
 					.filter(i -> i.getCommercialCode().equals(e.getCommercialCode())).findFirst()

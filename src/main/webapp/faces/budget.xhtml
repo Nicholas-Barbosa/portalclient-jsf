@@ -430,12 +430,31 @@
 		<p:dialog
 			header="#{resourceBundleServiceImpl.getMessage('detalhes_produto')}"
 			showEffect="fade" modal="true" widgetVar="manageProductDialog"
-			responsive="true">
+			responsive="true"
+			onShow="$('#spinnerLoadingImage').show();$('#divProductImg').hide();var prImage= loadImage();prImage.then((t,n,r)=>{
+			
+			$('#spinnerLoadingImage').hide();
+			$('#divProductImg').show();
+			})">
 
 			<h:form id="formProductDetails">
 				<p:outputPanel id="manage-product-content" class="ui-fluid">
 					<p:outputPanel>
 						<p:focus for="quantity" />
+						<p:remoteCommand name="loadImage"
+							action="#{budgetController.loadImageFromSelectedProduct}"
+							async="true" update="productImg" />
+						<i class="pi pi-spin pi-spinner" style="font-size: 5rem"
+							id="spinnerLoadingImage"></i>
+
+						<div id="divProductImg">
+							<p:graphicImage
+								value="#{budgetController.selectedProduct.info.image}"
+								styleClass="product-image" stream="false" id="productImg"
+								alt="Image for #{budgetController.selectedProduct.commercialCode}"
+								style="width:10vw;height:17vh" />
+						</div>
+						<br />
 						<div class="p-field">
 							<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
 							<p:inputNumber id="quantity"

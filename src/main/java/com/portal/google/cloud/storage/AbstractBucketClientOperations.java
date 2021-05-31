@@ -20,7 +20,8 @@ public abstract class AbstractBucketClientOperations {
 		return objectOnStrage;
 	}
 
-	protected Stream<Blob> getObject(List<String> blobs) {
-		return bucket.get(blobs).stream();
+	protected Stream<Blob> getObject(List<String> blobsName) {
+		List<Blob> blobs = bucket.get(blobsName);
+		return blobs.parallelStream();
 	}
 }
