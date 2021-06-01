@@ -8,8 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.google.cloud.storage.Blob;
-import com.google.cloud.storage.Bucket;
-import com.google.cloud.storage.StorageOptions;
 import com.portal.cdi.qualifier.ProductBucket;
 import com.portal.google.cloud.storage.manager.BucketStateManager;
 
@@ -19,13 +17,12 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 
 	private static final String BUCKET_NAME = "streams-portal";
 
-	private static final Bucket BUCKET = StorageOptions.getDefaultInstance().getService().get(BUCKET_NAME);
 
 	@Inject
 	private BucketStateManager imageManagerLifeCycle;
 
 	public ProductBucketClientImpl() {
-		super(BUCKET);
+		super(BUCKET_NAME);
 	}
 
 	@Override

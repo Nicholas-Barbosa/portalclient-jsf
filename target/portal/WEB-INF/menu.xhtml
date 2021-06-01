@@ -1,0 +1,49 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pr="http://primefaces.org/rain">
+
+	<div class="menu-wrapper">
+		<div class="layout-menu-container">
+			<ui:fragment
+				rendered="#{userStylePreferences.profileMode == 'popup' ? false : true}">
+				<div class="layout-profile">
+					<a class="layout-profile-button" href="#"> <span
+						class="image-name"> <p:graphicImage
+								name="images/avatar-profilemenu.png" library="rain-layout" /> <span
+							class="layout-profile-userinfo"> <span
+								class="layout-profile-name">Jordi Santiago</span> <span
+								class="layout-profile-mail">jordi@primetek.com.tr</span>
+						</span>
+					</span> <i class="layout-profile-icon pi pi-chevron-down" />
+					</a>
+					<ul class="layout-profile-menu">
+						<li><a href="#"> <i class="pi pi-user" /> <span>Profile</span>
+						</a></li>
+						<li><a href="#"> <i class="pi pi-cog" /> <span>Settings</span>
+						</a></li>
+						<li><a href="#"> <i class="pi pi-envelope" /> <span>Messages</span>
+						</a></li>
+						<li><a href="#"> <i class="pi pi-bell" /> <span>Notifications</span>
+						</a></li>
+					</ul>
+				</div>
+			</ui:fragment>
+			<h:form id="menuform">
+				<pr:menu widgetVar="RainMenuWidget">
+					<p:submenu id="om_homepage"
+						label="#{holdMessageView.getLabel('compras_message')}"
+						icon="pi pi-shopping-cart">
+						<p:menuitem id="om_orcamento"
+							value="#{holdMessageView.getLabel('orcamento_message')}"
+							icon="pi pi-shopping-cart" outcome="budget" />
+					</p:submenu>
+
+				</pr:menu>
+			</h:form>
+		</div>
+	</div>
+
+</ui:composition>

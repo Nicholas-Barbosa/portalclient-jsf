@@ -6,8 +6,11 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.Storage.BlobField;
+import com.google.cloud.storage.Storage.BlobGetOption;
 import com.google.cloud.storage.StorageOptions;
 
 class BucketClientTest {
@@ -25,8 +28,11 @@ class BucketClientTest {
 		String bucketName = "streams-portal"; // "my-new-bucket";
 
 		// Creates the new bucket
-		Bucket bucket = storage.get(bucketName);
-		Blob object = bucket.get("imagens_tratadas/AX001.JPG");
+
+		// Bucket bucket =
+		// storage.get(bucketName,BucketGetOption.fields(BucketField.NAME,BucketField.LOCATION));
+		Blob object = storage.get(BlobId.of(bucketName, "budget.pdf"),
+				BlobGetOption.fields(BlobField.NAME));
 		byte[] content = object.getContent();
 		System.out.println("downalod link " + object.getMediaLink());
 		System.out.println("length " + content.length);
@@ -42,7 +48,8 @@ class BucketClientTest {
 
 		// Creates the new bucket
 		Bucket bucket = storage.get(bucketName);
-		List<Blob> object = bucket.get(List.of("imagens_tratadas/AX001.JPG","imagens_tratadas/AX003.JPG","imagens_tratadas/AX003.JPG"));
-		System.out.println("objects " +object.size());
+		List<Blob> object = bucket
+				.get(List.of("imagens_tratadas/AX001.JPG", "imagens_tratadas/AX003.JPG", "imagens_tratadas/AX003.JPG"));
+		System.out.println("objects " + object.size());
 	}
 }

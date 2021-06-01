@@ -32,7 +32,7 @@
 						<p:commandButton title="Restore" icon="pi pi-undo"
 							styleClass="ui-button-danger"
 							action="#{budgetController.clearBudgetForm}"
-							update="customerDTO formProdutos formDtSelectedItems formEstimatedItems:dtItems budgetEstimatedTotales">
+							update="customerDTO formProdutos formDtSelectedItems formEstimatedItems:dtItems budgetEstimatedTotales formSelectedProducts">
 							<p:confirm type="popup"
 								header="#{holdMessageView.label('confirmacao')}"
 								message="#{holdMessageView.label('restaurar_budget_form')}"
@@ -103,7 +103,9 @@
 										onstart="PF('blockDtProducts').show();"
 										oncomplete="if(getResponseHeader(xhr)){
 								if(xhr.getResponseHeader('product-found')=='true')
-									PF('manageProductDialog').show()
+									loadImage();
+									PF('manageProductDialog').show();
+									
 							}
 								PF('blockDtProducts').hide();"
 										process="@this,pCode" />
@@ -132,11 +134,13 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
 								<p:commandButton icon="pi pi-image"
 									styleClass="rounded-button ui-button-success ui-button-outlined p-mr-2 p-mb-2"
-									rendered="#{budgetController.checkCurrentProductBucketState(item.commercialCode) eq 'LOADING'}" process="@none" update="dtSelectedProducts"/>
+									rendered="#{budgetController.checkCurrentProductBucketState(item.commercialCode) eq 'LOADING'}"
+									process="@none" update="dtSelectedProducts" />
 								<p:graphicImage value="#{item.info.image}" stream="false"
 									style="width:100px;box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12);"
 									alt="Image not found for #{item.commercialCode}"
-									rendered="#{budgetController.checkCurrentProductBucketState(item.commercialCode) eq 'LOADED' }" />
+									rendered="#{budgetController.checkCurrentProductBucketState(item.commercialCode) eq 'LOADED' || 'LOADED_NOT_FOUND'}"
+									id="pImage" />
 
 							</p:column>
 							<p:column
@@ -477,7 +481,7 @@
 				<p:dialog
 					header="#{resourceBundleServiceImpl.getMessage('detalhes_produto')}"
 					showEffect="fade" modal="true" widgetVar="manageProductDialog"
-					responsive="true" onShow="onShowProductDialog()">
+					responsive="true">
 
 					<h:form id="formProductDetails">
 						<p:outputPanel id="manage-product-content" class="ui-fluid">
@@ -485,7 +489,12 @@
 								<p:focus for="quantity" />
 								<p:remoteCommand name="loadImage"
 									action="#{budgetController.loadImageFromSelectedProduct}"
-									async="true" update="productImg formSelectedProducts:dtSelectedProducts" />
+									async="true" update="productImg"
+									onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
+									oncomplete="$('#spinnerLoadingImage').hide();
+				$('#divProductImg').show();" />
+
+
 								<i class="pi pi-spin pi-spinner" style="font-size: 5rem"
 									id="spinnerLoadingImage"></i>
 
@@ -758,19 +767,7 @@
 			$("#divSearchProductByCode").hide();
 			var processFinished = false;
 			
-			function onShowProductDialog(){
-				$('#spinnerLoadingImage').show();
-				$('#divProductImg').hide();
-				let prImage=loadImage();prImage.then((t,n,r)=>{
-					console.log(t)
-				if(PF('manageProductDialog').isVisible()==false){
-					
-				}					
-				$('#spinnerLoadingImage').hide();
-				$('#divProductImg').show();
-							
-			})
-			}
+			
 			function turnDtScrollBodyResponsive(clientId, maxHeight) {
 				PF(clientId).scrollBody[0].style.setProperty('max-height',
 						maxHeight);

@@ -261,12 +261,9 @@ public class BudgetController implements Serializable {
 
 	public void confirmSelectedProduct() {
 		this.selectedProducts.add(selectedProduct);
-		new Thread(() -> {
-			this.itemsForm.add(new ProductBudgetFormDTO(selectedProduct.getQuantity(),
-					selectedProduct.getCommercialCode(), selectedProduct));
-			this.selectedProduct = null;
-		}).start();
-
+		this.itemsForm.add(new ProductBudgetFormDTO(selectedProduct.getQuantity(), selectedProduct.getCommercialCode(),
+				selectedProduct));
+		this.selectedProduct = null;
 	}
 
 	public void findProductByCode() {
