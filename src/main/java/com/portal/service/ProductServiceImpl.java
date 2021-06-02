@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Optional<ProductDTO> findByCode(String code) {
 
-		productRepository.getByCode(code);
+		productRepository.getByCodeAsync(code);
 
 		return Optional.empty();
 	}

@@ -33,9 +33,8 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
-			NoPageProductResponseDTO product = authRestClient.get("ORCAMENTO_API", "products/{code}",
-					NoPageProductResponseDTO.class, null, pathParmas, MediaType.APPLICATION_JSON);
-			return product;
+			return authRestClient.get("ORCAMENTO_API", "products/{code}", NoPageProductResponseDTO.class, null,
+					pathParmas, MediaType.APPLICATION_JSON);
 		} catch (NotFoundException e) {
 			return null;
 		}
@@ -44,10 +43,14 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	@Override
 	public Future<NoPageProductResponseDTO> getByCodeAsync(String code) {
-		Map<String, Object> pathParmas = new HashMap<>();
-		pathParmas.put("code", code);
-		
-		return null;
+		try {
+			Map<String, Object> pathParmas = new HashMap<>();
+			pathParmas.put("code", code);
+			return authRestClient.getAsync("ORCAMENTO_API", "products/{code}", NoPageProductResponseDTO.class, null,
+					pathParmas, MediaType.APPLICATION_JSON);
+		} catch (NotFoundException e) {
+			return null;
+		}
 	}
 
 	@Override

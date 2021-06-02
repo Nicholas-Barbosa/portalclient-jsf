@@ -2,14 +2,15 @@ package com.portal.google.cloud.storage;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
 import com.google.cloud.storage.Blob;
 import com.portal.cdi.qualifier.ProductBucket;
-import com.portal.google.cloud.storage.manager.BucketStateManager;
 
 @ApplicationScoped
 @ProductBucket
@@ -17,19 +18,13 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 
 	private static final String BUCKET_NAME = "streams-portal";
 
-
-	@Inject
-	private BucketStateManager imageManagerLifeCycle;
-
 	public ProductBucketClientImpl() {
 		super(BUCKET_NAME);
 	}
 
 	@Override
 	public Blob getObject(String objectName) {
-		 imageManagerLifeCycle.initLoadingImage(objectName);
 		Blob image = super.getObject(formatBlobName(objectName));
-		imageManagerLifeCycle.loadedImage(objectName);
 		return image;
 	}
 
@@ -42,5 +37,16 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 
 	private String formatBlobName(String blobName) {
 		return String.format("%s/%s.JPG", "imagens_tratadas", blobName);
+	}
+
+	@Override
+	public Future<Blob> getAsyncObject(String blob) {
+		ExecutorService executor = null;
+		try {
+			executor = Executors.newSingleThreadExecutor();
+			return executor.submit(() -> super.getObject(blob));
+		} finally {
+			executor.shutdown();
+		}
 	}
 }
