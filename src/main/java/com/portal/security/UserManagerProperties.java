@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.SessionScoped;
 
-import com.portal.security.api.ServiceApi;
+import com.portal.security.api.ExternalApiResource;
 
 @SessionScoped
 public class UserManagerProperties implements Serializable {
@@ -17,7 +17,7 @@ public class UserManagerProperties implements Serializable {
 	private static final long serialVersionUID = 6271296356737609480L;
 
 	private String name;
-	private final Map<String, ServiceApi> authenticatedServices = new ConcurrentHashMap<>();
+	private final Map<String, ExternalApiResource> authenticatedServices = new ConcurrentHashMap<>();
 
 	
 	/**
@@ -26,7 +26,7 @@ public class UserManagerProperties implements Serializable {
 	 * @param key
 	 * @param service
 	 */
-	public void registerAuthenticatedService(String key, ServiceApi service) {
+	public void registerAuthenticatedService(String key, ExternalApiResource service) {
 		this.authenticatedServices.putIfAbsent(key, service);
 	}
 
@@ -45,7 +45,7 @@ public class UserManagerProperties implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public ServiceApi findServiceApi(String key) {
+	public ExternalApiResource findServiceApi(String key) {
 		return this.authenticatedServices.get(key);
 	}
 

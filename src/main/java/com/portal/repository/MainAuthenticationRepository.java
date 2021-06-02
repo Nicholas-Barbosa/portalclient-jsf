@@ -15,8 +15,8 @@ import com.portal.dto.LoginForm;
 import com.portal.dto.LoginGssResponseDTO;
 import com.portal.properties.PropertiesReader;
 import com.portal.security.UserManagerProperties;
-import com.portal.security.api.OAuth2ServiceApi;
-import com.portal.security.api.ServiceApi;
+import com.portal.security.api.ExternalOAuth2ApiResource;
+import com.portal.security.api.ExternalApiResource;
 import com.portal.security.api.TokenType;
 
 public class MainAuthenticationRepository implements AuthenticationRepository, Serializable {
@@ -53,19 +53,19 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		String currentEniviromentUrl = propertiesReader.getProperty("orcamento_api_url_teste");
 		String loginUrl = String.format("%s/%s", currentEniviromentUrl, "api/oauth2/v1/token");
 
-		LoginGssResponseDTO doPost = restClient.doPost(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
+		LoginGssResponseDTO doPost = restClient.post(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
 				MediaType.APPLICATION_JSON);
-		ServiceApi service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
+		ExternalApiResource service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
 				currentEniviromentUrl, "v1/token", TokenType.Bearer, doPost.getAccessToken(), doPost.getRefreshToken(),
 				"password", "default", 1l, TimeUnit.HOURS);
 		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", service);
 
 	}
 
-	private ServiceApi createServiceApi(String username, String password, String basePath, String loginEndpoint,
+	private ExternalApiResource createServiceApi(String username, String password, String basePath, String loginEndpoint,
 			com.portal.security.api.TokenType token, String accessToken, String refreshToken, String grantType,
 			String scope, Long duration, TimeUnit timeUnit) {
-		return new OAuth2ServiceApi(username, password.toCharArray(), basePath, loginEndpoint, token, accessToken,
+		return new ExternalOAuth2ApiResource(username, password.toCharArray(), basePath, loginEndpoint, token, accessToken,
 				refreshToken, grantType, scope, duration, timeUnit);
 	}
 }

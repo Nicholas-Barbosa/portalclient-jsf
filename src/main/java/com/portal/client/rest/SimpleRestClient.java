@@ -2,6 +2,7 @@ package com.portal.client.rest;
 
 import java.util.Map;
 
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -17,13 +18,14 @@ public class SimpleRestClient implements RestClient {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public <T> T getForEntity(String uri, Class<T> responseType, Object... params) {
-
+	public <T> T get(String uri, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, String media) throws ProcessingException {
+		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public <T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams,
+	public <T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, E requestBody, String mediaType) {
 		Client client = null;
 		try {

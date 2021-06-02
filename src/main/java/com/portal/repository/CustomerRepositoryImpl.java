@@ -43,7 +43,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 		queryParms.put("page", page);
 		queryParms.put("pageSize", pageSize);
 
-		CustomerPageDTO customerPage = restClient.getForEntity("ORCAMENTO_API", "clients", CustomerPageDTO.class,
+		CustomerPageDTO customerPage = restClient.get("ORCAMENTO_API", "clients", CustomerPageDTO.class,
 				queryParms, null, MediaType.APPLICATION_JSON);
 		return customerPage;
 
@@ -58,7 +58,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 			pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
 			return Optional
 					.of(restClient
-							.getForEntity("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
+							.get("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
 									NoPageCustomerResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON)
 							.getClients().get(0));
 		} catch (NotFoundException e) {
@@ -73,7 +73,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 			queryParams.put("page", page);
 			queryParams.put("pageSize", pageSize);
 			queryParams.put("searchKey", name);
-			Optional<CustomerPageDTO> cPage = Optional.of(restClient.getForEntity("ORCAMENTO_API", "clients",
+			Optional<CustomerPageDTO> cPage = Optional.of(restClient.get("ORCAMENTO_API", "clients",
 					CustomerPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON));
 
 			return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();

@@ -1,12 +1,8 @@
 package com.portal.client.rest;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
@@ -19,20 +15,10 @@ import com.portal.client.rest.providers.message.writer.JsonMessageWriter;
 
 public interface RestClient extends Serializable {
 
-	/**
-	 * Execute HTTP get to specific uri.Return an object of type T, that will be
-	 * deserialized after the response is ready.
-	 * 
-	 * @param <T>
-	 * @param uri
-	 * @param mediaType    for accept header
-	 * @param classGeneric
-	 * @return
-	 */
-	<T> T getForEntity(String uri, Class<T> responseType, Object... queryParams) throws SocketTimeoutException,
-			TimeoutException, IllegalArgumentException, ConnectException, SocketException;
+	<T> T get(String uri, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, String media) throws ProcessingException;
 
-	<T, E> T doPost(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
+	<T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
 			E requestBody, String mediaType);
 
 	default Client getClientFollowingMediaType(String media) {

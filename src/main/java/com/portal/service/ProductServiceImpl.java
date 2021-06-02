@@ -7,16 +7,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Resource;
+import javax.enterprise.concurrent.ContextService;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 import com.google.cloud.storage.Blob;
 import com.portal.cdi.qualifier.ProductBucket;
 import com.portal.dto.BaseProductDTO;
-import com.portal.dto.NoPageProductResponseDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductInfoDTO;
 import com.portal.dto.ProductPageDTO;
@@ -37,6 +44,12 @@ public class ProductServiceImpl implements ProductService {
 	@ProductBucket
 	private BucketClient bucketClient;
 
+	@Resource
+	private ManagedExecutorService executorService;
+
+	@Inject
+	private HttpSession session;
+
 	@Override
 	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize) {
 		// TODO Auto-generated method stub
@@ -45,11 +58,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Optional<ProductDTO> findByCode(String code) {
-		NoPageProductResponseDTO noPage = productRepository.getByCode(code);
-		if (noPage != null) {
-			// this.loadImage(noPage.getProducts().get(0));
-			return Optional.of(noPage.getProducts().get(0));
-		}
+
+		productRepository.getByCode(code);
+
 		return Optional.empty();
 	}
 
@@ -81,4 +92,5 @@ public class ProductServiceImpl implements ProductService {
 	private String removeExtension(String path) {
 		return path.substring(0, path.lastIndexOf("."));
 	}
+
 }

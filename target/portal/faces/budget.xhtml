@@ -103,7 +103,9 @@
 										onstart="PF('blockDtProducts').show();"
 										oncomplete="if(getResponseHeader(xhr)){
 								if(xhr.getResponseHeader('product-found')=='true')
-									PF('manageProductDialog').show()
+								
+									PF('manageProductDialog').show();
+									
 							}
 								PF('blockDtProducts').hide();"
 										process="@this,pCode" />
@@ -479,7 +481,7 @@
 				<p:dialog
 					header="#{resourceBundleServiceImpl.getMessage('detalhes_produto')}"
 					showEffect="fade" modal="true" widgetVar="manageProductDialog"
-					responsive="true" onShow="onShowProductDialog()">
+					responsive="true">
 
 					<h:form id="formProductDetails">
 						<p:outputPanel id="manage-product-content" class="ui-fluid">
@@ -487,7 +489,12 @@
 								<p:focus for="quantity" />
 								<p:remoteCommand name="loadImage"
 									action="#{budgetController.loadImageFromSelectedProduct}"
-									async="true" update="productImg" />
+									async="true" update="productImg"
+									onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
+									oncomplete="$('#spinnerLoadingImage').hide();
+				$('#divProductImg').show();" />
+
+
 								<i class="pi pi-spin pi-spinner" style="font-size: 5rem"
 									id="spinnerLoadingImage"></i>
 
@@ -760,19 +767,7 @@
 			$("#divSearchProductByCode").hide();
 			var processFinished = false;
 			
-			function onShowProductDialog(){
-				$('#spinnerLoadingImage').show();
-				$('#divProductImg').hide();
-				let prImage=loadImage();prImage.then((t,n,r)=>{
-					console.log(t)
-				if(PF('manageProductDialog').isVisible()==false){
-					
-				}					
-				$('#spinnerLoadingImage').hide();
-				$('#divProductImg').show();
-							
-			})
-			}
+			
 			function turnDtScrollBodyResponsive(clientId, maxHeight) {
 				PF(clientId).scrollBody[0].style.setProperty('max-height',
 						maxHeight);

@@ -26,6 +26,7 @@
 			<version>8.0.0</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -78,6 +79,22 @@
 			<groupId>com.google.cloud</groupId>
 			<artifactId>google-cloud-storage</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.eclipse.microprofile.context-propagation</groupId>
+			<artifactId>microprofile-context-propagation-api</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jboss.weld/weld-api -->
+		<dependency>
+			<groupId>org.jboss.weld</groupId>
+			<artifactId>weld-api</artifactId>
+			<version>4.0.SP1</version>
+		</dependency>
+		
+
+
 	</dependencies>
 
 	<properties>

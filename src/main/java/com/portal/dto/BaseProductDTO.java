@@ -131,6 +131,10 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.info = info;
 	}
 
+	public void setImage(byte[] image) {
+		this.info.setImage(image);
+	}
+
 	@Override
 	public String toString() {
 		return "ProductDTO [code=" + code + ", descriptionType=" + descriptionType + ", commercialCode="

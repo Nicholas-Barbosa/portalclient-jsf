@@ -5,6 +5,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -18,8 +21,8 @@ import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.providers.filter.OAuth2Support;
 import com.portal.exception.IllegalResponseStatusException;
 import com.portal.security.UserManagerProperties;
-import com.portal.security.api.OAuth2ServiceApi;
-import com.portal.security.api.ServiceApi;
+import com.portal.security.api.ExternalOAuth2ApiResource;
+import com.portal.security.api.ExternalApiResource;
 
 @OAuth2RestAuth
 @ApplicationScoped
@@ -36,54 +39,30 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	}
 
 	@Override
-	public <T> T getForEntity(String serviceApiKey, String endpoint, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, String media)
-			throws ProcessingException {
+	public <T> T get(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, String media) throws ProcessingException {
+		ExternalOAuth2ApiResource oAuthApi = getService(serviceApiKey);
+		return this.get(oAuthApi, endpoint, responseType, queryParams, pathParams, media);
+	}
 
-		OAuth2ServiceApi oAuthApi = getService(serviceApiKey);
-
-		Client client = null;
+	@Override
+	public <T> Future<T> getAsync(String serviceApiKey, String endpoint, Class<T> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ProcessingException {
+		ExecutorService executor = null;
 		try {
-			OAuth2Support oAuth2Provider = new OAuth2Support(oAuthApi.getToken());
-			client = getClientFollowingMediaType(media);
-			WebTarget resource = client.target(oAuthApi.getBasePath()).path(endpoint).register(oAuth2Provider);
-			if (pathParams != null) {
-				resource = resource.resolveTemplatesFromEncoded(pathParams);
-			}
-			if (queryParams != null) {
-				Set<String> paramsInSet = queryParams.keySet();
-				for (String st : paramsInSet) {
-					try {
-						resource = resource.queryParam(st, URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-
-			}
-			Response rawResponse = resource.request().accept(media).get();
-			T t = rawResponse.readEntity(responseType);
-			return t;
-		} catch (ProcessingException e) {
-			if (e.getCause() instanceof IllegalResponseStatusException) {
-				return this.getForEntity(serviceApiKey, endpoint, responseType, queryParams, pathParams, media);
-			}
-			checkIfClientErrorException(e);
-			throw e;
-			// handleProcessingException(e);
+			executor = Executors.newSingleThreadExecutor();
+			return executor
+					.submit(() -> this.get(getService(serviceApiKey), endpoint, null, queryParams, pathParams, media));
 		} finally {
-			if (client != null)
-				client.close();
+			executor.shutdown();
 		}
-
 	}
 
 	@Override
 	public <T, U> T post(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, String media, U requestBody) throws ProcessingException {
 		Client client = null;
-		OAuth2ServiceApi service = getService(serviceApiKey);
+		ExternalOAuth2ApiResource service = getService(serviceApiKey);
 		try {
 			client = getClientFollowingMediaType(media);
 			OAuth2Support oAuth2Provider = new OAuth2Support(service.getToken());
@@ -105,15 +84,54 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 		}
 	}
 
-	private OAuth2ServiceApi getService(String key) {
+	private ExternalOAuth2ApiResource getService(String key) {
 		if (userManagerProperties.containsService(key)) {
-			ServiceApi service = userManagerProperties.findServiceApi(key);
-			if (service instanceof OAuth2ServiceApi) {
-				return (OAuth2ServiceApi) service;
+			ExternalApiResource service = userManagerProperties.findServiceApi(key);
+			if (service instanceof ExternalOAuth2ApiResource) {
+				return (ExternalOAuth2ApiResource) service;
 			} else
 				throw new IllegalArgumentException(
 						"the ServiceApi object retrieved from the key,its not type of OAuth2AuthenticatedRestClient or covariant!");
 		} else
 			throw new IllegalArgumentException("This service is not registered!");
+	}
+
+	private <T> T get(ExternalOAuth2ApiResource apiResource, String endpoint, Class<T> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ProcessingException {
+		Client client = null;
+		try {
+			OAuth2Support oAuth2Provider = new OAuth2Support(apiResource.getToken());
+			client = getClientFollowingMediaType(media);
+			WebTarget resource = client.target(apiResource.getBasePath()).path(endpoint).register(oAuth2Provider);
+			if (pathParams != null) {
+				resource = resource.resolveTemplatesFromEncoded(pathParams);
+			}
+			if (queryParams != null) {
+				Set<String> paramsInSet = queryParams.keySet();
+				for (String st : paramsInSet) {
+					try {
+						resource = resource.queryParam(st, URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+			Response rawResponse = resource.request().accept(media).get();
+			T t = rawResponse.readEntity(responseType);
+			return t;
+		} catch (ProcessingException e) {
+			if (e.getCause() instanceof IllegalResponseStatusException) {
+				return this.get(apiResource, endpoint, responseType, queryParams, pathParams, media);
+			}
+			checkIfClientErrorException(e);
+			throw e;
+			// handleProcessingException(e);
+		} finally {
+			if (client != null)
+				client.close();
+		}
+
 	}
 }
