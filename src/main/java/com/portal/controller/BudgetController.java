@@ -33,8 +33,6 @@ import com.portal.dto.ProductBudgetFormDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.google.cloud.storage.manager.BucketStateManager;
-import com.portal.google.cloud.storage.manager.ProductBucketStateManager.State;
 import com.portal.helper.jsf.faces.FacesHelper;
 import com.portal.helper.jsf.faces.ProcessingExceptionMessageHelper;
 import com.portal.helper.jsf.primefaces.PrimeFHelper;
@@ -71,8 +69,6 @@ public class BudgetController implements Serializable {
 
 	private final ProductService productService;
 
-	private final BucketStateManager imageManagerLifeCycle;
-
 	private LazyDataModel<ProductDTO> lazyProducts;
 
 	private LazyDataModel<CustomerDTO> lazyCustomers;
@@ -106,15 +102,16 @@ public class BudgetController implements Serializable {
 
 	private ProductDTO selectedProduct;
 
+	private byte[] imageToSeeOnDlg;
+
 	public BudgetController() {
-		this(null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, BudgetReport budgetReport, ClientErrorExceptionController responseController,
-			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
-			BucketStateManager imageManager) {
+			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
 		super();
 		this.resourceBundleService = resourceBundleService;
 		this.customerService = customerService;
@@ -124,15 +121,15 @@ public class BudgetController implements Serializable {
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		bulkInstantiationObjectsInBackGround();
-		this.imageManagerLifeCycle = imageManager;
-	}
-
-	public State checkCurrentProductBucketState(String code) {
-		return imageManagerLifeCycle.getState(code);
+		this.imageToSeeOnDlg = new byte[0];
 	}
 
 	public void loadImageFromSelectedProduct() {
 		this.productService.loadImage(selectedProduct);
+	}
+
+	public void loadImageForProduct(ProductDTO product) {
+		this.productService.loadImage(product);
 	}
 
 	public void clearBudgetForm() throws InterruptedException {
@@ -227,7 +224,6 @@ public class BudgetController implements Serializable {
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 		} catch (ClientErrorException e) {
-			System.out.println("cause " + e.getCause());
 			FacesHelper.error("customerDTO", resourceBundleService.getMessage("resposta_servidor"),
 					e.getResponse().getEntity().toString());
 		} catch (Exception e) {
@@ -431,4 +427,13 @@ public class BudgetController implements Serializable {
 	public ProductDTO getSelectedProduct() {
 		return selectedProduct;
 	}
+
+	public byte[] getImageToSeeOnDlg() {
+		return imageToSeeOnDlg;
+	}
+
+	public void setImageToSeeOnDlg(byte[] imageToSeeOnDlg) {
+		this.imageToSeeOnDlg = imageToSeeOnDlg;
+	}
+
 }

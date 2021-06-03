@@ -29,8 +29,8 @@
 		</h1>
 		<p:graphicImage name="images/pages/asset-error.svg"
 			library="rain-layout" />
-		<span>Página na qual a solicitação foi desencadeada, expirou. </span>
-		<p:linkButton icon="pi pi-lock" outcome="faces/budget" />
+		<span>#{resouceBundleServiceImpl.getMessage('pagina_instancia_expirada')}</span>
+		<p:linkButton icon="pi pi-lock" outcome="/faces/budget" />
 	</div>
 
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"

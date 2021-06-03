@@ -20,7 +20,6 @@
 
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
-
 		<div class="card">
 			<h:form id="budgetToolsForm">
 				<p:toolbar id="tb">
@@ -132,14 +131,20 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
+								<i class="pi pi-spin pi-spinner"
+									style="font-size: 5rem; display: none"
+									id="spinInRow#{item.commercialCode}"></i>
 								<p:commandButton icon="pi pi-image"
 									styleClass="rounded-button ui-button-success ui-button-outlined p-mr-2 p-mb-2"
-									rendered="#{budgetController.checkCurrentProductBucketState(item.commercialCode) eq 'LOADING'}"
-									process="@none" update="dtSelectedProducts" />
+									rendered="#{item.info.stateForImage eq 'TIMEOUT_EXCPTION' }"
+									action="#{budgetController.loadImageForProduct(item)}"
+									onstart="$('#spinInRow#{item.commercialCode}').show();"
+									oncomplete="$('#spinInRow#{item.commercialCode}').hide();"
+									process="@this" update="dtSelectedProducts" />
 								<p:graphicImage value="#{item.info.image}" stream="false"
 									style="width:100px;box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12);"
 									alt="Image not found for #{item.commercialCode}"
-									rendered="#{budgetController.checkCurrentProductBucketState(item.commercialCode) eq 'LOADED' || 'LOADED_NOT_FOUND'}"
+									rendered="#{item.info.stateForImage eq 'FOUND' || 'NOT_FOUND'}"
 									id="pImage" />
 
 							</p:column>
@@ -296,7 +301,7 @@
 						<p:dataTable value="#{budgetController.budgetEstimateDTO.items}"
 							var="product" editable="true" rowKey="#{product.commercialCode}"
 							id="dtItems" reflow="true" size="small" scrollable="true"
-							widgetVar="dtItems">
+							widgetVar="dtItems" rowIndexVar="crrIndex">
 
 							<p:ajax event="rowEdit"
 								listener="#{budgetController.reEditItemQuantity}"
@@ -329,15 +334,14 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
-								<p:button icon="pi pi-image" onclick="PF('dlg').show()"
-									styleClass="rounded-button ui-button-success ui-button-outlined p-mr-2 p-mb-2" />
-								<p:dialog header="Image" widgetVar="dlg" modal="true"
-									showEffect="fade" hideEffect="fade" responsive="true">
-									<p:graphicImage value="#{product.info.image}" stream="false"
-										styleClass="product-image"
-										alt="Image not uploaded for #{product.commercialCode}"
-										style="width:12vw" />
-								</p:dialog>
+								<p:commandButton icon="pi pi-image"
+									oncomplete="PF('dlg').show()"
+									styleClass="rounded-button ui-button-success ui-button-outlined p-mr-2 p-mb-2"
+									update="@form:prductImgToSee">
+									<f:setPropertyActionListener value="#{product.info.image}"
+										target="#{budgetController.imageToSeeOnDlg}"></f:setPropertyActionListener>
+								</p:commandButton>
+
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
@@ -430,7 +434,12 @@
 
 							</p:column>
 						</p:dataTable>
-
+						<p:dialog header="Image" widgetVar="dlg" modal="true"
+							showEffect="fade" hideEffect="fade" responsive="true">
+							<p:graphicImage value="#{budgetController.imageToSeeOnDlg}"
+								stream="false" styleClass="product-image" alt="Image not found"
+								style="width:12vw" id="prductImgToSee" />
+						</p:dialog>
 					</h:form>
 					<p:blockUI block="formEstimatedItems" widgetVar="blockItems"
 						blocked="#{budgetController.selectedCustomer.code == null}">
@@ -481,7 +490,7 @@
 				<p:dialog
 					header="#{resourceBundleServiceImpl.getMessage('detalhes_produto')}"
 					showEffect="fade" modal="true" widgetVar="manageProductDialog"
-					responsive="true">
+					responsive="true" onShow="$('#spinnerLoadingImage').hide();">
 
 					<h:form id="formProductDetails">
 						<p:outputPanel id="manage-product-content" class="ui-fluid">
@@ -489,20 +498,22 @@
 								<p:focus for="quantity" />
 								<p:remoteCommand name="loadImage"
 									action="#{budgetController.loadImageFromSelectedProduct}"
-									async="true" update="productImg"
+									async="true" update="@form"
 									onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
 									oncomplete="$('#spinnerLoadingImage').hide();
 				$('#divProductImg').show();" />
-
-
 								<i class="pi pi-spin pi-spinner" style="font-size: 5rem"
 									id="spinnerLoadingImage"></i>
-
 								<div id="divProductImg">
 									<p:graphicImage
 										value="#{budgetController.selectedProduct.info.image}"
 										styleClass="product-image" stream="false" id="productImg"
-										alt="Image not uploaded for #{budgetController.selectedProduct.commercialCode}" />
+										alt="Image not uploaded for #{budgetController.selectedProduct.commercialCode}"
+										rendered="#{budgetController.selectedProduct.info.stateForImage eq 'FOUND' || 'NOT_FOUND'}" />
+									<p:button
+										value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
+										rendered="#{budgetController.selectedProduct.info.stateForImage eq 'TIMEOUT_EXCPTION'}"
+										onclick="loadImage()" id="btnReloadImage" />
 								</div>
 
 
@@ -532,7 +543,8 @@
 								<p:remoteCommand name="confirmProduct"
 									action="#{budgetController.confirmSelectedProduct}"
 									update="formSelectedProducts:dtSelectedProducts"
-									oncomplete="PF('manageProductDialog').hide();"
+									onstart="$('body').css('cursor', 'progress');"
+									oncomplete="PF('manageProductDialog').hide(); $('body').css('cursor', 'default');"
 									process="@this quantity" />
 							</p:outputPanel>
 						</p:outputPanel>

@@ -44,7 +44,9 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 		ExecutorService executor = null;
 		try {
 			executor = Executors.newSingleThreadExecutor();
-			return executor.submit(() -> super.getObject(blob));
+			return executor.submit(() -> {
+				return super.getObject(formatBlobName(blob));
+			});
 		} finally {
 			executor.shutdown();
 		}

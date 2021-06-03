@@ -1,4 +1,4 @@
-package com.portal;
+package com.portal.jse;
 
 import static org.junit.jupiter.api.Assertions.*;
 

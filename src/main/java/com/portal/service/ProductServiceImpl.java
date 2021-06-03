@@ -7,23 +7,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ContextService;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
 
 import com.google.cloud.storage.Blob;
 import com.portal.cdi.qualifier.ProductBucket;
 import com.portal.dto.BaseProductDTO;
+import com.portal.dto.NoPageProductResponseDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductInfoDTO;
 import com.portal.dto.ProductPageDTO;
@@ -44,12 +41,6 @@ public class ProductServiceImpl implements ProductService {
 	@ProductBucket
 	private BucketClient bucketClient;
 
-	@Resource
-	private ManagedExecutorService executorService;
-
-	@Inject
-	private HttpSession session;
-
 	@Override
 	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize) {
 		// TODO Auto-generated method stub
@@ -58,8 +49,24 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Optional<ProductDTO> findByCode(String code) {
-
-		productRepository.getByCodeAsync(code);
+		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
+		Future<NoPageProductResponseDTO> ftProduct = productRepository.getByCodeAsync(code);
+		try {
+			NoPageProductResponseDTO response = ftProduct.get();
+			if (response != null) {
+				byte[] image = getBlobStreamImageContent(ftBlob);
+				ProductDTO product = response.getProducts().get(0);
+				ProductInfoDTO productInfo = new ProductInfoDTO(image);
+				product.setInfo(productInfo);
+				return Optional.of(product);
+			}
+			ftBlob.cancel(true);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+		}
 
 		return Optional.empty();
 	}
@@ -85,12 +92,26 @@ public class ProductServiceImpl implements ProductService {
 	public void loadImage(ProductDTO productDTO) {
 		Blob object = bucketClient.getObject(productDTO.getCommercialCode());
 		byte[] imageStreams = object == null ? new byte[0] : object.getContent();
-		productDTO.getInfo().setImage(imageStreams);
+		ProductInfoDTO pInfo = productDTO.getInfo();
+		pInfo.setImage(imageStreams);
 
 	}
 
 	private String removeExtension(String path) {
 		return path.substring(0, path.lastIndexOf("."));
+	}
+
+	private byte[] getBlobStreamImageContent(Future<Blob> blob) {
+		try {
+			return blob.get(510, TimeUnit.MILLISECONDS).getContent();
+		} catch (TimeoutException e) {
+			return new byte[1];
+		} catch (NullPointerException e) {
+			// TODO: handle exception
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new byte[0];
 	}
 
 }

@@ -31,7 +31,6 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.type = type;
 		this.description = description;
 		this.multiple = multiple;
-		this.info = new ProductInfoDTO();
 	}
 
 	public BaseProductDTO(String commercialCode, String description, Integer multiple, int quantity) {
@@ -40,7 +39,6 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.description = description;
 		this.multiple = multiple;
 		this.quantity = quantity;
-		this.info = new ProductInfoDTO();
 	}
 
 	public BaseProductDTO(String code, String descriptionType, String commercialCode, String type, String description,
@@ -129,10 +127,6 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	public void setInfo(ProductInfoDTO info) {
 		this.info = info;
-	}
-
-	public void setImage(byte[] image) {
-		this.info.setImage(image);
 	}
 
 	@Override

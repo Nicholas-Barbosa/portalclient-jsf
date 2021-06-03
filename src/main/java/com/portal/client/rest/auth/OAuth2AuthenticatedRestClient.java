@@ -21,8 +21,8 @@ import com.portal.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.rest.providers.filter.OAuth2Support;
 import com.portal.exception.IllegalResponseStatusException;
 import com.portal.security.UserManagerProperties;
-import com.portal.security.api.ExternalOAuth2ApiResource;
 import com.portal.security.api.ExternalApiResource;
+import com.portal.security.api.ExternalOAuth2ApiResource;
 
 @OAuth2RestAuth
 @ApplicationScoped
@@ -51,8 +51,10 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 		ExecutorService executor = null;
 		try {
 			executor = Executors.newSingleThreadExecutor();
-			return executor
-					.submit(() -> this.get(getService(serviceApiKey), endpoint, null, queryParams, pathParams, media));
+			ExternalOAuth2ApiResource resource = getService(serviceApiKey);
+			return executor.submit(() -> {
+				return this.get(resource, endpoint, responseType, queryParams, pathParams, media);
+			});
 		} finally {
 			executor.shutdown();
 		}
