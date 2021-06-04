@@ -113,6 +113,7 @@ public class BudgetController implements Serializable {
 			BudgetService budgetService, BudgetReport budgetReport, ClientErrorExceptionController responseController,
 			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
 		super();
+		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
 		this.customerService = customerService;
 		this.budgetService = budgetService;
@@ -120,7 +121,6 @@ public class BudgetController implements Serializable {
 		this.responseController = responseController;
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
-		bulkInstantiationObjectsInBackGround();
 		this.imageToSeeOnDlg = new byte[0];
 	}
 
@@ -365,7 +365,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public Set<ProductDTO> getSelectedProducts() {
-		return new HashSet<>(selectedProducts);
+		return selectedProducts;
 	}
 
 	public FindProductByDescriptionDTO getFindProductByDescriptionDTO() {

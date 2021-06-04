@@ -334,7 +334,7 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
-								<p:commandButton icon="pi pi-image"
+								<p:commandButton icon="pi pi-image" process="@this"
 									oncomplete="PF('dlg').show()"
 									styleClass="rounded-button ui-button-success ui-button-outlined p-mr-2 p-mb-2"
 									update="@form:prductImgToSee">

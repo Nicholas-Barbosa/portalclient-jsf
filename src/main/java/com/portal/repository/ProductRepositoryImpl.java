@@ -11,7 +11,6 @@ import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
@@ -29,7 +28,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	private AuthenticatedRestClient authRestClient;
 
 	@Override
-	public NoPageProductResponseDTO getByCode(String code) throws ProcessingException {
+	public NoPageProductResponseDTO getByCode(String code) {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
@@ -54,7 +53,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public ProductPageDTO getAllByPage(int page, int pageSize) throws ProcessingException {
+	public ProductPageDTO getAllByPage(int page, int pageSize) {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
 		ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.get("ORCAMENTO_API", "products",
@@ -64,8 +63,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Optional<ProductPageDTO> getByDescription(int page, int pageSize, String description)
-			throws ProcessingException {
+	public Optional<ProductPageDTO> getByDescription(int page, int pageSize, String description) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);

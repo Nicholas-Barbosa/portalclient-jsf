@@ -20,6 +20,10 @@ public interface AuthenticatedRestClient extends RestClient {
 	 * @return
 	 */
 
+	<T> T get(String resourceKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, String media) throws ProcessingException;
+	// TODO Auto-generated method stub
+
 	<T> Future<T> getAsync(String serviceApiKey, String endpoint, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ProcessingException;
 

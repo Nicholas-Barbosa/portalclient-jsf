@@ -9,7 +9,7 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
-import com.portal.client.rest.providers.filter.ExceptionLauncherFilter;
+import com.portal.client.rest.providers.filter.ProcessingExceptionLauncherFilter;
 import com.portal.client.rest.providers.message.reader.JsonMessageReader;
 import com.portal.client.rest.providers.message.writer.JsonMessageWriter;
 
@@ -26,12 +26,16 @@ public interface RestClient extends Serializable {
 				? ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
 						.build().register(JsonMessageReader.class).register(JsonMessageWriter.class)
 				: null;
-		client.register(ExceptionLauncherFilter.class);
+		client.register(ProcessingExceptionLauncherFilter.class);
 		return client;
 	}
 
 	default void checkIfClientErrorException(ProcessingException p) {
 		if (p.getCause() instanceof ClientErrorException)
 			throw (ClientErrorException) p.getCause();
+	}
+
+	default void checkProcessingException(ProcessingException p) {
+
 	}
 }
