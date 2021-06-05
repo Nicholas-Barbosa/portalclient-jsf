@@ -1,7 +1,13 @@
 package com.portal.dto;
 
-public class BasePageDTO {
+import java.util.Collection;
 
+public class BasePageDTO<T> implements Page<T> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3745876969464987327L;
 	private int page;
 	private int pageSize;
 	private int totalItems;
@@ -49,6 +55,24 @@ public class BasePageDTO {
 
 	public void setTotalPage(int totalPage) {
 		this.totalPage = totalPage;
+	}
+
+	@Override
+	public int totalPages() {
+		// TODO Auto-generated method stub
+		return totalPage;
+	}
+
+	@Override
+	public int totalItems() {
+		// TODO Auto-generated method stub
+		return totalItems;
+	}
+
+	@Override
+	public Collection<T> getContent() {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("getContent() must be overriden");
 	}
 
 }

@@ -1,10 +1,78 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-</body>
-</html>
+	<ui:define name="head">
+		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+	</ui:define>
+
+	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}</ui:define>
+
+	<ui:define name="viewname">
+		<li>#{resourceBundleServiceImpl.getMessage('financeiro')}</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li><p:link outcome="/faces/openedTitles">#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}</p:link>
+		</li>
+	</ui:define>
+
+	<ui:define name="content">
+		<div class="p-grid table-demo">
+			<div class="p-col-12">
+
+				<div class="card">
+					<h:form id="formTitlesDT">
+						<p:dataTable widgetVar="titlesDT" id="titlesDT" var="title"
+							value="#{openedTitlesController.titles}" reflow="true"
+							paginator="true" rows="10" paginatorPosition="bottom">
+
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
+								<h:outputText value="#{title.docNumber}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+
+								<h:outputText value="#{title.customerName}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
+								<h:outputText value="#{title.sale}">
+									<f:convertNumber locale="pt_BR" currencySymbol="R$" type="currency" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
+								<h:outputText value="#{title.dueDate}">
+									<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
+										type="localDateTime" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('situacao')}">
+								<h:outputText value="#{title.situation}" />
+							</p:column>
+
+						</p:dataTable>
+						<p:remoteCommand name="initDtTiles"
+							action="#{openedTitlesController.loadTitles(1)}" autoRun="true"
+							 process="@this"
+							update="titlesDT" />
+						<p:blockUI animate="true" block="titlesDT" blocked="true"
+							widgetVar="blockTitlesDT">
+							<i class="pi pi-spin pi-spinner" style="font-size: 3rem;"></i>
+						</p:blockUI>
+					</h:form>
+
+
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			
+		</script>
+	</ui:define>
+</ui:composition>

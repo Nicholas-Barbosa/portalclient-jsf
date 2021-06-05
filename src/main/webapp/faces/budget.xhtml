@@ -12,7 +12,7 @@
 	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
 
 	<ui:define name="viewname">
-		<li>#{holdMessageView.getLabel('compras_message')}</li>
+		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li><p:link outcome="/faces/budget">#{holdMessageView.getLabel('orcamento_message')}</p:link>
 		</li>
@@ -28,8 +28,13 @@
 							styleClass="ui-button-warning p-mr-2"
 							onclick="PF('downloadDialog').show()"
 							disabled="#{budgetController.budgetEstimateDTO eq null}" />
+						<p:commandButton
+							title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
+							icon="pi pi-wallet" styleClass="ui-button-warning"
+							action="#{budgetController.showOpenedTitlesPageOnDialog}" />
+
 						<p:commandButton title="Restore" icon="pi pi-undo"
-							styleClass="ui-button-danger"
+							styleClass="ui-button-danger  p-mr-2"
 							action="#{budgetController.clearBudgetForm}"
 							update="customerDTO formProdutos formDtSelectedItems formEstimatedItems:dtItems budgetEstimatedTotales formSelectedProducts">
 							<p:confirm type="popup"
@@ -307,15 +312,21 @@
 								listener="#{budgetController.reEditItemQuantity}"
 								update="budgetEstimatedTotales" />
 							<f:facet name="header">
-								<p:splitButton type="button"
-									onclick="$('#divSearchProductByCode').show();$('#divItensForm').hide();$('#estimatedTotals').hide();"
-									icon="pi pi-plus"
-									styleClass="ui-button-raised ui-button-success p-mr-2">
-									<p:menuitem
-										value="#{resourceBundleServiceImpl.getMessage('descricao')}"
-										onclick="PF('searchProductDialog').show()" />
-								</p:splitButton>
-
+								<div class="p-d-flex p-jc-between p-ai-center">
+									<p:splitButton type="button"
+										onclick="$('#divSearchProductByCode').show();$('#divItensForm').hide();$('#estimatedTotals').hide();"
+										icon="pi pi-plus"
+										styleClass="ui-button-raised ui-button-success p-mr-2">
+										<p:menuitem
+											value="#{resourceBundleServiceImpl.getMessage('descricao')}"
+											onclick="PF('searchProductDialog').show()" />
+									</p:splitButton>
+									<div>
+										<p:commandButton id="toggler" type="button" value="Colunas"
+											icon="pi pi-align-justify" />
+										<p:columnToggler datasource="dtItems" trigger="toggler" />
+									</div>
+								</div>
 							</f:facet>
 							<f:facet name="footer">
 								<span class="p-text-bold">Há
@@ -324,7 +335,8 @@
 							</f:facet>
 
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}">
+								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}"
+								sortBy="#{product.commercialCode}">
 								<h:outputText value="#{product.commercialCode}" />
 							</p:column>
 
@@ -334,14 +346,10 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
-								<p:commandButton icon="pi pi-image" process="@this"
-									oncomplete="PF('dlg').show()"
-									styleClass="rounded-button ui-button-success ui-button-outlined p-mr-2 p-mb-2"
-									update="@form:prductImgToSee">
-									<f:setPropertyActionListener value="#{product.info.image}"
-										target="#{budgetController.imageToSeeOnDlg}"></f:setPropertyActionListener>
-								</p:commandButton>
-
+								<p:graphicImage value="#{product.info.image}" stream="false"
+									styleClass="product-image" alt="Image not found"
+									id="prductImgToSee" width="100px" />
+								<p:graphicImage />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
@@ -543,13 +551,14 @@
 								<p:remoteCommand name="confirmProduct"
 									action="#{budgetController.confirmSelectedProduct}"
 									update="formSelectedProducts:dtSelectedProducts"
-									onstart="$('body').css('cursor', 'progress');"
-									oncomplete="PF('manageProductDialog').hide(); $('body').css('cursor', 'default');"
+									onstart="$('body').css('cursor', 'progress');PF('blockPanel').show()"
+									oncomplete="PF('manageProductDialog').hide(); $('body').css('cursor', 'default');PF('blockPanel').hide()"
 									process="@this quantity" />
 							</p:outputPanel>
 						</p:outputPanel>
-
-
+						<p:blockUI block="manage-product-content" widgetVar="blockPanel">
+							<i class="pi pi-spin pi-spinner" style="font-size: 3.5rem"></i>
+						</p:blockUI>
 					</h:form>
 					<f:facet name="footer">
 

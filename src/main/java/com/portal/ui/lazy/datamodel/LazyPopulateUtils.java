@@ -1,5 +1,6 @@
 package com.portal.ui.lazy.datamodel;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.primefaces.model.LazyDataModel;
@@ -12,7 +13,8 @@ public class LazyPopulateUtils {
 	public static <T extends LazyDataModel<?>, U extends Page<?>> void populate(T lazy, U wrapperPage) {
 		lazy.setPageSize(wrapperPage.getPageSize());
 		lazy.setRowCount(wrapperPage.totalItems());
-		((LazyOperations<T>) lazy).addCollection((List<T>) wrapperPage.getContent());
+		Collection<?> content = wrapperPage.getContent();
+		((LazyOperations<T>) lazy).addCollection((Collection<T>)content);
 	}
 
 	@SuppressWarnings("unchecked")

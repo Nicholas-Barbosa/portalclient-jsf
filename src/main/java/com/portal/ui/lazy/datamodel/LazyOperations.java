@@ -1,14 +1,14 @@
 package com.portal.ui.lazy.datamodel;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface LazyOperations<T> {
 
-	void addCollection(List<T> list);
+	void addCollection(Collection<T> list);
 
 	void clearCollection();
 
-	List<T> getCollection();
+	Collection<T> getCollection();
 
 	void turnCollectionElegibleToGB();
 

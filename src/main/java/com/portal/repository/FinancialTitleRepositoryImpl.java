@@ -21,7 +21,7 @@ public class FinancialTitleRepositoryImpl implements FinancialTitleRepository {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
-		return restClient.get("ORCAMENTO_GAUSS", "titles", FinancialTitlePageDTO.class, queryParams, null,
+		return restClient.get("ORCAMENTO_API", "titles", FinancialTitlePageDTO.class, queryParams, null,
 				MediaType.APPLICATION_JSON);
 	}
 

@@ -1,6 +1,7 @@
 package com.portal.ui.lazy.datamodel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class ProductLazyDataModel extends LazyDataModel<ProductDTO> implements L
 	}
 
 	@Override
-	public void addCollection(List<ProductDTO> list) {
+	public void addCollection(Collection<ProductDTO> list) {
 		products = new ArrayList<>(list);
 
 	}
@@ -55,7 +56,7 @@ public class ProductLazyDataModel extends LazyDataModel<ProductDTO> implements L
 	}
 
 	@Override
-	public List<ProductDTO> getCollection() {
+	public Collection<ProductDTO> getCollection() {
 		// TODO Auto-generated method stub
 		return new ArrayList<>(products);
 	}

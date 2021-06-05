@@ -82,6 +82,7 @@ public class BudgetEstimatedDTO implements Serializable {
 	public Set<EstimatedItemDTO> getItems() {
 		return new HashSet<>(items);
 	}
+	
 
 	public void removeItem(EstimatedItemDTO item) {
 		this.items.remove(item);

@@ -1,7 +1,9 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -14,6 +16,7 @@ import javax.inject.Named;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
@@ -122,6 +125,17 @@ public class BudgetController implements Serializable {
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
+	}
+
+	public void showOpenedTitlesPageOnDialog() {
+		Map<String, Object> options = new HashMap<>();
+		options.put("modal", true);
+		options.put("draggable", true);
+		options.put("position", "center");
+        options.put("contentWidth", "80vw");
+        options.put("contentHeight", "70vh");
+        options.put("responsive", "true");
+		PrimeFaces.current().dialog().openDynamic("openedTitles", options, null);
 	}
 
 	public void loadImageFromSelectedProduct() {
