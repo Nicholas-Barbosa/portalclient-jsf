@@ -13,7 +13,7 @@ import javax.ws.rs.core.Response;
 public class ClientErrorExceptionController {
 
 	private Response response;
-
+	
 	@PostConstruct
 	public void initResponse() {
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();

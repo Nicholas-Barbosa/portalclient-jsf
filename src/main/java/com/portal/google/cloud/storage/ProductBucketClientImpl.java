@@ -24,7 +24,7 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 
 	@Override
 	public Blob getObject(String objectName) {
-		Blob image = super.getObject(formatBlobName(objectName));
+		Blob image = super.getObject(formatBlobName(objectName.toUpperCase()));
 		return image;
 	}
 
@@ -35,20 +35,21 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 				List::add, List::addAll));
 	}
 
-	private String formatBlobName(String blobName) {
-		return String.format("%s/%s.JPG", "imagens_tratadas", blobName);
-	}
-
 	@Override
 	public Future<Blob> getAsyncObject(String blob) {
 		ExecutorService executor = null;
 		try {
 			executor = Executors.newSingleThreadExecutor();
 			return executor.submit(() -> {
-				return super.getObject(formatBlobName(blob));
+				return super.getObject(formatBlobName(blob.toUpperCase()));
 			});
 		} finally {
 			executor.shutdown();
 		}
 	}
+
+	private String formatBlobName(String blobName) {
+		return String.format("%s/%s.JPG", "imagens_tratadas", blobName);
+	}
+
 }

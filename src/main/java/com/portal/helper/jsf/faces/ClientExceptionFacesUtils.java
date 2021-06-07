@@ -1,4 +1,4 @@
-package com.portal.helper.jsf.primefaces;
+package com.portal.helper.jsf.faces;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,15 +6,13 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.ws.rs.core.Response;
 
-import org.primefaces.PrimeFaces;
+public class ClientExceptionFacesUtils {
 
-public class PrimeFHelper {
-
-	private PrimeFHelper() {
+	private ClientExceptionFacesUtils() {
 
 	}
 
-	public static void openClientErrorExceptionView(Response response) {
+	public static void openClientExcpetionView(Response response) {
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("response", response);
 		Map<String, Object> options = new HashMap<String, Object>();
@@ -22,6 +20,6 @@ public class PrimeFHelper {
 		options.put("draggable", true);
 		options.put("fitViewport", true);
 		options.put("position", "center");
-		PrimeFaces.current().dialog().openDynamic("clientError", options, null);
+		FacesUtils.openViewOnDialog(options, "clientError");
 	}
 }

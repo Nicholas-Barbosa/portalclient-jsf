@@ -1,10 +1,12 @@
 package com.portal.service;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
 
 import com.portal.dto.CustomerDTO;
 import com.portal.dto.CustomerPageDTO;
@@ -28,22 +30,24 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public CustomerPageDTO findAll(int page, int pageSize) throws ProcessingException {
+	public CustomerPageDTO findAll(int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		// TODO Auto-generated method stub
-		return customerRepository.getAllByPage(page, pageSize);
+		return customerRepository.find(page, pageSize);
 	}
 
 	@Override
 	public Optional<CustomerDTO> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
-			throws ProcessingException {
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		// TODO Auto-generated method stub
-		return customerRepository.getByCodeAndStore(searchCustomerByCodeAndStoreDTO);
+		return customerRepository.findByCodeAndStore(searchCustomerByCodeAndStoreDTO);
 	}
 
 	@Override
-	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize) throws ProcessingException {
+	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		// TODO Auto-generated method stub
-		return customerRepository.getByName(name, page, pageSize);
+		return customerRepository.findByName(name, page, pageSize);
 	}
 
 }

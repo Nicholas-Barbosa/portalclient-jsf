@@ -1,5 +1,7 @@
 package com.portal.service;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
@@ -42,15 +44,15 @@ public class ProductServiceImpl implements ProductService {
 	private BucketClient bucketClient;
 
 	@Override
-	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize) {
+	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException {
 		// TODO Auto-generated method stub
-		return productRepository.getByDescription(page, pageSize, descriptio);
+		return productRepository.findByDescription(page, pageSize, descriptio);
 	}
 
 	@Override
-	public Optional<ProductDTO> findByCode(String code) {
+	public Optional<ProductDTO> findByCode(String code)throws SocketTimeoutException, ConnectException, TimeoutException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
-		Future<NoPageProductResponseDTO> ftProduct = productRepository.getByCodeAsync(code);
+		Future<NoPageProductResponseDTO> ftProduct = productRepository.findByCodeAsync(code);
 		try {
 			NoPageProductResponseDTO response = ftProduct.get();
 			if (response != null) {
@@ -103,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
 
 	private byte[] getBlobStreamImageContent(Future<Blob> blob) {
 		try {
-			return blob.get(510, TimeUnit.MILLISECONDS).getContent();
+			return blob.get(500, TimeUnit.MILLISECONDS).getContent();
 		} catch (TimeoutException e) {
 			return new byte[1];
 		} catch (NullPointerException e) {

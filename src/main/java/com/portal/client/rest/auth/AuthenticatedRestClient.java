@@ -1,9 +1,10 @@
 package com.portal.client.rest.auth;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.Future;
-
-import javax.ws.rs.ProcessingException;
+import java.util.concurrent.TimeoutException;
 
 import com.portal.client.rest.RestClient;
 
@@ -21,14 +22,17 @@ public interface AuthenticatedRestClient extends RestClient {
 	 */
 
 	<T> T get(String resourceKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String media) throws ProcessingException;
+			Map<String, Object> pathParams, String media)
+			throws SocketTimeoutException, ConnectException, TimeoutException;
 	// TODO Auto-generated method stub
 
 	<T> Future<T> getAsync(String serviceApiKey, String endpoint, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ProcessingException;
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media)
+			throws SocketTimeoutException, ConnectException, TimeoutException;
 
 	<T, U> T post(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String media, U requestBody) throws ProcessingException;
+			Map<String, Object> pathParams, String media, U requestBody)
+			throws SocketTimeoutException, ConnectException, TimeoutException;
 
 	@Override
 	default <T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams,

@@ -1,6 +1,9 @@
 package com.portal.client.rest;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
@@ -19,14 +22,16 @@ public class SimpleRestClient implements RestClient {
 
 	@Override
 	public <T> T get(String uri, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String media) throws ProcessingException {
+			Map<String, Object> pathParams, String media)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public <T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, E requestBody, String mediaType) {
+			Map<String, Object> pathParams, E requestBody, String mediaType)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		Client client = null;
 		try {
 			client = getClientFollowingMediaType(mediaType);
@@ -44,6 +49,9 @@ public class SimpleRestClient implements RestClient {
 
 			return resource.request().accept(mediaType).post(entityRequest, responseType);
 
+		} catch (ProcessingException p) {
+			RestClient.super.checkProcessingException(p);
+			throw p;
 		} finally {
 			client.close();
 		}

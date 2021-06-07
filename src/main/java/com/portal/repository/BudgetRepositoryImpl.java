@@ -1,8 +1,11 @@
 package com.portal.repository;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeoutException;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
@@ -30,7 +33,8 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public BudgetEstimatedDTO estimate(BudgetEstimateForm form) throws ProcessingException {
+	public BudgetEstimatedDTO estimate(BudgetEstimateForm form)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		return restClient.post("ORCAMENTO_API", "estimate", BudgetEstimatedDTO.class, null, null,
 				MediaType.APPLICATION_JSON, form);
 

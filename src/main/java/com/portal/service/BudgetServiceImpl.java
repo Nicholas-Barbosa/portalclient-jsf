@@ -27,8 +27,6 @@ public class BudgetServiceImpl implements BudgetService {
 	@Inject
 	private BudgetRepository budgetRepository;
 
-	
-
 	public BudgetEstimatedDTO estimateValues(BudgetEstimateForm form) throws SocketTimeoutException, ConnectException,
 			ProcessingException, IllegalArgumentException, SocketException, TimeoutException {
 		return budgetRepository.estimate(form);
@@ -46,7 +44,8 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm) throws ProcessingException {
+	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		BudgetEstimatedDTO dto = budgetRepository.estimate(budgetEstimateForm);
 
 		dto.getItems().parallelStream().forEach(e -> {

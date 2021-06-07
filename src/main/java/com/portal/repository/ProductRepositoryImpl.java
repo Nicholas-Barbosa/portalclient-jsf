@@ -1,10 +1,13 @@
 package com.portal.repository;
 
 import java.io.Serializable;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,7 +31,8 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	private AuthenticatedRestClient authRestClient;
 
 	@Override
-	public NoPageProductResponseDTO getByCode(String code) {
+	public NoPageProductResponseDTO findByCode(String code)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
@@ -41,7 +45,8 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Future<NoPageProductResponseDTO> getByCodeAsync(String code) {
+	public Future<NoPageProductResponseDTO> findByCodeAsync(String code)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
@@ -53,7 +58,8 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public ProductPageDTO getAllByPage(int page, int pageSize) {
+	public ProductPageDTO find(int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
 		ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.get("ORCAMENTO_API", "products",
@@ -63,7 +69,8 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Optional<ProductPageDTO> getByDescription(int page, int pageSize, String description) {
+	public Optional<ProductPageDTO> findByDescription(int page, int pageSize, String description)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);

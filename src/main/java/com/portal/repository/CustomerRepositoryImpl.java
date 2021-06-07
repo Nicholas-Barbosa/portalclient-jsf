@@ -1,13 +1,15 @@
 package com.portal.repository;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.cdi.qualifier.OAuth2RestAuth;
@@ -37,37 +39,36 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public CustomerPageDTO getAllByPage(int page, int pageSize) throws ProcessingException {
+	public CustomerPageDTO find(int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
 		queryParms.put("pageSize", pageSize);
 
-		CustomerPageDTO customerPage = restClient.get("ORCAMENTO_API", "clients", CustomerPageDTO.class,
-				queryParms, null, MediaType.APPLICATION_JSON);
+		CustomerPageDTO customerPage = restClient.get("ORCAMENTO_API", "clients", CustomerPageDTO.class, queryParms,
+				null, MediaType.APPLICATION_JSON);
 		return customerPage;
 
 	}
 
 	@Override
-	public Optional<CustomerDTO> getByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
-			throws ProcessingException {
+	public Optional<CustomerDTO> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		try {
 			Map<String, Object> pathParams = getMapInstance();
 			pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
 			pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
-			return Optional
-					.of(restClient
-							.get("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
-									NoPageCustomerResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON)
-							.getClients().get(0));
+			return Optional.of(restClient.get("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
+					NoPageCustomerResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON).getClients().get(0));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}
 	}
 
 	@Override
-	public Optional<CustomerPageDTO> getByName(String name, int page, int pageSize) throws ProcessingException {
+	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		try {
 			Map<String, Object> queryParams = getMapInstance();
 			queryParams.put("page", page);

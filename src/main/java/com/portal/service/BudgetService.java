@@ -1,16 +1,19 @@
 package com.portal.service;
 
-import javax.ws.rs.ProcessingException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeoutException;
 
 import com.portal.dto.BudgetEstimateForm;
 import com.portal.dto.BudgetEstimatedDTO;
 import com.portal.dto.EstimatedItemDTO;
 
-public interface BudgetService extends ServiceSerializable{
+public interface BudgetService extends ServiceSerializable {
 
 	void findAll(int page, int pageSize);
 
-	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm) throws ProcessingException;
+	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm)
+			throws SocketTimeoutException, ConnectException, TimeoutException;
 
 	/**
 	 * Update items from budget which items are equal in term of equals.

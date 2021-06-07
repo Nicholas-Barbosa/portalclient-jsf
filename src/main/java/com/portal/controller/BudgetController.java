@@ -1,6 +1,8 @@
 package com.portal.controller;
 
 import java.io.Serializable;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -36,9 +39,9 @@ import com.portal.dto.ProductBudgetFormDTO;
 import com.portal.dto.ProductDTO;
 import com.portal.dto.ProductPageDTO;
 import com.portal.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.helper.jsf.faces.FacesHelper;
-import com.portal.helper.jsf.faces.ProcessingExceptionMessageHelper;
-import com.portal.helper.jsf.primefaces.PrimeFHelper;
+import com.portal.helper.jsf.faces.ClientExceptionFacesUtils;
+import com.portal.helper.jsf.faces.FacesUtils;
+import com.portal.helper.jsf.faces.ResourceExceptionMessageHelper;
 import com.portal.jasper.service.BudgetReport;
 import com.portal.service.BudgetService;
 import com.portal.service.CustomerService;
@@ -68,7 +71,7 @@ public class BudgetController implements Serializable {
 
 	private final ClientErrorExceptionController responseController;
 
-	private final ProcessingExceptionMessageHelper processingExceptionMessageHelper;
+	private final ResourceExceptionMessageHelper processingExceptionMessageHelper;
 
 	private final ProductService productService;
 
@@ -114,7 +117,7 @@ public class BudgetController implements Serializable {
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, BudgetReport budgetReport, ClientErrorExceptionController responseController,
-			ProcessingExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
+			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
@@ -132,14 +135,16 @@ public class BudgetController implements Serializable {
 		options.put("modal", true);
 		options.put("draggable", true);
 		options.put("position", "center");
-        options.put("contentWidth", "80vw");
-        options.put("contentHeight", "70vh");
-        options.put("responsive", "true");
+		options.put("contentWidth", "80vw");
+		options.put("contentHeight", "70vh");
+		options.put("responsive", "true");
 		PrimeFaces.current().dialog().openDynamic("openedTitles", options, null);
 	}
 
 	public void loadImageFromSelectedProduct() {
 		this.productService.loadImage(selectedProduct);
+		System.out.println("image selected product " +selectedProduct.getInfo().getImage().length);
+		System.out.println("image state " +selectedProduct.getInfo().getStateForImage());
 	}
 
 	public void loadImageForProduct(ProductDTO product) {
@@ -172,7 +177,7 @@ public class BudgetController implements Serializable {
 							selectedCustomer.getAddress(), selectedCustomer.getState(), selectedCustomer.getCgc()),
 					budgetEstimateDTO.getItems());
 			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
-			FacesHelper.prepareResponseHeadersResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
+			FacesUtils.prepareResponseHeadersResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -188,13 +193,12 @@ public class BudgetController implements Serializable {
 			}).start();
 			budgetEstimateDTO = budgetService.estimate(
 					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsForm));
-		} catch (ProcessingException p) {
-			processingExceptionMessageHelper.displayMessage(p, null);
-			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
+			processingExceptionMessageHelper.displayMessage(e, null);
+			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 		} catch (ClientErrorException e) {
-			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
-			ClientErrorException not = (ClientErrorException) e;
-			PrimeFHelper.openClientErrorExceptionView(not.getResponse());
+			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
+			ClientExceptionFacesUtils.openClientExcpetionView(e.getResponse());
 
 		}
 
@@ -202,8 +206,8 @@ public class BudgetController implements Serializable {
 
 	public void selectCustomer(SelectEvent<CustomerDTO> event) {
 		if (event.getObject().getBlocked().equals("Sim")) {
-			FacesHelper.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
-			FacesHelper.addHeaderForResponse("customer-isBlocked", true);
+			FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
+			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
 		selectedCustomer = event.getObject();
@@ -220,25 +224,25 @@ public class BudgetController implements Serializable {
 			Optional<CustomerPageDTO> maybeCustomer = this.customerService.findByName(nameCustomerToFind, page, 5);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.totalItems() > 1) {
-					FacesHelper.addHeaderForResponse("customers", c.totalItems());
+					FacesUtils.addHeaderForResponse("customers", c.totalItems());
 					LazyPopulateUtils.populate(lazyCustomers, c);
 				} else {
 					CustomerDTO cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {
-						FacesHelper.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
+						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 						selectedCustomer = null;
 						return;
 					}
 					selectedCustomer = cDTO;
 				}
 			}, () -> {
-				FacesHelper.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
+				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
 				selectedCustomer = null;
 			});
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 		} catch (ClientErrorException e) {
-			FacesHelper.error("customerDTO", resourceBundleService.getMessage("resposta_servidor"),
+			FacesUtils.error("customerDTO", resourceBundleService.getMessage("resposta_servidor"),
 					e.getResponse().getEntity().toString());
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -250,20 +254,20 @@ public class BudgetController implements Serializable {
 			Optional<CustomerDTO> maybeCustomer = customerService.findByCodeAndStore(searchCustomerDTO);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.getBlocked().equals("Sim")) {
-					FacesHelper.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
+					FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 					selectedCustomer = null;
 				} else {
 					selectedCustomer = c;
 				}
 			}, () -> {
-				FacesHelper.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
+				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
 				selectedCustomer = null;
 			});
 		} catch (ClientErrorException e) {
-			FacesHelper.error(null, resourceBundleService.getMessage("resposta_servidor"),
+			FacesUtils.error(null, resourceBundleService.getMessage("resposta_servidor"),
 					e.getResponse().getEntity().toString());
 			selectedCustomer = null;
-		} catch (ProcessingException p) {
+		} catch (SocketTimeoutException | ConnectException | TimeoutException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 			selectedCustomer = null;
 		}
@@ -280,18 +284,18 @@ public class BudgetController implements Serializable {
 		try {
 			Optional<ProductDTO> product = productService.findByCode(findProductByCodeDTO.getCode());
 			product.ifPresentOrElse(presentProduct -> {
-				FacesHelper.addHeaderForResponse("product-found", true);
+				FacesUtils.addHeaderForResponse("product-found", true);
 				selectedProduct = new ProductDTO(presentProduct);
 				selectedProduct.setQuantity(selectedProduct.getMultiple());
 
 			}, () -> {
-				FacesHelper.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
+				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
 				selectedProduct = null;
 			});
 			findProductByCodeDTO = new FindProductByCodeDTO();
-		} catch (ProcessingException p) {
+		} catch (SocketTimeoutException | ConnectException | TimeoutException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
-			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			// e.printStackTrace();
 		}
 
@@ -304,13 +308,13 @@ public class BudgetController implements Serializable {
 			maybeProduct.ifPresentOrElse(p -> {
 				LazyPopulateUtils.populate(lazyProducts, p);
 			}, () -> {
-				FacesHelper.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-				FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
+				FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			});
 
-		} catch (ProcessingException e) {
+		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
 			processingExceptionMessageHelper.displayMessage(e, null);
-			FacesHelper.addHeaderForResponse("Backbone-Status", "Error");
+			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			e.printStackTrace();
 		}
 	}

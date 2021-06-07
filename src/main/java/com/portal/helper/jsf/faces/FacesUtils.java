@@ -3,21 +3,25 @@ package com.portal.helper.jsf.faces;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
+import java.util.Map;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.ws.rs.InternalServerErrorException;
+
+import org.primefaces.PrimeFaces;
 
 import com.portal.http.ContentType;
-import com.portal.service.view.HoldMessageView;
 
-public class FacesHelper {
+public class FacesUtils {
+
+	private FacesUtils() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void openViewOnDialog(Map<String, Object> options, String viewName) {
+		PrimeFaces.current().dialog().openDynamic(viewName, options, null);
+	}
 
 	/**
 	 * Add a warn message to the current request object(FacesContext)
@@ -118,47 +122,6 @@ public class FacesHelper {
 			currentInstance.responseComplete();
 		}
 
-	}
-
-	public class ExceptionMessageHandler implements Serializable {
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 195511019926868526L;
-		private final HoldMessageView holderMessage;
-
-		public ExceptionMessageHandler(HoldMessageView holderMessage) {
-			super();
-			this.holderMessage = holderMessage;
-		}
-
-		/**
-		 * Add message object to current request object(FacesContext) following
-		 * Exception instanceof.
-		 * 
-		 * The messages will be retrieved from resources bundles.
-		 * 
-		 * @param clientId
-		 * @param e
-		 * @throws RuntimeException
-		 */
-		public void addMessageByException(String clientId, Exception e) throws RuntimeException {
-			if (e instanceof SocketException) {
-				error(clientId, holderMessage.label("socket_exception"),
-						holderMessage.label("socket_exception_detalhes"));
-			} else if (e instanceof ConnectException) {
-				error(clientId, holderMessage.label("connect_exception"),
-						holderMessage.label("connect_exception_detales"));
-
-			} else if (e instanceof TimeoutException || e instanceof SocketTimeoutException) {
-				error(clientId, holderMessage.label("timeout_ler_response"),
-						holderMessage.label("timeout_ler_response_detalhes"));
-			} else if (e instanceof InternalServerErrorException) {
-				error(clientId, holderMessage.label("erro_servidor_destino"), null);
-			} else
-				e.printStackTrace();
-		}
 	}
 
 }

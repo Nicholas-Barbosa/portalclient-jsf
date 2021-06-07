@@ -2,12 +2,15 @@ package com.portal.client.rest.auth;
 
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -40,18 +43,20 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 	@Override
 	public <T> T get(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String media) throws ProcessingException {
+			Map<String, Object> pathParams, String media)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		ExternalOAuth2ApiResource oAuthApi = getService(serviceApiKey);
 		return this.get(oAuthApi, endpoint, responseType, queryParams, pathParams, media);
 	}
 
 	@Override
-	public <T> Future<T> getAsync(String serviceApiKey, String endpoint, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ProcessingException {
+	public <T> Future<T> getAsync(String externalServiceKey, String endpoint, Class<T> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		ExecutorService executor = null;
 		try {
 			executor = Executors.newSingleThreadExecutor();
-			ExternalOAuth2ApiResource resource = getService(serviceApiKey);
+			ExternalOAuth2ApiResource resource = getService(externalServiceKey);
 			return executor.submit(() -> {
 				return this.get(resource, endpoint, responseType, queryParams, pathParams, media);
 			});
@@ -61,10 +66,11 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	}
 
 	@Override
-	public <T, U> T post(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String media, U requestBody) throws ProcessingException {
+	public <T, U> T post(String externalServiceKey, String endpoint, Class<T> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media, U requestBody)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		Client client = null;
-		ExternalOAuth2ApiResource service = getService(serviceApiKey);
+		ExternalOAuth2ApiResource service = getService(externalServiceKey);
 		try {
 			client = getClientFollowingMediaType(media);
 			OAuth2Support oAuth2Provider = new OAuth2Support(service.getToken());
@@ -75,10 +81,11 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 		} catch (ProcessingException e) {
 			if (e.getCause() instanceof IllegalResponseStatusException) {
-				return this.post(serviceApiKey, endpoint, responseType, queryParams, pathParams, media, requestBody);
+				return this.post(externalServiceKey, endpoint, responseType, queryParams, pathParams, media,
+						requestBody);
 
 			}
-			checkIfClientErrorException(e);
+			checkProcessingException(e);
 			throw e;
 
 		} finally {
@@ -99,7 +106,8 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	}
 
 	private <T> T get(ExternalOAuth2ApiResource apiResource, String endpoint, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ProcessingException {
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media)
+			throws SocketTimeoutException, ConnectException, TimeoutException {
 		Client client = null;
 		try {
 			OAuth2Support oAuth2Provider = new OAuth2Support(apiResource.getToken());
@@ -127,7 +135,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 			if (e.getCause() instanceof IllegalResponseStatusException) {
 				return this.get(apiResource, endpoint, responseType, queryParams, pathParams, media);
 			}
-			checkIfClientErrorException(e);
+			checkProcessingException(e);
 			throw e;
 			// handleProcessingException(e);
 		} finally {

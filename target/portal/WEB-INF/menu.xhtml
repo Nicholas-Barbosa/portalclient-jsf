@@ -37,10 +37,16 @@
 						label="#{holdMessageView.getLabel('compras_message')}"
 						icon="pi pi-shopping-cart">
 						<p:menuitem id="om_orcamento"
-							value="#{holdMessageView.getLabel('orcamento_message')}"
+							value="#{resourceBundleServiceImpl.getMessage('orcamento_message')}"
 							icon="pi pi-shopping-cart" outcome="budget" />
 					</p:submenu>
-
+					<p:submenu 
+						label="#{holdMessageView.getLabel('financeiro')}"
+						icon="pi pi-wallet">
+						<p:menuitem 
+							value="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
+							icon="pi pi-wallet" outcome="openedTitles" />
+					</p:submenu>
 				</pr:menu>
 			</h:form>
 		</div>
