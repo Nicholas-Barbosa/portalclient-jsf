@@ -199,7 +199,7 @@ public class BudgetController implements Serializable {
 		} catch (ClientErrorException e) {
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			ClientExceptionFacesUtils.openClientExcpetionView(e.getResponse());
-
+			
 		}
 
 	}
