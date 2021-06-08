@@ -1,114 +1,112 @@
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\CustomerService.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\servlet\filter\FacesFilter.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\api\ExternalOAuth2ApiResource.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\google\cloud\storage\manager\BucketStateManager.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\traffic\UserTraffic.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\FinancialTitleRepositoryImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\UserStylePreferences.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\ResourceBundleServiceImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\NoPageProductResponseDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\api\ExternalApiResource.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ErrorGaussDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\resource\PassivateResource.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\properties\PropertiesReader.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\providers\message\reader\JsonMessageReader.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\resource\HelloResource.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\cdi\qualifier\OAuth2RestAuth.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\BudgetController.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\resource\DownloadResource.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\LoginGssResponseDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\CustomerPageDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jasper\service\BudgetReportImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\Page.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\FinancialTitlePageDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BudgetJasperReportDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\view\HoldMessageView.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\UserDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\helper\jsf\faces\FacesHelper.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\google\cloud\storage\manager\ProductBucketStateManager.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\CustomerDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\FinancialTitleServiceImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\CustomerRepository.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ProductInfoDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ui\lazy\datamodel\LazyOperations.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\SearchCustomerByCodeAndStoreDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\BudgetRepositoryImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\UserManagerProperties.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\EstimatedItemStockView.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\helper\jsf\primefaces\PrimeFHelper.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BudgetEstimateForm.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\ProductServiceImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\google\cloud\storage\ProductBucketClientImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\SimpleRestClient.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\SimpleSessionScopedBean.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\ResourceBundleService.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\cdi\qualifier\Simple.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\providers\message\writer\JsonMessageWriter.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BudgetEstimatedDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\FindProductByDescriptionDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ProductDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\session\listener\SessionListener.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\providers\filter\OAuth2Support.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ui\lazy\datamodel\CustomerLazyDataModel.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ejb\PassivationBean.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\CdiController.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ImageDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\cdi\producer\IntProducer.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\google\cloud\storage\AbstractBucketClientOperations.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\listener\ServletRequestListener.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\auth\OAuth2AuthenticatedRestClient.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\google\cloud\storage\BucketClient.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\FindProductByCodeDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ui\lazy\datamodel\LazyPopulateUtils.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\ServiceSerializable.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\ProductService.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\GssCustomerBudgetFormDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BasePageDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\LoginController.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\CustomerServiceImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\BudgetService.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\pojo\ProcessingExceptionMeta.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\RestClient.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ProductBudgetFormDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\auth\AuthenticatedRestClient.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\filter\ContainerResponseFilter.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ui\lazy\datamodel\ProductLazyDataModel.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\ClientErrorExceptionController.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\ProductRepository.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\exception\ObjectNotFoundOnCloudBucket.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\api\TokenType.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\AuthenticationRepository.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\DownloadStreamsForm.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\exception\ObjectNotFoundException.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\BaseProductDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\cdi\producer\LocaleProducer.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\exception\ItemOutOfStockException.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\PayaraEmbeddedInit.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\servlet\filter\FacesAjaxFilter.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\FinancialTitleService.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\NoPageCustomerResponseDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\ProductRepositoryImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\BudgetRepository.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jasper\service\BudgetReport.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\resource\UserResource.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\BudgetServiceImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\helper\jsf\faces\ProcessingExceptionMessageHelper.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\client\rest\providers\filter\ProcessingExceptionLauncherFilter.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jasper\ReportService.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\cdi\qualifier\Authentication.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\service\SimpleSessionScopedImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\security\TokenType.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\CustomerRepositoryImpl.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\FinancialTitleRepository.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\cdi\qualifier\ProductBucket.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ejb\EjbFacade.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\LoginForm.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\Customer.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\controller\OpenedTitlesController.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\exception\IllegalResponseStatusException.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\jaxrs\ApplicationConfig.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\repository\MainAuthenticationRepository.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\ui\lazy\datamodel\FinancialTitleLazyDataModel.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\EstimatedItemDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\dto\ProductPageDTO.java
-C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\JakartaEE Workspace\PortalAppClient\src\main\java\com\portal\http\ContentType.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\helper\jsf\faces\ClientExceptionFacesUtils.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\BudgetEstimatedDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\ProductBudgetFormDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\security\TokenType.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\google\cloud\storage\AbstractBucketClientOperations.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\ProductDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\providers\filter\OAuth2Support.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\helper\jsf\faces\FacesUtils.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\BasePageDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\CustomerRepository.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\CustomerRepositoryImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\GssCustomerBudgetFormDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\CustomerService.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\exception\ObjectNotFoundException.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\google\cloud\storage\ProductBucketClientImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jaxrs\resource\UserResource.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\BudgetRepository.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\SimpleRestClient.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\NoPageCustomerResponseDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\EstimatedItemDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\helper\jsf\faces\ResourceExceptionMessageHelper.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\Page.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\BaseProductDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\google\cloud\storage\BucketClient.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\providers\filter\ProcessingExceptionLauncherFilter.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\UserDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\FinancialTitleRepository.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\properties\PropertiesReader.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\security\servlet\filter\FacesFilter.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jaxrs\resource\PassivateResource.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\controller\LoginController.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\auth\AuthenticatedRestClient.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\CustomerDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\ImageDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\FinancialTitleRepositoryImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\ui\lazy\datamodel\ProductLazyDataModel.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\providers\message\writer\JsonMessageWriter.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\controller\EstimatedItemStockView.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\SimpleSessionScopedBean.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\controller\ClientErrorExceptionController.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\exception\ItemOutOfStockException.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\BudgetEstimateForm.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\FindProductByCodeDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jaxrs\filter\ContainerResponseFilter.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\MainAuthenticationRepository.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\auth\OAuth2AuthenticatedRestClient.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\ErrorGaussDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jasper\service\BudgetReport.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\ProductRepository.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\traffic\UserTraffic.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\BudgetJasperReportDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\cdi\qualifier\Simple.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\ui\lazy\datamodel\LazyPopulateUtils.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\ui\lazy\datamodel\LazyOperations.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\http\ContentType.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\security\api\ExternalOAuth2ApiResource.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\cdi\qualifier\Authentication.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\FinancialTitleServiceImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\controller\OpenedTitlesController.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\FindProductByDescriptionDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jasper\service\BudgetReportImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\ProductService.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\security\api\TokenType.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jaxrs\resource\DownloadResource.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jaxrs\resource\HelloResource.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\listener\ServletRequestListener.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\DownloadStreamsForm.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\security\UserManagerProperties.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\AuthenticationRepository.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\BudgetService.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\NoPageProductResponseDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\SimpleSessionScopedImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\ProductInfoDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\controller\UserStylePreferences.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\ejb\EjbFacade.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\ProductRepositoryImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\ui\lazy\datamodel\FinancialTitleLazyDataModel.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\cdi\producer\IntProducer.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\security\servlet\filter\FacesAjaxFilter.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\cdi\qualifier\ProductBucket.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\ejb\PassivationBean.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\ProductServiceImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\ServiceSerializable.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\LoginForm.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\SearchCustomerByCodeAndStoreDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\Customer.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\RestClient.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\controller\CdiController.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\cdi\producer\LocaleProducer.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\security\api\ExternalApiResource.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\PayaraEmbeddedInit.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\pojo\ProcessingExceptionMeta.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\view\HoldMessageView.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\BudgetServiceImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\FinancialTitleService.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\session\listener\SessionListener.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\cdi\qualifier\OAuth2RestAuth.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\client\rest\providers\message\reader\JsonMessageReader.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\CustomerPageDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\exception\IllegalResponseStatusException.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jaxrs\ApplicationConfig.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\exception\ObjectNotFoundOnCloudBucket.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\ui\lazy\datamodel\CustomerLazyDataModel.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\ResourceBundleService.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\ResourceBundleServiceImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\service\CustomerServiceImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\controller\BudgetController.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\FinancialTitlePageDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\jasper\ReportService.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\LoginGssResponseDTO.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\repository\BudgetRepositoryImpl.java
+C:\Users\nicho\OneDrive\Documentos\JavaWorkspace\FarAwayWorkspace\PortalAppClient\src\main\java\com\portal\java\dto\ProductPageDTO.java

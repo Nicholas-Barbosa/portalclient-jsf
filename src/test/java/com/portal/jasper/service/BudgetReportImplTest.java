@@ -11,10 +11,12 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import com.portal.dto.BudgetJasperReportDTO;
-import com.portal.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
-import com.portal.dto.EstimatedItemDTO;
-import com.portal.jasper.ReportService;
+import com.portal.java.dto.BudgetJasperReportDTO;
+import com.portal.java.dto.EstimatedItemDTO;
+import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
+import com.portal.java.jasper.ReportService;
+import com.portal.java.jasper.service.BudgetReport;
+import com.portal.java.jasper.service.BudgetReportImpl;
 
 class BudgetReportImplTest {
 

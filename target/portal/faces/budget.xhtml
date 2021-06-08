@@ -38,8 +38,8 @@
 							action="#{budgetController.clearBudgetForm}"
 							update="customerDTO formProdutos formDtSelectedItems formEstimatedItems:dtItems budgetEstimatedTotales formSelectedProducts">
 							<p:confirm type="popup"
-								header="#{holdMessageView.label('confirmacao')}"
-								message="#{holdMessageView.label('restaurar_budget_form')}"
+								header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
+								message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
 								icon="pi pi-info-circle" />
 						</p:commandButton>
 					</f:facet>
