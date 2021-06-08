@@ -1,4 +1,4 @@
-package com.portal.java.util.jsf;
+package com.portal.java.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

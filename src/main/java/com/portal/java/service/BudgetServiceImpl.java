@@ -14,7 +14,7 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.repository.BudgetRepository;
-import com.portal.java.util.jsf.MathUtils;
+import com.portal.java.util.MathUtils;
 
 @ApplicationScoped
 public class BudgetServiceImpl implements BudgetService {
