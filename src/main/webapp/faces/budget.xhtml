@@ -307,10 +307,9 @@
 							var="product" editable="true" rowKey="#{product.commercialCode}"
 							id="dtItems" reflow="true" size="small" scrollable="true"
 							widgetVar="dtItems" rowIndexVar="crrIndex">
-
 							<p:ajax event="rowEdit"
-								listener="#{budgetController.reEditItemQuantity}"
-								update="budgetEstimatedTotales" />
+								listener="#{budgetController.onItemRowEdit}"
+								update="budgetEstimatedTotales"  />
 							<f:facet name="header">
 								<div class="p-d-flex p-jc-between p-ai-center">
 									<p:splitButton type="button"
@@ -358,9 +357,8 @@
 										<h:outputText value="#{product.quantity}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{product.quantity}" style="width:100%"
+										<p:inputNumber value="#{product.quantity}" style="width:100%"
 											label="Name" />
-
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
@@ -394,10 +392,16 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('desconto')}">
-								<h:outputText value="#{product.discount}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{product.discount}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:inputNumber value="#{product.discount}" style="width:100%"
+											label="Name" />
+									</f:facet>
+								</p:cellEditor>
+
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
@@ -413,8 +417,6 @@
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
-
-
 							<p:column style="width:2rem">
 								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
 									saveTitle="Save Row" />

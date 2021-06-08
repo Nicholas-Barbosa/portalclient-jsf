@@ -11,10 +11,10 @@ import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
 
 import com.portal.java.dto.LoginForm;
-import com.portal.java.helper.jsf.faces.FacesUtils;
-import com.portal.java.helper.jsf.faces.ResourceExceptionMessageHelper;
 import com.portal.java.repository.AuthenticationRepository;
 import com.portal.java.service.ResourceBundleService;
+import com.portal.java.util.jsf.FacesUtils;
+import com.portal.java.util.jsf.ResourceExceptionMessageHelper;
 
 @RequestScoped
 @Named

@@ -13,10 +13,10 @@ import javax.ws.rs.ClientErrorException;
 import org.primefaces.model.LazyDataModel;
 
 import com.portal.java.dto.FinancialTitlePageDTO.FinacialTitleDTO;
-import com.portal.java.helper.jsf.faces.ClientExceptionFacesUtils;
 import com.portal.java.service.FinancialTitleService;
 import com.portal.java.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
+import com.portal.java.util.jsf.ClientExceptionFacesUtils;
 
 @Named
 @RequestScoped

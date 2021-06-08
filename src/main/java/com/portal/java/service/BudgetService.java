@@ -22,7 +22,7 @@ public interface BudgetService extends ServiceSerializable {
 	 * @param estimatedItemValue
 	 * @return
 	 */
-	void updateQuantity(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue);
+	void reCalculate(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue);
 
 	void removeItem(BudgetEstimatedDTO budget, EstimatedItemDTO item);
 

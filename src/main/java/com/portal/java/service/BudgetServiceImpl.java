@@ -2,7 +2,6 @@ package com.portal.java.service;
 
 import java.math.BigDecimal;
 import java.net.ConnectException;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -10,12 +9,12 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.ProcessingException;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.repository.BudgetRepository;
+import com.portal.java.util.jsf.MathUtils;
 
 @ApplicationScoped
 public class BudgetServiceImpl implements BudgetService {
@@ -27,16 +26,6 @@ public class BudgetServiceImpl implements BudgetService {
 	@Inject
 	private BudgetRepository budgetRepository;
 
-	public BudgetEstimatedDTO estimateValues(BudgetEstimateForm form) throws SocketTimeoutException, ConnectException,
-			ProcessingException, IllegalArgumentException, SocketException, TimeoutException {
-		return budgetRepository.estimate(form);
-	}
-
-	public BudgetEstimatedDTO calculatePreEstiamte() {
-		return null;
-		// return budgetRepository.recalculateEstimate(budgetEstimated);
-	}
-
 	@Override
 	public void findAll(int page, int pageSize) {
 		// TODO Auto-generated method stub
@@ -47,7 +36,6 @@ public class BudgetServiceImpl implements BudgetService {
 	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm)
 			throws SocketTimeoutException, ConnectException, TimeoutException {
 		BudgetEstimatedDTO dto = budgetRepository.estimate(budgetEstimateForm);
-
 		dto.getItems().parallelStream().forEach(e -> {
 			budgetEstimateForm.getItemsForm().parallelStream()
 					.filter(i -> i.getCommercialCode().equals(e.getCommercialCode())).findAny()
@@ -60,15 +48,16 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void updateQuantity(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue) {
-
-		estimatedItemValue.changeTotalGrossValue(this.calculateTotalPerQuantity(estimatedItemValue.getQuantity(),
-				estimatedItemValue.getUnitGrossValue()));
-		estimatedItemValue.changeTotalPrice(
-				this.calculateTotalPerQuantity(estimatedItemValue.getQuantity(), estimatedItemValue.getUnitPrice()));
-		estimatedItemValue.changeTotalStValue(
-				this.calculateTotalPerQuantity(estimatedItemValue.getQuantity(), estimatedItemValue.getUnitStValue()));
-		this.bulkUpdateValues(budget);
+	public void reCalculate(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue) {
+		if (!estimatedItemValue.checkCurrentAndOldQuantity()) {
+			estimatedItemValue.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
+					estimatedItemValue.getUnitGrossValue()));
+			estimatedItemValue.setTotalPrice(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
+					estimatedItemValue.getUnitPrice()));
+			estimatedItemValue.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
+					estimatedItemValue.getUnitStValue()));
+			this.bulkUpdateValues(budget);
+		}
 	}
 
 	@Override
@@ -82,10 +71,6 @@ public class BudgetServiceImpl implements BudgetService {
 		// String[]itemsOutOfStock =
 		// budget.getEstimatedItemValues().parallelStream().filter(i -> i.get)
 
-	}
-
-	private BigDecimal calculateTotalPerQuantity(int quantity, BigDecimal unitValue) {
-		return unitValue.multiply(new BigDecimal(quantity));
 	}
 
 	private void bulkUpdateValues(BudgetEstimatedDTO oldBudget) {

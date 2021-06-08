@@ -1,4 +1,4 @@
-package com.portal.java.helper.jsf.faces;
+package com.portal.java.util.jsf;
 
 import java.util.HashMap;
 import java.util.Map;

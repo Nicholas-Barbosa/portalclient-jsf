@@ -28,6 +28,7 @@ import org.primefaces.model.LazyDataModel;
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetJasperReportDTO;
+import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
 import com.portal.java.dto.CustomerDTO;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.DownloadStreamsForm;
@@ -38,10 +39,6 @@ import com.portal.java.dto.ProductBudgetFormDTO;
 import com.portal.java.dto.ProductDTO;
 import com.portal.java.dto.ProductPageDTO;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
-import com.portal.java.helper.jsf.faces.ClientExceptionFacesUtils;
-import com.portal.java.helper.jsf.faces.FacesUtils;
-import com.portal.java.helper.jsf.faces.ResourceExceptionMessageHelper;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CustomerService;
@@ -51,6 +48,9 @@ import com.portal.java.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.java.ui.lazy.datamodel.LazyOperations;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.java.ui.lazy.datamodel.ProductLazyDataModel;
+import com.portal.java.util.jsf.ClientExceptionFacesUtils;
+import com.portal.java.util.jsf.FacesUtils;
+import com.portal.java.util.jsf.ResourceExceptionMessageHelper;
 
 @Named
 @ViewScoped
@@ -130,6 +130,35 @@ public class BudgetController implements Serializable {
 		this.imageToSeeOnDlg = new byte[0];
 	}
 
+	public void estimate() {
+		try {
+			new Thread(() -> {
+				selectedProducts.clear();
+				LazyOperations<?> lazy = (LazyOperations<?>) lazyProducts;
+				lazy.turnCollectionElegibleToGB();
+			}).start();
+			budgetEstimateDTO = budgetService.estimate(
+					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsForm));
+		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
+			processingExceptionMessageHelper.displayMessage(e, null);
+			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
+		} catch (ClientErrorException e) {
+			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
+			ClientExceptionFacesUtils.openClientExcpetionView(e.getResponse());
+
+		}
+
+	}
+
+	public void onItemRowEdit(RowEditEvent<EstimatedItemDTO> event) {
+		new Thread(() -> itemsForm.parallelStream()
+				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
+				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
+
+		budgetService.reCalculate(budgetEstimateDTO, event.getObject());
+
+	}
+
 	public void showOpenedTitlesPageOnDialog() {
 		Map<String, Object> options = new HashMap<>();
 		options.put("modal", true);
@@ -143,8 +172,8 @@ public class BudgetController implements Serializable {
 
 	public void loadImageFromSelectedProduct() {
 		this.productService.loadImage(selectedProduct);
-		System.out.println("image selected product " +selectedProduct.getInfo().getImage().length);
-		System.out.println("image state " +selectedProduct.getInfo().getStateForImage());
+		System.out.println("image selected product " + selectedProduct.getInfo().getImage().length);
+		System.out.println("image state " + selectedProduct.getInfo().getStateForImage());
 	}
 
 	public void loadImageForProduct(ProductDTO product) {
@@ -182,26 +211,6 @@ public class BudgetController implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void estimate() {
-		try {
-			new Thread(() -> {
-				selectedProducts.clear();
-				LazyOperations<?> lazy = (LazyOperations<?>) lazyProducts;
-				lazy.turnCollectionElegibleToGB();
-			}).start();
-			budgetEstimateDTO = budgetService.estimate(
-					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsForm));
-		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
-			processingExceptionMessageHelper.displayMessage(e, null);
-			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (ClientErrorException e) {
-			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
-			ClientExceptionFacesUtils.openClientExcpetionView(e.getResponse());
-			
-		}
-
 	}
 
 	public void selectCustomer(SelectEvent<CustomerDTO> event) {
@@ -321,15 +330,6 @@ public class BudgetController implements Serializable {
 
 	public void onPageProducts(PageEvent pageEvent) {
 		findProductByDescription(pageEvent.getPage() + 1);
-	}
-
-	public void reEditItemQuantity(RowEditEvent<EstimatedItemDTO> event) {
-		new Thread(() -> itemsForm.parallelStream()
-				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
-				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
-
-		budgetService.updateQuantity(budgetEstimateDTO, event.getObject());
-
 	}
 
 	public void removeEstimatedItem(EstimatedItemDTO item) {
