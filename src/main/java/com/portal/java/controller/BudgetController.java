@@ -83,7 +83,7 @@ public class BudgetController implements Serializable {
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
-	private Set<ProductBudgetFormDTO> itemsForm;
+	private Set<ProductBudgetFormDTO> itemsOnCartToPost;
 
 	private Set<ProductDTO> selectedProducts;
 
@@ -138,7 +138,7 @@ public class BudgetController implements Serializable {
 				lazy.turnCollectionElegibleToGB();
 			}).start();
 			budgetEstimateDTO = budgetService.estimate(
-					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsForm));
+					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsOnCartToPost));
 		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
 			processingExceptionMessageHelper.displayMessage(e, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
@@ -151,7 +151,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onItemRowEdit(RowEditEvent<EstimatedItemDTO> event) {
-		new Thread(() -> itemsForm.parallelStream()
+		new Thread(() -> itemsOnCartToPost.parallelStream()
 				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
 				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
 
@@ -189,7 +189,7 @@ public class BudgetController implements Serializable {
 				budgetEstimateDTO = null;
 				selectedProduct = null;
 			});
-			executor.execute(() -> itemsForm.clear());
+			executor.execute(() -> itemsOnCartToPost.clear());
 			executor.execute(() -> selectedProducts.clear());
 		} finally {
 			executor.shutdown();
@@ -284,7 +284,7 @@ public class BudgetController implements Serializable {
 
 	public void confirmSelectedProduct() {
 		this.selectedProducts.add(selectedProduct);
-		this.itemsForm.add(new ProductBudgetFormDTO(selectedProduct.getQuantity(), selectedProduct.getCommercialCode(),
+		this.itemsOnCartToPost.add(new ProductBudgetFormDTO(selectedProduct.getQuantity(), selectedProduct.getCommercialCode(),
 				selectedProduct));
 		this.selectedProduct = null;
 	}
@@ -333,18 +333,18 @@ public class BudgetController implements Serializable {
 	}
 
 	public void removeEstimatedItem(EstimatedItemDTO item) {
-		new Thread(() -> itemsForm.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
+		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
 		budgetService.removeItem(budgetEstimateDTO, item);
 	}
 
 	public void removeSelectedProduct(ProductDTO product) {
-		new Thread(() -> itemsForm.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode()))).start();
+		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode()))).start();
 		this.selectedProducts.remove(product);
 	}
 
 	public void onProductSelected(ProductDTO productDTO) {
 		selectedProducts.add(productDTO);
-		itemsForm.add(new ProductBudgetFormDTO(productDTO.getMultiple(), productDTO.getCommercialCode(), productDTO));
+		itemsOnCartToPost.add(new ProductBudgetFormDTO(productDTO.getMultiple(), productDTO.getCommercialCode(), productDTO));
 
 	}
 
@@ -353,7 +353,7 @@ public class BudgetController implements Serializable {
 			this.lazyProducts = new ProductLazyDataModel();
 			this.lazyCustomers = new CustomerLazyDataModel();
 			this.selectedProducts = new HashSet<>();
-			itemsForm = new HashSet<>();
+			itemsOnCartToPost = new HashSet<>();
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 			this.downloadStreamsForm = new DownloadStreamsForm();
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();

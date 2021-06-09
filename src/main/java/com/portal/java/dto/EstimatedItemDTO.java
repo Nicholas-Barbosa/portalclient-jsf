@@ -154,6 +154,7 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		int oldQuantity = (Integer) values.getOldValue();
 		return currentQuantity == oldQuantity;
 	}
+
 	public boolean checkCurrentAndOldDiscount() {
 		ObjectValue values = fieldsValueHolder.get("discount");
 		BigDecimal currentQuantity = (BigDecimal) values.getCurrentValue();
