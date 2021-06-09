@@ -1,11 +1,11 @@
 package com.portal.java.pojo;
 
-public class ObjectValue {
+public class ObjectValueHolder {
 
 	private Object currentValue;
 	private Object oldValue;
 
-	public ObjectValue(Object currentValue, Object oldValue) {
+	public ObjectValueHolder(Object currentValue, Object oldValue) {
 		super();
 		this.currentValue = currentValue;
 		this.oldValue = oldValue;
@@ -19,12 +19,12 @@ public class ObjectValue {
 		return oldValue;
 	}
 
-	public ObjectValue setCurrentValue(Object currentValue) {
+	public ObjectValueHolder setCurrentValue(Object currentValue) {
 		this.currentValue = currentValue;
 		return this;
 	}
 
-	public ObjectValue setOldValue(Object oldValue) {
+	public ObjectValueHolder setOldValue(Object oldValue) {
 		this.oldValue = oldValue;
 		return this;
 	}

@@ -50,20 +50,34 @@ public class BudgetServiceImpl implements BudgetService {
 	@Override
 	public void reCalculate(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue) {
 		boolean updateBudgetTotal = false;
-		if (!estimatedItemValue.checkCurrentAndOldQuantity()) {
-			estimatedItemValue.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(
-					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitGrossValue()));
-			estimatedItemValue.setTotalPrice(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
-					estimatedItemValue.getUnitPrice()));
-			estimatedItemValue.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(
-					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitStValue()));
-			updateBudgetTotal = true;
 
-		}
 		if (!estimatedItemValue.checkCurrentAndOldDiscount()) {
-			com.portal.java.util.jsf.MathUtils
+			BigDecimal quantity = new BigDecimal(estimatedItemValue.getQuantity());
+			estimatedItemValue.setUnitGrossValue(estimatedItemValue.getUnitGrossValueWithNoDiscount()
+					.subtract(MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(estimatedItemValue.getDiscount(),
+							estimatedItemValue.getUnitGrossValueWithNoDiscount())));
+			estimatedItemValue.setTotalGrossValue(estimatedItemValue.getUnitGrossValue().multiply(quantity));
+
+			estimatedItemValue.setUnitStValue(estimatedItemValue.getUnitStValueWithNoDiscount()
+					.subtract(MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(quantity,
+							estimatedItemValue.getUnitGrossValueWithNoDiscount())));
 			updateBudgetTotal = true;
 		}
+
+//		if (!estimatedItemValue.checkCurrentAndOldQuantity()) {
+//			estimatedItemValue.setUnitGrossValue(estimatedItemValue.getUnitGrossValue()
+//					.subtract(MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(estimatedItemValue.getDiscount(),
+//							estimatedItemValue.getUnitGrossValueWithNoDiscount())));
+//			estimatedItemValue.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(
+//					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitGrossValue()));
+//			estimatedItemValue.setTotalPrice(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
+//					estimatedItemValue.getUnitPrice()));
+//			estimatedItemValue.changeTotalStValue(MathUtils.calculateTotalValueOverQuantity(
+//					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitStValue()));
+//			updateBudgetTotal = true;
+//
+//		}
+
 		if (updateBudgetTotal)
 			this.bulkUpdateValues(budget);
 	}

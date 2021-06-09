@@ -41,4 +41,13 @@ public class MathUtils {
 				new BigDecimal(percentage.doubleValue()), value);
 		return value.add(percentageValueOverWhole);
 	}
+
+	public static BigDecimal performPercentageSubtraction(BigDecimal percentage, BigDecimal whole) {
+		BigDecimal pecentageOverWhole = findHwMuchXPercentCorrespondsOverWholeValue(percentage, whole);
+		return whole.subtract(pecentageOverWhole);
+	}
+	public static BigDecimal performPercentageAdition(BigDecimal percentage, BigDecimal whole) {
+		BigDecimal pecentageOverWhole = findHwMuchXPercentCorrespondsOverWholeValue(percentage, whole);
+		return whole.add(pecentageOverWhole);
+	}
 }

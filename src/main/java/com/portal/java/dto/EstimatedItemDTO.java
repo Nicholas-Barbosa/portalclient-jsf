@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.java.pojo.ObjectValue;
+import com.portal.java.pojo.ObjectValueHolder;
 
 public class EstimatedItemDTO extends BaseProductDTO {
 
@@ -31,7 +31,7 @@ public class EstimatedItemDTO extends BaseProductDTO {
 
 	private Integer avaliableStock;
 
-	private final Map<String, ObjectValue> fieldsValueHolder;
+	private final Map<String, ObjectValueHolder> objectValueHolder;
 
 	@JsonbCreator
 	public EstimatedItemDTO(@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
@@ -51,9 +51,8 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		this.quantity = quantity;
 		this.avaliableStock = avaliableStock;
 		this.unitStValue = stValue.divide(new BigDecimal(quantity), 2, RoundingMode.HALF_UP);
-		this.fieldsValueHolder = new HashMap<>();
-		fieldsValueHolder.put("quantity", new ObjectValue(quantity, quantity));
-		fieldsValueHolder.put("discount", new ObjectValue(discount, discount));
+		this.objectValueHolder = new HashMap<>();
+		putInitialValuesOnFieldsValueHolder();
 	}
 
 	public EstimatedItemDTO(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice,
@@ -69,9 +68,8 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		this.discount = discount;
 		this.quantity = quantity;
 		this.avaliableStock = avaliableStock;
-		this.fieldsValueHolder = new HashMap<>();
-		fieldsValueHolder.put("quantity", new ObjectValue(quantity, quantity));
-		fieldsValueHolder.put("discount", new ObjectValue(discount, discount));
+		this.objectValueHolder = new HashMap<>();
+		putInitialValuesOnFieldsValueHolder();
 	}
 
 	public void setBaseProductAttr(BaseProductDTO base) {
@@ -88,12 +86,24 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		return unitGrossValue;
 	}
 
+	public BigDecimal getUnitGrossValueWithNoDiscount() {
+		return (BigDecimal) objectValueHolder.get("unitGrossValue").getCurrentValue();
+	}
+
+	public void setUnitGrossValue(BigDecimal unitGrossValue) {
+		this.unitGrossValue = unitGrossValue;
+	}
+
 	public BigDecimal getTotalGrossValue() {
 		return totalGrossValue;
 	}
 
 	public BigDecimal getUnitPrice() {
 		return unitPrice;
+	}
+
+	public void setUnitPrice(BigDecimal unitPrice) {
+		this.unitPrice = unitPrice;
 	}
 
 	public BigDecimal getTotale() {
@@ -108,13 +118,20 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		return unitStValue;
 	}
 
+	public BigDecimal getUnitStValueWithNoDiscount() {
+		return (BigDecimal) objectValueHolder.get("unitStValue").getCurrentValue();
+	}
+
+	public void setUnitStValue(BigDecimal unitStValue) {
+		this.unitStValue = unitStValue;
+	}
+
 	public BigDecimal getDiscount() {
 		return discount;
 	}
 
 	public void setDiscount(BigDecimal discount) {
-		ObjectValue objectValue = this.fieldsValueHolder.get("discount");
-		objectValue.setCurrentValue(discount).setOldValue(this.discount);
+		setNewValueToObjectValueHolder("discount", discount);
 		this.discount = discount;
 	}
 
@@ -123,8 +140,7 @@ public class EstimatedItemDTO extends BaseProductDTO {
 	}
 
 	public void setQuantity(int quantity) {
-		ObjectValue objectValue = this.fieldsValueHolder.get("quantity");
-		objectValue.setCurrentValue(quantity).setOldValue(this.quantity);
+		setNewValueToObjectValueHolder("quantity", quantity);
 		this.quantity = quantity;
 	}
 
@@ -140,25 +156,53 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		this.totale = newTotal;
 	}
 
-	public final void setTotalStValue(BigDecimal newTotal) {
+	public final void changeTotalStValue(BigDecimal newTotal) {
+		if (!checkCurrentAndOldQuantity())
+			setNewValueToObjectValueHolder("stValue", newTotal);
+
 		this.stValue = newTotal;
+		this.unitStValue = stValue.divide(new BigDecimal(quantity), 2, RoundingMode.HALF_UP);
 	}
 
-	public Map<String, ObjectValue> getFieldsValueHolder() {
-		return Collections.unmodifiableMap(fieldsValueHolder);
+	public Map<String, ObjectValueHolder> getFieldsValueHolder() {
+		return Collections.unmodifiableMap(objectValueHolder);
 	}
 
 	public boolean checkCurrentAndOldQuantity() {
-		ObjectValue values = fieldsValueHolder.get("quantity");
+		ObjectValueHolder values = objectValueHolder.get("quantity");
 		int currentQuantity = (Integer) values.getCurrentValue();
 		int oldQuantity = (Integer) values.getOldValue();
 		return currentQuantity == oldQuantity;
 	}
 
 	public boolean checkCurrentAndOldDiscount() {
-		ObjectValue values = fieldsValueHolder.get("discount");
+		ObjectValueHolder values = objectValueHolder.get("discount");
 		BigDecimal currentQuantity = (BigDecimal) values.getCurrentValue();
 		BigDecimal oldQuantity = (BigDecimal) values.getOldValue();
 		return currentQuantity.equals(oldQuantity);
 	}
+
+	public BigDecimal getOriginalStValue() {
+		return (BigDecimal) objectValueHolder.get("stValue").getCurrentValue();
+	}
+
+	private void setNewValueToObjectValueHolder(String objectKey, Object newValue) {
+		ObjectValueHolder object = objectValueHolder.get(objectKey);
+		if (object != null) {
+			Object oldValue = object.getCurrentValue();
+			object.setOldValue(oldValue).setCurrentValue(newValue);
+		}
+	}
+
+	private void putInitialValuesOnFieldsValueHolder() {
+		objectValueHolder.put("unitGrossValue", new ObjectValueHolder(unitGrossValue, unitGrossValue));
+		objectValueHolder.put("totalGrossValue", new ObjectValueHolder(totalGrossValue, totalGrossValue));
+		objectValueHolder.put("unitPrice", new ObjectValueHolder(unitPrice, unitPrice));
+		objectValueHolder.put("totale", new ObjectValueHolder(totale, totale));
+		objectValueHolder.put("stValue", new ObjectValueHolder(stValue, stValue));
+		objectValueHolder.put("discount", new ObjectValueHolder(discount, discount));
+		objectValueHolder.put("quantity", new ObjectValueHolder(quantity, quantity));
+		objectValueHolder.put("unitStValue", new ObjectValueHolder(unitStValue, unitStValue));
+	}
+
 }
