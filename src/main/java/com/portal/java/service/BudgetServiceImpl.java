@@ -61,7 +61,7 @@ public class BudgetServiceImpl implements BudgetService {
 
 		}
 		if (!estimatedItemValue.checkCurrentAndOldDiscount()) {
-			System.out.println("update discount!");
+			com.portal.java.util.jsf.MathUtils
 			updateBudgetTotal = true;
 		}
 		if (updateBudgetTotal)
