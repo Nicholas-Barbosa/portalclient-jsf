@@ -1,5 +1,7 @@
 package com.portal.java.dto;
 
+import java.math.BigDecimal;
+
 public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	private String code;
@@ -15,6 +17,8 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 	private Integer multiple;
 
 	private int quantity;
+
+	private BigDecimal discount;
 
 	private ProductInfoDTO info;
 
@@ -54,6 +58,21 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.info = info;
 	}
 
+	public BaseProductDTO(String commercialCode, int quantity, BigDecimal discount) {
+		super();
+		this.commercialCode = commercialCode;
+		this.quantity = quantity;
+		this.discount = discount;
+	}
+
+	public BaseProductDTO(String code, String commercialCode, int quantity, BigDecimal discount) {
+		super();
+		this.code = code;
+		this.commercialCode = commercialCode;
+		this.quantity = quantity;
+		this.discount = discount;
+	}
+
 	public BaseProductDTO(BaseProductDTO b) {
 		this.code = b.code;
 		this.descriptionType = b.descriptionType;
@@ -62,6 +81,7 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.description = b.description;
 		this.multiple = b.multiple;
 		this.quantity = b.quantity;
+		this.discount = b.discount;
 		this.info = b.info;
 	}
 
@@ -109,7 +129,7 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.description = description;
 	}
 
-	protected void setMultiple(Integer multiple) {
+	public void setMultiple(Integer multiple) {
 		this.multiple = multiple;
 	}
 
@@ -119,6 +139,15 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	public int getQuantity() {
 		return quantity;
+	}
+
+	public BigDecimal getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(BigDecimal discount) {
+		System.out.println("set discount from " +this.discount +" to " +discount);
+		this.discount = discount;
 	}
 
 	public ProductInfoDTO getInfo() {

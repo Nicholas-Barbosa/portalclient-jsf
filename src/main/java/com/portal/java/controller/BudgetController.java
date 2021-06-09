@@ -152,8 +152,10 @@ public class BudgetController implements Serializable {
 
 	public void onItemRowEdit(RowEditEvent<EstimatedItemDTO> event) {
 		new Thread(() -> itemsOnCartToPost.parallelStream()
-				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode()))
-				.forEach(i -> i.setQuantity(event.getObject().getQuantity()))).start();
+				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode())).forEach(i -> {
+					i.setQuantity(event.getObject().getQuantity());
+					i.setDiscount(event.getObject().getDiscount());
+				})).start();
 
 		budgetService.reCalculate(budgetEstimateDTO, event.getObject());
 
@@ -284,8 +286,8 @@ public class BudgetController implements Serializable {
 
 	public void confirmSelectedProduct() {
 		this.selectedProducts.add(selectedProduct);
-		this.itemsOnCartToPost.add(new ProductBudgetFormDTO(selectedProduct.getQuantity(), selectedProduct.getCommercialCode(),
-				selectedProduct));
+		this.itemsOnCartToPost
+				.add(new ProductBudgetFormDTO(selectedProduct));
 		this.selectedProduct = null;
 	}
 
@@ -333,18 +335,20 @@ public class BudgetController implements Serializable {
 	}
 
 	public void removeEstimatedItem(EstimatedItemDTO item) {
-		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode()))).start();
+		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode())))
+				.start();
 		budgetService.removeItem(budgetEstimateDTO, item);
 	}
 
 	public void removeSelectedProduct(ProductDTO product) {
-		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode()))).start();
+		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
+				.start();
 		this.selectedProducts.remove(product);
 	}
 
 	public void onProductSelected(ProductDTO productDTO) {
 		selectedProducts.add(productDTO);
-		itemsOnCartToPost.add(new ProductBudgetFormDTO(productDTO.getMultiple(), productDTO.getCommercialCode(), productDTO));
+		itemsOnCartToPost.add(new ProductBudgetFormDTO(productDTO));
 
 	}
 

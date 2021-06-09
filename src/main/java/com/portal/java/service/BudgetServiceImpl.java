@@ -40,7 +40,11 @@ public class BudgetServiceImpl implements BudgetService {
 			budgetEstimateForm.getItemsForm().parallelStream()
 					.filter(i -> i.getCommercialCode().equals(e.getCommercialCode())).findAny()
 					.ifPresent((productForm) -> {
-						e.setBaseProductAttr(productForm.getProductDTO());
+						e.setDescription(productForm.getDescription());
+						e.setMultiple(productForm.getMultiple());
+						e.setInfo(productForm.getInfo());
+						BigDecimal discProductForm = productForm.getDiscount();
+						e.setDiscount(discProductForm == null ? e.getDiscount() : discProductForm);
 					});
 
 		});
@@ -49,40 +53,30 @@ public class BudgetServiceImpl implements BudgetService {
 
 	@Override
 	public void reCalculate(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue) {
-		boolean updateBudgetTotal = false;
-
 		if (!estimatedItemValue.checkCurrentAndOldDiscount()) {
-			BigDecimal quantity = new BigDecimal(estimatedItemValue.getQuantity());
 			BigDecimal discount = estimatedItemValue.getDiscount();
-
 			estimatedItemValue.setUnitGrossValue(MathUtils.subtractValueByPercentage(discount,
 					estimatedItemValue.getUnitGrossValueWithNoDiscount()));
-			estimatedItemValue.setTotalGrossValue(
-					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitGrossValue()));
 
 			estimatedItemValue.setUnitStValue(
 					MathUtils.subtractValueByPercentage(discount, estimatedItemValue.getOriginalStValue()));
-			estimatedItemValue.setStValue(
-					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitStValue()));
-			updateBudgetTotal = true;
+
+			estimatedItemValue.setUnitPrice(
+					MathUtils.subtractValueByPercentage(discount, estimatedItemValue.getUnitValueWithNoDiscount()));
+
 		}
 
-//		if (!estimatedItemValue.checkCurrentAndOldQuantity()) {
-//			estimatedItemValue.setUnitGrossValue(estimatedItemValue.getUnitGrossValue()
-//					.subtract(MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(estimatedItemValue.getDiscount(),
-//							estimatedItemValue.getUnitGrossValueWithNoDiscount())));
-//			estimatedItemValue.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(
-//					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitGrossValue()));
-//			estimatedItemValue.setTotalPrice(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
-//					estimatedItemValue.getUnitPrice()));
-//			estimatedItemValue.changeTotalStValue(MathUtils.calculateTotalValueOverQuantity(
-//					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitStValue()));
-//			updateBudgetTotal = true;
-//
-//		}
-
-		if (updateBudgetTotal)
+		if (!estimatedItemValue.checkCurrentAndOldQuantity() || !estimatedItemValue.checkCurrentAndOldDiscount()) {
+			BigDecimal quantity = new BigDecimal(estimatedItemValue.getQuantity());
+			estimatedItemValue.setTotalPrice(
+					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitPrice()));
+			estimatedItemValue.setStValue(
+					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitStValue()));
+			estimatedItemValue.setTotalGrossValue(
+					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitGrossValue()));
 			this.bulkUpdateValues(budget);
+		}
+
 	}
 
 	@Override

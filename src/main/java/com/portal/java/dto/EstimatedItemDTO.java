@@ -25,10 +25,6 @@ public class EstimatedItemDTO extends BaseProductDTO {
 
 	private BigDecimal unitStValue;
 
-	private BigDecimal discount;
-
-	private int quantity;
-
 	private Integer avaliableStock;
 
 	private final Map<String, ObjectValueHolder> objectValueHolder;
@@ -40,34 +36,15 @@ public class EstimatedItemDTO extends BaseProductDTO {
 			@JsonbProperty("quantity") int quantity, @JsonbProperty("total_price") BigDecimal totale,
 			@JsonbProperty("st_value") BigDecimal stValue, @JsonbProperty("line_discount") BigDecimal discount,
 			@JsonbProperty("available_stock") Integer avaliableStock) {
-		super(code, null, commercialCode, null, null, null);
+		super(code, commercialCode, quantity, new BigDecimal(0));
 		this.avaliableStock = avaliableStock;
 		this.unitGrossValue = unitGrossValue;
 		this.totalGrossValue = totalGrossValue;
 		this.unitPrice = unitPrice;
 		this.totale = totale;
 		this.stValue = stValue;
-		this.discount = discount;
-		this.quantity = quantity;
 		this.avaliableStock = avaliableStock;
 		this.unitStValue = stValue.divide(new BigDecimal(quantity), 2, RoundingMode.HALF_UP);
-		this.objectValueHolder = new HashMap<>();
-		putInitialValuesOnFieldsValueHolder();
-	}
-
-	public EstimatedItemDTO(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice,
-			BigDecimal totale, BigDecimal stValue, BigDecimal unitStValue, BigDecimal discount, int quantity,
-			Integer avaliableStock) {
-		super();
-		this.unitGrossValue = unitGrossValue;
-		this.totalGrossValue = totalGrossValue;
-		this.unitPrice = unitPrice;
-		this.totale = totale;
-		this.stValue = stValue;
-		this.unitStValue = unitStValue;
-		this.discount = discount;
-		this.quantity = quantity;
-		this.avaliableStock = avaliableStock;
 		this.objectValueHolder = new HashMap<>();
 		putInitialValuesOnFieldsValueHolder();
 	}
@@ -102,6 +79,10 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		return unitPrice;
 	}
 
+	public BigDecimal getUnitValueWithNoDiscount() {
+		return (BigDecimal) objectValueHolder.get("unitPrice").getCurrentValue();
+	}
+
 	public void setUnitPrice(BigDecimal unitPrice) {
 		this.unitPrice = unitPrice;
 	}
@@ -130,22 +111,14 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		this.unitStValue = unitStValue;
 	}
 
-	public BigDecimal getDiscount() {
-		return discount;
-	}
-
 	public void setDiscount(BigDecimal discount) {
 		setNewValueToObjectValueHolder("discount", discount);
-		this.discount = discount;
-	}
-
-	public int getQuantity() {
-		return quantity;
+		super.setDiscount(discount);
 	}
 
 	public void setQuantity(int quantity) {
 		setNewValueToObjectValueHolder("quantity", quantity);
-		this.quantity = quantity;
+		super.setQuantity(quantity);
 	}
 
 	public Integer getAvaliableStock() {
@@ -161,11 +134,7 @@ public class EstimatedItemDTO extends BaseProductDTO {
 	}
 
 	public final void changeTotalStValue(BigDecimal newTotal) {
-		if (!checkCurrentAndOldQuantity())
-			setNewValueToObjectValueHolder("stValue", newTotal);
-
 		this.stValue = newTotal;
-		this.unitStValue = stValue.divide(new BigDecimal(quantity), 2, RoundingMode.HALF_UP);
 	}
 
 	public Map<String, ObjectValueHolder> getFieldsValueHolder() {
@@ -204,8 +173,8 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		objectValueHolder.put("unitPrice", new ObjectValueHolder(unitPrice, unitPrice));
 		objectValueHolder.put("totale", new ObjectValueHolder(totale, totale));
 		objectValueHolder.put("stValue", new ObjectValueHolder(stValue, stValue));
-		objectValueHolder.put("discount", new ObjectValueHolder(discount, discount));
-		objectValueHolder.put("quantity", new ObjectValueHolder(quantity, quantity));
+		objectValueHolder.put("discount", new ObjectValueHolder(super.getDiscount(), super.getDiscount()));
+		objectValueHolder.put("quantity", new ObjectValueHolder(super.getQuantity(), super.getQuantity()));
 		objectValueHolder.put("unitStValue", new ObjectValueHolder(unitStValue, unitStValue));
 	}
 

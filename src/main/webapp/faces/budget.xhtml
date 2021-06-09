@@ -335,10 +335,11 @@
 									#{fn:length(budgetController.budgetEstimateDTO.items)}
 									produtos.</span>
 							</f:facet>
-
+							<p:column>
+								<h:outputText value="#{crrIndex}" />
+							</p:column>
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}"
-								sortBy="#{product.commercialCode}">
+								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}">
 								<h:outputText value="#{product.commercialCode}" />
 							</p:column>
 
@@ -397,7 +398,7 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('desconto')}%">
 								<p:cellEditor>
 									<f:facet name="output">
-										<h:outputText value="#{product.discount}" >
+										<h:outputText value="#{product.discount}">
 											<f:convertNumber locale="pt_BR" />
 										</h:outputText>
 									</f:facet>
