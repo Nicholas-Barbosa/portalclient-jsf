@@ -49,15 +49,23 @@ public class BudgetServiceImpl implements BudgetService {
 
 	@Override
 	public void reCalculate(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue) {
+		boolean updateBudgetTotal = false;
 		if (!estimatedItemValue.checkCurrentAndOldQuantity()) {
-			estimatedItemValue.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
-					estimatedItemValue.getUnitGrossValue()));
+			estimatedItemValue.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(
+					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitGrossValue()));
 			estimatedItemValue.setTotalPrice(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
 					estimatedItemValue.getUnitPrice()));
-			estimatedItemValue.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(estimatedItemValue.getQuantity(),
-					estimatedItemValue.getUnitStValue()));
-			this.bulkUpdateValues(budget);
+			estimatedItemValue.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(
+					estimatedItemValue.getQuantity(), estimatedItemValue.getUnitStValue()));
+			updateBudgetTotal = true;
+
 		}
+		if (!estimatedItemValue.checkCurrentAndOldDiscount()) {
+			System.out.println("update discount!");
+			updateBudgetTotal = true;
+		}
+		if (updateBudgetTotal)
+			this.bulkUpdateValues(budget);
 	}
 
 	@Override
