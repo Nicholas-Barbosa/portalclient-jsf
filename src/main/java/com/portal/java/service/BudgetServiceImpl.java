@@ -53,14 +53,17 @@ public class BudgetServiceImpl implements BudgetService {
 
 		if (!estimatedItemValue.checkCurrentAndOldDiscount()) {
 			BigDecimal quantity = new BigDecimal(estimatedItemValue.getQuantity());
-			estimatedItemValue.setUnitGrossValue(estimatedItemValue.getUnitGrossValueWithNoDiscount()
-					.subtract(MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(estimatedItemValue.getDiscount(),
-							estimatedItemValue.getUnitGrossValueWithNoDiscount())));
-			estimatedItemValue.setTotalGrossValue(estimatedItemValue.getUnitGrossValue().multiply(quantity));
+			BigDecimal discount = estimatedItemValue.getDiscount();
 
-			estimatedItemValue.setUnitStValue(estimatedItemValue.getUnitStValueWithNoDiscount()
-					.subtract(MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(quantity,
-							estimatedItemValue.getUnitGrossValueWithNoDiscount())));
+			estimatedItemValue.setUnitGrossValue(MathUtils.subtractValueByPercentage(discount,
+					estimatedItemValue.getUnitGrossValueWithNoDiscount()));
+			estimatedItemValue.setTotalGrossValue(
+					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitGrossValue()));
+
+			estimatedItemValue.setUnitStValue(
+					MathUtils.subtractValueByPercentage(discount, estimatedItemValue.getOriginalStValue()));
+			estimatedItemValue.setStValue(
+					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitStValue()));
 			updateBudgetTotal = true;
 		}
 

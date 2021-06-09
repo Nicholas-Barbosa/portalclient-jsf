@@ -114,6 +114,10 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		return stValue;
 	}
 
+	public void setStValue(BigDecimal stValue) {
+		this.stValue = stValue;
+	}
+
 	public BigDecimal getUnitStValue() {
 		return unitStValue;
 	}

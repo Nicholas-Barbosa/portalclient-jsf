@@ -9,8 +9,8 @@ public class MathUtils {
 		// TODO Auto-generated constructor stub
 	}
 
-	public static BigDecimal calculateTotalValueOverQuantity(int quantity, Number unitValue) {
-		return new BigDecimal(unitValue.doubleValue()).multiply(new BigDecimal(quantity));
+	public static BigDecimal calculateTotalValueOverQuantity(BigDecimal quantity, Number unitValue) {
+		return new BigDecimal(unitValue.doubleValue()).multiply(quantity);
 	}
 
 	public static BigDecimal findHwManyPercentsYCorrespondsOverX(Number y, Number x) {
@@ -42,12 +42,5 @@ public class MathUtils {
 		return value.add(percentageValueOverWhole);
 	}
 
-	public static BigDecimal performPercentageSubtraction(BigDecimal percentage, BigDecimal whole) {
-		BigDecimal pecentageOverWhole = findHwMuchXPercentCorrespondsOverWholeValue(percentage, whole);
-		return whole.subtract(pecentageOverWhole);
-	}
-	public static BigDecimal performPercentageAdition(BigDecimal percentage, BigDecimal whole) {
-		BigDecimal pecentageOverWhole = findHwMuchXPercentCorrespondsOverWholeValue(percentage, whole);
-		return whole.add(pecentageOverWhole);
-	}
+	
 }
