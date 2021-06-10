@@ -24,18 +24,10 @@
 
 			<h:form id="budgetToolsForm">
 				<p:toolbar id="tb">
-					<f:facet name="left">
-						<p:commandButton type="button" title="Print" icon="pi pi-print"
-							styleClass="ui-button-warning p-mr-2"
-							onclick="PF('downloadDialog').show()"
-							disabled="#{budgetController.budgetEstimateDTO eq null}" />
+					<p:toolbarGroup>
 						<p:commandButton
-							title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
-							icon="pi pi-wallet" styleClass="ui-button-warning  p-mr-2"
-							action="#{budgetController.showOpenedTitlesPageOnDialog}" />
-
-						<p:commandButton title="Restore" icon="pi pi-undo"
-							styleClass="ui-button-danger "
+							value="#{resourceBundleServiceImpl.getMessage('novo')}"
+							icon="pi pi-file" styleClass="p-mr-2"
 							action="#{budgetController.clearBudgetForm}"
 							update="customerDTO formProdutos formDtSelectedItems formEstimatedItems:dtItems budgetEstimatedTotales formSelectedProducts">
 							<p:confirm type="popup"
@@ -43,7 +35,23 @@
 								message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
 								icon="pi pi-info-circle" />
 						</p:commandButton>
-					</f:facet>
+						<p:commandButton type="button"
+							value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+							icon="pi pi-folder-open" styleClass="ui-button-success" />
+						<i class="pi pi-bars p-px-2" />
+						<p:commandButton type="button" title="Print" icon="pi pi-print"
+							styleClass="ui-button-warning p-mr-2"
+							onclick="PF('downloadDialog').show()"
+							disabled="#{budgetController.budgetEstimateDTO eq null}" />
+						<p:commandButton icon="pi pi-share-alt"
+							styleClass="ui-button-help  p-mr-2" />
+						<p:commandButton
+							title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
+							icon="pi pi-wallet" styleClass="ui-button-warning "
+							action="#{budgetController.showOpenedTitlesPageOnDialog}" />
+
+
+					</p:toolbarGroup>
 				</p:toolbar>
 				<p:sticky target="tb" />
 			</h:form>

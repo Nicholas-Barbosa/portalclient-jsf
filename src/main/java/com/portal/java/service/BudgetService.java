@@ -28,4 +28,5 @@ public interface BudgetService extends ServiceSerializable {
 
 	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 
+	byte[] exportToJson(BudgetEstimatedDTO budget);
 }

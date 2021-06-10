@@ -367,26 +367,20 @@
 								</p:cellEditor>
 							</p:column>
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('preco_bruto_unitario')}">
-								<h:outputText value="#{product.unitGrossValue}">
+								headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
+								<h:outputText value="#{product.unitPrice}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('preco_bruto_total')}">
-								<h:outputText value="#{product.totalGrossValue}">
+								headerText="#{resourceBundleServiceImpl.getMessage('total')}">
+								<h:outputText value="#{product.totale}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('un_st_valor')}">
-								<h:outputText value="#{product.unitStValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
+
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
 								<h:outputText value="#{product.stValue}">
@@ -410,16 +404,10 @@
 								</p:cellEditor>
 
 							</p:column>
+
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
-								<h:outputText value="#{product.unitPrice}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('total')}">
-								<h:outputText value="#{product.totale}">
+								headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
+								<h:outputText value="#{product.totalGrossValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
@@ -472,29 +460,31 @@
 					<h:form id="budgetEstimatedTotales">
 						<div class="ui-fluid p-formgrid p-grid">
 							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="grossV"
-									value="#{holdMessageView.label('valor_bruto')}" />
-								<p:inputNumber id="grossV"
-									value="#{budgetController.budgetEstimateDTO.grossValue}"
+								<p:outputLabel for="liquidV"
+									value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
+								<p:inputNumber id="liquidV"
+									value="#{budgetController.budgetEstimateDTO.liquidValue}"
 									symbol="R$ " symbolPosition="p" readonly="true"
 									decimalSeparator="," thousandSeparator="." />
 							</div>
 							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="stT"
-									value="#{holdMessageView.label('valor_st')}" />
+									value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
 								<p:inputNumber id="stT"
 									value="#{budgetController.budgetEstimateDTO.stTotal}"
 									symbol="R$ " symbolPosition="p" readonly="true"
 									decimalSeparator="," thousandSeparator="." />
 							</div>
 							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="liquidV"
-									value="#{holdMessageView.label('valor_liquido')}" />
-								<p:inputNumber id="liquidV"
-									value="#{budgetController.budgetEstimateDTO.liquidValue}"
+								<p:outputLabel for="grossV"
+									value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
+								<p:inputNumber id="grossV"
+									value="#{budgetController.budgetEstimateDTO.grossValue}"
 									symbol="R$ " symbolPosition="p" readonly="true"
 									decimalSeparator="," thousandSeparator="." />
 							</div>
+
+
 						</div>
 					</h:form>
 				</div>

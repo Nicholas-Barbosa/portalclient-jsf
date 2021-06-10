@@ -5,15 +5,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
 import com.portal.java.dto.BudgetJasperReportDTO;
-import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
+import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.jasper.ReportService;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.jasper.service.BudgetReportImpl;
@@ -24,9 +23,9 @@ class BudgetReportImplTest {
 	static void tearDownAfterClass() throws Exception {
 	}
 
-	private final EstimatedItemDTO item = new EstimatedItemDTO(new BigDecimal(135.98), new BigDecimal(900),
-			new BigDecimal(135.98), new BigDecimal(900), new BigDecimal(18.89), new BigDecimal(12.89),
-			new BigDecimal(0), 0, 234);
+	private final EstimatedItemDTO item = new EstimatedItemDTO(new BigDecimal(135.98), new BigDecimal(900), "AX001",
+			"AX001", new BigDecimal(135.98), 20, new BigDecimal(900), new BigDecimal(18.89), new BigDecimal(12.89),
+			234);
 	{
 		item.setDescription("BOBINA DE IGNICAO GC4029");
 	}

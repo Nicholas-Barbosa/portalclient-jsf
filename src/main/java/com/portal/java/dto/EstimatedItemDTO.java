@@ -49,6 +49,22 @@ public class EstimatedItemDTO extends BaseProductDTO {
 		putInitialValuesOnFieldsValueHolder();
 	}
 
+	
+	
+	public EstimatedItemDTO(BigDecimal unitGrossValue, BigDecimal totalGrossValue, BigDecimal unitPrice,
+			BigDecimal totale, BigDecimal stValue, BigDecimal unitStValue, Integer avaliableStock) {
+		super();
+		this.unitGrossValue = unitGrossValue;
+		this.totalGrossValue = totalGrossValue;
+		this.unitPrice = unitPrice;
+		this.totale = totale;
+		this.stValue = stValue;
+		this.unitStValue = unitStValue;
+		this.avaliableStock = avaliableStock;
+		this.objectValueHolder = new HashMap<>();
+	}
+
+
 	public void setBaseProductAttr(BaseProductDTO base) {
 		super.setDescription(base.getDescription());
 		super.setMultiple(base.getMultiple());

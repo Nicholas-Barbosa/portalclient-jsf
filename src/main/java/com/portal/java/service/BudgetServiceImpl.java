@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
@@ -103,6 +105,14 @@ public class BudgetServiceImpl implements BudgetService {
 		BigDecimal totalDiscount = new BigDecimal(itemsToCalculate.parallelStream()
 				.map(e -> e.getDiscount().doubleValue()).collect(Collectors.summingDouble(v -> v)));
 		oldBudget.bulkUpdateTotales(liquidValue, grossValue, stTotal, totalDiscount);
+	}
+
+	@Override
+	public byte[] exportToJson(BudgetEstimatedDTO budget) {
+		Jsonb json = JsonbBuilder.create();
+		byte[] jsonStreams = json.toJson(budget).getBytes();
+		return jsonStreams;
+
 	}
 
 }

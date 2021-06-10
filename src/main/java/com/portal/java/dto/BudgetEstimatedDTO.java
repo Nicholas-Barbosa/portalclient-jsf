@@ -62,7 +62,6 @@ public class BudgetEstimatedDTO implements Serializable {
 	public BigDecimal getLiquidValue() {
 		return liquidValue;
 	}
-
 	public BigDecimal getGrossValue() {
 		return grossValue;
 	}
@@ -87,34 +86,7 @@ public class BudgetEstimatedDTO implements Serializable {
 	public void removeItem(EstimatedItemDTO item) {
 		this.items.remove(item);
 	}
-//	public void calcultaTotals() {
-//		ExecutorService executor = null;
-//		try {
-//			executor = Executors.newFixedThreadPool(4);
-//			executor.execute(() -> this.liquidValue = new BigDecimal(items.parallelStream()
-//					.map(e -> e.getPrice().getTotale()).collect(Collectors.summingDouble(v -> v.doubleValue()))));
-//			executor.execute(() -> this.grossValue = new BigDecimal(
-//					items.parallelStream().map(e -> e.getPrice().getTotalGrossValue())
-//							.collect(Collectors.summingDouble(v -> v.doubleValue()))));
-//			executor.execute(() -> calculateSt());
-//			executor.execute(() -> calculateTotalDiscount());
-//		} finally {
-//			executor.shutdown();
-//			try {
-//				executor.awaitTermination(10, TimeUnit.MICROSECONDS);
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//
-//	}
-//
-//	public final void calculateTotalDiscount() {
-//		this.totalDiscount = new BigDecimal(items.parallelStream().map(e -> e.getPrice().getDiscount())
-//				.collect(Collectors.summingDouble(v -> v.doubleValue())));
-//	}
-//
+
 	public final BigDecimal calculateSt() {
 		return new BigDecimal(items.stream().mapToDouble(e -> e.getStValue().doubleValue()).sum());
 	}
