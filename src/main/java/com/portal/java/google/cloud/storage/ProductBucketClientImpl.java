@@ -31,8 +31,9 @@ public class ProductBucketClientImpl extends AbstractBucketClientOperations impl
 	@Override
 	public Stream<Blob> getObjects(List<String> blobs) {
 		// TODO Auto-generated method stub
-		return super.getObject(blobs.parallelStream().map(this::formatBlobName).collect(CopyOnWriteArrayList::new,
-				List::add, List::addAll));
+		List<String> blobsName = blobs.parallelStream().map(this::formatBlobName).collect(CopyOnWriteArrayList::new,
+				List::add, List::addAll);
+		return super.getObject(blobsName);
 	}
 
 	@Override

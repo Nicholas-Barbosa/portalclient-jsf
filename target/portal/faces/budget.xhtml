@@ -21,6 +21,7 @@
 	<ui:define name="content">
 		<p:growl id="growl" showDetail="true" globalOnly="true" />
 		<div class="card">
+
 			<h:form id="budgetToolsForm">
 				<p:toolbar id="tb">
 					<f:facet name="left">
@@ -88,8 +89,7 @@
 					<h5>#{resourceBundleServiceImpl.getMessage('busca_pelo_codigo')}</h5>
 					<p:button icon="pi pi-replay"
 						styleClass="rounded-button ui-button-outlined p-mr-2 p-mb-2"
-						onclick="$('#divSearchProductByCode').hide();$('#divItensForm').show();$('#estimatedTotals').show();" />
-
+						onclick="$('#divSearchProductByCode').hide();$('#divCart').show();$('#estimatedTotals').show();" />
 					<h:form id="formSelectedProducts">
 						<p:dataTable value="#{budgetController.selectedProducts}"
 							var="item" id="dtSelectedProducts"
@@ -125,6 +125,9 @@
 									oncomplete="onCompleteEstimate(xhr)"
 									action="#{budgetController.estimate}" process="@this"
 									update="@form budgetEstimatedTotales budgetToolsForm growl" />
+								<span class="p-text-bold">Há
+									#{fn:length(budgetController.selectedProducts)} itens
+									confirmados para esta pesquisa.</span>
 							</f:facet>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
@@ -210,7 +213,7 @@
 											styleClass="ui-button-raised ui-button-success p-mr-2" />
 										<p:button
 											onclick="updateDtItems(); $('#selectProducts').hide();
-												$('#divItensForm').show();
+												$('#divCart').show();
 												$('#estimatedTotals').show();"
 											icon="pi pi-undo"
 											styleClass="ui-button-raised ui-button-success p-mr-2" />
@@ -296,10 +299,10 @@
 					</div>
 				</div>
 			</div>
-			<div class="p-col-12" id="divItensForm">
+			<div class="p-col-12" id="divCart">
 				<div class="card">
 
-					<h5>#{holdMessageView.label('items')}</h5>
+					<h5>#{resourceBundleServiceImpl.getMessage('carrinho_compras')}</h5>
 					<h:form id="formEstimatedItems">
 						<p:remoteCommand name="updateDtItems" action="#" process="@none"
 							update="dtItems" />
@@ -307,14 +310,13 @@
 							var="product" editable="true" rowKey="#{product.commercialCode}"
 							id="dtItems" reflow="true" size="small" scrollable="true"
 							widgetVar="dtItems" rowIndexVar="crrIndex">
-
 							<p:ajax event="rowEdit"
-								listener="#{budgetController.reEditItemQuantity}"
+								listener="#{budgetController.onItemRowEdit}"
 								update="budgetEstimatedTotales" />
 							<f:facet name="header">
 								<div class="p-d-flex p-jc-between p-ai-center">
 									<p:splitButton type="button"
-										onclick="$('#divSearchProductByCode').show();$('#divItensForm').hide();$('#estimatedTotals').hide();"
+										onclick="$('#divSearchProductByCode').show();$('#divCart').hide();$('#estimatedTotals').hide();"
 										icon="pi pi-plus"
 										styleClass="ui-button-raised ui-button-success p-mr-2">
 										<p:menuitem
@@ -333,10 +335,11 @@
 									#{fn:length(budgetController.budgetEstimateDTO.items)}
 									produtos.</span>
 							</f:facet>
-
+							<p:column>
+								<h:outputText value="#{crrIndex}" />
+							</p:column>
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}"
-								sortBy="#{product.commercialCode}">
+								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}">
 								<h:outputText value="#{product.commercialCode}" />
 							</p:column>
 
@@ -358,9 +361,8 @@
 										<h:outputText value="#{product.quantity}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:inputText value="#{product.quantity}" style="width:100%"
+										<p:spinner value="#{product.quantity}" style="width:100%"
 											label="Name" />
-
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
@@ -393,11 +395,20 @@
 								</h:outputText>
 							</p:column>
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('desconto')}">
-								<h:outputText value="#{product.discount}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
+								headerText="#{resourceBundleServiceImpl.getMessage('desconto')}%">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{product.discount}">
+											<f:convertNumber locale="pt_BR" />
+										</h:outputText>
+									</f:facet>
+									<f:facet name="input">
+										<p:spinner value="#{product.discount}" style="width:100%"
+											label="Name" suffix="%" stepFactor="0.25"
+											decimalSeparator="," thousandSeparator="." />
+									</f:facet>
+								</p:cellEditor>
+
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
@@ -413,8 +424,6 @@
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
-
-
 							<p:column style="width:2rem">
 								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
 									saveTitle="Save Row" />
@@ -797,7 +806,7 @@
 			function onCompleteEstimate(xhr) {
 				if (getResponseHeader(xhr)) {
 					$('#divSearchProductByCode').hide();
-					$('#divItensForm').show();
+					$('#divCart').show();
 					$('#estimatedTotals').show();
 					$("#selectProducts").hide();
 					updateDtItems().then(e=>{
@@ -811,7 +820,7 @@
 				PF('searchProductDialog').hide();
 				if (getResponseHeader(xhr)) {
 					$("#selectProducts").show();
-					$("#divItensForm").hide();
+					$("#divCart").hide();
 					$("#estimatedTotals").hide();
 					updateDtProducts().then(e=>{
 						turnDtScrollBodyResponsive('dtSelectProducts', '40vh');
