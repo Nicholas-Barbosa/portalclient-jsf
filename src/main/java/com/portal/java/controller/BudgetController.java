@@ -138,13 +138,11 @@ public class BudgetController implements Serializable {
 	}
 
 	public void impotBudgetXlsx() {
-		budgetImportXlsxForm.setXlsxStreams(budgetImportFile.getContent());
 		budgetService.importFromXlsx(budgetImportXlsxForm);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
-		System.out.println("handle file! " + event + " " + budgetImportFile);
-		this.budgetImportFile = event.getFile();
+		budgetImportXlsxForm.setXlsxStreams(event.getFile().getContent());
 	}
 
 	public void estimate() {
