@@ -2,52 +2,80 @@ package com.portal.java.dto;
 
 public class BudgetImportXlsxForm {
 
-	private int offsetRowForCustomerObject;
-	private int offsetCellForCustomerCode;
-	private int offSetCellForCustomerStore;
-	private int offSetCellForCustomerState;
-	private int offsetRowForItems;
+	private short offsetRowForCustomerObject;
+	private short offsetCellForCustomerCode;
+	private short offSetCellForCustomerStore;
+	private short offSetCellForCustomerState;
+
+	private short offsetRowForItems;
+	private short offSetCellForProductCode;
+	private short offSetCellForProductQuantity;
+	private short lastOffSetForItems;
 
 	private byte[] xlsxStreams;
 
-	public int getOffsetRowForCustomerObject() {
+	public short getOffsetRowForCustomerObject() {
 		return offsetRowForCustomerObject;
 	}
 
-	public void setOffsetRowForCustomerObject(int offsetRowForCustomerObject) {
+	public void setOffsetRowForCustomerObject(short offsetRowForCustomerObject) {
 		this.offsetRowForCustomerObject = offsetRowForCustomerObject;
 	}
 
-	public int getOffsetCellForCustomerCode() {
+	public short getOffsetCellForCustomerCode() {
 		return offsetCellForCustomerCode;
 	}
 
-	public void setOffsetCellForCustomerCode(int offsetCellForCustomerCode) {
+	public void setOffsetCellForCustomerCode(short offsetCellForCustomerCode) {
 		this.offsetCellForCustomerCode = offsetCellForCustomerCode;
 	}
 
-	public int getOffSetCellForCustomerStore() {
+	public short getOffSetCellForCustomerStore() {
 		return offSetCellForCustomerStore;
 	}
 
-	public void setOffSetCellForCustomerStore(int offSetCellForCustomerStore) {
+	public void setOffSetCellForCustomerStore(short offSetCellForCustomerStore) {
 		this.offSetCellForCustomerStore = offSetCellForCustomerStore;
 	}
 
-	public int getOffSetCellForCustomerState() {
+	public short getOffSetCellForCustomerState() {
 		return offSetCellForCustomerState;
 	}
 
-	public void setOffSetCellForCustomerState(int offSetCellForCustomerState) {
+	public void setOffSetCellForCustomerState(short offSetCellForCustomerState) {
 		this.offSetCellForCustomerState = offSetCellForCustomerState;
 	}
 
-	public int getOffsetRowForItems() {
+	public short getOffsetRowForItems() {
 		return offsetRowForItems;
 	}
 
-	public void setOffsetRowForItems(int offsetRowForItems) {
+	public void setOffsetRowForItems(short offsetRowForItems) {
 		this.offsetRowForItems = offsetRowForItems;
+	}
+
+	public short getOffSetCellForProductCode() {
+		return offSetCellForProductCode;
+	}
+
+	public void setOffSetCellForProductCode(short offSetCellForProductCode) {
+		this.offSetCellForProductCode = offSetCellForProductCode;
+	}
+
+	public short getOffSetCellForProductQuantity() {
+		return offSetCellForProductQuantity;
+	}
+
+	public void setOffSetCellForProductQuantity(short offSetCellForProductQuantity) {
+		this.offSetCellForProductQuantity = offSetCellForProductQuantity;
+	}
+
+	public short getLastOffSetForItems() {
+		return lastOffSetForItems;
+	}
+
+	public void setLastOffSetForItems(short lastOffSetForItems) {
+		this.lastOffSetForItems = lastOffSetForItems;
 	}
 
 	public byte[] getXlsxStreams() {
@@ -57,4 +85,5 @@ public class BudgetImportXlsxForm {
 	public void setXlsxStreams(byte[] xlsxStreams) {
 		this.xlsxStreams = xlsxStreams;
 	}
+
 }

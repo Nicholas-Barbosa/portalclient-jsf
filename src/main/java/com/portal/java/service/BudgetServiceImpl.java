@@ -1,8 +1,11 @@
 package com.portal.java.service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -14,6 +17,10 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetImportXlsxForm;
 import com.portal.java.dto.EstimatedItemDTO;
+import com.portal.java.microsoft.excel.CellAttribute;
+import com.portal.java.microsoft.excel.RowObject;
+import com.portal.java.microsoft.excel.XssfReader;
+import com.portal.java.microsoft.excel.XssfReaderBuilder;
 import com.portal.java.repository.BudgetRepository;
 import com.portal.java.util.MathUtils;
 
@@ -108,7 +115,18 @@ public class BudgetServiceImpl implements BudgetService {
 
 	@Override
 	public BudgetEstimatedDTO importFromXlsx(BudgetImportXlsxForm form) {
-		// TODO Auto-generated method stub
+		XssfReader reader = XssfReaderBuilder.createReader();
+		List<CellAttribute> customerAttributes = new ArrayList<>();
+		customerAttributes.add(new CellAttribute(form.getOffsetCellForCustomerCode()));
+		customerAttributes.add(new CellAttribute(form.getOffSetCellForCustomerStore()));
+		RowObject customerRowObject = new RowObject(form.getOffsetRowForCustomerObject(), customerAttributes);
+		try {
+			reader.read(customerRowObject, form.getXlsxStreams());
+			System.out.println(customerRowObject);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 

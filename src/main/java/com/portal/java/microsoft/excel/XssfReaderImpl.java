@@ -1,5 +1,6 @@
 package com.portal.java.microsoft.excel;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Deque;
@@ -18,14 +19,20 @@ public class XssfReaderImpl implements XssfReader {
 	public void read(RowObject rowObject, InputStream xlsxFile) throws IOException {
 		try (Workbook workbook = new XSSFWorkbook(xlsxFile)) {
 			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Row row = datatypeSheet.getRow(rowObject.getOffset());
+			Row row = datatypeSheet.getRow(rowObject.getOffset()-1);
 			rowObject.getCellAttributes().parallelStream().forEach(c -> {
-				Cell cell = row.getCell(c.getCellOffset());
+				Cell cell = row.getCell(c.getCellOffset()-1);
 				if (cell != null) {
 					c.setValue(cell);
 				}
 			});
 		}
+
+	}
+
+	@Override
+	public void read(RowObject rowObject, byte[] xlsxStreams) throws IOException {
+		this.read(rowObject, new ByteArrayInputStream(xlsxStreams));
 
 	}
 
