@@ -6,6 +6,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
+import com.portal.java.dto.BudgetImportXlsxForm;
 import com.portal.java.dto.EstimatedItemDTO;
 
 public interface BudgetService extends ServiceSerializable {
@@ -28,5 +29,5 @@ public interface BudgetService extends ServiceSerializable {
 
 	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 
-	byte[] exportToJson(BudgetEstimatedDTO budget);
+	BudgetEstimatedDTO importFromXlsx(BudgetImportXlsxForm form);
 }

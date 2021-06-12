@@ -20,13 +20,16 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.file.UploadedFile;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
+import com.portal.java.dto.BudgetImportXlsxForm;
 import com.portal.java.dto.BudgetJasperReportDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
 import com.portal.java.dto.CustomerDTO;
@@ -110,6 +113,10 @@ public class BudgetController implements Serializable {
 
 	private byte[] imageToSeeOnDlg;
 
+	private BudgetImportXlsxForm budgetImportXlsxForm;
+
+	private UploadedFile budgetImportFile;
+
 	public BudgetController() {
 		this(null, null, null, null, null, null, null);
 	}
@@ -128,6 +135,10 @@ public class BudgetController implements Serializable {
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+
 	}
 
 	public void estimate() {
@@ -286,8 +297,7 @@ public class BudgetController implements Serializable {
 
 	public void confirmSelectedProduct() {
 		this.selectedProducts.add(selectedProduct);
-		this.itemsOnCartToPost
-				.add(new ProductBudgetFormDTO(selectedProduct));
+		this.itemsOnCartToPost.add(new ProductBudgetFormDTO(selectedProduct));
 		this.selectedProduct = null;
 	}
 
@@ -363,6 +373,7 @@ public class BudgetController implements Serializable {
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 			this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
 			findProductByCodeDTO = new FindProductByCodeDTO();
+			this.budgetImportXlsxForm = new BudgetImportXlsxForm();
 		}).start();
 	}
 
@@ -458,4 +469,15 @@ public class BudgetController implements Serializable {
 		this.imageToSeeOnDlg = imageToSeeOnDlg;
 	}
 
+	public BudgetImportXlsxForm getBudgetImportXlsxForm() {
+		return budgetImportXlsxForm;
+	}
+
+	public UploadedFile getBudgetImportFile() {
+		return budgetImportFile;
+	}
+
+	public void setBudgetImportFile(UploadedFile budgetImportFile) {
+		this.budgetImportFile = budgetImportFile;
+	}
 }

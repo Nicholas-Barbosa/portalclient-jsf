@@ -37,7 +37,8 @@
 						</p:commandButton>
 						<p:commandButton type="button"
 							value="#{resourceBundleServiceImpl.getMessage('abrir')}"
-							icon="pi pi-folder-open" styleClass="ui-button-success" />
+							icon="pi pi-folder-open" styleClass="ui-button-success"
+							onclick="PF('dlgForImport').show()" />
 						<i class="pi pi-bars p-px-2" />
 						<p:commandButton type="button" title="Print" icon="pi pi-print"
 							styleClass="ui-button-warning p-mr-2"
@@ -500,6 +501,88 @@
 
 			</div>
 		</div>
+		<p:dialog widgetVar="dlgForImport" id="dlgForImport" header="Importar"
+			modal="true" responsive="true" resizable="true">
+			<h:form>
+				<div class="p-grid p-flex-column">
+					<div class="p-col">
+						<div class="box">
+							<p:fileUpload listener="#{budgetController.handleFileUpload}"
+								mode="advanced" dragDropSupport="true"
+								allowTypes="/(\.|\/)(xlsx|json)$/" cancelLabel="Cancelar" />
+						</div>
+					</div>
+					<div class="p-col">
+						<div class="box">
+							<p>
+								Informações do cliente como, código e loja estão na
+								célula(coluna) <strong><p:inplace editor="true">
+										<p:inputText value="10" required="true" label="text" />
+									</p:inplace></strong> e <strong> <p:inplace editor="true">
+										<p:inputText value="10" required="true" label="text" />
+									</p:inplace></strong> respectivamente, onde as mesmas pertencem a linha <strong>
+									<p:inplace editor="true">
+										<p:inputText value="10" required="true" label="text" />
+									</p:inplace>
+								</strong> do documento excel.
+							</p>
+						</div>
+					</div>
+					<div class="p-col">
+						<div class="box">
+							<p>
+								A lista de produtos inicia-se na linha <strong><p:inplace
+										editor="true">
+										<p:inputText value="10" required="true" label="text" />
+									</p:inplace></strong> . Atributos como código comercial e quantidade estão na
+								célula(coluna) <strong><p:inplace editor="true">
+										<p:inputText value="10" required="true" label="text" />
+									</p:inplace></strong> e <strong> <p:inplace editor="true">
+										<p:inputText value="10" required="true" label="text" />
+									</p:inplace>
+								</strong> respectivamente.
+							</p>
+						</div>
+					</div>
+					<!--  	<div class="p-col-12">
+					<h5>Layout do arquivo XLSX</h5>
+					<div class="ui-fluid p-formgrid p-grid">
+						<div class="p-field p-col-12 p-md-6">
+							<p:outputLabel for="firstname2"
+								value="Deslocamento para linha onde se encontra as informações do cliente " />
+							<p:inputText id="firstname2" />
+						</div>
+						<div class="p-field p-col-12 p-md-6">
+							<p:outputLabel for="lastname2" value="Lastname" />
+							<p:inputText id="lastname2" />
+						</div>
+						<div class="p-field p-col-12">
+							<p:outputLabel for="address" value="Address" />
+							<p:inputTextarea id="address" rows="4" />
+						</div>
+						<div class="p-field p-col-12 p-md-6">
+							<p:outputLabel for="city" value="City" />
+							<p:inputText id="city" />
+						</div>
+						<div class="p-field p-col-12 p-md-3">
+							<p:outputLabel for="state" value="State" />
+							<p:selectOneMenu id="state">
+								<f:selectItem itemLabel="Select One" itemValue="#{null}"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="Option 1" itemValue="Option 1" />
+								<f:selectItem itemLabel="Option 2" itemValue="Option 2" />
+								<f:selectItem itemLabel="Option 3" itemValue="Option 3" />
+							</p:selectOneMenu>
+						</div>
+						<div class="p-field p-col-12 p-md-3">
+							<p:outputLabel for="zip" value="Zip" />
+							<p:inputText id="zip" />
+						</div>
+					</div>
+				</div>-->
+				</div>
+			</h:form>
+		</p:dialog>
 		<div class="p-grid crud-demo">
 			<div class="p-col-12">
 				<p:dialog

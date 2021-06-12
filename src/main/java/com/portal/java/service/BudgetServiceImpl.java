@@ -9,11 +9,10 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
+import com.portal.java.dto.BudgetImportXlsxForm;
 import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.repository.BudgetRepository;
 import com.portal.java.util.MathUtils;
@@ -108,11 +107,9 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public byte[] exportToJson(BudgetEstimatedDTO budget) {
-		Jsonb json = JsonbBuilder.create();
-		byte[] jsonStreams = json.toJson(budget).getBytes();
-		return jsonStreams;
-
+	public BudgetEstimatedDTO importFromXlsx(BudgetImportXlsxForm form) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

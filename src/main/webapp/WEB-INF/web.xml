@@ -16,12 +16,12 @@
 
 	<context-param>
 		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
-		<param-value>-1</param-value>
+		<param-value>0</param-value>
 	</context-param>
 
 	<context-param>
 		<param-name>javax.faces.Development</param-name>
-		<param-value>Production</param-value>
+		<param-value>Development</param-value>
 	</context-param>
 	<servlet>
 		<servlet-name>FacesServlet</servlet-name>

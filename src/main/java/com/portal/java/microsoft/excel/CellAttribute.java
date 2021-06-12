@@ -14,6 +14,12 @@ public class CellAttribute {
 		this.cellOffset = cellOffset;
 	}
 
+	public CellAttribute(int cellOffset, Object value) {
+		super();
+		this.cellOffset = cellOffset;
+		this.value = value;
+	}
+
 	public int getCellOffset() {
 		return cellOffset;
 	}
