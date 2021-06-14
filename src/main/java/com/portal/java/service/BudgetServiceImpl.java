@@ -3,8 +3,10 @@ package com.portal.java.service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
@@ -15,7 +17,8 @@ import javax.inject.Inject;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
-import com.portal.java.dto.BudgetImportXlsxForm;
+import com.portal.java.dto.BudgetXlsxPreviewForm;
+import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.microsoft.excel.CellAttribute;
 import com.portal.java.microsoft.excel.RowObject;
@@ -42,7 +45,7 @@ public class BudgetServiceImpl implements BudgetService {
 
 	@Override
 	public BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		BudgetEstimatedDTO dto = budgetRepository.estimate(budgetEstimateForm);
 		dto.getItems().parallelStream().forEach(e -> {
 			budgetEstimateForm.getItemsForm().parallelStream()
@@ -114,16 +117,21 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public BudgetEstimatedDTO importFromXlsx(BudgetImportXlsxForm form) {
+	public BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form) {
 		XssfReader reader = XssfReaderBuilder.createReader();
 		List<CellAttribute> customerAttributes = new ArrayList<>();
-		customerAttributes.add(new CellAttribute(form.getOffsetCellForCustomerCode()));
+		customerAttributes.add(new CellAttribute(form.getOffsetCellForCustomerName()));
 		customerAttributes.add(new CellAttribute(form.getOffSetCellForCustomerStore()));
 		RowObject customerRowObject = new RowObject(form.getOffsetRowForCustomerObject(), customerAttributes);
+
 		try {
+			Deque<RowObject> products = reader.read(form.getXlsxStreams());
+			System.out.println(products);
 			reader.read(customerRowObject, form.getXlsxStreams());
-			System.out.println(customerRowObject);
-		} catch (IOException e) {
+			BudgetXlsxPreviewedDTO imported = new BudgetXlsxPreviewedDTO((String) customerRowObject.getFirstAttribute(),
+					String.valueOf(((Double) customerRowObject.getLastAttribute()).intValue()));
+			return imported;
+		} catch (IOException | RuntimeException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

@@ -1,6 +1,7 @@
 package com.portal.java.service;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
@@ -31,21 +32,21 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public CustomerPageDTO findAll(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 		return customerRepository.find(page, pageSize);
 	}
 
 	@Override
 	public Optional<CustomerDTO> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 		return customerRepository.findByCodeAndStore(searchCustomerByCodeAndStoreDTO);
 	}
 
 	@Override
 	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 		return customerRepository.findByName(name, page, pageSize);
 	}

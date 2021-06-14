@@ -1,6 +1,7 @@
 package com.portal.java.repository;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class FinancialTitleRepositoryImpl implements FinancialTitleRepository {
 
 	@Override
 	public FinancialTitlePageDTO find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);

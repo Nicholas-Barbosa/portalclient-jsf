@@ -1,6 +1,7 @@
 package com.portal.java.repository;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
@@ -34,7 +35,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 
 	@Override
 	public BudgetEstimatedDTO estimate(BudgetEstimateForm form)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		return restClient.post("ORCAMENTO_API", "estimate", BudgetEstimatedDTO.class, null, null,
 				MediaType.APPLICATION_JSON, form);
 

@@ -1,6 +1,7 @@
 package com.portal.java.service;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,13 +45,13 @@ public class ProductServiceImpl implements ProductService {
 	private BucketClient bucketClient;
 
 	@Override
-	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException {
+	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 		return productRepository.findByDescription(page, pageSize, descriptio);
 	}
 
 	@Override
-	public Optional<ProductDTO> findByCode(String code)throws SocketTimeoutException, ConnectException, TimeoutException {
+	public Optional<ProductDTO> findByCode(String code)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
 		Future<NoPageProductResponseDTO> ftProduct = productRepository.findByCodeAsync(code);
 		try {

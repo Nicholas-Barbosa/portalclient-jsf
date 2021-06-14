@@ -1,7 +1,7 @@
 package com.portal.java.controller;
 
 import java.io.Serializable;
-import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,13 +25,13 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.file.UploadedFile;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
-import com.portal.java.dto.BudgetImportXlsxForm;
 import com.portal.java.dto.BudgetJasperReportDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
+import com.portal.java.dto.BudgetXlsxPreviewForm;
+import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.CustomerDTO;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.DownloadStreamsForm;
@@ -113,9 +113,9 @@ public class BudgetController implements Serializable {
 
 	private byte[] imageToSeeOnDlg;
 
-	private BudgetImportXlsxForm budgetImportXlsxForm;
+	private BudgetXlsxPreviewForm budgetImportXlsxForm;
 
-	private UploadedFile budgetImportFile;
+	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
 	public BudgetController() {
 		this(null, null, null, null, null, null, null);
@@ -137,8 +137,8 @@ public class BudgetController implements Serializable {
 		this.imageToSeeOnDlg = new byte[0];
 	}
 
-	public void impotBudgetXlsx() {
-		budgetService.importFromXlsx(budgetImportXlsxForm);
+	public void previewBudgetXlsxContent() {
+		budgetXlsxPreview = budgetService.previewXlsxContent(budgetImportXlsxForm);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -154,7 +154,7 @@ public class BudgetController implements Serializable {
 			}).start();
 			budgetEstimateDTO = budgetService.estimate(
 					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsOnCartToPost));
-		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			processingExceptionMessageHelper.displayMessage(e, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 		} catch (ClientErrorException e) {
@@ -293,7 +293,7 @@ public class BudgetController implements Serializable {
 			FacesUtils.error(null, resourceBundleService.getMessage("resposta_servidor"),
 					e.getResponse().getEntity().toString());
 			selectedCustomer = null;
-		} catch (SocketTimeoutException | ConnectException | TimeoutException p) {
+		} catch (SocketTimeoutException | SocketException | TimeoutException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 			selectedCustomer = null;
 		}
@@ -318,7 +318,7 @@ public class BudgetController implements Serializable {
 				selectedProduct = null;
 			});
 			findProductByCodeDTO = new FindProductByCodeDTO();
-		} catch (SocketTimeoutException | ConnectException | TimeoutException p) {
+		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			// e.printStackTrace();
@@ -337,7 +337,7 @@ public class BudgetController implements Serializable {
 				FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			});
 
-		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			processingExceptionMessageHelper.displayMessage(e, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			e.printStackTrace();
@@ -377,7 +377,9 @@ public class BudgetController implements Serializable {
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 			this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
 			findProductByCodeDTO = new FindProductByCodeDTO();
-			this.budgetImportXlsxForm = new BudgetImportXlsxForm();
+			this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
+					(short) 1, (short) 2, (short) 0);
+			this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
 		}).start();
 	}
 
@@ -473,15 +475,12 @@ public class BudgetController implements Serializable {
 		this.imageToSeeOnDlg = imageToSeeOnDlg;
 	}
 
-	public BudgetImportXlsxForm getBudgetImportXlsxForm() {
+	public BudgetXlsxPreviewForm getBudgetImportXlsxForm() {
 		return budgetImportXlsxForm;
 	}
 
-	public UploadedFile getBudgetImportFile() {
-		return budgetImportFile;
+	public BudgetXlsxPreviewedDTO getBudgetXlsxPreview() {
+		return budgetXlsxPreview;
 	}
 
-	public void setBudgetImportFile(UploadedFile budgetImportFile) {
-		this.budgetImportFile = budgetImportFile;
-	}
 }

@@ -1,12 +1,14 @@
 package com.portal.java.service;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
-import com.portal.java.dto.BudgetImportXlsxForm;
+import com.portal.java.dto.BudgetXlsxPreviewForm;
+import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.EstimatedItemDTO;
 
 public interface BudgetService extends ServiceSerializable {
@@ -14,7 +16,7 @@ public interface BudgetService extends ServiceSerializable {
 	void findAll(int page, int pageSize);
 
 	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm)
-			throws SocketTimeoutException, ConnectException, TimeoutException;
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
 
 	/**
 	 * Update items from budget which items are equal in term of equals.
@@ -29,5 +31,5 @@ public interface BudgetService extends ServiceSerializable {
 
 	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 
-	BudgetEstimatedDTO importFromXlsx(BudgetImportXlsxForm form);
+	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
 }

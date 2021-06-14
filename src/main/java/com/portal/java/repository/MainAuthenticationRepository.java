@@ -2,6 +2,7 @@ package com.portal.java.repository;
 
 import java.io.Serializable;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	}
 
 	@Override
-	public void login(LoginForm loginForm)throws SocketTimeoutException, ConnectException, TimeoutException {
+	public void login(LoginForm loginForm)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("grant_type", "password");

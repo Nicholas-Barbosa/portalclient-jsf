@@ -3,6 +3,7 @@ package com.portal.java.client.rest.auth;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	@Override
 	public <T> T get(String serviceApiKey, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, String media)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		ExternalOAuth2ApiResource oAuthApi = getService(serviceApiKey);
 		return this.get(oAuthApi, endpoint, responseType, queryParams, pathParams, media);
 	}
@@ -68,7 +69,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 	@Override
 	public <T, U> T post(String externalServiceKey, String endpoint, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, String media, U requestBody)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		Client client = null;
 		ExternalOAuth2ApiResource service = getService(externalServiceKey);
 		try {
@@ -107,7 +108,7 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 
 	private <T> T get(ExternalOAuth2ApiResource apiResource, String endpoint, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, String media)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		Client client = null;
 		try {
 			OAuth2Support oAuth2Provider = new OAuth2Support(apiResource.getToken());

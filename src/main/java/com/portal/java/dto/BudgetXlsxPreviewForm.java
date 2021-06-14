@@ -1,9 +1,11 @@
 package com.portal.java.dto;
 
-public class BudgetImportXlsxForm {
+import java.util.Arrays;
+
+public class BudgetXlsxPreviewForm {
 
 	private short offsetRowForCustomerObject;
-	private short offsetCellForCustomerCode;
+	private short offsetCellForCustomerName;
 	private short offSetCellForCustomerStore;
 	private short offSetCellForCustomerState;
 
@@ -14,6 +16,25 @@ public class BudgetImportXlsxForm {
 
 	private byte[] xlsxStreams;
 
+	public BudgetXlsxPreviewForm() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public BudgetXlsxPreviewForm(short offsetRowForCustomerObject, short offsetCellForCustomerName,
+			short offSetCellForCustomerStore, short offSetCellForCustomerState, short offsetRowForItems,
+			short offSetCellForProductCode, short offSetCellForProductQuantity, short lastOffSetForItems
+			) {
+		super();
+		this.offsetRowForCustomerObject = offsetRowForCustomerObject;
+		this.offsetCellForCustomerName = offsetCellForCustomerName;
+		this.offSetCellForCustomerStore = offSetCellForCustomerStore;
+		this.offSetCellForCustomerState = offSetCellForCustomerState;
+		this.offsetRowForItems = offsetRowForItems;
+		this.offSetCellForProductCode = offSetCellForProductCode;
+		this.offSetCellForProductQuantity = offSetCellForProductQuantity;
+		this.lastOffSetForItems = lastOffSetForItems;
+	}
+
 	public short getOffsetRowForCustomerObject() {
 		return offsetRowForCustomerObject;
 	}
@@ -22,14 +43,13 @@ public class BudgetImportXlsxForm {
 		this.offsetRowForCustomerObject = offsetRowForCustomerObject;
 	}
 
-	public short getOffsetCellForCustomerCode() {
-		return offsetCellForCustomerCode;
+	public short getOffsetCellForCustomerName() {
+		return offsetCellForCustomerName;
 	}
-
-	public void setOffsetCellForCustomerCode(short offsetCellForCustomerCode) {
-		this.offsetCellForCustomerCode = offsetCellForCustomerCode;
+	public void setOffsetCellForCustomerName(short offsetCellForCustomerName) {
+		this.offsetCellForCustomerName = offsetCellForCustomerName;
 	}
-
+	
 	public short getOffSetCellForCustomerStore() {
 		return offSetCellForCustomerStore;
 	}
@@ -84,6 +104,16 @@ public class BudgetImportXlsxForm {
 
 	public void setXlsxStreams(byte[] xlsxStreams) {
 		this.xlsxStreams = xlsxStreams;
+	}
+
+	@Override
+	public String toString() {
+		return "BudgetImportXlsxForm [offsetRowForCustomerObject=" + offsetRowForCustomerObject
+				+ ", offsetCellForCustomerName=" + offsetCellForCustomerName + ", offSetCellForCustomerStore="
+				+ offSetCellForCustomerStore + ", offSetCellForCustomerState=" + offSetCellForCustomerState
+				+ ", offsetRowForItems=" + offsetRowForItems + ", offSetCellForProductCode=" + offSetCellForProductCode
+				+ ", offSetCellForProductQuantity=" + offSetCellForProductQuantity + ", lastOffSetForItems="
+				+ lastOffSetForItems + ", xlsxStreams=" + Arrays.toString(xlsxStreams) + "]";
 	}
 
 }

@@ -13,15 +13,14 @@ class XssfReaderImplTest {
 	@Test
 	void test() throws IOException {
 		XssfReader reader = XssfReaderBuilder.createReader();
-		RowObject rowObject = new RowObject(4, List.of(new CellAttribute(0)));
+		RowObject rowObject = new RowObject(1, List.of(new CellAttribute(1)));
 		reader.read(rowObject, new FileInputStream(excelFileName));
-		System.out.println(rowObject);
 	}
 
 	@Test
 	void testList() throws IOException {
 		XssfReader reader = XssfReaderBuilder.createReader();
-		reader.read(1, 363, new FileInputStream(excelFileName));
+		System.out.println("Deque " + reader.read(new FileInputStream(excelFileName)));
 
 	}
 }

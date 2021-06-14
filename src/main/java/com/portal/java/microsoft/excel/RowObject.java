@@ -2,7 +2,6 @@ package com.portal.java.microsoft.excel;
 
 import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class RowObject {
@@ -27,6 +26,14 @@ public class RowObject {
 		this.cellAttributes = new ConcurrentLinkedDeque<>(cellAttributes);
 	}
 
+	public Object getFirstAttribute() {
+		return cellAttributes.peekFirst().getValue();
+	}
+
+	public Object getLastAttribute() {
+		return cellAttributes.peekLast().getValue();
+	}
+
 	public int getOffset() {
 		return offset;
 	}
@@ -35,7 +42,7 @@ public class RowObject {
 		this.offset = offset;
 	}
 
-	public Queue<CellAttribute> getCellAttributes() {
+	public Deque<CellAttribute> getCellAttributes() {
 		return cellAttributes;
 	}
 

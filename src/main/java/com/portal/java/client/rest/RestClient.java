@@ -22,10 +22,10 @@ public interface RestClient extends Serializable {
 
 	<T> T get(String uri, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, String media)
-			throws SocketTimeoutException, ConnectException, TimeoutException;
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
 
 	<T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
-			E requestBody, String mediaType) throws SocketTimeoutException, ConnectException, TimeoutException;
+			E requestBody, String mediaType) throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
 
 	default Client getClientFollowingMediaType(String media) {
 		Client client = media.equals("application/json")
@@ -42,12 +42,12 @@ public interface RestClient extends Serializable {
 	}
 
 	default void checkProcessingException(ProcessingException p)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, TimeoutException, SocketException {
 		System.out.println("check processing exception!");
 		checkIfIsClientErrorException(p);
 		Throwable rootException = p.getCause();
 		if (rootException instanceof SocketException) {
-			throw (SocketTimeoutException) rootException;
+			throw (SocketException) rootException;
 		} else if (rootException instanceof ConnectException) {
 			throw (ConnectException) rootException;
 		} else if (rootException instanceof SocketTimeoutException) {

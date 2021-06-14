@@ -1,6 +1,7 @@
 package com.portal.java.repository;
 
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
 	@Override
 	public CustomerPageDTO find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
@@ -54,7 +55,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
 	@Override
 	public Optional<CustomerDTO> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		try {
 			Map<String, Object> pathParams = getMapInstance();
 			pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
@@ -68,7 +69,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
 	@Override
 	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		try {
 			Map<String, Object> queryParams = getMapInstance();
 			queryParams.put("page", page);

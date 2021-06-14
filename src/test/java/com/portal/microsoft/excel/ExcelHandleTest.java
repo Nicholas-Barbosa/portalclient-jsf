@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class ExcelHandleTest {
 
-	private final String excelFileName = "C:\\Users\\nicho\\OneDrive\\Documentos\\testing_excel-poi\\readingExcel.xlsx";
+	private final String excelFileName = "C:\\Users\\nicho\\OneDrive\\Documentos\\testImportBudget.xlsx";
 
 	@Test
 	private void test() {

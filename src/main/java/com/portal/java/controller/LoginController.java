@@ -1,6 +1,6 @@
 package com.portal.java.controller;
 
-import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
@@ -50,7 +50,7 @@ public class LoginController {
 			FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"),
 					resourceBundleService.getMessage("usuario_nao_encontrado"));
 
-		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			processingExceptionMessageHelper.displayMessage(e, null);
 		}
 		return null;

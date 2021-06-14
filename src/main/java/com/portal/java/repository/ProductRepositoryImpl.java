@@ -2,6 +2,7 @@ package com.portal.java.repository;
 
 import java.io.Serializable;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	@Override
 	public NoPageProductResponseDTO findByCode(String code)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
@@ -46,7 +47,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	@Override
 	public Future<NoPageProductResponseDTO> findByCodeAsync(String code)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		try {
 			Map<String, Object> pathParmas = new HashMap<>();
 			pathParmas.put("code", code);
@@ -59,7 +60,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	@Override
 	public ProductPageDTO find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
 		ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.get("ORCAMENTO_API", "products",
@@ -70,7 +71,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	@Override
 	public Optional<ProductPageDTO> findByDescription(int page, int pageSize, String description)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
+			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);

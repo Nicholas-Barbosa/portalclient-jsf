@@ -19,11 +19,11 @@ public class XssfReaderImpl implements XssfReader {
 	public void read(RowObject rowObject, InputStream xlsxFile) throws IOException {
 		try (Workbook workbook = new XSSFWorkbook(xlsxFile)) {
 			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Row row = datatypeSheet.getRow(rowObject.getOffset()-1);
+			Row row = datatypeSheet.getRow(rowObject.getOffset() - 1);
 			rowObject.getCellAttributes().parallelStream().forEach(c -> {
-				Cell cell = row.getCell(c.getCellOffset()-1);
+				Cell cell = row.getCell(c.getCellOffset() - 1);
 				if (cell != null) {
-					c.setValue(cell);
+					setCellAttributeValueAccordingToType(c, cell);
 				}
 			});
 		}
@@ -37,27 +37,64 @@ public class XssfReaderImpl implements XssfReader {
 	}
 
 	@Override
-	public Deque<RowObject> read(int fromIndex, int endIndex, InputStream xlsxFile) throws IOException {
+	public Deque<RowObject> read(byte[] xlsxStreams) throws IOException {
+		return this.read(new ByteArrayInputStream(xlsxStreams));
+	}
+
+	@Override
+	public Deque<RowObject> read( InputStream xlsxFile) throws IOException {
 		try (Workbook workbook = new XSSFWorkbook(xlsxFile)) {
 			Deque<RowObject> objectstToReturn = new LinkedList<>();
 			Sheet datatypeSheet = workbook.getSheetAt(0);
-			datatypeSheet.groupRow(--fromIndex, --endIndex);
 			datatypeSheet.forEach(currentRow -> {
 				RowObject rowObject = new RowObject(currentRow.getRowNum());
 				objectstToReturn.offer(rowObject);
-				IntStream.rangeClosed(currentRow.getFirstCellNum(), currentRow.getLastCellNum()).parallel()
-						.forEach(i -> {
+				IntStream.rangeClosed(currentRow.getFirstCellNum(), currentRow.getLastCellNum() - 1).filter(i -> i >= 0)
+						.parallel().forEach(i -> {
 							Cell currentCell = currentRow.getCell(i);
 							if (currentCell != null) {
-								rowObject.addCellAttribute(new CellAttribute(i, currentCell));
+								addCellAttributeAccordingToType(rowObject, currentCell, currentCell.getColumnIndex());
 							}
 						});
 
 			});
-
 			return objectstToReturn;
 		}
 
+	}
+
+	private void setCellAttributeValueAccordingToType(CellAttribute attribute, Cell cell) {
+		switch (cell.getCellType()) {
+		case STRING:
+			attribute.setValue(cell.getStringCellValue());
+			break;
+		case NUMERIC:
+			attribute.setValue(cell.getNumericCellValue());
+			break;
+		case FORMULA:
+			attribute.setValue(cell.getCellFormula());
+			break;
+		default:
+			attribute.setValue(cell.toString());
+			break;
+		}
+	}
+
+	private void addCellAttributeAccordingToType(RowObject rowObject, Cell currentCell, int i) {
+		switch (currentCell.getCellType()) {
+		case STRING:
+			rowObject.addCellAttribute(new CellAttribute(i, currentCell.getStringCellValue()));
+			break;
+		case NUMERIC:
+			rowObject.addCellAttribute(new CellAttribute(i, currentCell.getNumericCellValue()));
+			break;
+		case FORMULA:
+			rowObject.addCellAttribute(new CellAttribute(i, currentCell.getCellFormula()));
+			break;
+		default:
+			rowObject.addCellAttribute(new CellAttribute(i, currentCell));
+			break;
+		}
 	}
 
 }

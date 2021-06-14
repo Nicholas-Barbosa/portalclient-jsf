@@ -1,7 +1,7 @@
 package com.portal.java.controller;
 
 import java.io.Serializable;
-import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
@@ -34,7 +34,7 @@ public class OpenedTitlesController implements Serializable {
 		titles = new FinancialTitleLazyDataModel();
 		try {
 			LazyPopulateUtils.populate(titles, fiTitleService.find(page, 10));
-		} catch (SocketTimeoutException | ConnectException | TimeoutException e) {
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (ClientErrorException e) {

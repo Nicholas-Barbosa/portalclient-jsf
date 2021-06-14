@@ -2,6 +2,7 @@ package com.portal.java.service;
 
 import java.io.Serializable;
 import java.net.ConnectException;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
@@ -22,7 +23,7 @@ public class FinancialTitleServiceImpl implements FinancialTitleService,Serializ
 	private FinancialTitleRepository repository;
 
 	@Override
-	public FinancialTitlePageDTO find(int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException {
+	public FinancialTitlePageDTO find(int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		return repository.find(page, pageSize);
 	}
 
