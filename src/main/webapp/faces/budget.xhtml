@@ -341,7 +341,7 @@
 								<p:commandButton icon="pi pi-times"
 									styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 									title="Remover"
-									action="#{budgetController.removeEstimatedItem(product)}"
+									action="#{budgetController.removeItem(item)}"
 									update="formItems:dtItems budgetTotales" process="@this"
 									oncomplete="turnDtScrollBodyResponsive('dtItems','32vh')" />
 
@@ -543,7 +543,7 @@
 									<p:focus rendered="#{budgetController.previewProduct != null}"
 										context="manage-product-content" for="quantity" />
 									<p:remoteCommand name="loadImage"
-										action="#{budgetController.loadImageFromSelectedProduct}"
+										action="#{budgetController.loadImageFromPreviewProduct}"
 										async="true" update="@form"
 										onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
 										oncomplete="$('#spinnerLoadingImage').hide();

@@ -10,7 +10,6 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.ProductDTO;
 
 public interface BudgetService extends ServiceSerializable {
@@ -29,7 +28,7 @@ public interface BudgetService extends ServiceSerializable {
 	 */
 	void recalculate(BudgetDTO budget, ProductDTO newProductValues);
 
-	void removeItem(BudgetEstimatedDTO budget, EstimatedItemDTO item);
+	void removeItem(BudgetDTO budget, ProductDTO itemToRemove);
 
 	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 

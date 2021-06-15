@@ -182,12 +182,6 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onItemRowEdit(RowEditEvent<ProductDTO> event) {
-//		new Thread(() -> itemsOnCartToPost.parallelStream()
-//				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode())).forEach(i -> {
-//					i.setQuantity(event.getObject().getQuantity());
-//					i.setDiscount(event.getObject().getDiscount());
-//				})).start();
-
 		budgetService.recalculate(budgetDTO, event.getObject());
 
 	}
@@ -203,10 +197,8 @@ public class BudgetController implements Serializable {
 		PrimeFaces.current().dialog().openDynamic("openedTitles", options, null);
 	}
 
-	public void loadImageFromSelectedProduct() {
+	public void loadImageFromPreviewProduct() {
 		this.productService.loadImage(previewProduct);
-		System.out.println("image selected product " + previewProduct.getInfo().getImage().length);
-		System.out.println("image state " + previewProduct.getInfo().getStateForImage());
 	}
 
 	public void loadImageForProduct(ProductDTO product) {
@@ -327,7 +319,6 @@ public class BudgetController implements Serializable {
 			product.ifPresentOrElse(presentProduct -> {
 				FacesUtils.addHeaderForResponse("product-found", true);
 				previewProduct = new ProductDTO(presentProduct);
-				System.out.println("achpiw!");
 
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
@@ -364,10 +355,9 @@ public class BudgetController implements Serializable {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
 
-	public void removeEstimatedItem(EstimatedItemDTO item) {
-		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(item.getCommercialCode())))
-				.start();
-		budgetService.removeItem(budgetEstimateDTO, item);
+	public void removeItem(ProductDTO item) {
+		System.out.println("Remove item!");
+		budgetService.removeItem(budgetDTO, item);
 	}
 
 	public void removeSelectedProduct(ProductDTO product) {

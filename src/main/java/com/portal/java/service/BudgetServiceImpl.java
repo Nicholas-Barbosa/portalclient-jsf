@@ -8,9 +8,7 @@ import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -20,7 +18,6 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.ProductDTO;
 import com.portal.java.microsoft.excel.CellAttribute;
 import com.portal.java.microsoft.excel.RowObject;
@@ -68,18 +65,14 @@ public class BudgetServiceImpl implements BudgetService {
 	@Override
 	public void recalculate(BudgetDTO budget, ProductDTO newProductValues) {
 		productService.recalculateProduct(newProductValues);
-		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalGrossValue())
-				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalValue())
-				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		budget.setGrossValue(newGrossValue);
-		budget.setLiquidValue(newLiquidValue);
+		calculateTotal(budget);
 	}
 
 	@Override
-	public void removeItem(BudgetEstimatedDTO budget, EstimatedItemDTO product) {
-		budget.removeItem(product);
-		bulkUpdateValues(budget);
+	public void removeItem(BudgetDTO budget, ProductDTO itemToRemove) {
+		if (budget.getItems().remove(itemToRemove)) {
+			calculateTotal(budget);
+		}
 	}
 
 	@Override
@@ -87,19 +80,6 @@ public class BudgetServiceImpl implements BudgetService {
 		// String[]itemsOutOfStock =
 		// budget.getEstimatedItemValues().parallelStream().filter(i -> i.get)
 
-	}
-
-	private void bulkUpdateValues(BudgetEstimatedDTO oldBudget) {
-		Set<EstimatedItemDTO> itemsToCalculate = oldBudget.getItems();
-		BigDecimal liquidValue = new BigDecimal(itemsToCalculate.parallelStream().map(e -> e.getTotale())
-				.collect(Collectors.summingDouble(v -> v.doubleValue())));
-		BigDecimal grossValue = new BigDecimal(itemsToCalculate.parallelStream()
-				.map(e -> e.getTotalGrossValue().doubleValue()).collect(Collectors.summingDouble(v -> v)));
-		BigDecimal stTotal = new BigDecimal(itemsToCalculate.parallelStream().map(e -> e.getStValue().doubleValue())
-				.collect(Collectors.summingDouble(v -> v)));
-		BigDecimal totalDiscount = new BigDecimal(itemsToCalculate.parallelStream()
-				.map(e -> e.getDiscount().doubleValue()).collect(Collectors.summingDouble(v -> v)));
-		oldBudget.bulkUpdateTotales(liquidValue, grossValue, stTotal, totalDiscount);
 	}
 
 	@Override
@@ -124,4 +104,12 @@ public class BudgetServiceImpl implements BudgetService {
 		return null;
 	}
 
+	private void calculateTotal(BudgetDTO budget) {
+		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalGrossValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		budget.setGrossValue(newGrossValue);
+		budget.setLiquidValue(newLiquidValue);
+	}
 }
