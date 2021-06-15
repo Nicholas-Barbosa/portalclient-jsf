@@ -122,6 +122,13 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
+	public void recalculateProduct(ProductDTO product) {
+		this.changeProductDiscount(product);
+		this.changeProductQuantity(product);
+
+	}
+
+	@Override
 	public void changeProductQuantity(ProductDTO product) {
 		ProductPriceDTO price = product.getPrice();
 		price.setTotalGrossValue(
@@ -142,10 +149,8 @@ public class ProductServiceImpl implements ProductService {
 
 		price.setTotalGrossValue(
 				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
-		price.setTotalStValue(
-				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
-		price.setTotalValue(
-				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
+		price.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
+		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
 	}
 
 }

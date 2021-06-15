@@ -148,6 +148,7 @@ public class BudgetController implements Serializable {
 	public void changeProductDiscount() {
 		productService.changeProductDiscount(previewProduct);
 	}
+
 	public void changProductQuantity() {
 		productService.changeProductQuantity(previewProduct);
 	}
@@ -180,14 +181,14 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public void onItemRowEdit(RowEditEvent<EstimatedItemDTO> event) {
-		new Thread(() -> itemsOnCartToPost.parallelStream()
-				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode())).forEach(i -> {
-					i.setQuantity(event.getObject().getQuantity());
-					i.setDiscount(event.getObject().getDiscount());
-				})).start();
+	public void onItemRowEdit(RowEditEvent<ProductDTO> event) {
+//		new Thread(() -> itemsOnCartToPost.parallelStream()
+//				.filter(i -> i.getCommercialCode().equals(event.getObject().getCommercialCode())).forEach(i -> {
+//					i.setQuantity(event.getObject().getQuantity());
+//					i.setDiscount(event.getObject().getDiscount());
+//				})).start();
 
-		budgetService.reCalculate(budgetEstimateDTO, event.getObject());
+		budgetService.recalculate(budgetDTO, event.getObject());
 
 	}
 
@@ -331,7 +332,6 @@ public class BudgetController implements Serializable {
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
 				previewProduct = null;
-				System.out.println("preview " + previewProduct);
 			});
 			findProductByCodeForm = new FindProductByCodeForm();
 		} catch (SocketTimeoutException | TimeoutException | SocketException p) {

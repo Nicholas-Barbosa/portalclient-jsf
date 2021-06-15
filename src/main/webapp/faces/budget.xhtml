@@ -9,7 +9,7 @@
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
 	</ui:define>
 
-	<ui:define name="title">#{holdMessageView.getLabel('orcamento_message')}</ui:define>
+	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
 
 	<ui:define name="viewname">
 		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
@@ -50,8 +50,6 @@
 							title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
 							icon="pi pi-wallet" styleClass="ui-button-warning "
 							action="#{budgetController.showOpenedTitlesPageOnDialog}" />
-
-
 					</p:toolbarGroup>
 				</p:toolbar>
 				<p:sticky target="tb" />
@@ -293,7 +291,6 @@
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
-
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
 								<h:outputText value="#{item.price.totalStValue}">
@@ -317,7 +314,6 @@
 								</p:cellEditor>
 
 							</p:column>
-
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
 								<h:outputText value="#{item.price.totalGrossValue}">
@@ -521,24 +517,23 @@
 				<p:dialog
 					header="#{resourceBundleServiceImpl.getMessage('pesquisar_produto')}"
 					showEffect="fade" modal="true" widgetVar="serachProductDialog"
-					responsive="true" onShow="PF('blockProductContent').show()"
-					 >
+					responsive="true" onShow="PF('blockProductContent').show()">
 
 					<h:form id="formProductDetails">
 						<div style="max-height: 65vh; overflow: auto">
-							<p:outputPanel id="mainPanel" class="ui-fluid"
-								>
+							<p:outputPanel id="mainPanel" class="ui-fluid">
 								<div class="p-field">
 									<p:outputLabel for="code">#{resourceBundleServiceImpl.getMessage('codigo_comercial')}</p:outputLabel>
 									<div class="ui-inputgroup">
 										<p:inputText id="code"
 											value="#{budgetController.findProductByCodeForm.code}" />
+										<p:message for="code" id="errorCode" display="icon" />
 										<p:commandButton icon="pi pi-search"
 											styleClass="ui-button-warning" process="@this,code"
 											action="#{budgetController.findProductByCode}"
 											onstart="PF('blockPanelAll').show()"
 											oncomplete="PF('blockPanelAll').hide();$('#footer').show();if(xhr.getResponseHeader('product-found')==null)PF('blockProductContent').show()"
-											update="manage-product-content growl" />
+											update="manage-product-content growl errorCode" />
 									</div>
 								</div>
 
@@ -624,10 +619,14 @@
 									<p:remoteCommand name="changeQuantity"
 										process="@this,quantity,vLiquid,vGross,vSt"
 										action="#{budgetController.changProductQuantity}"
-										update="vLiquid,vGross,vSt" />
+										update="vLiquid,vGross,vSt"
+										onstart="PF('blockProductContent').show()"
+										oncomplete="PF('blockProductContent').hide()" />
 									<p:remoteCommand name="changeDiscount"
 										action="#{budgetController.changeProductDiscount}"
-										process="@this,discount" update="vLiquid,vGross,vSt" />
+										process="@this,discount" update="vLiquid,vGross,vSt"
+										onstart="PF('blockProductContent').show()"
+										oncomplete="PF('blockProductContent').hide()" />
 									<p:remoteCommand name="confirmProduct"
 										action="#{budgetController.addPreviewProductToBudget}"
 										onstart="$('body').css('cursor', 'progress');PF('blockPanelAll').show()"

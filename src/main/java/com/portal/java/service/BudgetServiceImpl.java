@@ -15,17 +15,18 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.java.dto.BudgetDTO;
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.EstimatedItemDTO;
+import com.portal.java.dto.ProductDTO;
 import com.portal.java.microsoft.excel.CellAttribute;
 import com.portal.java.microsoft.excel.RowObject;
 import com.portal.java.microsoft.excel.XssfReader;
 import com.portal.java.microsoft.excel.XssfReaderBuilder;
 import com.portal.java.repository.BudgetRepository;
-import com.portal.java.util.MathUtils;
 
 @ApplicationScoped
 public class BudgetServiceImpl implements BudgetService {
@@ -36,6 +37,8 @@ public class BudgetServiceImpl implements BudgetService {
 	private static final long serialVersionUID = -4268548772630741803L;
 	@Inject
 	private BudgetRepository budgetRepository;
+	@Inject
+	private ProductService productService;
 
 	@Override
 	public void findAll(int page, int pageSize) {
@@ -63,31 +66,14 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void reCalculate(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue) {
-		if (!estimatedItemValue.checkCurrentAndOldDiscount()) {
-			BigDecimal discount = estimatedItemValue.getDiscount();
-			estimatedItemValue.setUnitGrossValue(MathUtils.subtractValueByPercentage(discount,
-					estimatedItemValue.getUnitGrossValueWithNoDiscount()));
-
-			estimatedItemValue.setUnitStValue(
-					MathUtils.subtractValueByPercentage(discount, estimatedItemValue.getOriginalStValue()));
-
-			estimatedItemValue.setUnitPrice(
-					MathUtils.subtractValueByPercentage(discount, estimatedItemValue.getUnitValueWithNoDiscount()));
-
-		}
-
-		if (!estimatedItemValue.checkCurrentAndOldQuantity() || !estimatedItemValue.checkCurrentAndOldDiscount()) {
-			BigDecimal quantity = new BigDecimal(estimatedItemValue.getQuantity());
-			estimatedItemValue.setTotalPrice(
-					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitPrice()));
-			estimatedItemValue.setStValue(
-					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitStValue()));
-			estimatedItemValue.setTotalGrossValue(
-					MathUtils.calculateTotalValueOverQuantity(quantity, estimatedItemValue.getUnitGrossValue()));
-			this.bulkUpdateValues(budget);
-		}
-
+	public void recalculate(BudgetDTO budget, ProductDTO newProductValues) {
+		productService.recalculateProduct(newProductValues);
+		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalGrossValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		budget.setGrossValue(newGrossValue);
+		budget.setLiquidValue(newLiquidValue);
 	}
 
 	@Override

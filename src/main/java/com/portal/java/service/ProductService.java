@@ -19,13 +19,20 @@ public interface ProductService extends ServiceSerializable {
 	Optional<ProductDTO> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
+	/**
+	 * Call changeProductDiscount() to calculate new unit values and then
+	 * changeProductQuantity() to calcualte new total values;
+	 * 
+	 * @param product
+	 */
+	void recalculateProduct(ProductDTO product);
+
 	void changeProductQuantity(ProductDTO product);
 
 	void changeProductDiscount(ProductDTO product);
-	
+
 	void loadImage(Collection<? extends BaseProductDTO> products);
 
 	void loadImage(ProductDTO productDTO);
-	
-	
+
 }

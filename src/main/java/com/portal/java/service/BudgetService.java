@@ -5,11 +5,13 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
+import com.portal.java.dto.BudgetDTO;
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.EstimatedItemDTO;
+import com.portal.java.dto.ProductDTO;
 
 public interface BudgetService extends ServiceSerializable {
 
@@ -25,7 +27,7 @@ public interface BudgetService extends ServiceSerializable {
 	 * @param estimatedItemValue
 	 * @return
 	 */
-	void reCalculate(BudgetEstimatedDTO budget, EstimatedItemDTO estimatedItemValue);
+	void recalculate(BudgetDTO budget, ProductDTO newProductValues);
 
 	void removeItem(BudgetEstimatedDTO budget, EstimatedItemDTO item);
 
@@ -33,5 +35,4 @@ public interface BudgetService extends ServiceSerializable {
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
 
-	
 }
