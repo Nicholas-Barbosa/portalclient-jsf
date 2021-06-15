@@ -307,11 +307,6 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-	public void confirmSelectedProduct() {
-		this.selectedProducts.add(previewProduct);
-		this.previewProduct = null;
-	}
-
 	public void findProductByCode() {
 		try {
 			Optional<ProductDTO> product = productService.findByCode(findProductByCodeForm.getCode(),

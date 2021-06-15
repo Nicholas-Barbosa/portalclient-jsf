@@ -11,20 +11,16 @@ public class BudgetDTO {
 	private CustomerDTO customer;
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
+	private BigDecimal stValue;
+	private BigDecimal globalDiscount;
 	private final Set<ProductDTO> items;
 
 	public BudgetDTO() {
 		this.items = new HashSet<>();
 		this.grossValue = BigDecimal.ZERO;
 		this.liquidValue = BigDecimal.ZERO;
-	}
-
-	public BudgetDTO(CustomerDTO customer, BigDecimal grossValue, BigDecimal liquidValue, Set<ProductDTO> items) {
-		super();
-		this.customer = new CustomerDTO(customer);
-		this.grossValue = grossValue;
-		this.liquidValue = liquidValue;
-		this.items = new HashSet<>(items);
+		this.stValue = BigDecimal.ZERO;
+		this.globalDiscount = BigDecimal.ZERO;
 	}
 
 	public CustomerDTO getCustomer() {
@@ -51,6 +47,22 @@ public class BudgetDTO {
 		this.liquidValue = liquidValue;
 	}
 
+	public BigDecimal getStValue() {
+		return stValue;
+	}
+
+	public void setStValue(BigDecimal stValue) {
+		this.stValue = stValue;
+	}
+
+	public BigDecimal getGlobalDiscount() {
+		return globalDiscount;
+	}
+
+	public void setGlobalDiscount(BigDecimal globalDiscount) {
+		this.globalDiscount = globalDiscount;
+	}
+
 	public Set<ProductDTO> getItems() {
 		return items;
 	}
@@ -59,6 +71,7 @@ public class BudgetDTO {
 		ProductPriceDTO prices = product.getPrice();
 		grossValue = grossValue.add(prices.getTotalGrossValue());
 		liquidValue = liquidValue.add(prices.getTotalStValue());
+		stValue = stValue.add(prices.getTotalStValue());
 		this.items.add(product);
 	}
 }

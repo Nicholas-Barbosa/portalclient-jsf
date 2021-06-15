@@ -109,7 +109,10 @@ public class BudgetServiceImpl implements BudgetService {
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalStValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		budget.setGrossValue(newGrossValue);
 		budget.setLiquidValue(newLiquidValue);
+		budget.setStValue(newStValue);
 	}
 }
