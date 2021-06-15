@@ -13,6 +13,10 @@ public class MathUtils {
 		return new BigDecimal(unitValue.doubleValue()).multiply(quantity);
 	}
 
+	public static BigDecimal calculateTotalValueOverQuantity(int quantity, Number unitValue) {
+		return new BigDecimal(unitValue.doubleValue()).multiply(new BigDecimal(quantity));
+	}
+
 	public static BigDecimal findHwManyPercentsYCorrespondsOverX(Number y, Number x) {
 		BigDecimal ratioOfYOverX = new BigDecimal(y.doubleValue()).divide(new BigDecimal(x.doubleValue()));
 		return ratioOfYOverX.multiply(new BigDecimal(100));
@@ -42,5 +46,4 @@ public class MathUtils {
 		return value.add(percentageValueOverWhole);
 	}
 
-	
 }

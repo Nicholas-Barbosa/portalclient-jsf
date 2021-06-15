@@ -29,7 +29,7 @@
 							value="#{resourceBundleServiceImpl.getMessage('novo')}"
 							icon="pi pi-file" styleClass="p-mr-2"
 							action="#{budgetController.clearBudgetForm}"
-							update="customerDTO formProdutos formDtSelectedItems formEstimatedItems:dtItems budgetEstimatedTotales formSelectedProducts">
+							update="customerDTO formProdutos formDtSelectedItems formItems:dtItems budgetTotales ">
 							<p:confirm type="popup"
 								header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
 								message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
@@ -65,10 +65,11 @@
 						<div class="ui-fluid p-formgrid p-grid">
 
 							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
-								<p:outputLabel value="#{holdMessageView.label('cliente')}" />
+								<p:outputLabel
+									value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 								<div class="ui-inputgroup">
 									<p:inputText
-										value="#{budgetController.selectedCustomer.name}-#{budgetController.selectedCustomer.store}"
+										value="#{budgetController.budgetDTO.customer.name}-#{budgetController.budgetDTO.customer.store}"
 										readonly="true" />
 									<p:button icon="pi pi-search" styleClass="ui-button-warning"
 										onclick="PF('dlgSearchCustomer').show()" />
@@ -76,14 +77,14 @@
 							</div>
 							<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 								<p:outputLabel value="CGC" for="cgc" />
-								<p:inputText value="#{budgetController.selectedCustomer.cgc}"
+								<p:inputText value="#{budgetController.budgetDTO.customer.cgc}"
 									readonly="true" id="cgc" />
 							</div>
 							<div class="p-field p-col-12 p-xl-5 p-lg-5 p-md-12">
 								<p:outputLabel for="endereco"
-									value="#{holdMessageView.label('endereco')}" />
+									value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 								<p:inputText id="endereco"
-									value="#{budgetController.selectedCustomer.address}, #{budgetController.selectedCustomer.city}- #{budgetController.selectedCustomer.state}"
+									value="#{budgetController.budgetDTO.customer.address}, #{budgetController.budgetDTO.customer.city} - #{budgetController.budgetDTO.customer.state}"
 									readonly="true" />
 							</div>
 
@@ -93,105 +94,7 @@
 				</div>
 			</div>
 
-			<div class="p-col-12" id="divSearchProductByCode">
-				<div class="card">
-					<h5>#{resourceBundleServiceImpl.getMessage('busca_pelo_codigo')}</h5>
-					<p:button icon="pi pi-replay"
-						styleClass="rounded-button ui-button-outlined p-mr-2 p-mb-2"
-						onclick="$('#divSearchProductByCode').hide();$('#divCart').show();$('#estimatedTotals').show();" />
-					<h:form id="formSelectedProducts">
-						<p:dataTable value="#{budgetController.selectedProducts}"
-							var="item" id="dtSelectedProducts"
-							rowKey="#{item.commercialCode}" stripedRows="true" size="small"
-							widgetVar="dtSelectedProducts" rowIndexVar="crrntIndex">
-							<f:facet name="header">
-								<div class="ui-inputgroup ui-input-icon-left filter-container">
-									<p:inputText
-										value="#{budgetController.findProductByCodeDTO.code}"
-										id="pCode" />
-									<p:commandButton icon="pi pi-search"
-										styleClass="ui-button-info"
-										action="#{budgetController.findProductByCode}"
-										update="growl formProductDetails"
-										onstart="PF('blockDtProducts').show();"
-										oncomplete="if(getResponseHeader(xhr)){
-								if(xhr.getResponseHeader('product-found')=='true')
-								
-									PF('manageProductDialog').show();
-									
-							}
-								PF('blockDtProducts').hide();"
-										process="@this,pCode" />
-								</div>
 
-							</f:facet>
-							<f:facet name="footer">
-								<p:commandButton
-									styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-									icon="pi pi-check"
-									disabled="#{budgetController.selectedProducts.size() == 0}"
-									id="btnEstimar" onstart="PF('globalLoadDlg').show()"
-									oncomplete="onCompleteEstimate(xhr)"
-									action="#{budgetController.estimate}" process="@this"
-									update="@form budgetEstimatedTotales budgetToolsForm growl" />
-								<span class="p-text-bold">Há
-									#{fn:length(budgetController.selectedProducts)} itens
-									confirmados para esta pesquisa.</span>
-							</f:facet>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
-								<h:outputText value="#{item.commercialCode}" />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('descricao')}">
-								<h:outputText value="#{item.description}" />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
-								<i class="pi pi-spin pi-spinner"
-									style="font-size: 5rem; display: none"
-									id="spinInRow#{item.commercialCode}"></i>
-								<p:commandButton icon="pi pi-image"
-									styleClass="rounded-button ui-button-success ui-button-outlined p-mr-2 p-mb-2"
-									rendered="#{item.info.stateForImage eq 'TIMEOUT_EXCPTION' }"
-									action="#{budgetController.loadImageForProduct(item)}"
-									onstart="$('#spinInRow#{item.commercialCode}').show();"
-									oncomplete="$('#spinInRow#{item.commercialCode}').hide();"
-									process="@this" update="dtSelectedProducts" />
-								<p:graphicImage value="#{item.info.image}" stream="false"
-									style="width:100px;box-shadow: 0 3px 1px -2px rgba(0,0,0,.2),0 2px 2px 0 rgba(0,0,0,.14),0 1px 5px 0 rgba(0,0,0,.12);"
-									alt="Image not found for #{item.commercialCode}"
-									rendered="#{item.info.stateForImage eq 'FOUND' || 'NOT_FOUND'}"
-									id="pImage" />
-
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{item.quantity}" />
-									</f:facet>
-									<f:facet name="input">
-										<p:spinner id="modelInput2" value="#{item.quantity}"
-											style="width:100%" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-
-							<p:column>
-								<p:commandButton icon="pi pi-times"
-									styleClass="rounded-button ui-button-danger p-mr-2 p-mb-2"
-									process="@this"
-									action="#{budgetController.removeSelectedProduct(item)}"
-									update="@form" />
-							</p:column>
-							<p:autoUpdate on="findProductByCode" />
-						</p:dataTable>
-						<p:blockUI block="formSelectedProducts"
-							widgetVar="blockDtProducts" />
-					</h:form>
-				</div>
-			</div>
 			<div class="p-col-12" id="selectProducts">
 				<div class="card">
 					<h5>#{holdMessageView.label('selecione_produtos')}</h5>
@@ -223,7 +126,7 @@
 										<p:button
 											onclick="updateDtItems(); $('#selectProducts').hide();
 												$('#divCart').show();
-												$('#estimatedTotals').show();"
+												$('#totals').show();"
 											icon="pi pi-undo"
 											styleClass="ui-button-raised ui-button-success p-mr-2" />
 									</f:facet>
@@ -286,7 +189,7 @@
 											id="btnEstimar" onstart="PF('globalLoadDlg').show()"
 											oncomplete="onCompleteEstimate(xhr);"
 											action="#{budgetController.estimate}" process="@this"
-											update="budgetEstimatedTotales formEstimatedItems:dtItems formDtSelectedItems:dtSelectedItems budgetToolsForm growl" />
+											update="budgetTotales formItems:dtItems formDtSelectedItems:dtSelectedItems budgetToolsForm growl" />
 
 									</f:facet>
 									<p:column headerText="#{holdMessageView.label('descricao')}">
@@ -312,21 +215,20 @@
 				<div class="card">
 
 					<h5>#{resourceBundleServiceImpl.getMessage('carrinho_compras')}</h5>
-					<h:form id="formEstimatedItems">
+					<h:form id="formItems">
 						<p:remoteCommand name="updateDtItems" action="#" process="@none"
 							update="dtItems" />
-						<p:dataTable value="#{budgetController.budgetEstimateDTO.items}"
-							var="product" editable="true" rowKey="#{product.commercialCode}"
+						<p:dataTable value="#{budgetController.budgetDTO.items}"
+							var="item" editable="true" rowKey="#{item.commercialCode}"
 							id="dtItems" reflow="true" size="small" scrollable="true"
 							widgetVar="dtItems" rowIndexVar="crrIndex">
 							<p:ajax event="rowEdit"
 								listener="#{budgetController.onItemRowEdit}"
-								update="budgetEstimatedTotales" />
+								update="budgetTotales" />
 							<f:facet name="header">
 								<div class="p-d-flex p-jc-between p-ai-center">
 									<p:splitButton type="button"
-										onclick="$('#divSearchProductByCode').show();$('#divCart').hide();$('#estimatedTotals').hide();"
-										icon="pi pi-plus"
+										onclick="PF('serachProductDialog').show()" icon="pi pi-plus"
 										styleClass="ui-button-raised ui-button-success p-mr-2">
 										<p:menuitem
 											value="#{resourceBundleServiceImpl.getMessage('descricao')}"
@@ -341,24 +243,26 @@
 							</f:facet>
 							<f:facet name="footer">
 								<span class="p-text-bold">Há
-									#{fn:length(budgetController.budgetEstimateDTO.items)}
-									produtos.</span>
+									#{fn:length(budgetController.budgetDTO.items)} produtos.</span>
 							</f:facet>
 							<p:column>
-								<h:outputText value="#{crrIndex}" />
+								<h:outputText value="#{crrIndex+1}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}">
-								<h:outputText value="#{product.commercialCode}" />
+								<h:outputText value="#{item.commercialCode}" />
 							</p:column>
-
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('descricao')}">
-								<h:outputText value="#{product.description}" />
+								<h:outputText value="#{item.description}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('linha')}">
+								<h:outputText value="#{item.descriptionType}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
-								<p:graphicImage value="#{product.info.image}" stream="false"
+								<p:graphicImage value="#{item.info.image}" stream="false"
 									styleClass="product-image" alt="Image not found"
 									id="prductImgToSee" width="100px" />
 								<p:graphicImage />
@@ -367,24 +271,24 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
 								<p:cellEditor>
 									<f:facet name="output">
-										<h:outputText value="#{product.quantity}" />
+										<h:outputText value="#{item.price.quantity}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:spinner value="#{product.quantity}" style="width:100%"
+										<p:spinner value="#{item.price.quantity}" style="width:100%"
 											label="Name" />
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
-								<h:outputText value="#{product.unitPrice}">
+								<h:outputText value="#{item.price.unitValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('total')}">
-								<h:outputText value="#{product.totale}">
+								<h:outputText value="#{item.price.totalValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
@@ -392,7 +296,7 @@
 
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
-								<h:outputText value="#{product.stValue}">
+								<h:outputText value="#{item.price.totalStValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
@@ -401,12 +305,12 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('desconto')}%">
 								<p:cellEditor>
 									<f:facet name="output">
-										<h:outputText value="#{product.discount}">
+										<h:outputText value="#{item.price.discount}">
 											<f:convertNumber locale="pt_BR" />
 										</h:outputText>
 									</f:facet>
 									<f:facet name="input">
-										<p:spinner value="#{product.discount}" style="width:100%"
+										<p:spinner value="#{item.price.discount}" style="width:100%"
 											label="Name" suffix="%" stepFactor="0.25"
 											decimalSeparator="," thousandSeparator="." />
 									</f:facet>
@@ -416,7 +320,7 @@
 
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
-								<h:outputText value="#{product.totalGrossValue}">
+								<h:outputText value="#{item.price.totalGrossValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
@@ -442,39 +346,33 @@
 									styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 									title="Remover"
 									action="#{budgetController.removeEstimatedItem(product)}"
-									update="formEstimatedItems:dtItems budgetEstimatedTotales"
-									process="@this"
+									update="formItems:dtItems budgetTotales" process="@this"
 									oncomplete="turnDtScrollBodyResponsive('dtItems','32vh')" />
 
 							</p:column>
 						</p:dataTable>
-						<p:dialog header="Image" widgetVar="dlg" modal="true"
-							showEffect="fade" hideEffect="fade" responsive="true">
-							<p:graphicImage value="#{budgetController.imageToSeeOnDlg}"
-								stream="false" styleClass="product-image" alt="Image not found"
-								style="width:12vw" id="prductImgToSee" />
-						</p:dialog>
+
 					</h:form>
-					<p:blockUI block="formEstimatedItems" widgetVar="blockItems"
+					<p:blockUI block="formItems" widgetVar="blockItems"
 						blocked="#{budgetController.selectedCustomer.code == null}">
 						<i class="pi pi-lock" style="font-size: 3rem" />
 					</p:blockUI>
 				</div>
 			</div>
 
-			<div class="p-col-12" id="estimatedTotals">
+			<div class="p-col-12" id="totals">
 				<div class="card">
 
 					<p:messages globalOnly="true" id="msgQuoteSuccess" />
-					<h:form id="budgetEstimatedTotales">
+					<h:form id="budgetTotales">
 						<div class="ui-fluid p-formgrid p-grid">
 							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="liquidV"
 									value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
 								<p:inputNumber id="liquidV"
-									value="#{budgetController.budgetEstimateDTO.liquidValue}"
-									symbol="R$ " symbolPosition="p" readonly="true"
-									decimalSeparator="," thousandSeparator="." />
+									value="#{budgetController.budgetDTO.liquidValue}" symbol="R$ "
+									symbolPosition="p" readonly="true" decimalSeparator=","
+									thousandSeparator="." />
 							</div>
 							<div class="p-field p-col-12 p-md-3">
 								<p:outputLabel for="stT"
@@ -488,12 +386,10 @@
 								<p:outputLabel for="grossV"
 									value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
 								<p:inputNumber id="grossV"
-									value="#{budgetController.budgetEstimateDTO.grossValue}"
-									symbol="R$ " symbolPosition="p" readonly="true"
-									decimalSeparator="," thousandSeparator="." />
+									value="#{budgetController.budgetDTO.grossValue}" symbol="R$ "
+									symbolPosition="p" readonly="true" decimalSeparator=","
+									thousandSeparator="." />
 							</div>
-
-
 						</div>
 					</h:form>
 				</div>
@@ -609,8 +505,7 @@
 								</div>
 							</div>
 						</div>
-						<p:dataTable
-							 var="item">
+						<p:dataTable var="item">
 
 
 
@@ -624,81 +519,141 @@
 		<div class="p-grid crud-demo">
 			<div class="p-col-12">
 				<p:dialog
-					header="#{resourceBundleServiceImpl.getMessage('detalhes_produto')}"
-					showEffect="fade" modal="true" widgetVar="manageProductDialog"
-					responsive="true" onShow="$('#spinnerLoadingImage').hide();">
+					header="#{resourceBundleServiceImpl.getMessage('pesquisar_produto')}"
+					showEffect="fade" modal="true" widgetVar="serachProductDialog"
+					responsive="true" onShow="PF('blockProductContent').show()"
+					 >
 
 					<h:form id="formProductDetails">
-						<p:outputPanel id="manage-product-content" class="ui-fluid">
-							<p:outputPanel>
-								<p:focus for="quantity" />
-								<p:remoteCommand name="loadImage"
-									action="#{budgetController.loadImageFromSelectedProduct}"
-									async="true" update="@form"
-									onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
-									oncomplete="$('#spinnerLoadingImage').hide();
+						<div style="max-height: 65vh; overflow: auto">
+							<p:outputPanel id="mainPanel" class="ui-fluid"
+								>
+								<div class="p-field">
+									<p:outputLabel for="code">#{resourceBundleServiceImpl.getMessage('codigo_comercial')}</p:outputLabel>
+									<div class="ui-inputgroup">
+										<p:inputText id="code"
+											value="#{budgetController.findProductByCodeForm.code}" />
+										<p:commandButton icon="pi pi-search"
+											styleClass="ui-button-warning" process="@this,code"
+											action="#{budgetController.findProductByCode}"
+											onstart="PF('blockPanelAll').show()"
+											oncomplete="PF('blockPanelAll').hide();$('#footer').show();if(xhr.getResponseHeader('product-found')==null)PF('blockProductContent').show()"
+											update="manage-product-content growl" />
+									</div>
+								</div>
+
+								<p:outputPanel id="manage-product-content">
+									<p:blockUI block="manage-product-content"
+										widgetVar="blockProductContent" id="blockProductContent" />
+									<p:focus rendered="#{budgetController.previewProduct != null}"
+										context="manage-product-content" for="quantity" />
+									<p:remoteCommand name="loadImage"
+										action="#{budgetController.loadImageFromSelectedProduct}"
+										async="true" update="@form"
+										onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
+										oncomplete="$('#spinnerLoadingImage').hide();
 				$('#divProductImg').show();" />
-								<i class="pi pi-spin pi-spinner" style="font-size: 5rem"
-									id="spinnerLoadingImage"></i>
-								<div id="divProductImg">
-									<p:graphicImage
-										value="#{budgetController.selectedProduct.info.image}"
-										styleClass="product-image" stream="false" id="productImg"
-										alt="Image not uploaded for #{budgetController.selectedProduct.commercialCode}"
-										rendered="#{budgetController.selectedProduct.info.stateForImage eq 'FOUND' || 'NOT_FOUND'}" />
-									<p:button
-										value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
-										rendered="#{budgetController.selectedProduct.info.stateForImage eq 'TIMEOUT_EXCPTION'}"
-										onclick="loadImage()" id="btnReloadImage" />
-								</div>
+									<i class="pi pi-spin pi-spinner"
+										style="font-size: 5rem; display: none"
+										id="spinnerLoadingImage"></i>
+									<div id="divProductImg">
+										<p:graphicImage
+											value="#{budgetController.previewProduct.info.image}"
+											styleClass="product-image" stream="false" id="productImg"
+											alt="Image not uploaded for #{budgetController.previewProduct.commercialCode}"
+											rendered="#{budgetController.previewProduct.info.stateForImage eq 'FOUND' || 'NOT_FOUND'}" />
+										<p:button
+											value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
+											rendered="#{budgetController.previewProduct.info.stateForImage eq 'TIMEOUT_EXCPTION'}"
+											onclick="loadImage()" id="btnReloadImage" />
+									</div>
+									<br />
 
-
-								<br />
-								<div class="p-field">
-									<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
-									<p:inputNumber id="quantity"
-										value="#{budgetController.selectedProduct.quantity}"
-										onkeypress="if(event.keyCode==13){
-									confirmProduct();
-								}" />
-								</div>
-
-								<div class="p-field">
-									<p:outputLabel for="description">#{resourceBundleServiceImpl.getMessage('codigo_comercial')}</p:outputLabel>
-									<p:inputText id="description"
-										value="#{budgetController.selectedProduct.commercialCode}"
-										readonly="true" />
-								</div>
-								<div class="p-field">
-									<p:outputLabel for="name">#{resourceBundleServiceImpl.getMessage('descricao')}</p:outputLabel>
-									<p:inputTextarea id="name"
-										value="#{budgetController.selectedProduct.description}"
-										required="true" readonly="true" />
-								</div>
-
-								<p:remoteCommand name="confirmProduct"
-									action="#{budgetController.confirmSelectedProduct}"
-									update="formSelectedProducts:dtSelectedProducts"
-									onstart="$('body').css('cursor', 'progress');PF('blockPanel').show()"
-									oncomplete="PF('manageProductDialog').hide(); $('body').css('cursor', 'default');PF('blockPanel').hide()"
-									process="@this quantity" />
+									<div class="p-field">
+										<p:outputLabel for="name">#{resourceBundleServiceImpl.getMessage('descricao')}</p:outputLabel>
+										<p:inputTextarea id="name"
+											value="#{budgetController.previewProduct.description}"
+											required="true" readonly="true" />
+									</div>
+									<div class="p-field">
+										<p:outputLabel for="line">#{resourceBundleServiceImpl.getMessage('linha')}</p:outputLabel>
+										<p:inputText id="line"
+											value="#{budgetController.previewProduct.descriptionType}"
+											readonly="true" />
+									</div>
+									<div class="p-formgrid p-grid">
+										<div class="p-field p-col">
+											<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
+											<p:spinner id="quantity"
+												value="#{budgetController.previewProduct.price.quantity}"
+												onblur="changeQuantity()"
+												stepFactor="#{budgetController.previewProduct.price.multiple}" />
+										</div>
+										<div class="p-field p-col">
+											<p:outputLabel for="discount">#{resourceBundleServiceImpl.getMessage('desconto')}</p:outputLabel>
+											<p:spinner id="discount"
+												value="#{budgetController.previewProduct.price.discount}"
+												label="Name" suffix="%" stepFactor="0.25"
+												decimalSeparator="," thousandSeparator="."
+												onblur="changeDiscount()" />
+										</div>
+									</div>
+									<div class="p-formgrid p-grid">
+										<div class="p-field p-col">
+											<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
+											<p:inputNumber id="vLiquid"
+												value="#{budgetController.previewProduct.price.totalValue}"
+												symbol="R$ " symbolPosition="p" decimalSeparator=","
+												thousandSeparator="." readonly="true" />
+										</div>
+										<div class="p-field p-col">
+											<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
+											<p:inputNumber id="vGross"
+												value="#{budgetController.previewProduct.price.totalGrossValue}"
+												symbol="R$ " symbolPosition="p" decimalSeparator=","
+												thousandSeparator="." readonly="true" />
+										</div>
+										<div class="p-field p-col">
+											<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
+											<p:inputNumber id="vSt"
+												value="#{budgetController.previewProduct.price.totalStValue}"
+												symbol="R$ " symbolPosition="p" decimalSeparator=","
+												thousandSeparator="." readonly="true" />
+										</div>
+									</div>
+									<p:remoteCommand name="changeQuantity"
+										process="@this,quantity,vLiquid,vGross,vSt"
+										action="#{budgetController.changProductQuantity}"
+										update="vLiquid,vGross,vSt" />
+									<p:remoteCommand name="changeDiscount"
+										action="#{budgetController.changeProductDiscount}"
+										process="@this,discount" update="vLiquid,vGross,vSt" />
+									<p:remoteCommand name="confirmProduct"
+										action="#{budgetController.addPreviewProductToBudget}"
+										onstart="$('body').css('cursor', 'progress');PF('blockPanelAll').show()"
+										oncomplete="PF('serachProductDialog').hide(); $('body').css('cursor', 'default');PF('blockPanelAll').hide()"
+										process="@this manage-product-content"
+										update="formItems:dtItems,budgetTotales,@form" />
+								</p:outputPanel>
 							</p:outputPanel>
-						</p:outputPanel>
-						<p:blockUI block="manage-product-content" widgetVar="blockPanel">
-							<i class="pi pi-spin pi-spinner" style="font-size: 3.5rem"></i>
-						</p:blockUI>
+							<p:blockUI block="mainPanel" widgetVar="blockPanelAll">
+								<i class="pi pi-spin pi-spinner" style="font-size: 3.5rem"></i>
+							</p:blockUI>
+						</div>
 					</h:form>
-					<f:facet name="footer">
 
-						<p:commandButton
-							value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
-							icon="pi pi-check"
-							styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-							onclick="confirmProduct()" />
-						<p:commandButton
-							value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
-							icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
-							styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
+					<f:facet name="footer">
+						<div id="footer" style="display: none">
+							<p:commandButton type="button"
+								value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
+								icon="pi pi-check"
+								styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+								onclick="confirmProduct()" />
+							<p:commandButton
+								value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
+								icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
+								styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
+						</div>
 					</f:facet>
 
 				</p:dialog>
@@ -752,7 +707,8 @@
 								<p:inputText type="text" placeholder="keyword"
 									value="#{budgetController.nameCustomerToFind}" />
 							</div>
-							<p:commandButton value="#{holdMessageView.label('enviar')}"
+							<p:commandButton
+								value="#{resourceBundleServiceImpl.getMessage('enviar')}"
 								icon="pi pi-send"
 								action="#{budgetController.findCustomerByName(0)}"
 								onstart="PF('dlgSearchCustomer').hide();
@@ -808,7 +764,7 @@
 
 		<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="70vw"
 			responsive="true"
-			header="#{holdMessageView.label('escolha_cliente')}">
+			header="#{resourceBundleServiceImpl.getMessage('escolha_cliente')}">
 			<h:form id="fomrSelectCustomer">
 				<p:dataTable var="customer"
 					value="#{budgetController.lazyCustomers}" paginator="true" rows="5"
@@ -829,23 +785,28 @@
 					<p:ajax event="page" listener="#{budgetController.onPageCustomers}"
 						async="true" onstart="detectLongProcess()"
 						oncomplete="onCompletePageProducts()" process="@this" />
-					<p:column headerText="#{holdMessageView.label('codigo')}">
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
 						<h:outputText value="#{customer.code}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('nome')}">
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('nome')}">
 						<h:outputText value="#{customer.name}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('nome_fantasia')}">
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}">
 						<h:outputText value="#{customer.fantasyName}" />
 					</p:column>
 					<p:column headerText="CGC">
 						<h:outputText value="#{customer.cgc}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('endereco')}">
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
 						<h:outputText
 							value="#{customer.address},#{customer.city}-#{customer.state}" />
 					</p:column>
-					<p:column headerText="#{holdMessageView.label('bloqueado')}">
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}">
 						<h:outputText value="#{customer.blocked}" />
 					</p:column>
 				</p:dataTable>
@@ -927,7 +888,7 @@
 				if (getResponseHeader(xhr)) {
 					$('#divSearchProductByCode').hide();
 					$('#divCart').show();
-					$('#estimatedTotals').show();
+					$('#totals').show();
 					$("#selectProducts").hide();
 					updateDtItems().then(e=>{
 						turnDtScrollBodyResponsive('dtItems','32vh')
@@ -941,7 +902,7 @@
 				if (getResponseHeader(xhr)) {
 					$("#selectProducts").show();
 					$("#divCart").hide();
-					$("#estimatedTotals").hide();
+					$("#totals").hide();
 					updateDtProducts().then(e=>{
 						turnDtScrollBodyResponsive('dtSelectProducts', '40vh');
 						

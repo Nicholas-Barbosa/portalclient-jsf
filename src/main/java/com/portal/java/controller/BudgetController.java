@@ -26,6 +26,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
+import com.portal.java.dto.BudgetDTO;
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetJasperReportDTO;
@@ -36,7 +37,7 @@ import com.portal.java.dto.CustomerDTO;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.DownloadStreamsForm;
 import com.portal.java.dto.EstimatedItemDTO;
-import com.portal.java.dto.FindProductByCodeDTO;
+import com.portal.java.dto.FindProductByCodeForm;
 import com.portal.java.dto.FindProductByDescriptionDTO;
 import com.portal.java.dto.ProductBudgetFormDTO;
 import com.portal.java.dto.ProductDTO;
@@ -107,15 +108,17 @@ public class BudgetController implements Serializable {
 
 	private EstimatedItemDTO selectedItemToViewStock;
 
-	private FindProductByCodeDTO findProductByCodeDTO;
+	private FindProductByCodeForm findProductByCodeForm;
 
-	private ProductDTO selectedProduct;
+	private ProductDTO previewProduct;
 
 	private byte[] imageToSeeOnDlg;
 
 	private BudgetXlsxPreviewForm budgetImportXlsxForm;
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
+
+	private BudgetDTO budgetDTO;
 
 	public BudgetController() {
 		this(null, null, null, null, null, null, null);
@@ -135,6 +138,18 @@ public class BudgetController implements Serializable {
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
+	}
+
+	public void addPreviewProductToBudget() {
+		budgetDTO.addProduct(previewProduct);
+		previewProduct = null;
+	}
+
+	public void changeProductDiscount() {
+		productService.changeProductDiscount(previewProduct);
+	}
+	public void changProductQuantity() {
+		productService.changeProductQuantity(previewProduct);
 	}
 
 	public void previewBudgetXlsxContent() {
@@ -188,9 +203,9 @@ public class BudgetController implements Serializable {
 	}
 
 	public void loadImageFromSelectedProduct() {
-		this.productService.loadImage(selectedProduct);
-		System.out.println("image selected product " + selectedProduct.getInfo().getImage().length);
-		System.out.println("image state " + selectedProduct.getInfo().getStateForImage());
+		this.productService.loadImage(previewProduct);
+		System.out.println("image selected product " + previewProduct.getInfo().getImage().length);
+		System.out.println("image state " + previewProduct.getInfo().getStateForImage());
 	}
 
 	public void loadImageForProduct(ProductDTO product) {
@@ -204,7 +219,7 @@ public class BudgetController implements Serializable {
 			executor.execute(() -> {
 				selectedCustomer = null;
 				budgetEstimateDTO = null;
-				selectedProduct = null;
+				previewProduct = null;
 			});
 			executor.execute(() -> itemsOnCartToPost.clear());
 			executor.execute(() -> selectedProducts.clear());
@@ -236,7 +251,7 @@ public class BudgetController implements Serializable {
 			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		selectedCustomer = event.getObject();
+		budgetDTO.setCustomer(event.getObject());
 		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
@@ -300,24 +315,25 @@ public class BudgetController implements Serializable {
 	}
 
 	public void confirmSelectedProduct() {
-		this.selectedProducts.add(selectedProduct);
-		this.itemsOnCartToPost.add(new ProductBudgetFormDTO(selectedProduct));
-		this.selectedProduct = null;
+		this.selectedProducts.add(previewProduct);
+		this.previewProduct = null;
 	}
 
 	public void findProductByCode() {
 		try {
-			Optional<ProductDTO> product = productService.findByCode(findProductByCodeDTO.getCode());
+			Optional<ProductDTO> product = productService.findByCode(findProductByCodeForm.getCode(),
+					budgetDTO.getCustomer().getCode(), budgetDTO.getCustomer().getStore());
 			product.ifPresentOrElse(presentProduct -> {
 				FacesUtils.addHeaderForResponse("product-found", true);
-				selectedProduct = new ProductDTO(presentProduct);
-				selectedProduct.setQuantity(selectedProduct.getMultiple());
+				previewProduct = new ProductDTO(presentProduct);
+				System.out.println("achpiw!");
 
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-				selectedProduct = null;
+				previewProduct = null;
+				System.out.println("preview " + previewProduct);
 			});
-			findProductByCodeDTO = new FindProductByCodeDTO();
+			findProductByCodeForm = new FindProductByCodeForm();
 		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
@@ -362,7 +378,7 @@ public class BudgetController implements Serializable {
 
 	public void onProductSelected(ProductDTO productDTO) {
 		selectedProducts.add(productDTO);
-		itemsOnCartToPost.add(new ProductBudgetFormDTO(productDTO));
+		// itemsOnCartToPost.add(new ProductBudgetFormDTO(productDTO));
 
 	}
 
@@ -376,10 +392,11 @@ public class BudgetController implements Serializable {
 			this.downloadStreamsForm = new DownloadStreamsForm();
 			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 			this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
-			findProductByCodeDTO = new FindProductByCodeDTO();
+			findProductByCodeForm = new FindProductByCodeForm();
 			this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
 					(short) 1, (short) 2, (short) 0);
 			this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
+			this.budgetDTO = new BudgetDTO();
 		}).start();
 	}
 
@@ -459,12 +476,12 @@ public class BudgetController implements Serializable {
 		return responseController;
 	}
 
-	public FindProductByCodeDTO getFindProductByCodeDTO() {
-		return findProductByCodeDTO;
+	public FindProductByCodeForm getFindProductByCodeForm() {
+		return findProductByCodeForm;
 	}
 
-	public ProductDTO getSelectedProduct() {
-		return selectedProduct;
+	public ProductDTO getPreviewProduct() {
+		return previewProduct;
 	}
 
 	public byte[] getImageToSeeOnDlg() {
@@ -483,4 +500,7 @@ public class BudgetController implements Serializable {
 		return budgetXlsxPreview;
 	}
 
+	public BudgetDTO getBudgetDTO() {
+		return budgetDTO;
+	}
 }

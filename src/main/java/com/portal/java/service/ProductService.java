@@ -13,11 +13,19 @@ import com.portal.java.dto.ProductPageDTO;
 
 public interface ProductService extends ServiceSerializable {
 
-	Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+	Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	Optional<ProductDTO> findByCode(String code)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+	Optional<ProductDTO> findByCode(String code, String customerCode, String store)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
+	void changeProductQuantity(ProductDTO product);
+
+	void changeProductDiscount(ProductDTO product);
+	
 	void loadImage(Collection<? extends BaseProductDTO> products);
 
 	void loadImage(ProductDTO productDTO);
+	
+	
 }

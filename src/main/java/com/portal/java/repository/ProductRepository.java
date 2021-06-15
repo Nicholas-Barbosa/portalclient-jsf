@@ -12,11 +12,15 @@ import com.portal.java.dto.ProductPageDTO;
 
 public interface ProductRepository {
 
-	NoPageProductResponseDTO findByCode(String code)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+	ProductPageDTO find(int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	Future<NoPageProductResponseDTO> findByCodeAsync(String code)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+	Optional<ProductPageDTO> findByDescription(int page, int pageSize, String description)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	ProductPageDTO find(int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+	Optional<NoPageProductResponseDTO> findByCode(String code, String customerCode, String store)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	Optional<ProductPageDTO> findByDescription(int page, int pageSize, String description)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+	Future<NoPageProductResponseDTO> findByCodeAsync(String code, String customerCode, String store)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 }

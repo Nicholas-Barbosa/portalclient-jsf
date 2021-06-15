@@ -25,10 +25,12 @@ import com.portal.java.cdi.qualifier.ProductBucket;
 import com.portal.java.dto.BaseProductDTO;
 import com.portal.java.dto.NoPageProductResponseDTO;
 import com.portal.java.dto.ProductDTO;
+import com.portal.java.dto.ProductDTO.ProductPriceDTO;
 import com.portal.java.dto.ProductInfoDTO;
 import com.portal.java.dto.ProductPageDTO;
 import com.portal.java.google.cloud.storage.BucketClient;
 import com.portal.java.repository.ProductRepository;
+import com.portal.java.util.MathUtils;
 
 @ApplicationScoped
 public class ProductServiceImpl implements ProductService {
@@ -45,15 +47,17 @@ public class ProductServiceImpl implements ProductService {
 	private BucketClient bucketClient;
 
 	@Override
-	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
+	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		// TODO Auto-generated method stub
 		return productRepository.findByDescription(page, pageSize, descriptio);
 	}
 
 	@Override
-	public Optional<ProductDTO> findByCode(String code)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
+	public Optional<ProductDTO> findByCode(String code, String customerCode, String store)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
-		Future<NoPageProductResponseDTO> ftProduct = productRepository.findByCodeAsync(code);
+		Future<NoPageProductResponseDTO> ftProduct = productRepository.findByCodeAsync(code, customerCode, store);
 		try {
 			NoPageProductResponseDTO response = ftProduct.get();
 			if (response != null) {
@@ -115,6 +119,33 @@ public class ProductServiceImpl implements ProductService {
 			e.printStackTrace();
 		}
 		return new byte[0];
+	}
+
+	@Override
+	public void changeProductQuantity(ProductDTO product) {
+		ProductPriceDTO price = product.getPrice();
+		price.setTotalGrossValue(
+				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
+		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
+		price.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
+	}
+
+	@Override
+	public void changeProductDiscount(ProductDTO product) {
+		ProductPriceDTO price = product.getPrice();
+		price.setUnitGrossValue(
+				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitGrossValueWithNoDiscount()));
+		price.setUnitStValue(
+				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitStValueWithNoDiscount()));
+		price.setUnitValue(
+				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitValueWithNoDiscount()));
+
+		price.setTotalGrossValue(
+				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
+		price.setTotalStValue(
+				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
+		price.setTotalValue(
+				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
 	}
 
 }

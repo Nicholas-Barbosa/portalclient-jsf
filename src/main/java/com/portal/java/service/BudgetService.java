@@ -16,7 +16,7 @@ public interface BudgetService extends ServiceSerializable {
 	void findAll(int page, int pageSize);
 
 	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm)
-			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
 	/**
 	 * Update items from budget which items are equal in term of equals.
@@ -32,4 +32,6 @@ public interface BudgetService extends ServiceSerializable {
 	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
+
+	
 }
