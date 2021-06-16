@@ -49,7 +49,7 @@ public interface ProductService extends ServiceSerializable {
 	 * 
 	 * @param discount
 	 */
-	void calculateProductDiscount(BigDecimal discount);
+	void calculateProductDiscount(Product product,BigDecimal discount);
 
 	void loadImage(Collection<? extends BaseProductDTO> products);
 

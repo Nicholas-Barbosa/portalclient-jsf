@@ -156,7 +156,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void calculateProductDiscount(BigDecimal discount) {
+	public void calculateProductDiscount(Product product, BigDecimal discount) {
 		// TODO Auto-generated method stub
 		
 	}
