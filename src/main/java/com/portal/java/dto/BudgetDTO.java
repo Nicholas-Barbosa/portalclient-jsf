@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.portal.java.dto.ProductDTO.ProductPriceDTO;
+import com.portal.java.dto.Product.ProductPrice;
 
 public class BudgetDTO {
 
@@ -13,7 +13,7 @@ public class BudgetDTO {
 	private BigDecimal liquidValue;
 	private BigDecimal stValue;
 	private BigDecimal globalDiscount;
-	private final Set<ProductDTO> items;
+	private final Set<Product> items;
 
 	public BudgetDTO() {
 		this.items = new HashSet<>();
@@ -63,12 +63,12 @@ public class BudgetDTO {
 		this.globalDiscount = globalDiscount;
 	}
 
-	public Set<ProductDTO> getItems() {
+	public Set<Product> getItems() {
 		return items;
 	}
 
-	public void addProduct(ProductDTO product) {
-		ProductPriceDTO prices = product.getPrice();
+	public void addProduct(Product product) {
+		ProductPrice prices = product.getPrice();
 		grossValue = grossValue.add(prices.getTotalGrossValue());
 		liquidValue = liquidValue.add(prices.getTotalStValue());
 		stValue = stValue.add(prices.getTotalStValue());

@@ -39,8 +39,8 @@ import com.portal.java.dto.DownloadStreamsForm;
 import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.FindProductByCodeForm;
 import com.portal.java.dto.FindProductByDescriptionDTO;
-import com.portal.java.dto.ProductBudgetFormDTO;
-import com.portal.java.dto.ProductDTO;
+import com.portal.java.dto.ProductBudgetForm;
+import com.portal.java.dto.Product;
 import com.portal.java.dto.ProductPageDTO;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.jasper.service.BudgetReport;
@@ -79,7 +79,7 @@ public class BudgetController implements Serializable {
 
 	private final ProductService productService;
 
-	private LazyDataModel<ProductDTO> lazyProducts;
+	private LazyDataModel<Product> lazyProducts;
 
 	private LazyDataModel<CustomerDTO> lazyCustomers;
 
@@ -87,9 +87,9 @@ public class BudgetController implements Serializable {
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
-	private Set<ProductBudgetFormDTO> itemsOnCartToPost;
+	private Set<ProductBudgetForm> itemsOnCartToPost;
 
-	private Set<ProductDTO> selectedProducts;
+	private Set<Product> selectedProducts;
 
 	private FindProductByDescriptionDTO findProductByDescriptionDTO;
 
@@ -110,7 +110,7 @@ public class BudgetController implements Serializable {
 
 	private FindProductByCodeForm findProductByCodeForm;
 
-	private ProductDTO previewProduct;
+	private Product previewProduct;
 
 	private byte[] imageToSeeOnDlg;
 
@@ -146,11 +146,11 @@ public class BudgetController implements Serializable {
 	}
 
 	public void changeProductDiscount() {
-		productService.changeProductDiscount(previewProduct);
+		productService.calculateProductDiscount(previewProduct);
 	}
 
 	public void changProductQuantity() {
-		productService.changeProductQuantity(previewProduct);
+		productService.calculateProductQuantity(previewProduct);
 	}
 
 	public void previewBudgetXlsxContent() {
@@ -181,7 +181,7 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public void onItemRowEdit(RowEditEvent<ProductDTO> event) {
+	public void onItemRowEdit(RowEditEvent<Product> event) {
 		budgetService.recalculate(budgetDTO, event.getObject());
 
 	}
@@ -201,7 +201,7 @@ public class BudgetController implements Serializable {
 		this.productService.loadImage(previewProduct);
 	}
 
-	public void loadImageForProduct(ProductDTO product) {
+	public void loadImageForProduct(Product product) {
 		this.productService.loadImage(product);
 	}
 
@@ -309,11 +309,11 @@ public class BudgetController implements Serializable {
 
 	public void findProductByCode() {
 		try {
-			Optional<ProductDTO> product = productService.findByCode(findProductByCodeForm.getCode(),
+			Optional<Product> product = productService.findByCode(findProductByCodeForm.getCode(),
 					budgetDTO.getCustomer().getCode(), budgetDTO.getCustomer().getStore());
 			product.ifPresentOrElse(presentProduct -> {
 				FacesUtils.addHeaderForResponse("product-found", true);
-				previewProduct = new ProductDTO(presentProduct);
+				previewProduct = new Product(presentProduct);
 
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
@@ -350,18 +350,18 @@ public class BudgetController implements Serializable {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
 
-	public void removeItem(ProductDTO item) {
+	public void removeItem(Product item) {
 		System.out.println("Remove item!");
 		budgetService.removeItem(budgetDTO, item);
 	}
 
-	public void removeSelectedProduct(ProductDTO product) {
+	public void removeSelectedProduct(Product product) {
 		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
 				.start();
 		this.selectedProducts.remove(product);
 	}
 
-	public void onProductSelected(ProductDTO productDTO) {
+	public void onProductSelected(Product productDTO) {
 		selectedProducts.add(productDTO);
 		// itemsOnCartToPost.add(new ProductBudgetFormDTO(productDTO));
 
@@ -385,7 +385,7 @@ public class BudgetController implements Serializable {
 		}).start();
 	}
 
-	public LazyDataModel<ProductDTO> getLazyProducts() {
+	public LazyDataModel<Product> getLazyProducts() {
 		return lazyProducts;
 	}
 
@@ -405,7 +405,7 @@ public class BudgetController implements Serializable {
 		return h5DivLoadProducts;
 	}
 
-	public Set<ProductDTO> getSelectedProducts() {
+	public Set<Product> getSelectedProducts() {
 		return selectedProducts;
 	}
 
@@ -465,7 +465,7 @@ public class BudgetController implements Serializable {
 		return findProductByCodeForm;
 	}
 
-	public ProductDTO getPreviewProduct() {
+	public Product getPreviewProduct() {
 		return previewProduct;
 	}
 

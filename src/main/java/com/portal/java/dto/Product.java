@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductDTO {
+public class Product {
 
 	private String code;
 
@@ -19,39 +19,42 @@ public class ProductDTO {
 
 	private String description;
 
-	private ProductInfoDTO info;
+	private int avaliableStock;
 
-	private ProductPriceDTO price;
+	private ProductInfo info;
 
-	public ProductDTO() {
+	private ProductPrice price;
+
+	public Product() {
 	}
 
 	@JsonbCreator
-	public ProductDTO(@JsonbProperty("code") String code,
+	public Product(@JsonbProperty("code") String code,
 			@JsonbProperty("description_product_type") String descriptionType,
 			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("product_type") String type,
 			@JsonbProperty("description") String description, @JsonbProperty("multiple") Integer multiple,
 			@JsonbProperty("st_value") BigDecimal stValue, @JsonbProperty("unit_price") BigDecimal unitValue,
-			@JsonbProperty("unit_gross_value") BigDecimal grossValue) {
+			@JsonbProperty("unit_gross_value") BigDecimal grossValue, @JsonbProperty("stock") int stock) {
 		this.code = code;
 		this.descriptionType = descriptionType;
 		this.commercialCode = commercialCode;
 		this.type = type;
 		this.description = description;
-		this.price = new ProductPriceDTO(stValue, unitValue, grossValue, stValue, unitValue, grossValue, multiple, 1,
+		this.price = new ProductPrice(stValue, unitValue, grossValue, stValue, unitValue, grossValue, multiple, 1,
 				BigDecimal.ZERO);
-
+		this.avaliableStock = stock;
 	}
 
-	public ProductDTO(ProductDTO productDTO) {
+	public Product(Product product) {
 		super();
-		this.code = productDTO.code;
-		this.descriptionType = productDTO.descriptionType;
-		this.commercialCode = productDTO.commercialCode;
-		this.type = productDTO.type;
-		this.description = productDTO.description;
-		this.info = productDTO.info;
-		this.price = productDTO.price;
+		this.code = product.code;
+		this.descriptionType = product.descriptionType;
+		this.commercialCode = product.commercialCode;
+		this.type = product.type;
+		this.description = product.description;
+		this.info = product.info;
+		this.price = product.price;
+		this.avaliableStock = product.avaliableStock;
 	}
 
 	public String getCode() {
@@ -74,19 +77,27 @@ public class ProductDTO {
 		return description;
 	}
 
-	public ProductInfoDTO getInfo() {
+	public int getAvaliableStock() {
+		return avaliableStock;
+	}
+
+	public void setAvaliableStock(int avaliableStock) {
+		this.avaliableStock = avaliableStock;
+	}
+
+	public ProductInfo getInfo() {
 		return info;
 	}
 
-	public void setInfo(ProductInfoDTO info) {
+	public void setInfo(ProductInfo info) {
 		this.info = info;
 	}
 
-	public ProductPriceDTO getPrice() {
+	public ProductPrice getPrice() {
 		return price;
 	}
 
-	public void setPrice(ProductPriceDTO price) {
+	public void setPrice(ProductPrice price) {
 		this.price = price;
 	}
 
@@ -106,7 +117,7 @@ public class ProductDTO {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ProductDTO other = (ProductDTO) obj;
+		Product other = (Product) obj;
 		if (commercialCode == null) {
 			if (other.commercialCode != null)
 				return false;
@@ -115,7 +126,7 @@ public class ProductDTO {
 		return true;
 	}
 
-	public static class ProductPriceDTO {
+	public static class ProductPrice {
 		private BigDecimal unitStValue;
 		private BigDecimal unitValue;
 		private BigDecimal unitGrossValue;
@@ -130,11 +141,11 @@ public class ProductDTO {
 
 		private final Map<String, BigDecimal> unitValuesHolderWithoutDiscount = new ConcurrentHashMap<>();
 
-		public ProductPriceDTO() {
+		public ProductPrice() {
 			// TODO Auto-generated constructor stub
 		}
 
-		public ProductPriceDTO(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue,
+		public ProductPrice(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue,
 				BigDecimal totalStValue, BigDecimal totalValue, BigDecimal totalGrossValue, Integer multiple,
 				int quantity, BigDecimal discount) {
 			super();
@@ -150,7 +161,7 @@ public class ProductDTO {
 			putUnitValuesOnMapHolder();
 		}
 
-		public ProductPriceDTO(ProductPriceDTO price) {
+		public ProductPrice(ProductPrice price) {
 			super();
 			this.unitStValue = price.unitStValue;
 			this.unitValue = price.unitValue;

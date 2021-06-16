@@ -20,7 +20,7 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 
 	private BigDecimal discount;
 
-	private ProductInfoDTO info;
+	private ProductInfo info;
 
 	public BaseProductDTO() {
 		// TODO Auto-generated constructor stub
@@ -46,7 +46,7 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 	}
 
 	public BaseProductDTO(String code, String descriptionType, String commercialCode, String type, String description,
-			Integer multiple, int quantity, ProductInfoDTO info) {
+			Integer multiple, int quantity, ProductInfo info) {
 		super();
 		this.code = code;
 		this.descriptionType = descriptionType;
@@ -150,11 +150,11 @@ public class BaseProductDTO implements Comparable<BaseProductDTO> {
 		this.discount = discount;
 	}
 
-	public ProductInfoDTO getInfo() {
+	public ProductInfo getInfo() {
 		return info;
 	}
 
-	public void setInfo(ProductInfoDTO info) {
+	public void setInfo(ProductInfo info) {
 		this.info = info;
 	}
 

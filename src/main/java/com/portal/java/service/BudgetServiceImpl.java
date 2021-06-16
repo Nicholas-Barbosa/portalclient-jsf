@@ -18,7 +18,7 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.ProductDTO;
+import com.portal.java.dto.Product;
 import com.portal.java.microsoft.excel.CellAttribute;
 import com.portal.java.microsoft.excel.RowObject;
 import com.portal.java.microsoft.excel.XssfReader;
@@ -63,13 +63,13 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void recalculate(BudgetDTO budget, ProductDTO newProductValues) {
-		productService.recalculateProduct(newProductValues);
+	public void recalculate(BudgetDTO budget, Product newProductValues) {
+		productService.calculateProduct(newProductValues);
 		calculateTotal(budget);
 	}
 
 	@Override
-	public void removeItem(BudgetDTO budget, ProductDTO itemToRemove) {
+	public void removeItem(BudgetDTO budget, Product itemToRemove) {
 		if (budget.getItems().remove(itemToRemove)) {
 			calculateTotal(budget);
 		}
@@ -114,5 +114,11 @@ public class BudgetServiceImpl implements BudgetService {
 		budget.setGrossValue(newGrossValue);
 		budget.setLiquidValue(newLiquidValue);
 		budget.setStValue(newStValue);
+	}
+
+	@Override
+	public void recalculateForGlobalDiscount(BudgetDTO budgetDTO) {
+		// TODO Auto-generated method stub
+		
 	}
 }

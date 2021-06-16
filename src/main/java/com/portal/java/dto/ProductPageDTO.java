@@ -7,7 +7,7 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductPageDTO implements Page<ProductDTO> {
+public class ProductPageDTO implements Page<Product> {
 
 	/**
 	 * 
@@ -22,7 +22,7 @@ public class ProductPageDTO implements Page<ProductDTO> {
 
 	private int page;
 
-	private List<ProductDTO> products;
+	private List<Product> products;
 
 	public ProductPageDTO() {
 		// TODO Auto-generated constructor stub
@@ -31,7 +31,7 @@ public class ProductPageDTO implements Page<ProductDTO> {
 	@JsonbCreator
 	public ProductPageDTO(@JsonbProperty("total_items") Integer totalItems,
 			@JsonbProperty("total_page") Integer totalPages, @JsonbProperty("page_size") Integer pageSize,
-			@JsonbProperty("page") Integer page, @JsonbProperty("products") List<ProductDTO> products) {
+			@JsonbProperty("page") Integer page, @JsonbProperty("products") List<Product> products) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
@@ -65,7 +65,7 @@ public class ProductPageDTO implements Page<ProductDTO> {
 	}
 
 	@Override
-	public Collection<ProductDTO> getContent() {
+	public Collection<Product> getContent() {
 		return new ArrayList<>(products);
 	}
 

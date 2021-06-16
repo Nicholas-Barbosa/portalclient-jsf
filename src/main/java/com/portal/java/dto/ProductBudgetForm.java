@@ -2,9 +2,9 @@ package com.portal.java.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductBudgetFormDTO extends BaseProductDTO {
+public class ProductBudgetForm extends BaseProductDTO {
 
-	public ProductBudgetFormDTO(BaseProductDTO product) {
+	public ProductBudgetForm(BaseProductDTO product) {
 		super(product);
 	}
 

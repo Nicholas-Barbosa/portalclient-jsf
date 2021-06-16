@@ -11,9 +11,9 @@ public class BudgetEstimateForm {
 
 	private String store;
 
-	private Set<ProductBudgetFormDTO> itemsForm;
+	private Set<ProductBudgetForm> itemsForm;
 
-	public BudgetEstimateForm(String client, String store, Set<ProductBudgetFormDTO> items) {
+	public BudgetEstimateForm(String client, String store, Set<ProductBudgetForm> items) {
 		this.client = client;
 		this.store = store;
 		this.itemsForm = new HashSet<>(items);
@@ -30,7 +30,7 @@ public class BudgetEstimateForm {
 	}
 
 	@JsonbProperty("items")
-	public Set<ProductBudgetFormDTO> getItemsForm() {
+	public Set<ProductBudgetForm> getItemsForm() {
 		return itemsForm;
 	}
 

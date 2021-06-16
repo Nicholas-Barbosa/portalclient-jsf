@@ -10,7 +10,7 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.ProductDTO;
+import com.portal.java.dto.Product;
 
 public interface BudgetService extends ServiceSerializable {
 
@@ -20,18 +20,20 @@ public interface BudgetService extends ServiceSerializable {
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
 	/**
-	 * Update items from budget which items are equal in term of equals.
+	 * Recalculate newProductValues object and then recalculate totals for this
+	 * mutable budget object.
 	 * 
 	 * @param budget
-	 * @param estimatedItemValue
+	 * @param newProductValues
 	 * @return
 	 */
-	void recalculate(BudgetDTO budget, ProductDTO newProductValues);
+	void recalculate(BudgetDTO budget, Product newProductValues);
 
-	void removeItem(BudgetDTO budget, ProductDTO itemToRemove);
+	void removeItem(BudgetDTO budget, Product itemToRemove);
 
 	void checkQuantityPolicies(BudgetEstimatedDTO budget);
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
 
+	void recalculateForGlobalDiscount(BudgetDTO budgetDTO);
 }

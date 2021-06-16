@@ -211,8 +211,9 @@
 			</div>
 			<div class="p-col-12" id="divCart">
 				<div class="card">
-
-					<h5>#{resourceBundleServiceImpl.getMessage('carrinho_compras')}</h5>
+					<div class="card-header">
+						<h5>#{resourceBundleServiceImpl.getMessage('carrinho_compras')}</h5>
+					</div>
 					<h:form id="formItems">
 						<p:remoteCommand name="updateDtItems" action="#" process="@none"
 							update="dtItems" />
@@ -225,13 +226,18 @@
 								update="budgetTotales" />
 							<f:facet name="header">
 								<div class="p-d-flex p-jc-between p-ai-center">
-									<p:splitButton type="button"
-										onclick="PF('serachProductDialog').show()" icon="pi pi-plus"
-										styleClass="ui-button-raised ui-button-success p-mr-2">
-										<p:menuitem
-											value="#{resourceBundleServiceImpl.getMessage('descricao')}"
-											onclick="PF('searchProductDialog').show()" />
-									</p:splitButton>
+									<div>
+										<p:splitButton type="button"
+											onclick="PF('serachProductDialog').show()" icon="pi pi-plus"
+											styleClass="ui-button-raised ui-button-success p-mr-2">
+											<p:menuitem
+												value="#{resourceBundleServiceImpl.getMessage('descricao')}"
+												onclick="PF('searchProductDialog').show()" />
+										</p:splitButton>
+										<p:commandButton type="button"
+											value="#{resourceBundleServiceImpl.getMessage('desconto')}s"
+											onclick="PF('dlgGlobalDiscounts').show()" />
+									</div>
 									<div>
 										<p:commandButton id="toggler" type="button" value="Colunas"
 											icon="pi pi-align-justify" />
@@ -260,8 +266,8 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
-								<p:graphicImage value="#{item.info.image}" stream="false"
-									styleClass="product-image" alt="Image not found"
+								<p:graphicImage value="#{item.info.imageInfo.imageStreams}"
+									stream="false" styleClass="product-image" alt="Image not found"
 									id="prductImgToSee" width="100px" />
 								<p:graphicImage />
 							</p:column>
@@ -326,18 +332,17 @@
 									saveTitle="Save Row" />
 							</p:column>
 							<p:column>
-								<!-- 	<p:commandButton
-									action="#{estimatedItemStockView.setMsgAvaliableStock(product)}"
+								<p:commandButton
+									action="#{productStockView.setMsgAvaliableStock(item)}"
 									update="labelItemStock" icon="pi pi-th-large" title="Estoque"
 									styleClass="rounded-button ui-button-success ui-button-flat p-mr-2 p-mb-2"
 									id="viewStock" process="@this" />
 								<p:overlayPanel for="viewStock" style="max-width:10vw">
 									<p>
-										<h:outputText
-											value="#{estimatedItemStockView.msgAvaliableStock}"
+										<h:outputText value="#{productStockView.msgAvaliableStock}"
 											id="labelItemStock" />
 									</p>
-								</p:overlayPanel> -->
+								</p:overlayPanel>
 								<p:commandButton icon="pi pi-times"
 									styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 									title="Remover" action="#{budgetController.removeItem(item)}"
@@ -392,6 +397,34 @@
 
 			</div>
 		</div>
+		<p:dialog widgetVar="dlgGlobalDiscounts" header="Descontos"
+			responsive="true" fitViewport="true"
+			footer="Descontos em nível global do pedido" modal="true">
+			<p:tabView orientation="bottom">
+				<p:tab title="#{resourceBundleServiceImpl.getMessage('padrao')}">
+					<h:form>
+						<div class="ui-fluid">
+							<div class="p-field">
+								<p:outputLabel for="gDis"
+									value="#{resourceBundleServiceImpl.getMessage('padrao')}" />
+								<p:spinner id="gDis" stepFactor="0.25"
+									value="#{budgetController.budgetDTO.globalDiscount}" />
+								<small class="p-d-block">Aplicado para todos os produtos.</small>
+							</div>
+						</div>
+						<p:commandButton
+							value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
+							icon="pi pi-check"
+							styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+							process="@form" />
+					</h:form>
+				</p:tab>
+				<p:tab title="Linha">
+					<h5>Work in progress...</h5>
+				</p:tab>
+			</p:tabView>
+
+		</p:dialog>
 		<p:dialog widgetVar="dlgForImport" id="dlgForImport" header="Importar"
 			modal="true" responsive="true" resizable="true" width="50vw">
 			<h:form>
@@ -552,13 +585,13 @@
 										id="spinnerLoadingImage"></i>
 									<div id="divProductImg">
 										<p:graphicImage
-											value="#{budgetController.previewProduct.info.image}"
+											value="#{budgetController.previewProduct.info.imageInfo.imageStreams}"
 											styleClass="product-image" stream="false" id="productImg"
 											alt="Image not uploaded for #{budgetController.previewProduct.commercialCode}"
-											rendered="#{budgetController.previewProduct.info.stateForImage eq 'FOUND' || 'NOT_FOUND'}" />
+											rendered="#{budgetController.previewProduct.info.imageInfo.currentState eq 'FOUND' || 'NOT_FOUND'}" />
 										<p:button
 											value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
-											rendered="#{budgetController.previewProduct.info.stateForImage eq 'TIMEOUT_EXCPTION'}"
+											rendered="#{budgetController.previewProduct.info.imageInfo.currentState eq 'TIMEOUT_EXCPTION'}"
 											onclick="loadImage()" id="btnReloadImage" />
 									</div>
 									<br />
@@ -649,7 +682,7 @@
 								onclick="confirmProduct()" />
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
-								icon="pi pi-times" onclick="PF('manageProductDialog').hide()"
+								icon="pi pi-times" onclick="PF('serachProductDialog').hide()"
 								styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
 						</div>
 					</f:facet>

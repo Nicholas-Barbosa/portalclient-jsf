@@ -1,5 +1,6 @@
 package com.portal.java.service;
 
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -23,10 +24,11 @@ import javax.inject.Inject;
 import com.google.cloud.storage.Blob;
 import com.portal.java.cdi.qualifier.ProductBucket;
 import com.portal.java.dto.BaseProductDTO;
+import com.portal.java.dto.ImageInfo;
 import com.portal.java.dto.NoPageProductResponseDTO;
-import com.portal.java.dto.ProductDTO;
-import com.portal.java.dto.ProductDTO.ProductPriceDTO;
-import com.portal.java.dto.ProductInfoDTO;
+import com.portal.java.dto.Product;
+import com.portal.java.dto.Product.ProductPrice;
+import com.portal.java.dto.ProductInfo;
 import com.portal.java.dto.ProductPageDTO;
 import com.portal.java.google.cloud.storage.BucketClient;
 import com.portal.java.repository.ProductRepository;
@@ -54,7 +56,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Optional<ProductDTO> findByCode(String code, String customerCode, String store)
+	public Optional<Product> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
 		Future<NoPageProductResponseDTO> ftProduct = productRepository.findByCodeAsync(code, customerCode, store);
@@ -62,8 +64,8 @@ public class ProductServiceImpl implements ProductService {
 			NoPageProductResponseDTO response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
-				ProductDTO product = response.getProducts().get(0);
-				ProductInfoDTO productInfo = new ProductInfoDTO(image);
+				Product product = response.getProducts().get(0);
+				ProductInfo productInfo = new ProductInfo(image);
 				product.setInfo(productInfo);
 				return Optional.of(product);
 			}
@@ -90,17 +92,17 @@ public class ProductServiceImpl implements ProductService {
 				}, v -> v.getContent()));
 
 		products.parallelStream().forEach(p -> {
-			ProductInfoDTO info = p.getInfo();
-			info.setImage(productsBytes.get(p.getCommercialCode()));
+			ImageInfo imgInfo = p.getInfo().getImageInfo();
+			imgInfo.setImageStreams(productsBytes.get(p.getCommercialCode()));
 		});
 	}
 
 	@Override
-	public void loadImage(ProductDTO productDTO) {
+	public void loadImage(Product productDTO) {
 		Blob object = bucketClient.getObject(productDTO.getCommercialCode());
 		byte[] imageStreams = object == null ? new byte[0] : object.getContent();
-		ProductInfoDTO pInfo = productDTO.getInfo();
-		pInfo.setImage(imageStreams);
+		ImageInfo imgInfo = productDTO.getInfo().getImageInfo();
+		imgInfo.setImageStreams(imageStreams);
 
 	}
 
@@ -122,15 +124,15 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void recalculateProduct(ProductDTO product) {
-		this.changeProductDiscount(product);
-		this.changeProductQuantity(product);
+	public void calculateProduct(Product product) {
+		this.calculateProductDiscount(product);
+		this.calculateProductQuantity(product);
 
 	}
 
 	@Override
-	public void changeProductQuantity(ProductDTO product) {
-		ProductPriceDTO price = product.getPrice();
+	public void calculateProductQuantity(Product product) {
+		ProductPrice price = product.getPrice();
 		price.setTotalGrossValue(
 				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
 		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
@@ -138,8 +140,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void changeProductDiscount(ProductDTO product) {
-		ProductPriceDTO price = product.getPrice();
+	public void calculateProductDiscount(Product product) {
+		ProductPrice price = product.getPrice();
 		price.setUnitGrossValue(
 				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitGrossValueWithNoDiscount()));
 		price.setUnitStValue(
@@ -151,6 +153,12 @@ public class ProductServiceImpl implements ProductService {
 				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
 		price.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
 		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
+	}
+
+	@Override
+	public void calculateProductDiscount(BigDecimal discount) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

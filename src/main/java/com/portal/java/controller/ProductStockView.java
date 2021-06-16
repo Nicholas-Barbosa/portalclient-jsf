@@ -4,12 +4,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.java.dto.EstimatedItemDTO;
+import com.portal.java.dto.Product;
 import com.portal.java.service.ResourceBundleServiceImpl;
 
 @RequestScoped
 @Named
-public class EstimatedItemStockView {
+public class ProductStockView {
 
 	private String msgAvaliableStock;
 
@@ -20,9 +20,10 @@ public class EstimatedItemStockView {
 		return msgAvaliableStock;
 	}
 
-	public void setMsgAvaliableStock(EstimatedItemDTO estimatedItem) {
+	public void setMsgAvaliableStock(Product product) {
+		System.out.println("product stock " +product.getAvaliableStock());
 		this.msgAvaliableStock = resourceBundleServiceImpl.getMessage("quantiade_em_estoque",
-				estimatedItem.getAvaliableStock(), estimatedItem.getCommercialCode());
+				product.getAvaliableStock(), product.getCommercialCode());
 	}
 
 }
