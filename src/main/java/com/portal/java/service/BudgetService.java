@@ -10,7 +10,7 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.Product;
+import com.portal.java.dto.Item;
 
 public interface BudgetService extends ServiceSerializable {
 
@@ -20,20 +20,34 @@ public interface BudgetService extends ServiceSerializable {
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
 	/**
-	 * Recalculate newProductValues object and then recalculate totals for this
-	 * mutable budget object.
+	 * Calculate the totals for that object based on the item totals.
+	 * 
+	 * @param budget
+	 */
+	void calculateTotals(BudgetDTO budget);
+
+	/**
+	 * Calculate newProductValues object and then calculate totals for this mutable
+	 * budget object.
 	 * 
 	 * @param budget
 	 * @param newProductValues
 	 * @return
 	 */
-	void recalculate(BudgetDTO budget, Product newProductValues);
+	void calculateTotals(BudgetDTO budget, Item newProductValues);
 
-	void removeItem(BudgetDTO budget, Product itemToRemove);
-
-	void checkQuantityPolicies(BudgetEstimatedDTO budget);
+	void removeItem(BudgetDTO budget, Item itemToRemove);
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
 
-	void recalculateForGlobalDiscount(BudgetDTO budgetDTO);
+	/**
+	 * Adds globalDiscout field for all budgetDTO items, then calculates all unit
+	 * and total values for budgetDTO items.Finally calculates the totals for that
+	 * budget object based on the item totals
+	 * 
+	 * @param budgetDTO
+	 */
+	void calculateForGlobalDiscount(BudgetDTO budgetDTO);
+
+	void addItem(BudgetDTO budgetDTO, Item produc);
 }

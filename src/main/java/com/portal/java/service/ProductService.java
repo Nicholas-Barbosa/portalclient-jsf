@@ -1,6 +1,5 @@
 package com.portal.java.service;
 
-import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -19,37 +18,6 @@ public interface ProductService extends ServiceSerializable {
 
 	Optional<Product> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
-
-	/**
-	 * Call calculateProductDiscount() to calculate new unit values and then
-	 * calculateProductQuantity() to calculate new totals values;
-	 * 
-	 * @param product
-	 */
-	void calculateProduct(Product product);
-
-	/**
-	 * Calculates totals for an object that already has the quantity field
-	 * updated.
-	 * 
-	 * @param product
-	 */
-	void calculateProductQuantity(Product product);
-
-	/**
-	 * Calculates unit values for an object that already has the discount field
-	 * updated.
-	 * 
-	 * @param product
-	 */
-	void calculateProductDiscount(Product product);
-
-	/**
-	 * Calculates unit values based on new discount amount
-	 * 
-	 * @param discount
-	 */
-	void calculateProductDiscount(Product product,BigDecimal discount);
 
 	void loadImage(Collection<? extends BaseProductDTO> products);
 

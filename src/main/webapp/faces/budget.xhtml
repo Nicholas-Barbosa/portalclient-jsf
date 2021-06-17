@@ -254,19 +254,20 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}">
-								<h:outputText value="#{item.commercialCode}" />
+								<h:outputText value="#{item.product.commercialCode}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('descricao')}">
-								<h:outputText value="#{item.description}" />
+								<h:outputText value="#{item.product.description}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('linha')}">
-								<h:outputText value="#{item.descriptionType}" />
+								<h:outputText value="#{item.product.descriptionType}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('imagem')}">
-								<p:graphicImage value="#{item.info.imageInfo.imageStreams}"
+								<p:graphicImage
+									value="#{item.product.info.imageInfo.imageStreams}"
 									stream="false" styleClass="product-image" alt="Image not found"
 									id="prductImgToSee" width="100px" />
 								<p:graphicImage />
@@ -275,54 +276,68 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
 								<p:cellEditor>
 									<f:facet name="output">
-										<h:outputText value="#{item.price.quantity}" />
+										<h:outputText value="#{item.quantity}" />
 									</f:facet>
 									<f:facet name="input">
-										<p:spinner value="#{item.price.quantity}" style="width:100%"
+										<p:spinner value="#{item.quantity}" style="width:100%"
 											label="Name" />
 									</f:facet>
 								</p:cellEditor>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
-								<h:outputText value="#{item.price.unitValue}">
+								<h:outputText value="#{item.itemPrice.unitValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('total')}">
-								<h:outputText value="#{item.price.totalValue}">
+								<h:outputText value="#{item.itemPrice.totalValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
-								<h:outputText value="#{item.price.totalStValue}">
+								<h:outputText value="#{item.itemPrice.totalStValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('desconto')}%">
-								<p:cellEditor>
-									<f:facet name="output">
-										<h:outputText value="#{item.price.discount}">
-											<f:convertNumber locale="pt_BR" />
-										</h:outputText>
-									</f:facet>
-									<f:facet name="input">
-										<p:spinner value="#{item.price.discount}" style="width:100%"
-											label="Name" suffix="%" stepFactor="0.25"
-											decimalSeparator="," thousandSeparator="." />
-									</f:facet>
-								</p:cellEditor>
-
+								<p:commandLink id="viewItemDiscounts"
+									oncomplete="PF('itemDiscOP').show()" update="itemDiscOP">
+									<h:outputText value="#{item.totalDiscount}">
+										<f:convertNumber locale="pt_BR" />
+									</h:outputText>
+									<f:setPropertyActionListener value="#{item.individualDiscount}"
+										target="#{budgetController.itemDiscountToView}" />
+								</p:commandLink>
+								<p:overlayPanel modal="true" widgetVar="itemDiscOP"
+									showCloseIcon="true" id="itemDiscOP">
+									<div class="ui-fluid p-formgrid p-grid">
+										<div class="p-field p-col">
+											<label for="discIn">Desconto Individual</label>
+											<p:spinner id="discIn" stepFactor="0.25" max="100"
+												value="#{budgetController.itemDiscountToView}" />
+										</div>
+										<div class="p-field p-col">
+											<label for="discG">Desconto global</label>
+											<p:inputNumber id="discG" readonly="true"
+												value="#{budgetController.budgetDTO.globalDiscount}" />
+										</div>
+										<div class="p-field p-col">
+											<label for="discLine">Desconto por linha</label>
+											<p:inputNumber id="discLine" readonly="true" />
+										</div>
+									</div>
+								</p:overlayPanel>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
-								<h:outputText value="#{item.price.totalGrossValue}">
+								<h:outputText value="#{item.itemPrice.totalGrossValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
@@ -333,11 +348,12 @@
 							</p:column>
 							<p:column>
 								<p:commandButton
-									action="#{productStockView.setMsgAvaliableStock(item)}"
+									action="#{productStockView.setMsgAvaliableStock(item.product)}"
 									update="labelItemStock" icon="pi pi-th-large" title="Estoque"
 									styleClass="rounded-button ui-button-success ui-button-flat p-mr-2 p-mb-2"
 									id="viewStock" process="@this" />
-								<p:overlayPanel for="viewStock" style="max-width:10vw">
+								<p:overlayPanel for="viewStock" style="max-width:10vw"
+									modal="true" dismissable="true" showCloseIcon="true">
 									<p>
 										<h:outputText value="#{productStockView.msgAvaliableStock}"
 											id="labelItemStock" />
@@ -409,14 +425,17 @@
 									value="#{resourceBundleServiceImpl.getMessage('padrao')}" />
 								<p:spinner id="gDis" stepFactor="0.25"
 									value="#{budgetController.budgetDTO.globalDiscount}" />
-								<small class="p-d-block">Aplicado para todos os produtos.</small>
+								<small class="p-d-block">Aplicado para todos os
+									produtos(Somado ao desconto individual)</small>
 							</div>
 						</div>
 						<p:commandButton
 							value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
 							icon="pi pi-check"
 							styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-							process="@form" />
+							process="@form" action="#{budgetController.addGlobalDiscount}"
+							oncomplete="PF('dlgGlobalDiscounts').hide()"
+							update="formItems:dtItems,budgetTotales" />
 					</h:form>
 				</p:tab>
 				<p:tab title="Linha">
@@ -568,11 +587,10 @@
 											update="manage-product-content growl errorCode" />
 									</div>
 								</div>
-
 								<p:outputPanel id="manage-product-content">
 									<p:blockUI block="manage-product-content"
 										widgetVar="blockProductContent" id="blockProductContent" />
-									<p:focus rendered="#{budgetController.previewProduct != null}"
+									<p:focus rendered="#{budgetController.previewItem != null}"
 										context="manage-product-content" for="quantity" />
 									<p:remoteCommand name="loadImage"
 										action="#{budgetController.loadImageFromPreviewProduct}"
@@ -585,13 +603,13 @@
 										id="spinnerLoadingImage"></i>
 									<div id="divProductImg">
 										<p:graphicImage
-											value="#{budgetController.previewProduct.info.imageInfo.imageStreams}"
+											value="#{budgetController.previewItem.product.info.imageInfo.imageStreams}"
 											styleClass="product-image" stream="false" id="productImg"
-											alt="Image not uploaded for #{budgetController.previewProduct.commercialCode}"
-											rendered="#{budgetController.previewProduct.info.imageInfo.currentState eq 'FOUND' || 'NOT_FOUND'}" />
+											alt="Image not uploaded for #{budgetController.previewItem.product.commercialCode}"
+											rendered="#{budgetController.previewItem.product.info.imageInfo.currentState eq 'FOUND' || 'NOT_FOUND'}" />
 										<p:button
 											value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
-											rendered="#{budgetController.previewProduct.info.imageInfo.currentState eq 'TIMEOUT_EXCPTION'}"
+											rendered="#{budgetController.previewItem.product.info.imageInfo.currentState eq 'TIMEOUT_EXCPTION'}"
 											onclick="loadImage()" id="btnReloadImage" />
 									</div>
 									<br />
@@ -599,70 +617,70 @@
 									<div class="p-field">
 										<p:outputLabel for="name">#{resourceBundleServiceImpl.getMessage('descricao')}</p:outputLabel>
 										<p:inputTextarea id="name"
-											value="#{budgetController.previewProduct.description}"
+											value="#{budgetController.previewItem.product.description}"
 											required="true" readonly="true" />
 									</div>
 									<div class="p-field">
 										<p:outputLabel for="line">#{resourceBundleServiceImpl.getMessage('linha')}</p:outputLabel>
 										<p:inputText id="line"
-											value="#{budgetController.previewProduct.descriptionType}"
+											value="#{budgetController.previewItem.product.descriptionType}"
 											readonly="true" />
 									</div>
 									<div class="p-formgrid p-grid">
 										<div class="p-field p-col">
 											<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
 											<p:spinner id="quantity"
-												value="#{budgetController.previewProduct.price.quantity}"
+												value="#{budgetController.previewItem.quantity}"
 												onblur="changeQuantity()"
-												stepFactor="#{budgetController.previewProduct.price.multiple}" />
+												stepFactor="#{budgetController.previewItem.product.multiple}" />
 										</div>
 										<div class="p-field p-col">
 											<p:outputLabel for="discount">#{resourceBundleServiceImpl.getMessage('desconto')}</p:outputLabel>
 											<p:spinner id="discount"
-												value="#{budgetController.previewProduct.price.discount}"
+												value="#{budgetController.previewItem.individualDiscount}"
 												label="Name" suffix="%" stepFactor="0.25"
 												decimalSeparator="," thousandSeparator="."
-												onblur="changeDiscount()" />
+												onblur="changeDiscount()" max="100" />
 										</div>
 									</div>
 									<div class="p-formgrid p-grid">
 										<div class="p-field p-col">
 											<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
 											<p:inputNumber id="vLiquid"
-												value="#{budgetController.previewProduct.price.totalValue}"
+												value="#{budgetController.previewItem.itemPrice.totalValue}"
 												symbol="R$ " symbolPosition="p" decimalSeparator=","
 												thousandSeparator="." readonly="true" />
 										</div>
 										<div class="p-field p-col">
 											<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
 											<p:inputNumber id="vGross"
-												value="#{budgetController.previewProduct.price.totalGrossValue}"
+												value="#{budgetController.previewItem.itemPrice.totalGrossValue}"
 												symbol="R$ " symbolPosition="p" decimalSeparator=","
 												thousandSeparator="." readonly="true" />
 										</div>
 										<div class="p-field p-col">
 											<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
 											<p:inputNumber id="vSt"
-												value="#{budgetController.previewProduct.price.totalStValue}"
+												value="#{budgetController.previewItem.itemPrice.totalStValue}"
 												symbol="R$ " symbolPosition="p" decimalSeparator=","
 												thousandSeparator="." readonly="true" />
 										</div>
 									</div>
 									<p:remoteCommand name="changeQuantity"
 										process="@this,quantity,vLiquid,vGross,vSt"
-										action="#{budgetController.changProductQuantity}"
+										action="#{budgetController.changItemQuantity}"
 										update="vLiquid,vGross,vSt"
 										onstart="PF('blockProductContent').show()"
 										oncomplete="PF('blockProductContent').hide()" />
 									<p:remoteCommand name="changeDiscount"
-										action="#{budgetController.changeProductDiscount}"
+										action="#{budgetController.changeItemDiscount}"
 										process="@this,discount" update="vLiquid,vGross,vSt"
 										onstart="PF('blockProductContent').show()"
 										oncomplete="PF('blockProductContent').hide()" />
 									<p:remoteCommand name="confirmProduct"
-										action="#{budgetController.addPreviewProductToBudget}"
+										action="#{budgetController.addPreviewItemToBudget}"
 										onstart="$('body').css('cursor', 'progress');PF('blockPanelAll').show()"
-										oncomplete="PF('serachProductDialog').hide(); $('body').css('cursor', 'default');PF('blockPanelAll').hide()"
+										oncomplete="PF('serachProductDialog').hide(); $('body').css('cursor', 'default');PF('blockPanelAll').hide();$('#footer').hide()"
 										process="@this manage-product-content"
 										update="formItems:dtItems,budgetTotales,@form" />
 								</p:outputPanel>
@@ -682,7 +700,8 @@
 								onclick="confirmProduct()" />
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
-								icon="pi pi-times" onclick="PF('serachProductDialog').hide()"
+								icon="pi pi-times"
+								onclick="PF('serachProductDialog').hide();$('#footer').hide()"
 								styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
 						</div>
 					</f:facet>

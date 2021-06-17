@@ -9,10 +9,24 @@ public class MathUtils {
 		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * unitValue * quantity
+	 * 
+	 * @param quantity
+	 * @param unitValue
+	 * @return
+	 */
 	public static BigDecimal calculateTotalValueOverQuantity(BigDecimal quantity, Number unitValue) {
 		return new BigDecimal(unitValue.doubleValue()).multiply(quantity);
 	}
 
+	/**
+	 * unitValue * quantity
+	 * 
+	 * @param quantity
+	 * @param unitValue
+	 * @return
+	 */
 	public static BigDecimal calculateTotalValueOverQuantity(int quantity, Number unitValue) {
 		return new BigDecimal(unitValue.doubleValue()).multiply(new BigDecimal(quantity));
 	}

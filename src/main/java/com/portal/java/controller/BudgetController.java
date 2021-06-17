@@ -1,6 +1,7 @@
 package com.portal.java.controller;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
@@ -39,13 +40,17 @@ import com.portal.java.dto.DownloadStreamsForm;
 import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.FindProductByCodeForm;
 import com.portal.java.dto.FindProductByDescriptionDTO;
-import com.portal.java.dto.ProductBudgetForm;
+import com.portal.java.dto.Item;
+import com.portal.java.dto.ItemPrice;
 import com.portal.java.dto.Product;
+import com.portal.java.dto.Product.ProductPrice;
+import com.portal.java.dto.ProductBudgetForm;
 import com.portal.java.dto.ProductPageDTO;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CustomerService;
+import com.portal.java.service.ItemService;
 import com.portal.java.service.ProductService;
 import com.portal.java.service.ResourceBundleService;
 import com.portal.java.ui.lazy.datamodel.CustomerLazyDataModel;
@@ -79,6 +84,8 @@ public class BudgetController implements Serializable {
 
 	private final ProductService productService;
 
+	private final ItemService itemService;
+
 	private LazyDataModel<Product> lazyProducts;
 
 	private LazyDataModel<CustomerDTO> lazyCustomers;
@@ -110,7 +117,7 @@ public class BudgetController implements Serializable {
 
 	private FindProductByCodeForm findProductByCodeForm;
 
-	private Product previewProduct;
+	private Item previewItem;
 
 	private byte[] imageToSeeOnDlg;
 
@@ -120,14 +127,17 @@ public class BudgetController implements Serializable {
 
 	private BudgetDTO budgetDTO;
 
+	private BigDecimal itemDiscountToView;
+
 	public BudgetController() {
-		this(null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, BudgetReport budgetReport, ClientErrorExceptionController responseController,
-			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService) {
+			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
+			ItemService itemService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
@@ -138,19 +148,24 @@ public class BudgetController implements Serializable {
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
+		this.itemService = itemService;
 	}
 
-	public void addPreviewProductToBudget() {
-		budgetDTO.addProduct(previewProduct);
-		previewProduct = null;
+	public void addGlobalDiscount() {
+		budgetService.calculateForGlobalDiscount(budgetDTO);
 	}
 
-	public void changeProductDiscount() {
-		productService.calculateProductDiscount(previewProduct);
+	public void addPreviewItemToBudget() {
+		budgetService.addItem(budgetDTO, previewItem);
+		previewItem = null;
 	}
 
-	public void changProductQuantity() {
-		productService.calculateProductQuantity(previewProduct);
+	public void changeItemDiscount() {
+		itemService.calculateDueDiscount(previewItem);
+	}
+
+	public void changItemQuantity() {
+		itemService.calculateDueQuantity(previewItem, false);
 	}
 
 	public void previewBudgetXlsxContent() {
@@ -182,8 +197,12 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onItemRowEdit(RowEditEvent<Product> event) {
-		budgetService.recalculate(budgetDTO, event.getObject());
+//		budgetService.calculateTotals(budgetDTO, event.getObject());
 
+	}
+
+	public void removeItem(Item item) {
+		budgetService.removeItem(budgetDTO, item);
 	}
 
 	public void showOpenedTitlesPageOnDialog() {
@@ -198,7 +217,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void loadImageFromPreviewProduct() {
-		this.productService.loadImage(previewProduct);
+//		this.productService.loadImage(previewProduct);
 	}
 
 	public void loadImageForProduct(Product product) {
@@ -212,7 +231,6 @@ public class BudgetController implements Serializable {
 			executor.execute(() -> {
 				selectedCustomer = null;
 				budgetEstimateDTO = null;
-				previewProduct = null;
 			});
 			executor.execute(() -> itemsOnCartToPost.clear());
 			executor.execute(() -> selectedProducts.clear());
@@ -313,11 +331,15 @@ public class BudgetController implements Serializable {
 					budgetDTO.getCustomer().getCode(), budgetDTO.getCustomer().getStore());
 			product.ifPresentOrElse(presentProduct -> {
 				FacesUtils.addHeaderForResponse("product-found", true);
-				previewProduct = new Product(presentProduct);
+				ProductPrice productPrice = presentProduct.getPrice();
+				previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct, 1,
+						new ItemPrice(productPrice.getUnitStValue(), productPrice.getUnitValue(),
+								productPrice.getUnitGrossValue(), productPrice.getUnitStValue(),
+								productPrice.getUnitValue(), productPrice.getUnitGrossValue()));
 
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-				previewProduct = null;
+				previewItem = null;
 			});
 			findProductByCodeForm = new FindProductByCodeForm();
 		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
@@ -348,11 +370,6 @@ public class BudgetController implements Serializable {
 
 	public void onPageProducts(PageEvent pageEvent) {
 		findProductByDescription(pageEvent.getPage() + 1);
-	}
-
-	public void removeItem(Product item) {
-		System.out.println("Remove item!");
-		budgetService.removeItem(budgetDTO, item);
 	}
 
 	public void removeSelectedProduct(Product product) {
@@ -465,8 +482,12 @@ public class BudgetController implements Serializable {
 		return findProductByCodeForm;
 	}
 
-	public Product getPreviewProduct() {
-		return previewProduct;
+	public Item getPreviewItem() {
+		return previewItem;
+	}
+
+	public void changePreviewItem(Item previewItem) {
+		this.previewItem = previewItem;
 	}
 
 	public byte[] getImageToSeeOnDlg() {
@@ -487,5 +508,13 @@ public class BudgetController implements Serializable {
 
 	public BudgetDTO getBudgetDTO() {
 		return budgetDTO;
+	}
+
+	public BigDecimal getItemDiscountToView() {
+		return itemDiscountToView;
+	}
+
+	public void setItemDiscountToView(BigDecimal itemDiscountToView) {
+		this.itemDiscountToView = itemDiscountToView;
 	}
 }

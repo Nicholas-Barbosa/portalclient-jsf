@@ -18,7 +18,7 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.Product;
+import com.portal.java.dto.Item;
 import com.portal.java.microsoft.excel.CellAttribute;
 import com.portal.java.microsoft.excel.RowObject;
 import com.portal.java.microsoft.excel.XssfReader;
@@ -34,8 +34,6 @@ public class BudgetServiceImpl implements BudgetService {
 	private static final long serialVersionUID = -4268548772630741803L;
 	@Inject
 	private BudgetRepository budgetRepository;
-	@Inject
-	private ProductService productService;
 
 	@Override
 	public void findAll(int page, int pageSize) {
@@ -63,23 +61,29 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void recalculate(BudgetDTO budget, Product newProductValues) {
-		productService.calculateProduct(newProductValues);
-		calculateTotal(budget);
+	public void calculateTotals(BudgetDTO budget) {
+		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getItemPrice().getTotalGrossValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getItemPrice().getTotalValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getItemPrice().getTotalStValue())
+				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
+		budget.setGrossValue(newGrossValue);
+		budget.setLiquidValue(newLiquidValue);
+		budget.setStValue(newStValue);
 	}
 
 	@Override
-	public void removeItem(BudgetDTO budget, Product itemToRemove) {
+	public void calculateTotals(BudgetDTO budget, Item newProductValues) {
+//		productService.calculateProduct(newProductValues);
+		calculateTotals(budget);
+	}
+
+	@Override
+	public void removeItem(BudgetDTO budget, Item itemToRemove) {
 		if (budget.getItems().remove(itemToRemove)) {
-			calculateTotal(budget);
+			calculateTotals(budget);
 		}
-	}
-
-	@Override
-	public void checkQuantityPolicies(BudgetEstimatedDTO budget) {
-		// String[]itemsOutOfStock =
-		// budget.getEstimatedItemValues().parallelStream().filter(i -> i.get)
-
 	}
 
 	@Override
@@ -104,21 +108,19 @@ public class BudgetServiceImpl implements BudgetService {
 		return null;
 	}
 
-	private void calculateTotal(BudgetDTO budget) {
-		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalGrossValue())
-				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalValue())
-				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getPrice().getTotalStValue())
-				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		budget.setGrossValue(newGrossValue);
-		budget.setLiquidValue(newLiquidValue);
-		budget.setStValue(newStValue);
+	@Override
+	public void calculateForGlobalDiscount(BudgetDTO budgetDTO) {
+		if (budgetDTO.getGlobalDiscount().intValue() > 0) {
+			budgetDTO.getItems().parallelStream().forEach(p -> {
+//				productService.addDiscount(p, budgetDTO.getGlobalDiscount());
+			});
+			this.calculateTotals(budgetDTO);
+		}
 	}
 
 	@Override
-	public void recalculateForGlobalDiscount(BudgetDTO budgetDTO) {
-		// TODO Auto-generated method stub
-		
+	public void addItem(BudgetDTO budgetDTO, Item produc) {
+		produc.addAnyDiscount(budgetDTO.getGlobalDiscount());
+		budgetDTO.getItems().add(produc);
 	}
 }

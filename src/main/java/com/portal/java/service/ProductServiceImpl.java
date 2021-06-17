@@ -1,6 +1,5 @@
 package com.portal.java.service;
 
-import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -27,12 +26,10 @@ import com.portal.java.dto.BaseProductDTO;
 import com.portal.java.dto.ImageInfo;
 import com.portal.java.dto.NoPageProductResponseDTO;
 import com.portal.java.dto.Product;
-import com.portal.java.dto.Product.ProductPrice;
 import com.portal.java.dto.ProductInfo;
 import com.portal.java.dto.ProductPageDTO;
 import com.portal.java.google.cloud.storage.BucketClient;
 import com.portal.java.repository.ProductRepository;
-import com.portal.java.util.MathUtils;
 
 @ApplicationScoped
 public class ProductServiceImpl implements ProductService {
@@ -65,8 +62,8 @@ public class ProductServiceImpl implements ProductService {
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
 				Product product = response.getProducts().get(0);
-				ProductInfo productInfo = new ProductInfo(image);
-				product.setInfo(productInfo);
+				ProductInfo productInfo = product.getInfo();
+				productInfo.setImageInfo(new ImageInfo(image));
 				return Optional.of(product);
 			}
 			ftBlob.cancel(true);
@@ -123,42 +120,43 @@ public class ProductServiceImpl implements ProductService {
 		return new byte[0];
 	}
 
-	@Override
-	public void calculateProduct(Product product) {
-		this.calculateProductDiscount(product);
-		this.calculateProductQuantity(product);
-
-	}
-
-	@Override
-	public void calculateProductQuantity(Product product) {
-		ProductPrice price = product.getPrice();
-		price.setTotalGrossValue(
-				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
-		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
-		price.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
-	}
-
-	@Override
-	public void calculateProductDiscount(Product product) {
-		ProductPrice price = product.getPrice();
-		price.setUnitGrossValue(
-				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitGrossValueWithNoDiscount()));
-		price.setUnitStValue(
-				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitStValueWithNoDiscount()));
-		price.setUnitValue(
-				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitValueWithNoDiscount()));
-
-		price.setTotalGrossValue(
-				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
-		price.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
-		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
-	}
-
-	@Override
-	public void calculateProductDiscount(Product product, BigDecimal discount) {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	public void calculateProduct(Product product) {
+//		this.calculateDiscount(product);
+//		this.calculateQuantity(product);
+//
+//	}
+//
+//	@Override
+//	public void calculateQuantity(Product product) {
+//		ProductPrice price = product.getPrice();
+//		price.setTotalGrossValue(
+//				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
+//		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
+//		price.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
+//	}
+//
+//	@Override
+//	public void calculateDiscount(Product product) {
+//		ProductPrice price = product.getPrice();
+//		price.setUnitGrossValue(
+//				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitGrossValueWithNoDiscount()));
+//		price.setUnitStValue(
+//				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitStValueWithNoDiscount()));
+//		price.setUnitValue(
+//				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitValueWithNoDiscount()));
+//		this.calculateQuantity(product);
+//	}
+//
+//	@Override
+//	public void addDiscount(Product product, BigDecimal newDiscount) {
+//		if (newDiscount.compareTo(BigDecimal.ZERO) > 0) {
+//			ProductPrice prices = product.getPrice();
+//			prices.setDiscount(prices.getDiscount().add(newDiscount));
+//			this.calculateDiscount(product);
+//			this.calculateQuantity(product);
+//		}
+//
+//	}
 
 }
