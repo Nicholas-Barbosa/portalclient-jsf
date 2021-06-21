@@ -34,6 +34,8 @@ public class BudgetServiceImpl implements BudgetService {
 	private static final long serialVersionUID = -4268548772630741803L;
 	@Inject
 	private BudgetRepository budgetRepository;
+	@Inject
+	private ItemService itemService;
 
 	@Override
 	public void findAll(int page, int pageSize) {
@@ -74,9 +76,15 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void calculateTotals(BudgetDTO budget, Item newProductValues) {
-//		productService.calculateProduct(newProductValues);
-		calculateTotals(budget);
+	public void calculateTotals(BudgetDTO budget, Item newProductValues, boolean calculateDueChangesOnDiscount,
+			boolean calculateDueChangesOnQuantity) {
+		if (calculateDueChangesOnDiscount && calculateDueChangesOnQuantity)
+			itemService.calculateDueQuantity(newProductValues, true);
+		else if (calculateDueChangesOnDiscount && !calculateDueChangesOnQuantity)
+			itemService.calculateDueDiscount(newProductValues);
+		else
+			itemService.calculateDueQuantity(newProductValues, false);
+		this.calculateTotals(budget);
 	}
 
 	@Override
@@ -123,4 +131,5 @@ public class BudgetServiceImpl implements BudgetService {
 		budgetDTO.getItems().add(produc);
 		this.calculateTotals(budgetDTO);
 	}
+
 }

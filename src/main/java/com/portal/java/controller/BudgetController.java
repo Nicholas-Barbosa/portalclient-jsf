@@ -10,9 +10,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -210,8 +207,8 @@ public class BudgetController implements Serializable {
 
 	}
 
-	public void onItemRowEdit(RowEditEvent<Product> event) {
-//		budgetService.calculateTotals(budgetDTO, event.getObject());
+	public void onItemRowEdit(RowEditEvent<Item> event) {
+		budgetService.calculateTotals(budgetDTO, event.getObject(), false, true);
 
 	}
 
