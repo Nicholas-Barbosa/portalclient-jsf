@@ -34,7 +34,7 @@ public interface BudgetService extends ServiceSerializable {
 	 * @param item
 	 * @return
 	 */
-	void calculateTotals(BudgetDTO budget, Item item,boolean calculateDueChangesOnDiscount,boolean calculateDueChangesOnQuantity);
+	void calculateTotals(BudgetDTO budget, Item item,boolean calculateDueChangesInDiscount,boolean calculateDueChangesInQuantity);
 
 	void removeItem(BudgetDTO budget, Item itemToRemove);
 

@@ -287,6 +287,7 @@ public class BudgetController implements Serializable {
 				}
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
+				FacesUtils.addHeaderForResponse("customers-found", false);
 				selectedCustomer = null;
 			});
 		} catch (ProcessingException p) {

@@ -76,11 +76,11 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void calculateTotals(BudgetDTO budget, Item newProductValues, boolean calculateDueChangesOnDiscount,
-			boolean calculateDueChangesOnQuantity) {
-		if (calculateDueChangesOnDiscount && calculateDueChangesOnQuantity)
+	public void calculateTotals(BudgetDTO budget, Item newProductValues, boolean calculateDueChangesInDiscount,
+			boolean calculateDueChangesInQuantity) {
+		if (calculateDueChangesInDiscount && calculateDueChangesInQuantity)
 			itemService.calculateDueQuantity(newProductValues, true);
-		else if (calculateDueChangesOnDiscount && !calculateDueChangesOnQuantity)
+		else if (calculateDueChangesInDiscount && !calculateDueChangesInQuantity)
 			itemService.calculateDueDiscount(newProductValues);
 		else
 			itemService.calculateDueQuantity(newProductValues, false);

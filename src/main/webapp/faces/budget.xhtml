@@ -30,7 +30,8 @@
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
 								action="#{budgetController.newBudgetObject}"
-								update="customerForm formProdutos formDtSelectedItems formItems:dtItems budgetTotals" onclick="PF('blockItems').show()">
+								update="customerForm formProdutos formDtSelectedItems formItems:dtItems budgetTotals"
+								onclick="PF('blockItems').show()">
 								<p:confirm type="popup"
 									header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
 									message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
@@ -424,7 +425,7 @@
 			<p:dialog widgetVar="dlgGlobalDiscounts" header="Descontos"
 				responsive="true" fitViewport="true" modal="true"
 				onShow="loadLines()">
-				<p:tabView orientation="top" >
+				<p:tabView orientation="top">
 					<p:tab
 						title="#{resourceBundleServiceImpl.getMessage('desc_linha')}">
 						<h:form>
@@ -760,17 +761,19 @@
 				header="#{holdMessageView.label('busca_de_cliente')}"
 				positionType="absolute" responsive="true">
 				<p:tabView>
-					<p:tab title="#{holdMessageView.label('palavra_chave')}">
+					<p:tab
+						title="#{resourceBundleServiceImpl.getMessage('palavra_chave')}">
 						<h5>
 							<h:outputText
-								value="#{holdMessageView.label('busca_por_nome_cliente')}" />
+								value="#{resourceBundleServiceImpl.getMessage('busca_por_nome_cliente')}" />
 						</h5>
 						<h:form>
 
 							<div class="p-formgroup-inline">
 								<div class="p-field">
 									<p:inputText type="text" placeholder="keyword"
-										value="#{budgetController.nameCustomerToFind}" />
+										value="#{budgetController.nameCustomerToFind}" required="true" id="cName"/>
+									<p:message for="cName" />
 								</div>
 								<p:commandButton
 									value="#{resourceBundleServiceImpl.getMessage('enviar')}"
@@ -784,7 +787,8 @@
 									PF('dlgSelectCustomer').show();
 									return;
 								}
-								PF('blockItems').hide();"
+								if(xhr.getResponseHeader('customers-found')=='true')
+									PF('blockItems').hide();"
 									update="fomrSelectCustomer growl" />
 							</div>
 						</h:form>
