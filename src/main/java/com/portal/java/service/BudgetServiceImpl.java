@@ -120,7 +120,7 @@ public class BudgetServiceImpl implements BudgetService {
 
 	@Override
 	public void addItem(BudgetDTO budgetDTO, Item produc) {
-		produc.addAnyDiscount(budgetDTO.getGlobalDiscount());
 		budgetDTO.getItems().add(produc);
+		this.calculateTotals(budgetDTO);
 	}
 }

@@ -40,8 +40,8 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		pathParmas.put("customerCode", customerCode);
 		pathParmas.put("store", store);
 		try {
-			return authRestClient.get("ORCAMENTO_API", "products/{code}/client/{customerCode}/store/{store}",
-					NoPageProductResponseDTO.class, null, pathParmas, MediaType.APPLICATION_JSON);
+			return Optional.of(authRestClient.get("ORCAMENTO_API", "products/{code}/client/{customerCode}/store/{store}",
+					NoPageProductResponseDTO.class, null, pathParmas, MediaType.APPLICATION_JSON));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}

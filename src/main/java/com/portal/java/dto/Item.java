@@ -41,6 +41,7 @@ public class Item {
 	}
 
 	public void setLineDiscount(BigDecimal lineDiscount) {
+		System.out.println("setting line discount... " + lineDiscount);
 		this.totalDiscount = this.totalDiscount.subtract(this.lineDiscount);
 		this.lineDiscount = lineDiscount;
 		this.totalDiscount = this.totalDiscount.add(lineDiscount);
@@ -66,8 +67,8 @@ public class Item {
 		return itemPrice;
 	}
 
-	public void addAnyDiscount(BigDecimal discount) {
-		this.totalDiscount = totalDiscount.add(discount);
+	public String line() {
+		return product.getDescriptionType();
 	}
 
 	@Override

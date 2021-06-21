@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -41,6 +43,7 @@ import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.FindProductByCodeForm;
 import com.portal.java.dto.FindProductByDescriptionDTO;
 import com.portal.java.dto.Item;
+import com.portal.java.dto.ItemLineDiscount;
 import com.portal.java.dto.ItemPrice;
 import com.portal.java.dto.Product;
 import com.portal.java.dto.Product.ProductPrice;
@@ -129,6 +132,10 @@ public class BudgetController implements Serializable {
 
 	private BigDecimal itemDiscountToView;
 
+	private Set<String> itemLines;
+
+	private ItemLineDiscount itemLineDiscount;
+
 	public BudgetController() {
 		this(null, null, null, null, null, null, null, null);
 	}
@@ -151,8 +158,15 @@ public class BudgetController implements Serializable {
 		this.itemService = itemService;
 	}
 
-	public void addGlobalDiscount() {
-		budgetService.calculateForGlobalDiscount(budgetDTO);
+	public void applyLineDiscount() {
+		budgetDTO.getItems().parallelStream().filter(i -> i.line().equals(itemLineDiscount.getLine()))
+				.peek(i -> i.setLineDiscount(itemLineDiscount.getDiscount()))
+				.forEach(itemService::calculateDueDiscount);
+		budgetService.calculateTotals(budgetDTO);
+	}
+
+	public void loadCurrentItemLines() {
+		this.itemLines = budgetDTO.getItems().parallelStream().map(Item::line).collect(Collectors.toSet());
 	}
 
 	public void addPreviewItemToBudget() {
@@ -224,21 +238,8 @@ public class BudgetController implements Serializable {
 		this.productService.loadImage(product);
 	}
 
-	public void clearBudgetForm() throws InterruptedException {
-		ExecutorService executor = null;
-		try {
-			executor = Executors.newFixedThreadPool(3);
-			executor.execute(() -> {
-				selectedCustomer = null;
-				budgetEstimateDTO = null;
-			});
-			executor.execute(() -> itemsOnCartToPost.clear());
-			executor.execute(() -> selectedProducts.clear());
-		} finally {
-			executor.shutdown();
-			executor.awaitTermination(5, TimeUnit.MILLISECONDS);
-		}
-
+	public void newBudgetObject() throws InterruptedException {
+		this.budgetDTO = new BudgetDTO();
 	}
 
 	public void exportReport() {
@@ -339,6 +340,7 @@ public class BudgetController implements Serializable {
 
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
+				FacesUtils.addHeaderForResponse("product-found", false);
 				previewItem = null;
 			});
 			findProductByCodeForm = new FindProductByCodeForm();
@@ -346,6 +348,8 @@ public class BudgetController implements Serializable {
 			processingExceptionMessageHelper.displayMessage(p, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			// e.printStackTrace();
+		} catch (NullPointerException e) {
+			FacesUtils.error(null, "Cliente não selecionado", "Selecione o cliente");
 		}
 
 	}
@@ -399,6 +403,8 @@ public class BudgetController implements Serializable {
 					(short) 1, (short) 2, (short) 0);
 			this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
 			this.budgetDTO = new BudgetDTO();
+			this.itemLines = new HashSet<>();
+			this.itemLineDiscount = new ItemLineDiscount();
 		}).start();
 	}
 
@@ -516,5 +522,13 @@ public class BudgetController implements Serializable {
 
 	public void setItemDiscountToView(BigDecimal itemDiscountToView) {
 		this.itemDiscountToView = itemDiscountToView;
+	}
+
+	public Set<String> getItemLines() {
+		return Collections.unmodifiableSet(itemLines);
+	}
+
+	public ItemLineDiscount getItemLineDiscount() {
+		return itemLineDiscount;
 	}
 }
