@@ -12,8 +12,8 @@ import javax.ws.rs.ClientErrorException;
 
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.java.dto.FinancialTitlePageDTO.FinacialTitleDTO;
-import com.portal.java.service.FinancialTitleService;
+import com.portal.java.dto.FinancialBondsPageDTO.FinacialBondsDTO;
+import com.portal.java.service.FinancialBondsService;
 import com.portal.java.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.java.util.jsf.ClientExceptionFacesUtils;
@@ -27,8 +27,8 @@ public class OpenedTitlesController implements Serializable {
 	 */
 	private static final long serialVersionUID = -3811638445093267666L;
 	@Inject
-	private FinancialTitleService fiTitleService;
-	private LazyDataModel<FinacialTitleDTO> titles;
+	private FinancialBondsService fiTitleService;
+	private LazyDataModel<FinacialBondsDTO> titles;
 
 	public void loadTitles(int page) {
 		titles = new FinancialTitleLazyDataModel();
@@ -42,7 +42,7 @@ public class OpenedTitlesController implements Serializable {
 		}
 	}
 
-	public LazyDataModel<FinacialTitleDTO> getTitles() {
+	public LazyDataModel<FinacialBondsDTO> getTitles() {
 		return titles;
 	}
 }

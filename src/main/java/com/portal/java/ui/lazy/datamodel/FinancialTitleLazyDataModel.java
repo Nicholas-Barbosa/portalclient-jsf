@@ -9,26 +9,26 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
-import com.portal.java.dto.FinancialTitlePageDTO.FinacialTitleDTO;
+import com.portal.java.dto.FinancialBondsPageDTO.FinacialBondsDTO;
 
-public class FinancialTitleLazyDataModel extends LazyDataModel<FinacialTitleDTO>
-		implements LazyOperations<FinacialTitleDTO> {
+public class FinancialTitleLazyDataModel extends LazyDataModel<FinacialBondsDTO>
+		implements LazyOperations<FinacialBondsDTO> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8708926972142151243L;
 
-	private List<FinacialTitleDTO> titles;
+	private List<FinacialBondsDTO> titles;
 
 	@Override
-	public List<FinacialTitleDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+	public List<FinacialBondsDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
 			Map<String, FilterMeta> filterBy) {
 		return titles;
 	}
 
 	@Override
-	public void addCollection(Collection<FinacialTitleDTO> list) {
+	public void addCollection(Collection<FinacialBondsDTO> list) {
 		this.titles = new ArrayList<>(list);
 	}
 
@@ -39,7 +39,7 @@ public class FinancialTitleLazyDataModel extends LazyDataModel<FinacialTitleDTO>
 	}
 
 	@Override
-	public Collection<FinacialTitleDTO> getCollection() {
+	public Collection<FinacialBondsDTO> getCollection() {
 		return titles;
 	}
 
