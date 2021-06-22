@@ -145,4 +145,11 @@ public class OAuth2AuthenticatedRestClient implements AuthenticatedRestClient, S
 		}
 
 	}
+
+	@Override
+	public <T> T get(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
+			String media) throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

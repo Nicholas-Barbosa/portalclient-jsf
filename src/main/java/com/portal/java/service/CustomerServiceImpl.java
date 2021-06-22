@@ -9,7 +9,7 @@ import java.util.concurrent.TimeoutException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.java.dto.CustomerDTO;
+import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.repository.CustomerRepository;
@@ -38,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Optional<CustomerDTO> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
+	public Optional<Customer> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
 			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		// TODO Auto-generated method stub
 		return customerRepository.findByCodeAndStore(searchCustomerByCodeAndStoreDTO);

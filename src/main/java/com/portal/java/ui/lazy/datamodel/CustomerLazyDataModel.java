@@ -9,45 +9,45 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
-import com.portal.java.dto.CustomerDTO;
+import com.portal.java.dto.Customer;
 
-public class CustomerLazyDataModel extends LazyDataModel<CustomerDTO> implements LazyOperations<CustomerDTO> {
+public class CustomerLazyDataModel extends LazyDataModel<Customer> implements LazyOperations<Customer> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8941653163666281143L;
 
-	private List<CustomerDTO> customers;
+	private List<Customer> customers;
 
 	public CustomerLazyDataModel() {
 		this.customers = new ArrayList<>();
 	}
 
-	public CustomerLazyDataModel(List<CustomerDTO> customers) {
+	public CustomerLazyDataModel(List<Customer> customers) {
 		super();
 		this.customers = customers;
 	}
 
 	@Override
-	public List<CustomerDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+	public List<Customer> load(int first, int pageSize, Map<String, SortMeta> sortBy,
 			Map<String, FilterMeta> filterBy) {
 		return customers;
 	}
 
 	@Override
-	public String getRowKey(CustomerDTO object) {
+	public String getRowKey(Customer object) {
 		// TODO Auto-generated method stub
 		return object.getCgc();
 	}
 
 	@Override
-	public CustomerDTO getRowData(String rowKey) {
-		return customers.parallelStream().filter((CustomerDTO x) -> x.getCgc().equals(rowKey)).findAny().orElse(null);
+	public Customer getRowData(String rowKey) {
+		return customers.parallelStream().filter((Customer x) -> x.getCgc().equals(rowKey)).findAny().orElse(null);
 	}
 
 	@Override
-	public void addCollection(Collection<CustomerDTO> list) {
+	public void addCollection(Collection<Customer> list) {
 		this.customers = new ArrayList<>(list);
 
 	}
@@ -59,7 +59,7 @@ public class CustomerLazyDataModel extends LazyDataModel<CustomerDTO> implements
 	}
 
 	@Override
-	public Collection<CustomerDTO> getCollection() {
+	public Collection<Customer> getCollection() {
 		return this.customers;
 	}
 

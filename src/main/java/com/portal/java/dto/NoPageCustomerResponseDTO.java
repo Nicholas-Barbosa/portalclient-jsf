@@ -7,15 +7,15 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class NoPageCustomerResponseDTO {
 
-	private List<CustomerDTO> clients;
+	private List<Customer> clients;
 
 	@JsonbCreator
-	public NoPageCustomerResponseDTO(@JsonbProperty("client") List<CustomerDTO> clients) {
+	public NoPageCustomerResponseDTO(@JsonbProperty("client") List<Customer> clients) {
 		super();
 		this.clients = clients;
 	}
 
-	public List<CustomerDTO> getClients() {
+	public List<Customer> getClients() {
 		return clients;
 	}
 }

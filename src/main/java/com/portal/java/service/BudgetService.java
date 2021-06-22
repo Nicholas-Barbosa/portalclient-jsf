@@ -1,5 +1,6 @@
 package com.portal.java.service;
 
+import java.math.BigDecimal;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -10,6 +11,8 @@ import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
+import com.portal.java.dto.CustomerOnOrder;
+import com.portal.java.dto.CustomerOnOrder.CustomerType;
 import com.portal.java.dto.Item;
 
 public interface BudgetService extends ServiceSerializable {
@@ -27,14 +30,15 @@ public interface BudgetService extends ServiceSerializable {
 	void calculateTotals(BudgetDTO budget);
 
 	/**
-	 * Calculate totals for item-args object and then calculate totals for
-	 * this mutable budget object.
+	 * Calculate totals for item-args object and then calculate totals for this
+	 * mutable budget object.
 	 * 
 	 * @param budget
 	 * @param item
 	 * @return
 	 */
-	void calculateTotals(BudgetDTO budget, Item item,boolean calculateDueChangesInDiscount,boolean calculateDueChangesInQuantity);
+	void calculateTotals(BudgetDTO budget, Item item, boolean calculateDueChangesInDiscount,
+			boolean calculateDueChangesInQuantity);
 
 	void removeItem(BudgetDTO budget, Item itemToRemove);
 
@@ -50,4 +54,17 @@ public interface BudgetService extends ServiceSerializable {
 	void calculateForGlobalDiscount(BudgetDTO budgetDTO);
 
 	void addItem(BudgetDTO budgetDTO, Item produc);
+
+	default void setCustomer(BudgetDTO budget, CustomerOnOrder customer) {
+		if (budget.getItems().size() >= 1)
+			throw new UnsupportedOperationException(
+					"You can't set a client at this moment. Because this budget has many items.");
+		budget.setCustomerOnOrder(customer);
+	}
+
+	default void setDiscount(BudgetDTO budget, BigDecimal discount) {
+		if (budget.getCustomerOnOrder().getType().equals(CustomerType.PROSPECT))
+			budget.setGlobalDiscount(discount);
+		throw new UnsupportedOperationException("You can't set global discount for a prospect client!");
+	}
 }

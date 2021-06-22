@@ -120,43 +120,4 @@ public class ProductServiceImpl implements ProductService {
 		return new byte[0];
 	}
 
-//	@Override
-//	public void calculateProduct(Product product) {
-//		this.calculateDiscount(product);
-//		this.calculateQuantity(product);
-//
-//	}
-//
-//	@Override
-//	public void calculateQuantity(Product product) {
-//		ProductPrice price = product.getPrice();
-//		price.setTotalGrossValue(
-//				MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitGrossValue()));
-//		price.setTotalValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitValue()));
-//		price.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(price.getQuantity(), price.getUnitStValue()));
-//	}
-//
-//	@Override
-//	public void calculateDiscount(Product product) {
-//		ProductPrice price = product.getPrice();
-//		price.setUnitGrossValue(
-//				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitGrossValueWithNoDiscount()));
-//		price.setUnitStValue(
-//				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitStValueWithNoDiscount()));
-//		price.setUnitValue(
-//				MathUtils.subtractValueByPercentage(price.getDiscount(), price.getUnitValueWithNoDiscount()));
-//		this.calculateQuantity(product);
-//	}
-//
-//	@Override
-//	public void addDiscount(Product product, BigDecimal newDiscount) {
-//		if (newDiscount.compareTo(BigDecimal.ZERO) > 0) {
-//			ProductPrice prices = product.getPrice();
-//			prices.setDiscount(prices.getDiscount().add(newDiscount));
-//			this.calculateDiscount(product);
-//			this.calculateQuantity(product);
-//		}
-//
-//	}
-
 }

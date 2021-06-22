@@ -33,7 +33,9 @@ import com.portal.java.dto.BudgetJasperReportDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.CustomerDTO;
+import com.portal.java.dto.Customer;
+import com.portal.java.dto.CustomerOnOrder;
+import com.portal.java.dto.CustomerOnOrder.CustomerType;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.DownloadStreamsForm;
 import com.portal.java.dto.EstimatedItemDTO;
@@ -88,7 +90,7 @@ public class BudgetController implements Serializable {
 
 	private LazyDataModel<Product> lazyProducts;
 
-	private LazyDataModel<CustomerDTO> lazyCustomers;
+	private LazyDataModel<Customer> lazyCustomers;
 
 	private String h5DivLoadCustomers, h5DivLoadProducts;
 
@@ -107,7 +109,7 @@ public class BudgetController implements Serializable {
 
 	private String nameCustomerToFind;
 
-	private CustomerDTO selectedCustomer;
+	private Customer selectedCustomer;
 
 	private BudgetEstimatedDTO budgetEstimateDTO;
 
@@ -228,7 +230,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void loadImageFromPreviewProduct() {
-//		this.productService.loadImage(previewProduct);
+		this.productService.loadImage(previewItem.getProduct());
 	}
 
 	public void loadImageForProduct(Product product) {
@@ -254,13 +256,13 @@ public class BudgetController implements Serializable {
 		}
 	}
 
-	public void selectCustomer(SelectEvent<CustomerDTO> event) {
+	public void selectCustomer(SelectEvent<Customer> event) {
 		if (event.getObject().getBlocked().equals("Sim")) {
 			FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		budgetDTO.setCustomer(event.getObject());
+		budgetService.setCustomer(budgetDTO, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
 		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
@@ -277,7 +279,7 @@ public class BudgetController implements Serializable {
 					FacesUtils.addHeaderForResponse("customers", c.totalItems());
 					LazyPopulateUtils.populate(lazyCustomers, c);
 				} else {
-					CustomerDTO cDTO = c.getClients().get(0);
+					Customer cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {
 						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 						selectedCustomer = null;
@@ -302,7 +304,7 @@ public class BudgetController implements Serializable {
 
 	public void findCustomerByCode() {
 		try {
-			Optional<CustomerDTO> maybeCustomer = customerService.findByCodeAndStore(searchCustomerDTO);
+			Optional<Customer> maybeCustomer = customerService.findByCodeAndStore(searchCustomerDTO);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.getBlocked().equals("Sim")) {
 					FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
@@ -327,7 +329,7 @@ public class BudgetController implements Serializable {
 	public void findProductByCode() {
 		try {
 			Optional<Product> product = productService.findByCode(findProductByCodeForm.getCode(),
-					budgetDTO.getCustomer().getCode(), budgetDTO.getCustomer().getStore());
+					budgetDTO.getCustomerOnOrder().getCustomer().getCode(), budgetDTO.getCustomerOnOrder().getCustomer().getStore());
 			product.ifPresentOrElse(presentProduct -> {
 				FacesUtils.addHeaderForResponse("product-found", true);
 				ProductPrice productPrice = presentProduct.getPrice();
@@ -454,11 +456,11 @@ public class BudgetController implements Serializable {
 		this.nameCustomerToFind = nameCustomerToFind;
 	}
 
-	public LazyDataModel<CustomerDTO> getLazyCustomers() {
+	public LazyDataModel<Customer> getLazyCustomers() {
 		return lazyCustomers;
 	}
 
-	public CustomerDTO getSelectedCustomer() {
+	public Customer getSelectedCustomer() {
 		return selectedCustomer;
 	}
 

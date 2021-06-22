@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class BudgetDTO {
 
-	private CustomerDTO customer;
+	private CustomerOnOrder customerOnOrder;
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
 	private BigDecimal stValue;
@@ -21,12 +21,12 @@ public class BudgetDTO {
 		this.globalDiscount = BigDecimal.ZERO;
 	}
 
-	public CustomerDTO getCustomer() {
-		return customer;
+	public CustomerOnOrder getCustomerOnOrder() {
+		return customerOnOrder;
 	}
 
-	public void setCustomer(CustomerDTO customer) {
-		this.customer = new CustomerDTO(customer);
+	public void setCustomerOnOrder(CustomerOnOrder customer) {
+		this.customerOnOrder = customer;
 	}
 
 	public BigDecimal getGrossValue() {

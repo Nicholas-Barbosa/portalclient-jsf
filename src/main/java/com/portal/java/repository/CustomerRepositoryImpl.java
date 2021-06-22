@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.java.cdi.qualifier.OAuth2RestAuth;
 import com.portal.java.client.rest.auth.AuthenticatedRestClient;
-import com.portal.java.dto.CustomerDTO;
+import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.NoPageCustomerResponseDTO;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
@@ -54,7 +54,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public Optional<CustomerDTO> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
+	public Optional<Customer> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
 			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
 		try {
 			Map<String, Object> pathParams = getMapInstance();

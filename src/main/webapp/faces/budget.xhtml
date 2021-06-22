@@ -69,7 +69,7 @@
 										value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 									<div class="ui-inputgroup">
 										<p:inputText
-											value="#{budgetController.budgetDTO.customer.name}-#{budgetController.budgetDTO.customer.store}"
+											value="#{budgetController.budgetDTO.customerOnOrder.customer.name}-#{budgetController.budgetDTO.customerOnOrder.customer.store}"
 											readonly="true" />
 										<p:button icon="pi pi-search" styleClass="ui-button-warning"
 											onclick="PF('dlgSearchCustomer').show()"
@@ -81,14 +81,15 @@
 								</div>
 								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 									<p:outputLabel value="CGC" for="cgc" />
-									<p:inputText value="#{budgetController.budgetDTO.customer.cgc}"
+									<p:inputText
+										value="#{budgetController.budgetDTO.customerOnOrder.customer.cgc}"
 										readonly="true" id="cgc" />
 								</div>
 								<div class="p-field p-col-12 p-xl-5 p-lg-5 p-md-12">
 									<p:outputLabel for="endereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 									<p:inputText id="endereco"
-										value="#{budgetController.budgetDTO.customer.address}, #{budgetController.budgetDTO.customer.city} - #{budgetController.budgetDTO.customer.state}"
+										value="#{budgetController.budgetDTO.customerOnOrder.customer.address}, #{budgetController.budgetDTO.customerOnOrder.customer.city} - #{budgetController.budgetDTO.customerOnOrder.customer.state}"
 										readonly="true" />
 								</div>
 
@@ -463,7 +464,8 @@
 								oncomplete="PF('dlgGlobalDiscounts').hide();PF('block').hide()" />
 						</h:form>
 					</p:tab>
-					<p:tab title="Global" disabled="true">
+					<p:tab title="Global"
+						disabled="#{budgetController.budgetDTO.customerOnOrder.type eq 'NORMAL'}">
 						<h5>Work in progress...</h5>
 					</p:tab>
 				</p:tabView>
@@ -580,14 +582,10 @@
 								</div>
 							</div>
 							<p:dataTable var="item">
-
-
-
 							</p:dataTable>
 						</div>
 					</h:form>
 				</p:outputPanel>
-
 			</p:dialog>
 
 			<div class="p-grid crud-demo">
@@ -690,11 +688,7 @@
 											update="vLiquid,vGross,vSt"
 											onstart="PF('blockProductContent').show()"
 											oncomplete="PF('blockProductContent').hide()" />
-										<!-- 	<p:remoteCommand name="changeDiscount"
-										action="#{budgetController.changeItemDiscount}"
-										process="@this,discount" update="vLiquid,vGross,vSt"
-										onstart="PF('blockProductContent').show()"
-										oncomplete="PF('blockProductContent').hide()" /> -->
+									
 										<p:remoteCommand name="confirmProduct"
 											action="#{budgetController.addPreviewItemToBudget}"
 											onstart="$('body').css('cursor', 'progress');PF('blockPanelAll').show()"
@@ -829,6 +823,28 @@
 									id="findCustomerByCodeAndStore"
 									onstart="PF('globalLoadDlg').show();"
 									oncomplete="PF('globalLoadDlg').hide();PF('dlgSearchCustomer').hide()" />
+							</div>
+						</h:form>
+					</p:tab>
+					<p:tab title="PROSPECT">
+						<h:form>
+							<div class="ui-fluid">
+								<div class="p-field">
+									<p:outputLabel for="@next" value="Vendedor" />
+									<p:selectOneMenu id="option">
+										<f:selectItem itemLabel="Agrícola" itemValue="A" />
+										<f:selectItem itemLabel="Carros" itemValue="C" />
+										<f:selectItem itemLabel="Motos" itemValue="M" />
+
+									</p:selectOneMenu>
+								</div>
+								<div class="p-field">
+									<p:outputLabel for="@next" value="Estado" />
+									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px">
+										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
+											var="state" itemLabel="#{state.name}" itemValue="#{state.acronym}"/>
+									</p:selectOneMenu>
+								</div>
 							</div>
 						</h:form>
 					</p:tab>

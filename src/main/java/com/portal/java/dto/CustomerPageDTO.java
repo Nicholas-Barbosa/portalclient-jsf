@@ -7,7 +7,7 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class CustomerPageDTO implements Page<CustomerDTO> {
+public class CustomerPageDTO implements Page<Customer> {
 
 	/**
 	 * 
@@ -22,7 +22,7 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 
 	private int page;
 
-	private List<CustomerDTO> clients;
+	private List<Customer> clients;
 
 	public CustomerPageDTO() {
 		// TODO Auto-generated constructor stub
@@ -30,7 +30,7 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 	@JsonbCreator
 	public CustomerPageDTO(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPages,
 			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
-			@JsonbProperty("client") List<CustomerDTO> clients) {
+			@JsonbProperty("client") List<Customer> clients) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
@@ -39,7 +39,7 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 		this.clients = new ArrayList<>(clients);
 	}
 
-	public List<CustomerDTO> getClients() {
+	public List<Customer> getClients() {
 		return new ArrayList<>(clients);
 	}
 
@@ -69,7 +69,7 @@ public class CustomerPageDTO implements Page<CustomerDTO> {
 	}
 
 	@Override
-	public Collection<CustomerDTO> getContent() {
+	public Collection<Customer> getContent() {
 		// TODO Auto-generated method stub
 		return clients;
 	}

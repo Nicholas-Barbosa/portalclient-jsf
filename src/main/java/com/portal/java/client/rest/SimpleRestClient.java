@@ -22,14 +22,6 @@ public class SimpleRestClient implements RestClient {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public <T> T get(String uri, String endpoint, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String media)
-			throws SocketTimeoutException, ConnectException, TimeoutException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public <T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, E requestBody, String mediaType)
 			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {

@@ -23,7 +23,7 @@ public class BudgetEstimatedDTO implements Serializable {
 
 	private BigDecimal totalDiscount;
 
-	private CustomerDTO customer;
+	private Customer customer;
 
 	private Set<EstimatedItemDTO> items;
 
@@ -74,7 +74,7 @@ public class BudgetEstimatedDTO implements Serializable {
 		return totalDiscount;
 	}
 
-	public CustomerDTO getCustomer() {
+	public Customer getCustomer() {
 		return customer;
 	}
 
