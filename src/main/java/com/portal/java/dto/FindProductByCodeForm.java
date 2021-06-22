@@ -16,7 +16,7 @@ public class FindProductByCodeForm {
 	}
 
 	public void setCode(String code) {
-		this.code = code;
+		this.code = code.strip();
 	}
 
 	public String getCustomerCode() {

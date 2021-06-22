@@ -425,7 +425,7 @@
 			<p:dialog widgetVar="dlgGlobalDiscounts" header="Descontos"
 				responsive="true" fitViewport="true" modal="true"
 				onShow="loadLines()">
-				<p:tabView orientation="top">
+				<p:tabView orientation="top" id="tabView">
 					<p:tab
 						title="#{resourceBundleServiceImpl.getMessage('desc_linha')}">
 						<h:form>
@@ -457,15 +457,17 @@
 								value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
 								icon="pi pi-check"
 								styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-								process="@form" oncomplete="PF('dlgGlobalDiscounts').hide()"
-								update="formItems:dtItems,budgetTotals"
-								action="#{budgetController.applyLineDiscount}" />
+								process="@form" update="formItems:dtItems,budgetTotals"
+								action="#{budgetController.applyLineDiscount}"
+								onstart="PF('block').show()"
+								oncomplete="PF('dlgGlobalDiscounts').hide();PF('block').hide()" />
 						</h:form>
 					</p:tab>
 					<p:tab title="Global" disabled="true">
 						<h5>Work in progress...</h5>
 					</p:tab>
 				</p:tabView>
+				<p:blockUI block="tabView" widgetVar="block" />
 
 			</p:dialog>
 			<p:dialog widgetVar="dlgForImport" id="dlgForImport"
@@ -772,7 +774,8 @@
 							<div class="p-formgroup-inline">
 								<div class="p-field">
 									<p:inputText type="text" placeholder="keyword"
-										value="#{budgetController.nameCustomerToFind}" required="true" id="cName"/>
+										value="#{budgetController.nameCustomerToFind}" required="true"
+										id="cName" />
 									<p:message for="cName" />
 								</div>
 								<p:commandButton
