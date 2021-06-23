@@ -38,12 +38,12 @@ public class CustomerLazyDataModel extends LazyDataModel<Customer> implements La
 	@Override
 	public String getRowKey(Customer object) {
 		// TODO Auto-generated method stub
-		return object.getCgc();
+		return object.getCnpj();
 	}
 
 	@Override
 	public Customer getRowData(String rowKey) {
-		return customers.parallelStream().filter((Customer x) -> x.getCgc().equals(rowKey)).findAny().orElse(null);
+		return customers.parallelStream().filter((Customer x) -> x.getCnpj().equals(rowKey)).findAny().orElse(null);
 	}
 
 	@Override

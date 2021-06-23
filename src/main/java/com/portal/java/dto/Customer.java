@@ -15,7 +15,7 @@ public class Customer implements Serializable {
 	private final String code;
 	private final String store;
 	private final String state;
-	private final String cgc;
+	private final String cnpj;
 	private final String blocked;
 	private final String name;
 	private final String fantasyName;
@@ -33,7 +33,7 @@ public class Customer implements Serializable {
 		this.code = code;
 		this.store = store;
 		this.state = state;
-		this.cgc = cgc;
+		this.cnpj = cgc;
 		this.blocked = blocked;
 		this.name = name;
 		this.fantasyName = fantasyName;
@@ -42,7 +42,7 @@ public class Customer implements Serializable {
 	}
 
 	public Customer(Customer customerDTO) {
-		this(customerDTO.address, customerDTO.code, customerDTO.store, customerDTO.state, customerDTO.cgc,
+		this(customerDTO.address, customerDTO.code, customerDTO.store, customerDTO.state, customerDTO.cnpj,
 				customerDTO.blocked, customerDTO.name, customerDTO.fantasyName, customerDTO.city, customerDTO.table);
 	}
 
@@ -62,8 +62,8 @@ public class Customer implements Serializable {
 		return state;
 	}
 
-	public String getCgc() {
-		return cgc;
+	public String getCnpj() {
+		return cnpj;
 	}
 
 	public String getBlocked() {
@@ -89,7 +89,7 @@ public class Customer implements Serializable {
 	@Override
 	public String toString() {
 		return "CustomerDTO [address=" + address + ", code=" + code + ", store=" + store + ", state=" + state + ", cgc="
-				+ cgc + ", blocked=" + blocked + ", name=" + name + ", fantasyName=" + fantasyName + ", city=" + city
+				+ cnpj + ", blocked=" + blocked + ", name=" + name + ", fantasyName=" + fantasyName + ", city=" + city
 				+ ", table=" + table + "]";
 	}
 

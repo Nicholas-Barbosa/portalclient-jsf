@@ -23,4 +23,7 @@ public interface ProductRepository {
 
 	Future<NoPageProductResponseDTO> findByCodeAsync(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
+
+	Future<NoPageProductResponseDTO> findByCodeForProspectAsync(String code, String state, String sellerType)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 }

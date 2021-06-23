@@ -5,6 +5,9 @@ public class CustomerOnOrder {
 	private Customer customer;
 	private CustomerType type;
 
+	public CustomerOnOrder() {
+		// TODO Auto-generated constructor stub
+	}
 	public CustomerOnOrder(Customer customer, CustomerType type) {
 		super();
 		this.customer = customer;

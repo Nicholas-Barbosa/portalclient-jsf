@@ -47,13 +47,13 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	}
 
 	@Override
-	public void login(LoginForm loginForm)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
+	public void login(LoginForm loginForm)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("grant_type", "password");
 		queryParams.put("password", loginForm.getPassword());
 		queryParams.put("username", loginForm.getUsername());
-
 		String currentEniviromentUrl = propertiesReader.getProperty("orcamento_api_url_teste");
 		String loginUrl = String.format("%s/%s", currentEniviromentUrl, "api/oauth2/v1/token");
 
@@ -63,13 +63,13 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 				currentEniviromentUrl, "v1/token", TokenType.Bearer, doPost.getAccessToken(), doPost.getRefreshToken(),
 				"password", "default", 1l, TimeUnit.HOURS);
 		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", service);
-
+		loginForm = null;
 	}
 
-	private ExternalApiResource createServiceApi(String username, String password, String basePath, String loginEndpoint,
-			com.portal.java.security.api.TokenType token, String accessToken, String refreshToken, String grantType,
-			String scope, Long duration, TimeUnit timeUnit) {
-		return new ExternalOAuth2ApiResource(username, password.toCharArray(), basePath, loginEndpoint, token, accessToken,
-				refreshToken, grantType, scope, duration, timeUnit);
+	private ExternalApiResource createServiceApi(String username, String password, String basePath,
+			String loginEndpoint, com.portal.java.security.api.TokenType token, String accessToken, String refreshToken,
+			String grantType, String scope, Long duration, TimeUnit timeUnit) {
+		return new ExternalOAuth2ApiResource(username, password.toCharArray(), basePath, loginEndpoint, token,
+				accessToken, refreshToken, grantType, scope, duration, timeUnit);
 	}
 }

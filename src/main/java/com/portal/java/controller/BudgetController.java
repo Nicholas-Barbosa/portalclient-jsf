@@ -48,6 +48,9 @@ import com.portal.java.dto.Product;
 import com.portal.java.dto.Product.ProductPrice;
 import com.portal.java.dto.ProductBudgetForm;
 import com.portal.java.dto.ProductPageDTO;
+import com.portal.java.dto.ProspectCustomerForm;
+import com.portal.java.dto.ProspectCustomerOnOrder;
+import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.service.BudgetService;
@@ -135,6 +138,8 @@ public class BudgetController implements Serializable {
 
 	private ItemLineDiscount itemLineDiscount;
 
+	private ProspectCustomerForm prospectCustomerForm;
+
 	public BudgetController() {
 		this(null, null, null, null, null, null, null, null);
 	}
@@ -155,6 +160,14 @@ public class BudgetController implements Serializable {
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
+	}
+
+	public void setProspectCustomer() {
+		CustomerOnOrder customer = new ProspectCustomerOnOrder();
+		customer.setType(CustomerType.PROSPECT);
+		((ProspectCustomerOnOrder) customer).setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
+		((ProspectCustomerOnOrder) customer).setState(prospectCustomerForm.getStateAcronym());
+		budgetService.setCustomer(budgetDTO, customer);
 	}
 
 	public void applyLineDiscount() {
@@ -246,7 +259,7 @@ public class BudgetController implements Serializable {
 			BudgetJasperReportDTO jasperDTO = new BudgetJasperReportDTO(budgetEstimateDTO.getLiquidValue(),
 					budgetEstimateDTO.getGrossValue(), budgetEstimateDTO.getStTotal(),
 					new CustomerJasperReportDTO(selectedCustomer.getName(), selectedCustomer.getCity(),
-							selectedCustomer.getAddress(), selectedCustomer.getState(), selectedCustomer.getCgc()),
+							selectedCustomer.getAddress(), selectedCustomer.getState(), selectedCustomer.getCnpj()),
 					budgetEstimateDTO.getItems());
 			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
 			FacesUtils.prepareResponseHeadersResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
@@ -328,21 +341,20 @@ public class BudgetController implements Serializable {
 
 	public void findProductByCode() {
 		try {
-			Optional<Product> product = productService.findByCode(findProductByCodeForm.getCode(),
-					budgetDTO.getCustomerOnOrder().getCustomer().getCode(), budgetDTO.getCustomerOnOrder().getCustomer().getStore());
-			product.ifPresentOrElse(presentProduct -> {
-				FacesUtils.addHeaderForResponse("product-found", true);
-				ProductPrice productPrice = presentProduct.getPrice();
-				previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct, 1,
-						new ItemPrice(productPrice.getUnitStValue(), productPrice.getUnitValue(),
-								productPrice.getUnitGrossValue(), productPrice.getUnitStValue(),
-								productPrice.getUnitValue(), productPrice.getUnitGrossValue()));
-
-			}, () -> {
-				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-				FacesUtils.addHeaderForResponse("product-found", false);
-				previewItem = null;
-			});
+			Optional<Product> product = null;
+			switch (budgetDTO.getCustomerOnOrder().getType()) {
+			case NORMAL:
+				product = productService.findByCode(findProductByCodeForm.getCode(),
+						budgetDTO.getCustomerOnOrder().getCustomer().getCode(),
+						budgetDTO.getCustomerOnOrder().getCustomer().getStore());
+				break;
+			default:
+				ProspectCustomerOnOrder customer = (ProspectCustomerOnOrder) budgetDTO.getCustomerOnOrder();
+				product = productService.findByCodeForProspect(findProductByCodeForm.getCode(),
+						customer.getCustomer().getState(), customer.getSellerType().getType());
+				break;
+			}
+			this.checkPossibleProduct(product);
 			findProductByCodeForm = new FindProductByCodeForm();
 		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
@@ -351,6 +363,23 @@ public class BudgetController implements Serializable {
 		} catch (NullPointerException e) {
 			FacesUtils.error(null, "Cliente não selecionado", "Selecione o cliente");
 		}
+
+	}
+
+	private void checkPossibleProduct(Optional<Product> product) {
+		product.ifPresentOrElse(presentProduct -> {
+			FacesUtils.addHeaderForResponse("product-found", true);
+			ProductPrice productPrice = presentProduct.getPrice();
+			previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct, 1,
+					new ItemPrice(productPrice.getUnitStValue(), productPrice.getUnitValue(),
+							productPrice.getUnitGrossValue(), productPrice.getUnitStValue(),
+							productPrice.getUnitValue(), productPrice.getUnitGrossValue()));
+
+		}, () -> {
+			FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
+			FacesUtils.addHeaderForResponse("product-found", false);
+			previewItem = null;
+		});
 
 	}
 
@@ -405,6 +434,7 @@ public class BudgetController implements Serializable {
 			this.budgetDTO = new BudgetDTO();
 			this.itemLines = new HashSet<>();
 			this.itemLineDiscount = new ItemLineDiscount();
+			this.prospectCustomerForm = new ProspectCustomerForm();
 		}).start();
 	}
 
@@ -530,5 +560,9 @@ public class BudgetController implements Serializable {
 
 	public ItemLineDiscount getItemLineDiscount() {
 		return itemLineDiscount;
+	}
+
+	public ProspectCustomerForm getProspectCustomerForm() {
+		return prospectCustomerForm;
 	}
 }

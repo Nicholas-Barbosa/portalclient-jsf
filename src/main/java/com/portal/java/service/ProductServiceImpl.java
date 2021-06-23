@@ -120,4 +120,27 @@ public class ProductServiceImpl implements ProductService {
 		return new byte[0];
 	}
 
+	@Override
+	public Optional<Product> findByCodeForProspect(String code, String state, String sellerType)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
+		Future<NoPageProductResponseDTO> ftProduct = productRepository.findByCodeForProspectAsync(code, state,
+				sellerType);
+		try {
+			NoPageProductResponseDTO response = ftProduct.get();
+			if (response != null) {
+				byte[] image = getBlobStreamImageContent(ftBlob);
+				Product product = response.getProducts().get(0);
+				ProductInfo productInfo = product.getInfo();
+				productInfo.setImageInfo(new ImageInfo(image));
+				return Optional.of(product);
+			}
+			ftBlob.cancel(true);
+		} catch (ExecutionException | InterruptedException e) {
+			if (e instanceof InterruptedException)
+				e.printStackTrace();
+		}
+		return Optional.empty();
+	}
+
 }

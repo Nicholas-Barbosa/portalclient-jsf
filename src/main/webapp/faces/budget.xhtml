@@ -63,7 +63,6 @@
 					<div class="card">
 						<h:form id="customerForm">
 							<div class="ui-fluid p-formgrid p-grid">
-
 								<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 									<p:outputLabel
 										value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
@@ -79,20 +78,42 @@
 										</p:button>
 									</div>
 								</div>
-								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-									<p:outputLabel value="CGC" for="cgc" />
-									<p:inputText
-										value="#{budgetController.budgetDTO.customerOnOrder.customer.cgc}"
-										readonly="true" id="cgc" />
-								</div>
-								<div class="p-field p-col-12 p-xl-5 p-lg-5 p-md-12">
-									<p:outputLabel for="endereco"
-										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
-									<p:inputText id="endereco"
-										value="#{budgetController.budgetDTO.customerOnOrder.customer.address}, #{budgetController.budgetDTO.customerOnOrder.customer.city} - #{budgetController.budgetDTO.customerOnOrder.customer.state}"
-										readonly="true" />
-								</div>
 
+								<ui:fragment
+									rendered="#{budgetController.budgetDTO.customerOnOrder.type eq 'NORMAL'}">
+									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+										<p:outputLabel value="CNPJ" for="cnpj" />
+										<p:inputText
+											value="#{budgetController.budgetDTO.customerOnOrder.customer.cnpj}"
+											readonly="true" id="cnpj" />
+									</div>
+
+									<div class="p-field p-col-12 p-xl-5 p-lg-5 p-md-12">
+										<p:outputLabel for="endereco"
+											value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+										<p:inputText id="endereco"
+											value="#{budgetController.budgetDTO.customerOnOrder.customer.address}, #{budgetController.budgetDTO.customerOnOrder.customer.city} - #{budgetController.budgetDTO.customerOnOrder.customer.state}"
+											readonly="true" />
+									</div>
+								</ui:fragment>
+
+								<ui:fragment
+									rendered="#{budgetController.budgetDTO.customerOnOrder.type eq 'PROSPECT'}">
+									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+										<p:outputLabel
+											value="#{resourceBundleServiceImpl.getMessage('estado')}"
+											for="state" />
+										<p:inputText
+											value="#{budgetController.budgetDTO.customerOnOrder.customer.state}"
+											readonly="true" id="state" />
+									</div>
+									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+										<p:outputLabel value="Vendedor" for="sellerType" />
+										<p:inputText
+											value="#{budgetController.budgetDTO.customerOnOrder.sellerType}"
+											readonly="true" id="sellerType" />
+									</div>
+								</ui:fragment>
 							</div>
 
 						</h:form>
@@ -832,21 +853,27 @@
 							<div class="ui-fluid">
 								<div class="p-field">
 									<p:outputLabel for="@next" value="Vendedor" />
-									<p:selectOneMenu id="option">
-										<f:selectItem itemLabel="Agrícola" itemValue="A" />
-										<f:selectItem itemLabel="Carros" itemValue="C" />
-										<f:selectItem itemLabel="Motos" itemValue="M" />
+									<p:selectOneMenu id="option"
+										value="#{budgetController.prospectCustomerForm.sellerType}">
+										<f:selectItem itemLabel="Agrícola" itemValue="AGRICOLA" />
+										<f:selectItem itemLabel="Carros" itemValue="CARROS" />
+										<f:selectItem itemLabel="Motos" itemValue="MOTOS" />
 
 									</p:selectOneMenu>
 								</div>
 								<div class="p-field">
 									<p:outputLabel for="@next" value="Estado" />
-									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px">
+									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
+										value="#{budgetController.prospectCustomerForm.stateAcronym}">
 										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
 											var="state" itemLabel="#{state.name}"
 											itemValue="#{state.acronym}" />
 									</p:selectOneMenu>
 								</div>
+								<p:commandButton icon="pi pi-check"
+									styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+									action="#{budgetController.setProspectCustomer}"
+									process="@form" update=":customerForm" oncomplete="PF('dlgSearchCustomer').hide();PF('blockItems').hide();"/>
 							</div>
 						</h:form>
 					</p:tab>
@@ -890,8 +917,8 @@
 							headerText="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}">
 							<h:outputText value="#{customer.fantasyName}" />
 						</p:column>
-						<p:column headerText="CGC">
-							<h:outputText value="#{customer.cgc}" />
+						<p:column headerText="CNPJ">
+							<h:outputText value="#{customer.cnpj}" />
 						</p:column>
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
