@@ -16,7 +16,6 @@ public class BrazilianState {
 		super();
 		this.name = name;
 		this.acronym = acronym;
-		System.out.println("state jsonb creator!");
 	}
 
 	public String getName() {

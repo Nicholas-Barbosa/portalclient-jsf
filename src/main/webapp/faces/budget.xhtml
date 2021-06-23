@@ -228,7 +228,7 @@
 								<p:autoUpdate on="eventAddLineDiscount" />
 								<p:ajax event="rowEdit"
 									listener="#{budgetController.onItemRowEdit}"
-									update="budgetTotals" />
+									update="budgetTotals" async="true" />
 								<f:facet name="header">
 									<div class="p-d-flex p-jc-between p-ai-center">
 										<div>
@@ -461,7 +461,8 @@
 								process="@form" update="formItems:dtItems,budgetTotals"
 								action="#{budgetController.applyLineDiscount}"
 								onstart="PF('block').show()"
-								oncomplete="PF('dlgGlobalDiscounts').hide();PF('block').hide()" />
+								oncomplete="PF('dlgGlobalDiscounts').hide();PF('block').hide()"
+								async="true" />
 						</h:form>
 					</p:tab>
 					<p:tab title="Global"
@@ -688,7 +689,7 @@
 											update="vLiquid,vGross,vSt"
 											onstart="PF('blockProductContent').show()"
 											oncomplete="PF('blockProductContent').hide()" />
-									
+
 										<p:remoteCommand name="confirmProduct"
 											action="#{budgetController.addPreviewItemToBudget}"
 											onstart="$('body').css('cursor', 'progress');PF('blockPanelAll').show()"
@@ -842,7 +843,8 @@
 									<p:outputLabel for="@next" value="Estado" />
 									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px">
 										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
-											var="state" itemLabel="#{state.name}" itemValue="#{state.acronym}"/>
+											var="state" itemLabel="#{state.name}"
+											itemValue="#{state.acronym}" />
 									</p:selectOneMenu>
 								</div>
 							</div>
