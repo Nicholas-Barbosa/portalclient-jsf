@@ -4,19 +4,19 @@ import java.math.BigDecimal;
 
 public class Item {
 
-	private BigDecimal individualDiscount;
+	private BigDecimal budgetGlobalDiscount;
 	private BigDecimal lineDiscount;
 	private BigDecimal totalDiscount;
 	private final Product product;
 	private int quantity;
 	private ItemPrice itemPrice;
 
-	public Item(BigDecimal individualDiscount, BigDecimal lineDiscount, Product product, int quantity,
+	public Item(BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, Product product, int quantity,
 			ItemPrice itemPrice) {
 		super();
-		this.individualDiscount = individualDiscount;
+		this.budgetGlobalDiscount = budgetGlobalDiscount;
 		this.lineDiscount = lineDiscount;
-		this.totalDiscount = individualDiscount.add(lineDiscount);
+		this.totalDiscount = budgetGlobalDiscount.add(lineDiscount);
 		this.product = product;
 		this.quantity = quantity;
 		this.itemPrice = itemPrice;
@@ -26,13 +26,13 @@ public class Item {
 		this(BigDecimal.ZERO, BigDecimal.ZERO, null, 0, null);
 	}
 
-	public BigDecimal getIndividualDiscount() {
-		return individualDiscount;
+	public BigDecimal getBudgetGlobalDiscount() {
+		return budgetGlobalDiscount;
 	}
 
-	public void setIndividualDiscount(BigDecimal individualDiscount) {
-		this.totalDiscount = this.totalDiscount.subtract(this.individualDiscount);
-		this.individualDiscount = individualDiscount;
+	public void setBudgetGlobalDiscount(BigDecimal individualDiscount) {
+		this.totalDiscount = this.totalDiscount.subtract(this.budgetGlobalDiscount);
+		this.budgetGlobalDiscount = individualDiscount;
 		this.totalDiscount = this.totalDiscount.add(individualDiscount);
 	}
 

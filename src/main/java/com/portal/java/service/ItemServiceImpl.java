@@ -1,5 +1,7 @@
 package com.portal.java.service;
 
+import java.util.Collection;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import com.portal.java.dto.Item;
@@ -30,6 +32,12 @@ public class ItemServiceImpl implements ItemService {
 		prices.setUnitValue(
 				MathUtils.subtractValueByPercentage(item.getTotalDiscount(), prices.getUnitValueWithoutDiscount()));
 		this.calculateDueQuantity(item, false);
+	}
+
+	@Override
+	public void calculateDueDiscount(Collection<Item> items) {
+		items.parallelStream().forEach(this::calculateDueDiscount);
+
 	}
 
 }

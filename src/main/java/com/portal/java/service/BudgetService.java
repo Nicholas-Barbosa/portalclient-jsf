@@ -12,7 +12,6 @@ import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.CustomerOnOrder;
-import com.portal.java.dto.CustomerOnOrder.CustomerType;
 import com.portal.java.dto.Item;
 
 public interface BudgetService extends ServiceSerializable {
@@ -62,9 +61,12 @@ public interface BudgetService extends ServiceSerializable {
 		budget.setCustomerOnOrder(customer);
 	}
 
-	default void setDiscount(BudgetDTO budget, BigDecimal discount) {
-		if (budget.getCustomerOnOrder().getType().equals(CustomerType.PROSPECT))
-			budget.setGlobalDiscount(discount);
-		throw new UnsupportedOperationException("You can't set global discount for a prospect client!");
-	}
+	/**
+	 * Set global discount.Only for PROSPECT customers!
+	 * 
+	 * @param budget
+	 * @param discount
+	 */
+	void setDiscount(BudgetDTO budget, BigDecimal discount);
+
 }

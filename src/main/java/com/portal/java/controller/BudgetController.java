@@ -37,6 +37,7 @@ import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.CustomerOnOrder.CustomerType;
 import com.portal.java.dto.CustomerPageDTO;
+import com.portal.java.dto.DiscountView;
 import com.portal.java.dto.DownloadStreamsForm;
 import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.FindProductByCodeForm;
@@ -140,6 +141,10 @@ public class BudgetController implements Serializable {
 
 	private ProspectCustomerForm prospectCustomerForm;
 
+	private BigDecimal globalDiscount;
+
+	private DiscountView discView;
+
 	public BudgetController() {
 		this(null, null, null, null, null, null, null, null);
 	}
@@ -168,6 +173,10 @@ public class BudgetController implements Serializable {
 		((ProspectCustomerOnOrder) customer).setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
 		((ProspectCustomerOnOrder) customer).setState(prospectCustomerForm.getStateAcronym());
 		budgetService.setCustomer(budgetDTO, customer);
+	}
+
+	public void applyGlobalDiscount() {
+		budgetService.setDiscount(budgetDTO, globalDiscount);
 	}
 
 	public void applyLineDiscount() {
@@ -435,6 +444,7 @@ public class BudgetController implements Serializable {
 			this.itemLines = new HashSet<>();
 			this.itemLineDiscount = new ItemLineDiscount();
 			this.prospectCustomerForm = new ProspectCustomerForm();
+			this.discView = new DiscountView();
 		}).start();
 	}
 
@@ -565,4 +575,17 @@ public class BudgetController implements Serializable {
 	public ProspectCustomerForm getProspectCustomerForm() {
 		return prospectCustomerForm;
 	}
+
+	public BigDecimal getGlobalDiscount() {
+		return globalDiscount;
+	}
+
+	public void setGlobalDiscount(BigDecimal globalDiscount) {
+		this.globalDiscount = globalDiscount;
+	}
+
+	public DiscountView getDiscView() {
+		return discView;
+	}
+
 }

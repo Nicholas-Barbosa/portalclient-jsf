@@ -1,5 +1,7 @@
 package com.portal.java.service;
 
+import java.util.Collection;
+
 import com.portal.java.dto.Item;
 
 public interface ItemService {
@@ -18,5 +20,10 @@ public interface ItemService {
 	 * @param item
 	 */
 	void calculateDueDiscount(Item item);
-
+	/**
+	 * Calculate unit values based on new discounts.
+	 * 
+	 * @param items
+	 */
+	void calculateDueDiscount(Collection<Item> items);
 }
