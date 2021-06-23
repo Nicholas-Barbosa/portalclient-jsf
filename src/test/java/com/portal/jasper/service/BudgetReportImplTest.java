@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.portal.java.dto.BudgetJasperReportDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
 import com.portal.java.dto.EstimatedItemDTO;
+import com.portal.java.dto.Item;
 import com.portal.java.jasper.ReportService;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.jasper.service.BudgetReportImpl;
@@ -23,7 +24,7 @@ class BudgetReportImplTest {
 	static void tearDownAfterClass() throws Exception {
 	}
 
-	private final EstimatedItemDTO item = new EstimatedItemDTO(new BigDecimal(135.98), new BigDecimal(900), "AX001",
+	private final Item item = new Item(new BigDecimal(135.98), new BigDecimal(900), "AX001",
 			"AX001", new BigDecimal(135.98), 20, new BigDecimal(900), new BigDecimal(18.89), new BigDecimal(12.89),
 			234);
 	{

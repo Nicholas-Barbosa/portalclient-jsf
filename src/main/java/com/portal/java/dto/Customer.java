@@ -21,13 +21,15 @@ public class Customer implements Serializable {
 	private final String fantasyName;
 	private final String city;
 	private final String table;
+	private final String paymentTerms;
 
 	@JsonbCreator
 	public Customer(@JsonbProperty("address") String address, @JsonbProperty("code") String code,
 			@JsonbProperty("store") String store, @JsonbProperty("state") String state,
 			@JsonbProperty("cgc") String cgc, @JsonbProperty("blocked") String blocked,
 			@JsonbProperty("name") String name, @JsonbProperty("fantasy_name") String fantasyName,
-			@JsonbProperty("city") String city, @JsonbProperty("table") String table) {
+			@JsonbProperty("city") String city, @JsonbProperty("table") String table,
+			@JsonbProperty("payment_terms") String paymentTerms) {
 		super();
 		this.address = address;
 		this.code = code;
@@ -39,11 +41,14 @@ public class Customer implements Serializable {
 		this.fantasyName = fantasyName;
 		this.city = city;
 		this.table = table;
+		this.paymentTerms = paymentTerms;
+
 	}
 
 	public Customer(Customer customerDTO) {
 		this(customerDTO.address, customerDTO.code, customerDTO.store, customerDTO.state, customerDTO.cnpj,
-				customerDTO.blocked, customerDTO.name, customerDTO.fantasyName, customerDTO.city, customerDTO.table);
+				customerDTO.blocked, customerDTO.name, customerDTO.fantasyName, customerDTO.city, customerDTO.table,
+				customerDTO.paymentTerms);
 	}
 
 	public String getAddress() {
@@ -84,6 +89,10 @@ public class Customer implements Serializable {
 
 	public String getTable() {
 		return table;
+	}
+
+	public String getPaymentTerms() {
+		return paymentTerms;
 	}
 
 	@Override

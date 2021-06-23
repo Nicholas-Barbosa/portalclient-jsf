@@ -27,7 +27,6 @@ import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
 import com.portal.java.dto.BudgetDTO;
-import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetJasperReportDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
@@ -53,6 +52,7 @@ import com.portal.java.dto.ProspectCustomerForm;
 import com.portal.java.dto.ProspectCustomerOnOrder;
 import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CustomerService;
@@ -63,7 +63,6 @@ import com.portal.java.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.java.ui.lazy.datamodel.LazyOperations;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.java.ui.lazy.datamodel.ProductLazyDataModel;
-import com.portal.java.util.jsf.ClientExceptionFacesUtils;
 import com.portal.java.util.jsf.FacesUtils;
 import com.portal.java.util.jsf.ResourceExceptionMessageHelper;
 
@@ -112,8 +111,6 @@ public class BudgetController implements Serializable {
 	private SearchCustomerByCodeAndStoreDTO searchCustomerDTO;
 
 	private String nameCustomerToFind;
-
-	private Customer selectedCustomer;
 
 	private BudgetEstimatedDTO budgetEstimateDTO;
 
@@ -176,7 +173,12 @@ public class BudgetController implements Serializable {
 	}
 
 	public void applyGlobalDiscount() {
-		budgetService.setDiscount(budgetDTO, globalDiscount);
+		try {
+			budgetService.setDiscount(budgetDTO, globalDiscount);
+		} catch (CustomerNotAllowed e) {
+			FacesUtils.fatal(null, "Cliente não autorizado", null);
+			PrimeFaces.current().ajax().update("growl");
+		}
 	}
 
 	public void applyLineDiscount() {
@@ -209,26 +211,6 @@ public class BudgetController implements Serializable {
 
 	public void handleFileUpload(FileUploadEvent event) {
 		budgetImportXlsxForm.setXlsxStreams(event.getFile().getContent());
-	}
-
-	public void estimate() {
-		try {
-			new Thread(() -> {
-				selectedProducts.clear();
-				LazyOperations<?> lazy = (LazyOperations<?>) lazyProducts;
-				lazy.turnCollectionElegibleToGB();
-			}).start();
-			budgetEstimateDTO = budgetService.estimate(
-					new BudgetEstimateForm(selectedCustomer.getCode(), selectedCustomer.getStore(), itemsOnCartToPost));
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			processingExceptionMessageHelper.displayMessage(e, null);
-			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
-		} catch (ClientErrorException e) {
-			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
-			ClientExceptionFacesUtils.openClientExcpetionView(e.getResponse());
-
-		}
-
 	}
 
 	public void onItemRowEdit(RowEditEvent<Item> event) {
@@ -265,11 +247,14 @@ public class BudgetController implements Serializable {
 
 	public void exportReport() {
 		try {
-			BudgetJasperReportDTO jasperDTO = new BudgetJasperReportDTO(budgetEstimateDTO.getLiquidValue(),
-					budgetEstimateDTO.getGrossValue(), budgetEstimateDTO.getStTotal(),
-					new CustomerJasperReportDTO(selectedCustomer.getName(), selectedCustomer.getCity(),
-							selectedCustomer.getAddress(), selectedCustomer.getState(), selectedCustomer.getCnpj()),
-					budgetEstimateDTO.getItems());
+			BudgetJasperReportDTO jasperDTO = new BudgetJasperReportDTO(budgetDTO.getLiquidValue(),
+					budgetDTO.getGrossValue(), budgetDTO.getStValue(),
+					new CustomerJasperReportDTO(budgetDTO.getCustomerOnOrder().getCustomer().getName(),
+							budgetDTO.getCustomerOnOrder().getCustomer().getCity(),
+							budgetDTO.getCustomerOnOrder().getCustomer().getAddress(),
+							budgetDTO.getCustomerOnOrder().getCustomer().getState(),
+							budgetDTO.getCustomerOnOrder().getCustomer().getCnpj()),
+					budgetDTO.getItems());
 			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
 			FacesUtils.prepareResponseHeadersResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());
@@ -304,15 +289,12 @@ public class BudgetController implements Serializable {
 					Customer cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {
 						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
-						selectedCustomer = null;
 						return;
 					}
-					selectedCustomer = cDTO;
 				}
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
 				FacesUtils.addHeaderForResponse("customers-found", false);
-				selectedCustomer = null;
 			});
 		} catch (ProcessingException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
@@ -325,27 +307,27 @@ public class BudgetController implements Serializable {
 	}
 
 	public void findCustomerByCode() {
-		try {
-			Optional<Customer> maybeCustomer = customerService.findByCodeAndStore(searchCustomerDTO);
-			maybeCustomer.ifPresentOrElse(c -> {
-				if (c.getBlocked().equals("Sim")) {
-					FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
-					selectedCustomer = null;
-				} else {
-					selectedCustomer = c;
-				}
-			}, () -> {
-				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
-				selectedCustomer = null;
-			});
-		} catch (ClientErrorException e) {
-			FacesUtils.error(null, resourceBundleService.getMessage("resposta_servidor"),
-					e.getResponse().getEntity().toString());
-			selectedCustomer = null;
-		} catch (SocketTimeoutException | SocketException | TimeoutException p) {
-			processingExceptionMessageHelper.displayMessage(p, null);
-			selectedCustomer = null;
-		}
+//		try {
+//			Optional<Customer> maybeCustomer = customerService.findByCodeAndStore(searchCustomerDTO);
+//			maybeCustomer.ifPresentOrElse(c -> {
+//				if (c.getBlocked().equals("Sim")) {
+//					FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
+//					selectedCustomer = null;
+//				} else {
+//					selectedCustomer = c;
+//				}
+//			}, () -> {
+//				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
+//				selectedCustomer = null;
+//			});
+//		} catch (ClientErrorException e) {
+//			FacesUtils.error(null, resourceBundleService.getMessage("resposta_servidor"),
+//					e.getResponse().getEntity().toString());
+//			selectedCustomer = null;
+//		} catch (SocketTimeoutException | SocketException | TimeoutException p) {
+//			processingExceptionMessageHelper.displayMessage(p, null);
+//			selectedCustomer = null;
+//		}
 	}
 
 	public void findProductByCode() {
@@ -383,10 +365,9 @@ public class BudgetController implements Serializable {
 					new ItemPrice(productPrice.getUnitStValue(), productPrice.getUnitValue(),
 							productPrice.getUnitGrossValue(), productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue()));
-
+			PrimeFaces.current().executeScript("$('#footer').show();");
 		}, () -> {
 			FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-			FacesUtils.addHeaderForResponse("product-found", false);
 			previewItem = null;
 		});
 
@@ -498,10 +479,6 @@ public class BudgetController implements Serializable {
 
 	public LazyDataModel<Customer> getLazyCustomers() {
 		return lazyCustomers;
-	}
-
-	public Customer getSelectedCustomer() {
-		return selectedCustomer;
 	}
 
 	public BudgetEstimatedDTO getBudgetEstimateDTO() {

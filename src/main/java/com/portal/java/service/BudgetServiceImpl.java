@@ -19,6 +19,7 @@ import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.CustomerOnOrder.CustomerType;
+import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.dto.Item;
 import com.portal.java.microsoft.excel.CellAttribute;
 import com.portal.java.microsoft.excel.RowObject;
@@ -136,7 +137,7 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void setDiscount(BudgetDTO budget, BigDecimal discount) {
+	public void setDiscount(BudgetDTO budget, BigDecimal discount)throws CustomerNotAllowed {
 		if (budget.getCustomerOnOrder().getType() == CustomerType.PROSPECT) {
 			budget.setGlobalDiscount(discount);
 			budget.getItems().parallelStream().forEach(i -> i.setBudgetGlobalDiscount(discount));
@@ -144,7 +145,7 @@ public class BudgetServiceImpl implements BudgetService {
 			this.calculateTotals(budget);
 			return;
 		}
-		throw new UnsupportedOperationException("You can't set global discount for a normal client!");
+		throw new CustomerNotAllowed("You can't set global discount for a normal client!");
 
 	}
 

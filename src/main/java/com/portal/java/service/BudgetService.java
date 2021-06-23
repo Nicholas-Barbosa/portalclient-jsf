@@ -13,6 +13,7 @@ import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.Item;
+import com.portal.java.exception.CustomerNotAllowed;
 
 public interface BudgetService extends ServiceSerializable {
 
@@ -67,6 +68,6 @@ public interface BudgetService extends ServiceSerializable {
 	 * @param budget
 	 * @param discount
 	 */
-	void setDiscount(BudgetDTO budget, BigDecimal discount);
+	void setDiscount(BudgetDTO budget, BigDecimal discount)throws CustomerNotAllowed;
 
 }

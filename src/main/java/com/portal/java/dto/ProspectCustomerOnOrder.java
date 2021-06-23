@@ -22,7 +22,8 @@ public class ProspectCustomerOnOrder extends CustomerOnOrder {
 	}
 
 	public void setState(String acronym) {
-		Customer customer = new Customer(null, null, null, acronym, null, null, "PROSPECT", "PROSPECT", null, null);
+		Customer customer = new Customer(null, null, null, acronym, null, null, "PROSPECT", "PROSPECT", null, null,
+				null);
 		super.setCustomer(customer);
 	}
 
