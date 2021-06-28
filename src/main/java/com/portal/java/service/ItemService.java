@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemLineDiscountForm;
+import com.portal.java.exception.ItemQuantityNotAllowed;
 
 public interface ItemService {
 
@@ -15,7 +16,7 @@ public interface ItemService {
 	 * 
 	 * @param item
 	 */
-	void calculateDueQuantity(Item item, int quantity);
+	void calculateDueQuantity(Item item, int quantity)throws ItemQuantityNotAllowed;
 
 	/**
 	 * Calculate unit values based on new discount.

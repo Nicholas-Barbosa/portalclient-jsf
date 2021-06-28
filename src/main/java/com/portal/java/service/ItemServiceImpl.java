@@ -9,18 +9,22 @@ import javax.validation.constraints.NotNull;
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemLineDiscountForm;
 import com.portal.java.dto.ItemPrice;
+import com.portal.java.exception.ItemQuantityNotAllowed;
 import com.portal.java.util.MathUtils;
 
 @ApplicationScoped
 public class ItemServiceImpl implements ItemService {
 
 	@Override
-	public void calculateDueQuantity(Item item, int quantity) {
+	public void calculateDueQuantity(Item item, int quantity) throws ItemQuantityNotAllowed {
 		if (checkQuantityPolicies(item, quantity)) {
 			calculateTotals(item, quantity);
 			item.setQuantity(quantity);
+
 			return;
 		}
+		throw new ItemQuantityNotAllowed(
+				"quantity " + quantity + " must be multiple of " + item.getProduct().getMultiple());
 	}
 
 	@Override

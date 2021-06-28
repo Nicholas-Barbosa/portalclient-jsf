@@ -53,6 +53,7 @@ import com.portal.java.dto.ProspectCustomerOnOrder;
 import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.exception.CustomerNotAllowed;
+import com.portal.java.exception.ItemQuantityNotAllowed;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CustomerService;
@@ -200,11 +201,25 @@ public class BudgetController implements Serializable {
 	}
 
 	public void changeItemDiscount() {
-		itemService.calculateDueQuantity(previewItem, previewItemQuantity);
+		
 	}
 
 	public void changItemQuantity() {
-		itemService.calculateDueQuantity(previewItem, previewItemQuantity);
+		calculateItemQuantity(previewItem, previewItemQuantity);
+	}
+
+	public void onRowItemEdit(RowEditEvent<Item> event) {
+		calculateItemQuantity(event.getObject(), onRowItemQuantity);
+	}
+
+	private void calculateItemQuantity(Item item, int quantity) {
+		try {
+			itemService.calculateDueQuantity(item, quantity);
+		} catch (ItemQuantityNotAllowed e) {
+			e.printStackTrace();
+			FacesUtils.error(null, e.getMessage(), null);
+			PrimeFaces.current().ajax().update("growl");
+		}
 	}
 
 	public void previewBudgetXlsxContent() {
@@ -213,11 +228,6 @@ public class BudgetController implements Serializable {
 
 	public void handleFileUpload(FileUploadEvent event) {
 		budgetImportXlsxForm.setXlsxStreams(event.getFile().getContent());
-	}
-
-	public void onItemRowEdit(RowEditEvent<Item> event) {
-		itemService.calculateDueQuantity(event.getObject(), onRowItemQuantity);
-		
 	}
 
 	public void removeItem(Item item) {
@@ -367,6 +377,7 @@ public class BudgetController implements Serializable {
 					new ItemPrice(productPrice.getUnitStValue(), productPrice.getUnitValue(),
 							productPrice.getUnitGrossValue(), productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue()));
+			previewItemQuantity = presentProduct.getMultiple();
 			PrimeFaces.current().executeScript("$('#footer').show();");
 		}, () -> {
 			FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
