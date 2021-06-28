@@ -210,6 +210,8 @@ public class BudgetController implements Serializable {
 
 	public void onRowItemEdit(RowEditEvent<Item> event) {
 		calculateItemQuantity(event.getObject(), onRowItemQuantity);
+		budgetService.calculateTotals(budgetDTO);
+		onRowItemQuantity = 1;
 	}
 
 	private void calculateItemQuantity(Item item, int quantity) {

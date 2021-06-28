@@ -29,17 +29,6 @@ public interface BudgetService extends ServiceSerializable {
 	 */
 	void calculateTotals(BudgetDTO budget);
 
-	/**
-	 * Calculate totals for item-args object and then calculate totals for this
-	 * mutable budget object.
-	 * 
-	 * @param budget
-	 * @param item
-	 * @return
-	 */
-	void calculateTotals(BudgetDTO budget, Item item, boolean calculateDueChangesInDiscount,
-			boolean calculateDueChangesInQuantity);
-
 	void removeItem(BudgetDTO budget, Item itemToRemove);
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);

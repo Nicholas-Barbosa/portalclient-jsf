@@ -38,6 +38,9 @@ public class ItemServiceImpl implements ItemService {
 			price.setUnitValue(unitValues[2]);
 			i.setBudgetGlobalDiscount(discount);
 			calculateTotals(i);
+			price.setUnitGrossValueFromGBDiscount(unitValues[0]);
+			price.setUnitStValueFromGBDiscount(unitValues[1]);
+			price.setUnitValueFromGBDiscount(unitValues[2]);
 		});
 	}
 
@@ -48,11 +51,10 @@ public class ItemServiceImpl implements ItemService {
 		items.parallelStream().filter(i -> i.line().equals(line)).forEach(i -> {
 			ItemPrice price = i.getItemPrice();
 
-			BigDecimal[] unitValuesOverGbDiscount = this.applyDiscount(i, i.getBudgetGlobalDiscount());
-
-			price.setUnitGrossValue(MathUtils.subtractValueByPercentage(discount, unitValuesOverGbDiscount[0]));
-			price.setUnitStValue(MathUtils.subtractValueByPercentage(discount, unitValuesOverGbDiscount[1]));
-			price.setUnitValue(MathUtils.subtractValueByPercentage(discount, unitValuesOverGbDiscount[2]));
+			price.setUnitGrossValue(
+					MathUtils.subtractValueByPercentage(discount, price.getUnitGrossValueFromGBDiscount()));
+			price.setUnitStValue(MathUtils.subtractValueByPercentage(discount, price.getUnitStValueFromGBDiscount()));
+			price.setUnitValue(MathUtils.subtractValueByPercentage(discount, price.getUnitValueFromGBDiscount()));
 			i.setLineDiscount(discount);
 			calculateTotals(i);
 

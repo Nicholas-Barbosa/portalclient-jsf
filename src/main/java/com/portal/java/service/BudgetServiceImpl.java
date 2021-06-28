@@ -78,18 +78,6 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void calculateTotals(BudgetDTO budget, Item newProductValues, boolean calculateDueChangesInDiscount,
-			boolean calculateDueChangesInQuantity) {
-		if (calculateDueChangesInDiscount && calculateDueChangesInQuantity)
-			itemService.calculateDueQuantity(newProductValues, true);
-		else if (calculateDueChangesInDiscount && !calculateDueChangesInQuantity)
-			itemService.calculateDueDiscount(newProductValues);
-		else
-			itemService.calculateDueQuantity(newProductValues, false);
-		this.calculateTotals(budget);
-	}
-
-	@Override
 	public void removeItem(BudgetDTO budget, Item itemToRemove) {
 		if (budget.getItems().remove(itemToRemove)) {
 			calculateTotals(budget);
@@ -137,11 +125,10 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void setDiscount(BudgetDTO budget, BigDecimal discount)throws CustomerNotAllowed {
+	public void setDiscount(BudgetDTO budget, BigDecimal discount) throws CustomerNotAllowed {
 		if (budget.getCustomerOnOrder().getType() == CustomerType.PROSPECT) {
 			budget.setGlobalDiscount(discount);
-			budget.getItems().parallelStream().forEach(i -> i.setBudgetGlobalDiscount(discount));
-			itemService.calculateDueDiscount(budget.getItems());
+			itemService.applyGlobalDiscount(budget.getItems(), discount);
 			this.calculateTotals(budget);
 			return;
 		}

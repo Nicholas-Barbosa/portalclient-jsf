@@ -12,7 +12,7 @@ public class ItemPrice {
 	private BigDecimal totalStValue;
 	private BigDecimal totalValue;
 	private BigDecimal totalGrossValue;
-	private final Map<String, BigDecimal> unitValuesWithoutDiscount = new ConcurrentHashMap<>();
+	private final Map<String, BigDecimal> values = new ConcurrentHashMap<>();
 
 	public ItemPrice(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue,
 			BigDecimal totalValue, BigDecimal totalGrossValue) {
@@ -23,11 +23,10 @@ public class ItemPrice {
 		this.totalStValue = totalStValue;
 		this.totalValue = totalValue;
 		this.totalGrossValue = totalGrossValue;
-		unitValuesWithoutDiscount.put("unitStValue", unitStValue);
-		unitValuesWithoutDiscount.put("unitValue", unitValue);
-		unitValuesWithoutDiscount.put("unitGrossValue", unitGrossValue);
+		values.put("unitStValue", unitStValue);
+		values.put("unitValue", unitValue);
+		values.put("unitGrossValue", unitGrossValue);
 	}
-
 
 	public BigDecimal getUnitStValue() {
 		return unitStValue;
@@ -78,14 +77,42 @@ public class ItemPrice {
 	}
 
 	public BigDecimal getUnitStValueWithoutDiscount() {
-		return unitValuesWithoutDiscount.get("unitStValue");
+		return values.get("unitStValue");
 	}
 
 	public BigDecimal getUnitValueWithoutDiscount() {
-		return unitValuesWithoutDiscount.get("unitValue");
+		return values.get("unitValue");
 	}
 
 	public BigDecimal getUnitGrossValueWithoutDiscount() {
-		return unitValuesWithoutDiscount.get("unitGrossValue");
+		return values.get("unitGrossValue");
 	}
+
+	public BigDecimal getUnitStValueFromGBDiscount() {
+		BigDecimal value = values.get("unitStValueFromGBDiscount");
+		return value == null ? getUnitGrossValueWithoutDiscount() : value;
+	}
+
+	public BigDecimal getUnitValueFromGBDiscount() {
+		BigDecimal value = values.get("unitValueFromGBDiscount");
+		return value == null ? getUnitValueWithoutDiscount() : value;
+	}
+
+	public BigDecimal getUnitGrossValueFromGBDiscount() {
+		BigDecimal value = values.get("unitGrossValueFromGBDiscount");
+		return value==null? getUnitGrossValueWithoutDiscount() : value;
+	}
+
+	public BigDecimal setUnitStValueFromGBDiscount(BigDecimal value) {
+		return values.put("unitStValueFromGBDiscount", value);
+	}
+
+	public BigDecimal setUnitValueFromGBDiscount(BigDecimal value) {
+		return values.put("unitValueFromGBDiscount", value);
+	}
+
+	public BigDecimal setUnitGrossValueFromGBDiscount(BigDecimal value) {
+		return values.put("unitGrossValueFromGBDiscount", value);
+	}
+
 }
