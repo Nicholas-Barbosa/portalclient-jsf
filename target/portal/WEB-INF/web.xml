@@ -47,7 +47,16 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 
-
+	<filter>
+		<filter-name>gzipResponseFilter</filter-name>
+		<filter-class>org.omnifaces.filter.GzipResponseFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>gzipResponseFilter</filter-name>
+		<servlet-name>FacesServlet</servlet-name>
+		<dispatcher>REQUEST</dispatcher>
+		<dispatcher>ERROR</dispatcher>
+	</filter-mapping>
 	<error-page>
 		<exception-type>java.lang.RuntimeException</exception-type>
 		<location>/errorpages/bug.xhtml</location>

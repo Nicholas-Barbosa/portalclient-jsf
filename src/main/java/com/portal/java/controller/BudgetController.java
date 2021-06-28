@@ -42,7 +42,7 @@ import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.FindProductByCodeForm;
 import com.portal.java.dto.FindProductByDescriptionDTO;
 import com.portal.java.dto.Item;
-import com.portal.java.dto.ItemLineDiscount;
+import com.portal.java.dto.ItemLineDiscountForm;
 import com.portal.java.dto.ItemPrice;
 import com.portal.java.dto.Product;
 import com.portal.java.dto.Product.ProductPrice;
@@ -134,13 +134,15 @@ public class BudgetController implements Serializable {
 
 	private Set<String> itemLines;
 
-	private ItemLineDiscount itemLineDiscount;
+	private ItemLineDiscountForm itemLineDiscount;
 
 	private ProspectCustomerForm prospectCustomerForm;
 
 	private BigDecimal globalDiscount;
 
 	private DiscountView discView;
+
+	private int itemQuantity;
 
 	public BudgetController() {
 		this(null, null, null, null, null, null, null, null);
@@ -182,9 +184,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void applyLineDiscount() {
-		budgetDTO.getItems().parallelStream().filter(i -> i.line().equals(itemLineDiscount.getLine()))
-				.peek(i -> i.setLineDiscount(itemLineDiscount.getDiscount()))
-				.forEach(itemService::calculateDueDiscount);
+		itemService.applyLineDiscount(budgetDTO.getItems(), itemLineDiscount);
 		budgetService.calculateTotals(budgetDTO);
 	}
 
@@ -198,11 +198,11 @@ public class BudgetController implements Serializable {
 	}
 
 	public void changeItemDiscount() {
-		itemService.calculateDueDiscount(previewItem);
+		itemService.calculateDueQuantity(previewItem, itemQuantity);
 	}
 
 	public void changItemQuantity() {
-		itemService.calculateDueQuantity(previewItem, false);
+		itemService.calculateDueQuantity(previewItem, itemQuantity);
 	}
 
 	public void previewBudgetXlsxContent() {
@@ -423,7 +423,7 @@ public class BudgetController implements Serializable {
 			this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
 			this.budgetDTO = new BudgetDTO();
 			this.itemLines = new HashSet<>();
-			this.itemLineDiscount = new ItemLineDiscount();
+			this.itemLineDiscount = new ItemLineDiscountForm();
 			this.prospectCustomerForm = new ProspectCustomerForm();
 			this.discView = new DiscountView();
 		}).start();
@@ -545,7 +545,7 @@ public class BudgetController implements Serializable {
 		return Collections.unmodifiableSet(itemLines);
 	}
 
-	public ItemLineDiscount getItemLineDiscount() {
+	public ItemLineDiscountForm getItemLineDiscount() {
 		return itemLineDiscount;
 	}
 
@@ -565,4 +565,11 @@ public class BudgetController implements Serializable {
 		return discView;
 	}
 
+	public int getItemQuantity() {
+		return itemQuantity;
+	}
+
+	public void setItemQuantity(int itemQuantity) {
+		this.itemQuantity = itemQuantity;
+	}
 }

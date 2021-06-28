@@ -52,19 +52,6 @@
 			<artifactId>google-cloud-storage</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.eclipse.microprofile.context-propagation</groupId>
-			<artifactId>microprofile-context-propagation-api</artifactId>
-			<version>1.2</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.jboss.weld/weld-api -->
-		<dependency>
-			<groupId>org.jboss.weld</groupId>
-			<artifactId>weld-api</artifactId>
-			<version>4.0.SP1</version>
-		</dependency>
-
 
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
 		<dependency>
@@ -78,7 +65,11 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>5.0.0</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.omnifaces</groupId>
+			<artifactId>omnifaces</artifactId>
+			<version>3.11.1</version>
+		</dependency>
 	</dependencies>
 
 	<properties>

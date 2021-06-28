@@ -97,11 +97,19 @@
 									</div>
 									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 										<p:outputLabel
-											value="#{resourceBundleServiceImpl.getMessage('termos_pagamento')}"
+											value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 											for="pTerms" />
 										<p:inputText
 											value="#{budgetController.budgetDTO.customerOnOrder.customer.paymentTerms}"
 											readonly="true" id="pTerms" />
+									</div>
+									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+										<p:outputLabel
+											value="#{resourceBundleServiceImpl.getMessage('tabela')}"
+											for="pTable" />
+										<p:inputText
+											value="#{budgetController.budgetDTO.customerOnOrder.customer.table}"
+											readonly="true" id="pTable" />
 									</div>
 								</ui:fragment>
 
@@ -297,7 +305,7 @@
 
 						</h:form>
 						<p:blockUI block="formItems" widgetVar="blockItems"
-							blocked="#{budgetController.selectedCustomer.code == null}">
+							blocked="#{budgetController.budgetDTO.customerOnOrder == null}">
 							<i class="pi pi-lock" style="font-size: 3rem" />
 						</p:blockUI>
 					</div>
@@ -488,7 +496,7 @@
 						action="#{budgetController.applyLineDiscount}"
 						onstart="PF('block').show()"
 						oncomplete="PF('dlgLineDiscount').hide();PF('block').hide()"
-						async="true" />
+						 />
 				</h:form>
 				<p:blockUI block="dlgLineDiscount" widgetVar="block" />
 			</p:dialog>
@@ -703,7 +711,7 @@
 										<div class="p-field">
 											<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
 											<p:spinner id="quantity"
-												value="#{budgetController.previewItem.quantity}"
+												value="#{budgetController.itemQuantity}"
 												onblur="changeQuantity();"
 												stepFactor="#{budgetController.previewItem.product.multiple}"
 												min="#{budgetController.previewItem.product.multiple}" />
@@ -733,7 +741,7 @@
 											</div>
 										</div>
 										<p:remoteCommand name="changeQuantity"
-											process="@this,quantity,vLiquid,vGross,vSt"
+											process="@this,quantity"
 											action="#{budgetController.changItemQuantity}"
 											update="vLiquid,vGross,vSt"
 											onstart="PF('blockProductContent').show()"
@@ -842,7 +850,7 @@
 							</div>
 						</h:form>
 					</p:tab>
-					<p:tab
+				<!-- 	<p:tab
 						title="#{holdMessageView.label('codigo')} / #{holdMessageView.label('store')}">
 						<h:form>
 							<div class="p-formgroup-inline">
@@ -877,7 +885,7 @@
 									oncomplete="PF('globalLoadDlg').hide();PF('dlgSearchCustomer').hide()" />
 							</div>
 						</h:form>
-					</p:tab>
+					</p:tab> -->
 					<p:tab title="PROSPECT">
 						<h:form>
 							<div class="ui-fluid">
