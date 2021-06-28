@@ -142,7 +142,9 @@ public class BudgetController implements Serializable {
 
 	private DiscountView discView;
 
-	private int itemQuantity;
+	private int previewItemQuantity;
+
+	private int onRowItemQuantity;
 
 	public BudgetController() {
 		this(null, null, null, null, null, null, null, null);
@@ -198,11 +200,11 @@ public class BudgetController implements Serializable {
 	}
 
 	public void changeItemDiscount() {
-		itemService.calculateDueQuantity(previewItem, itemQuantity);
+		itemService.calculateDueQuantity(previewItem, previewItemQuantity);
 	}
 
 	public void changItemQuantity() {
-		itemService.calculateDueQuantity(previewItem, itemQuantity);
+		itemService.calculateDueQuantity(previewItem, previewItemQuantity);
 	}
 
 	public void previewBudgetXlsxContent() {
@@ -214,8 +216,8 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onItemRowEdit(RowEditEvent<Item> event) {
-		budgetService.calculateTotals(budgetDTO, event.getObject(), false, true);
-
+		itemService.calculateDueQuantity(event.getObject(), onRowItemQuantity);
+		
 	}
 
 	public void removeItem(Item item) {
@@ -565,11 +567,20 @@ public class BudgetController implements Serializable {
 		return discView;
 	}
 
-	public int getItemQuantity() {
-		return itemQuantity;
+	public int getPreviewItemQuantity() {
+		return previewItemQuantity;
 	}
 
-	public void setItemQuantity(int itemQuantity) {
-		this.itemQuantity = itemQuantity;
+	public void setPreviewItemQuantity(int previewItemQuantity) {
+		this.previewItemQuantity = previewItemQuantity;
 	}
+
+	public int getOnRowItemQuantity() {
+		return onRowItemQuantity;
+	}
+
+	public void setOnRowItemQuantity(int onRowItemQuantity) {
+		this.onRowItemQuantity = onRowItemQuantity;
+	}
+
 }

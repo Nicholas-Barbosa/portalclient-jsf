@@ -16,8 +16,11 @@ public class ItemServiceImpl implements ItemService {
 
 	@Override
 	public void calculateDueQuantity(Item item, int quantity) {
-		calculateTotals(item, quantity);
-		item.setQuantity(quantity);
+		if (checkQuantityPolicies(item, quantity)) {
+			calculateTotals(item, quantity);
+			item.setQuantity(quantity);
+			return;
+		}
 	}
 
 	@Override
