@@ -79,7 +79,7 @@ public class FacesUtils {
 		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value.toString());
 	}
 
-	public static void prepareResponseHeadersResponseForDownloadOfStreams(String fileName, byte[] streams,
+	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams,
 			ContentType contentType) throws IOException {
 		switch (contentType) {
 		case EXCEL:

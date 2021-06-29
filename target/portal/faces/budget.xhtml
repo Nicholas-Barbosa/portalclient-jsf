@@ -150,8 +150,8 @@
 								<p:autoUpdate on="eventAddItem" />
 								<p:autoUpdate on="eventAddLineDiscount" />
 								<p:ajax event="rowEdit"
-									listener="#{budgetController.onItemRowEdit}"
-									update="budgetTotals" async="true" />
+									listener="#{budgetController.onRowItemEdit}"
+									update="budgetTotals" />
 								<f:facet name="header">
 									<div class="p-d-flex p-jc-between p-ai-center">
 										<div>
@@ -217,8 +217,8 @@
 											<h:outputText value="#{item.quantity}" />
 										</f:facet>
 										<f:facet name="input">
-											<p:spinner value="#{item.quantity}" style="width:100%"
-												label="Name" />
+											<p:spinner value="#{budgetController.onRowItemQuantity}"
+												style="width:100%" label="Name" />
 										</f:facet>
 									</p:cellEditor>
 								</p:column>
@@ -495,8 +495,7 @@
 						process="@form" update="formItems:dtItems,budgetTotals"
 						action="#{budgetController.applyLineDiscount}"
 						onstart="PF('block').show()"
-						oncomplete="PF('dlgLineDiscount').hide();PF('block').hide()"
-						async="true" />
+						oncomplete="PF('dlgLineDiscount').hide();PF('block').hide()" />
 				</h:form>
 				<p:blockUI block="dlgLineDiscount" widgetVar="block" />
 			</p:dialog>
@@ -711,7 +710,7 @@
 										<div class="p-field">
 											<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
 											<p:spinner id="quantity"
-												value="#{budgetController.previewItem.quantity}"
+												value="#{budgetController.previewItemQuantity}"
 												onblur="changeQuantity();"
 												stepFactor="#{budgetController.previewItem.product.multiple}"
 												min="#{budgetController.previewItem.product.multiple}" />
@@ -741,7 +740,7 @@
 											</div>
 										</div>
 										<p:remoteCommand name="changeQuantity"
-											process="@this,quantity,vLiquid,vGross,vSt"
+											process="@this,quantity"
 											action="#{budgetController.changItemQuantity}"
 											update="vLiquid,vGross,vSt"
 											onstart="PF('blockProductContent').show()"
@@ -850,7 +849,7 @@
 							</div>
 						</h:form>
 					</p:tab>
-				<!-- 	<p:tab
+					<!-- 	<p:tab
 						title="#{holdMessageView.label('codigo')} / #{holdMessageView.label('store')}">
 						<h:form>
 							<div class="p-formgroup-inline">

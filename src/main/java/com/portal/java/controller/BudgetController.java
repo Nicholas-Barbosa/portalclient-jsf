@@ -29,7 +29,7 @@ import org.primefaces.model.LazyDataModel;
 import com.portal.java.dto.BudgetDTO;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetJasperReportDTO;
-import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
+
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.Customer;
@@ -201,7 +201,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void changeItemDiscount() {
-		
+
 	}
 
 	public void changItemQuantity() {
@@ -259,18 +259,11 @@ public class BudgetController implements Serializable {
 		this.budgetDTO = new BudgetDTO();
 	}
 
-	public void exportReport() {
+	public void exportOrder() {
 		try {
-			BudgetJasperReportDTO jasperDTO = new BudgetJasperReportDTO(budgetDTO.getLiquidValue(),
-					budgetDTO.getGrossValue(), budgetDTO.getStValue(),
-					new CustomerJasperReportDTO(budgetDTO.getCustomerOnOrder().getCustomer().getName(),
-							budgetDTO.getCustomerOnOrder().getCustomer().getCity(),
-							budgetDTO.getCustomerOnOrder().getCustomer().getAddress(),
-							budgetDTO.getCustomerOnOrder().getCustomer().getState(),
-							budgetDTO.getCustomerOnOrder().getCustomer().getCnpj()),
-					budgetDTO.getItems());
+			BudgetJasperReportDTO jasperDTO = new BudgetJasperReportDTO(budgetDTO);
 			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
-			FacesUtils.prepareResponseHeadersResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
+			FacesUtils.prepareResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());
 		} catch (Exception e) {
 			e.printStackTrace();

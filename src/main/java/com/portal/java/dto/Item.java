@@ -37,7 +37,7 @@ public class Item {
 	}
 
 	public BigDecimal getLineDiscount() {
-		return lineDiscount;
+		return lineDiscount == null ? BigDecimal.ZERO : lineDiscount;
 	}
 
 	public void setLineDiscount(BigDecimal lineDiscount) {
