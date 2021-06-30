@@ -2,6 +2,7 @@ package com.portal.java.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.HashSet;
 import java.util.Locale;
@@ -146,6 +147,7 @@ public class BudgetJasperReportDTO implements Serializable {
 			this.lineDisc = lineDisc;
 			this.totalGrossValue = totalGrossValue;
 			this.totalGrossValueWithoutDiscount = totalGrossValueWithoutDiscount;
+			
 		}
 
 		public BudgetItemJasperDTO(Item item) {
