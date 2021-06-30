@@ -1,17 +1,20 @@
-package com.portal.java.properties;
+package com.portal.java.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 @Singleton
-public class PropertiesReader {
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+public class ResourcesReader {
 
 	private Properties properties;
 
-	public PropertiesReader() {
+	public ResourcesReader() {
 		properties = new Properties();
 		loadProperties();
 	}

@@ -17,7 +17,7 @@ import com.portal.java.cdi.qualifier.Simple;
 import com.portal.java.client.rest.RestClient;
 import com.portal.java.dto.LoginForm;
 import com.portal.java.dto.LoginGssResponseDTO;
-import com.portal.java.properties.PropertiesReader;
+import com.portal.java.resources.ResourcesReader;
 import com.portal.java.security.UserManagerProperties;
 import com.portal.java.security.api.ExternalApiResource;
 import com.portal.java.security.api.ExternalOAuth2ApiResource;
@@ -32,7 +32,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	private final RestClient restClient;
 	private final UserManagerProperties userPropertyHolder;
 	@EJB
-	private PropertiesReader propertiesReader;
+	private ResourcesReader propertiesReader;
 
 	public MainAuthenticationRepository() {
 		this(null, null);
