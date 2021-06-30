@@ -1,8 +1,8 @@
-package com.portal.java.microsoft.excel.writer;
+package com.portal.java.resources.export.excel;
 
 import java.math.BigDecimal;
 
-public class ExcelOrderCalcConference {
+public class OrderExcelCalculusConferenceProjection {
 
 	private String productCode;
 	private String productLine;
