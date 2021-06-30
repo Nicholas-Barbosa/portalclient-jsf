@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.java.dto.BudgetDTO;
+import com.portal.java.dto.Order;
 import com.portal.java.dto.Customer;
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemPrice;
@@ -39,7 +39,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		this.items = new HashSet<>(items);
 	}
 
-	public OrderJasperReport(BudgetDTO budgetDTO) {
+	public OrderJasperReport(Order budgetDTO) {
 		this.liquidValue = budgetDTO.getLiquidValue();
 		this.grossValue = budgetDTO.getGrossValue();
 		this.stTotal = budgetDTO.getStValue();

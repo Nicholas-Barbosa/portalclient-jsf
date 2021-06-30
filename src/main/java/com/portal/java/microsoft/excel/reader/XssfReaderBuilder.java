@@ -1,4 +1,4 @@
-package com.portal.java.microsoft.excel;
+package com.portal.java.microsoft.excel.reader;
 
 public interface XssfReaderBuilder {
 

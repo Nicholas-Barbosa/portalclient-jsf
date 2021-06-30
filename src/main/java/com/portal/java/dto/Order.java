@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BudgetDTO {
+public class Order {
 
 	private CustomerOnOrder customerOnOrder;
 	private BigDecimal grossValue;
@@ -13,7 +13,7 @@ public class BudgetDTO {
 	private BigDecimal globalDiscount;
 	private final Set<Item> items;
 
-	public BudgetDTO() {
+	public Order() {
 		this.items = new HashSet<>();
 		this.grossValue = BigDecimal.ZERO;
 		this.liquidValue = BigDecimal.ZERO;

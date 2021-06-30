@@ -1,4 +1,4 @@
-package com.portal.java.resources.export.excel;
+package com.portal.java.microsoft.excel.writer;
 
 import org.apache.poi.ss.usermodel.CellType;
 

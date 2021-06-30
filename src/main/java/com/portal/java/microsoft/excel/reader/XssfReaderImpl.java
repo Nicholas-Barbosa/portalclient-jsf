@@ -1,4 +1,4 @@
-package com.portal.java.microsoft.excel;
+package com.portal.java.microsoft.excel.reader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

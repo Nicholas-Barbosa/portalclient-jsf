@@ -26,7 +26,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.java.dto.BudgetDTO;
+import com.portal.java.dto.Order;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
@@ -128,7 +128,7 @@ public class BudgetController implements Serializable {
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
-	private BudgetDTO budgetDTO;
+	private Order budgetDTO;
 
 	private BigDecimal itemDiscountToView;
 
@@ -255,7 +255,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void newBudgetObject() throws InterruptedException {
-		this.budgetDTO = new BudgetDTO();
+		this.budgetDTO = new Order();
 	}
 
 	public void exportOrder() {
@@ -428,7 +428,7 @@ public class BudgetController implements Serializable {
 			this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
 					(short) 1, (short) 2, (short) 0);
 			this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
-			this.budgetDTO = new BudgetDTO();
+			this.budgetDTO = new Order();
 			this.itemLines = new HashSet<>();
 			this.itemLineDiscount = new ItemLineDiscountForm();
 			this.prospectCustomerForm = new ProspectCustomerForm();
@@ -536,7 +536,7 @@ public class BudgetController implements Serializable {
 		return budgetXlsxPreview;
 	}
 
-	public BudgetDTO getBudgetDTO() {
+	public Order getBudgetDTO() {
 		return budgetDTO;
 	}
 

@@ -6,7 +6,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
-import com.portal.java.dto.BudgetDTO;
+import com.portal.java.dto.Order;
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
@@ -27,9 +27,9 @@ public interface BudgetService extends ServiceSerializable {
 	 * 
 	 * @param budget
 	 */
-	void calculateTotals(BudgetDTO budget);
+	void calculateTotals(Order budget);
 
-	void removeItem(BudgetDTO budget, Item itemToRemove);
+	void removeItem(Order budget, Item itemToRemove);
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
 
@@ -40,11 +40,11 @@ public interface BudgetService extends ServiceSerializable {
 	 * 
 	 * @param budgetDTO
 	 */
-	void calculateForGlobalDiscount(BudgetDTO budgetDTO);
+	void calculateForGlobalDiscount(Order budgetDTO);
 
-	void addItem(BudgetDTO budgetDTO, Item produc);
+	void addItem(Order budgetDTO, Item produc);
 
-	default void setCustomer(BudgetDTO budget, CustomerOnOrder customer) {
+	default void setCustomer(Order budget, CustomerOnOrder customer) {
 		if (budget.getItems().size() >= 1)
 			throw new UnsupportedOperationException(
 					"You can't set a client at this moment. Because this budget has many items.");
@@ -57,6 +57,6 @@ public interface BudgetService extends ServiceSerializable {
 	 * @param budget
 	 * @param discount
 	 */
-	void setDiscount(BudgetDTO budget, BigDecimal discount)throws CustomerNotAllowed;
+	void setDiscount(Order budget, BigDecimal discount)throws CustomerNotAllowed;
 
 }

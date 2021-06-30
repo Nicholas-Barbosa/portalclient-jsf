@@ -6,6 +6,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import com.portal.java.microsoft.excel.reader.CellAttribute;
+import com.portal.java.microsoft.excel.reader.RowObject;
+import com.portal.java.microsoft.excel.reader.XssfReader;
+import com.portal.java.microsoft.excel.reader.XssfReaderBuilder;
+
 class XssfReaderImplTest {
 
 	private final String excelFileName = "C:\\Users\\nicho\\OneDrive\\Documentos\\testing_excel-poi\\readingExcel.xlsx";
