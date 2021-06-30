@@ -2,19 +2,19 @@ package com.portal.java.dto;
 
 import javax.validation.constraints.NotBlank;
 
-import com.portal.java.http.ReportType;
+import com.portal.java.resources.export.ExportType;
 
 public class DownloadStreamsForm {
 
 	@NotBlank
 	private String name;
-	private ReportType contentType;
+	private ExportType contentType;
 
 	public DownloadStreamsForm() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public DownloadStreamsForm(@NotBlank String name, @NotBlank ReportType contentType) {
+	public DownloadStreamsForm(@NotBlank String name, @NotBlank ExportType contentType) {
 		super();
 		this.name = name;
 		this.contentType = contentType;
@@ -28,11 +28,11 @@ public class DownloadStreamsForm {
 		this.name = name;
 	}
 
-	public ReportType getContentType() {
+	public ExportType getContentType() {
 		return contentType;
 	}
 
-	public void setContentType(ReportType contentType) {
+	public void setContentType(ExportType contentType) {
 		this.contentType = contentType;
 	}
 

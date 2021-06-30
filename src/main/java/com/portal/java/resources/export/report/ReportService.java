@@ -1,4 +1,4 @@
-package com.portal.java.jasper;
+package com.portal.java.resources.export.report;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

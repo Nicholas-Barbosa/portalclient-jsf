@@ -28,8 +28,6 @@ import org.primefaces.model.LazyDataModel;
 
 import com.portal.java.dto.BudgetDTO;
 import com.portal.java.dto.BudgetEstimatedDTO;
-import com.portal.java.dto.BudgetJasperReportDTO;
-
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.Customer;
@@ -54,7 +52,8 @@ import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.exception.ItemQuantityNotAllowed;
-import com.portal.java.jasper.service.BudgetReport;
+import com.portal.java.resources.export.report.jasper.OrderJasperReport;
+import com.portal.java.resources.export.report.jasper.OrderReport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CustomerService;
 import com.portal.java.service.ItemService;
@@ -82,7 +81,7 @@ public class BudgetController implements Serializable {
 
 	private final BudgetService budgetService;
 
-	private final BudgetReport budgetReport;
+	private final OrderReport budgetReport;
 
 	private final ClientErrorExceptionController responseController;
 
@@ -153,7 +152,7 @@ public class BudgetController implements Serializable {
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
-			BudgetService budgetService, BudgetReport budgetReport, ClientErrorExceptionController responseController,
+			BudgetService budgetService, OrderReport budgetReport, ClientErrorExceptionController responseController,
 			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService) {
 		super();
@@ -261,7 +260,7 @@ public class BudgetController implements Serializable {
 
 	public void exportOrder() {
 		try {
-			BudgetJasperReportDTO jasperDTO = new BudgetJasperReportDTO(budgetDTO);
+			OrderJasperReport jasperDTO = new OrderJasperReport(budgetDTO);
 			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
 			FacesUtils.prepareResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());

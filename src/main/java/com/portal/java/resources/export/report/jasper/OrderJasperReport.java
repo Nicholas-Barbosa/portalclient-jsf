@@ -1,15 +1,18 @@
-package com.portal.java.dto;
+package com.portal.java.resources.export.report.jasper;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-public class BudgetJasperReportDTO implements Serializable {
+import com.portal.java.dto.BudgetDTO;
+import com.portal.java.dto.Customer;
+import com.portal.java.dto.Item;
+import com.portal.java.dto.ItemPrice;
+import com.portal.java.resources.export.ExportEntity;
+
+public class OrderJasperReport extends ExportEntity implements Serializable {
 
 	/**
 	 * 
@@ -24,10 +27,10 @@ public class BudgetJasperReportDTO implements Serializable {
 
 	private CustomerJasperReportDTO customerReportDTO;
 
-	private Set<BudgetItemJasperDTO> items;
+	private Set<OrderItemJasper> items;
 
-	public BudgetJasperReportDTO(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
-			CustomerJasperReportDTO customerReportDTO, Set<BudgetItemJasperDTO> items) {
+	public OrderJasperReport(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
+			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
@@ -36,13 +39,13 @@ public class BudgetJasperReportDTO implements Serializable {
 		this.items = new HashSet<>(items);
 	}
 
-	public BudgetJasperReportDTO(BudgetDTO budgetDTO) {
+	public OrderJasperReport(BudgetDTO budgetDTO) {
 		this.liquidValue = budgetDTO.getLiquidValue();
 		this.grossValue = budgetDTO.getGrossValue();
 		this.stTotal = budgetDTO.getStValue();
 		this.customerReportDTO = new CustomerJasperReportDTO(budgetDTO.getCustomerOnOrder().getCustomer());
-		this.items = budgetDTO.getItems().parallelStream().map(BudgetItemJasperDTO::new)
-				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll);
+		this.items = budgetDTO.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
+				Set::add, Set::addAll);
 	}
 
 	public static long getSerialversionuid() {
@@ -65,7 +68,7 @@ public class BudgetJasperReportDTO implements Serializable {
 		return customerReportDTO;
 	}
 
-	public Set<BudgetItemJasperDTO> getItems() {
+	public Set<OrderItemJasper> getItems() {
 		return items;
 	}
 
@@ -119,7 +122,7 @@ public class BudgetJasperReportDTO implements Serializable {
 		}
 	}
 
-	public static class BudgetItemJasperDTO implements Comparable<BudgetItemJasperDTO> {
+	public static class OrderItemJasper implements Comparable<OrderItemJasper> {
 
 		private String commercialCode;
 		private String line;
@@ -131,9 +134,8 @@ public class BudgetJasperReportDTO implements Serializable {
 		private BigDecimal lineDisc;
 		private BigDecimal totalGrossValue;
 		private BigDecimal totalGrossValueWithoutDiscount;
-		private final NumberFormat numberFormat = NumberFormat.getInstance(new Locale("pt", "BR"));
 
-		public BudgetItemJasperDTO(String commercialCode, String line, int quantity, BigDecimal unitValue,
+		public OrderItemJasper(String commercialCode, String line, int quantity, BigDecimal unitValue,
 				BigDecimal totalValue, BigDecimal totalStValue, BigDecimal discGlobal, BigDecimal lineDisc,
 				BigDecimal totalGrossValue, BigDecimal totalGrossValueWithoutDiscount) {
 			super();
@@ -147,10 +149,10 @@ public class BudgetJasperReportDTO implements Serializable {
 			this.lineDisc = lineDisc;
 			this.totalGrossValue = totalGrossValue;
 			this.totalGrossValueWithoutDiscount = totalGrossValueWithoutDiscount;
-			
+
 		}
 
-		public BudgetItemJasperDTO(Item item) {
+		public OrderItemJasper(Item item) {
 			super();
 			this.commercialCode = item.getProduct().getCommercialCode();
 			this.line = item.getProduct().getDescriptionType();
@@ -208,7 +210,7 @@ public class BudgetJasperReportDTO implements Serializable {
 		}
 
 		@Override
-		public int compareTo(BudgetItemJasperDTO o) {
+		public int compareTo(OrderItemJasper o) {
 			// TODO Auto-generated method stub
 			return this.commercialCode.compareToIgnoreCase(o.commercialCode);
 		}

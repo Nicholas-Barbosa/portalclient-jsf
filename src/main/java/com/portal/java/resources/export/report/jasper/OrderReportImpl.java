@@ -1,4 +1,4 @@
-package com.portal.java.jasper.service;
+package com.portal.java.resources.export.report.jasper;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -9,16 +9,15 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import com.portal.java.dto.BudgetJasperReportDTO;
-import com.portal.java.http.ReportType;
-import com.portal.java.jasper.ReportService;
+import com.portal.java.resources.export.ExportType;
+import com.portal.java.resources.export.report.ReportService;
 
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Singleton
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class BudgetReportImpl implements BudgetReport {
+public class OrderReportImpl implements OrderReport {
 
 	@EJB
 	private ReportService reportService;
@@ -26,17 +25,17 @@ public class BudgetReportImpl implements BudgetReport {
 	private final String GAUSS_LOGO = getLogos("GAUSS");
 	private final String CDG_LOGO = getLogos("CDG");
 
-	public BudgetReportImpl() {
+	public OrderReportImpl() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public BudgetReportImpl(ReportService reportService) {
+	public OrderReportImpl(ReportService reportService) {
 		super();
 		this.reportService = reportService;
 	}
 
 	@Override
-	public byte[] export(BudgetJasperReportDTO budget, ReportType type) {
+	public byte[] export(OrderJasperReport budget, ExportType type) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
 		params.put("logoGaussPath", GAUSS_LOGO);
