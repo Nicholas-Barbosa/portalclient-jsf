@@ -1,18 +1,23 @@
 package com.portal.java.jasper.service;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import com.portal.java.dto.BudgetJasperReportDTO;
-import com.portal.java.http.ContentType;
+import com.portal.java.http.ReportType;
 import com.portal.java.jasper.ReportService;
 
+import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Singleton
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class BudgetReportImpl implements BudgetReport {
 
 	@EJB
@@ -31,39 +36,22 @@ public class BudgetReportImpl implements BudgetReport {
 	}
 
 	@Override
-	public byte[] export(BudgetJasperReportDTO budget, ContentType type) {
+	public byte[] export(BudgetJasperReportDTO budget, ReportType type) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
+		params.put("logoGaussPath", GAUSS_LOGO);
+		params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
 		switch (type) {
 		case PDF:
-			return toPdf(budget);
+			return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
+					budget);
 
 		case EXCEL:
-			return toExcel(budget);
+			return reportService.exportToExcel(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
+					budget);
 		default:
 			throw new IllegalArgumentException("Invalid type. Only PDF and EXCEL are supported by this service!");
 		}
-	}
-
-	@Override
-	public byte[] toPdf(BudgetJasperReportDTO budget) {
-		// TODO Auto-generated method stub
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
-
-		params.put("logoGaussPath", GAUSS_LOGO);
-		return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
-				budget);
-
-	}
-
-	@Override
-	public byte[] toExcel(BudgetJasperReportDTO budget) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
-		params.put("logoGaussPath", GAUSS_LOGO);
-		return reportService.exportToExcel(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
-				budget);
-
 	}
 
 	private String getLogos(String logo) {

@@ -11,7 +11,7 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 
-import com.portal.java.http.ContentType;
+import com.portal.java.http.ReportType;
 
 public class FacesUtils {
 
@@ -80,7 +80,7 @@ public class FacesUtils {
 	}
 
 	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams,
-			ContentType contentType) throws IOException {
+			ReportType contentType) throws IOException {
 		switch (contentType) {
 		case EXCEL:
 			downloadExcel(fileName, streams);

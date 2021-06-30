@@ -1,12 +1,12 @@
 package com.portal.java.http;
 
-public enum ContentType {
+public enum ReportType {
 
 	PDF("application/pdf"), EXCEL("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
 	private final String type;
 
-	private ContentType(String t) {
+	private ReportType(String t) {
 		this.type = t;
 	}
 

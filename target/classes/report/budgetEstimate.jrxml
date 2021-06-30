@@ -281,10 +281,10 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="20">
-							<textField pattern="#,##0.##%">
+							<textField pattern="#,##0.###;#,##0.###-">
 								<reportElement x="0" y="0" width="79" height="20" uuid="a5e42e06-7031-4195-89aa-4fe071ad49b1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{discGlobal}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{discGlobal}%]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -298,10 +298,10 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="20">
-							<textField pattern="#,##0.##%">
+							<textField pattern="#,##0.###;#,##0.###-">
 								<reportElement x="0" y="0" width="79" height="20" uuid="6339cc03-f329-4d8e-89ab-426c509aabd3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{lineDisc}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lineDisc}%]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

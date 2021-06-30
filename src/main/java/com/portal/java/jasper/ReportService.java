@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Singleton;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -17,6 +19,7 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 @Singleton
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReportService {
 
 	/**

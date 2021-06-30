@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import com.portal.java.dto.BudgetJasperReportDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.BudgetItemJasperDTO;
 import com.portal.java.dto.BudgetJasperReportDTO.CustomerJasperReportDTO;
+import com.portal.java.http.ReportType;
 import com.portal.java.jasper.ReportService;
 import com.portal.java.jasper.service.BudgetReport;
 import com.portal.java.jasper.service.BudgetReportImpl;
@@ -27,7 +28,7 @@ class BudgetReportImplTest {
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373"), Set.of(item));
 		BudgetReport budgetReport = new BudgetReportImpl(new ReportService());
-		byte[] bytes = budgetReport.toPdf(budgetDTO);
+		byte[] bytes = budgetReport.export(budgetDTO, ReportType.PDF);
 		System.out.println("lenght " + bytes.length);
 		try (OutputStream out = new BufferedOutputStream(
 				new FileOutputStream("C:\\Users\\nicho\\OneDrive\\Documentos\\filledReports\\budget.pdf"))) {
@@ -43,7 +44,7 @@ class BudgetReportImplTest {
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich"), Set.of(item));
 		BudgetReport budgetReport = new BudgetReportImpl(new ReportService());
-		byte[] bytes = budgetReport.toExcel(budgetDTO);
+		byte[] bytes = budgetReport.export(budgetDTO, ReportType.EXCEL);
 
 	}
 }

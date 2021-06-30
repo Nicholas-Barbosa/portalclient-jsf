@@ -1,13 +1,10 @@
 package com.portal.java.jasper.service;
 
 import com.portal.java.dto.BudgetJasperReportDTO;
-import com.portal.java.http.ContentType;
+import com.portal.java.http.ReportType;
 
 public interface BudgetReport {
 
-	byte[] export(BudgetJasperReportDTO budget, ContentType type);
+	byte[] export(BudgetJasperReportDTO budget, ReportType type);
 
-	byte[] toPdf(BudgetJasperReportDTO budget);
-
-	byte[] toExcel(BudgetJasperReportDTO budget);
 }
