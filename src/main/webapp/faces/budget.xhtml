@@ -214,7 +214,7 @@
 									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
 									<p:cellEditor>
 										<f:facet name="output">
-											<h:outputText value="#{item.quantity}" />
+											<h:outputText value="#{item.values.quantity}" />
 										</f:facet>
 										<f:facet name="input">
 											<p:spinner value="#{budgetController.onRowItemQuantity}"
@@ -224,21 +224,21 @@
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
-									<h:outputText value="#{item.itemPrice.unitValue}">
+									<h:outputText value="#{item.values.unitValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('total')}">
-									<h:outputText value="#{item.itemPrice.totalValue}">
+									<h:outputText value="#{item.values.totalValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
-									<h:outputText value="#{item.itemPrice.totalStValue}">
+									<h:outputText value="#{item.values.totalStValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -271,7 +271,7 @@
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
-									<h:outputText value="#{item.itemPrice.totalGrossValue}">
+									<h:outputText value="#{item.values.totalGrossValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -720,21 +720,21 @@
 											<div class="p-field p-col">
 												<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
 												<p:inputNumber id="vLiquid"
-													value="#{budgetController.previewItem.itemPrice.totalValue}"
+													value="#{budgetController.previewItem.values.totalValue}"
 													symbol="R$ " symbolPosition="p" decimalSeparator=","
 													thousandSeparator="." readonly="true" />
 											</div>
 											<div class="p-field p-col">
 												<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
 												<p:inputNumber id="vGross"
-													value="#{budgetController.previewItem.itemPrice.totalGrossValue}"
+													value="#{budgetController.previewItem.values.totalGrossValue}"
 													symbol="R$ " symbolPosition="p" decimalSeparator=","
 													thousandSeparator="." readonly="true" />
 											</div>
 											<div class="p-field p-col">
 												<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
 												<p:inputNumber id="vSt"
-													value="#{budgetController.previewItem.itemPrice.totalStValue}"
+													value="#{budgetController.previewItem.values.totalStValue}"
 													symbol="R$ " symbolPosition="p" decimalSeparator=","
 													thousandSeparator="." readonly="true" />
 											</div>
@@ -803,7 +803,7 @@
 								<f:selectItem itemLabel="Excel-xlsx(relatório)"
 									itemValue="EXCEL" />
 								<f:selectItem itemLabel="Excel-xlsx(conferência de cálculos)"
-									itemValue="EXCEL" />
+									itemValue="EXCEL_CALC_CONFERENCE" />
 							</p:selectOneMenu>
 						</div>
 

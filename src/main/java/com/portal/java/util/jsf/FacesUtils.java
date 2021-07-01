@@ -79,8 +79,9 @@ public class FacesUtils {
 		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value.toString());
 	}
 
-	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams,
-			ExportType contentType) throws IOException {
+	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, ExportType contentType)
+			throws IOException {
+		
 		switch (contentType) {
 		case EXCEL:
 			downloadExcel(fileName, streams);
@@ -88,6 +89,9 @@ public class FacesUtils {
 
 		case PDF:
 			downloadPdf(fileName, streams);
+			break;
+		case EXCEL_CALC_CONFERENCE:
+			downloadExcel(fileName, streams);
 			break;
 		}
 	}

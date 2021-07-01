@@ -22,6 +22,7 @@ public class XssfWriterImpl implements XssfWriter {
 		int rowNum = 0;
 		for (WriteRowObject rowObject : rowObjects) {
 			XSSFRow row = sheet.createRow(rowNum++);
+
 			int cellNum = 0;
 			for (WriteCellAttribute attribute : rowObject.getAttributes()) {
 				Cell cell = row.createCell(cellNum++);

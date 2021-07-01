@@ -66,11 +66,11 @@ public class BudgetServiceImpl implements BudgetService {
 
 	@Override
 	public void calculateTotals(Order budget) {
-		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getItemPrice().getTotalGrossValue())
+		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalGrossValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getItemPrice().getTotalValue())
+		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getItemPrice().getTotalStValue())
+		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalStValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		budget.setGrossValue(newGrossValue);
 		budget.setLiquidValue(newLiquidValue);

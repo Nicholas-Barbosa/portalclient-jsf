@@ -26,7 +26,6 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.java.dto.Order;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
@@ -41,7 +40,8 @@ import com.portal.java.dto.FindProductByCodeForm;
 import com.portal.java.dto.FindProductByDescriptionDTO;
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemLineDiscountForm;
-import com.portal.java.dto.ItemPrice;
+import com.portal.java.dto.ItemValues;
+import com.portal.java.dto.Order;
 import com.portal.java.dto.Product;
 import com.portal.java.dto.Product.ProductPrice;
 import com.portal.java.dto.ProductBudgetForm;
@@ -52,8 +52,7 @@ import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.exception.ItemQuantityNotAllowed;
-import com.portal.java.resources.export.report.jasper.OrderJasperReport;
-import com.portal.java.resources.export.report.jasper.OrderReport;
+import com.portal.java.resources.export.OrderExport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CustomerService;
 import com.portal.java.service.ItemService;
@@ -81,7 +80,7 @@ public class BudgetController implements Serializable {
 
 	private final BudgetService budgetService;
 
-	private final OrderReport budgetReport;
+	private final OrderExport orderExporter;
 
 	private final ClientErrorExceptionController responseController;
 
@@ -152,7 +151,7 @@ public class BudgetController implements Serializable {
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
-			BudgetService budgetService, OrderReport budgetReport, ClientErrorExceptionController responseController,
+			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
 			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService) {
 		super();
@@ -160,7 +159,7 @@ public class BudgetController implements Serializable {
 		this.resourceBundleService = resourceBundleService;
 		this.customerService = customerService;
 		this.budgetService = budgetService;
-		this.budgetReport = budgetReport;
+		this.orderExporter = orderExporter;
 		this.responseController = responseController;
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
@@ -260,8 +259,8 @@ public class BudgetController implements Serializable {
 
 	public void exportOrder() {
 		try {
-			OrderJasperReport jasperDTO = new OrderJasperReport(budgetDTO);
-			byte[] btes = budgetReport.export(jasperDTO, downloadStreamsForm.getContentType());
+			byte[] btes = orderExporter.export(budgetDTO, downloadStreamsForm.getContentType());
+			System.out.println("btes " + btes.length);
 			FacesUtils.prepareResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());
 		} catch (Exception e) {
@@ -367,8 +366,8 @@ public class BudgetController implements Serializable {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
 			ProductPrice productPrice = presentProduct.getPrice();
-			previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct, 1,
-					new ItemPrice(productPrice.getUnitStValue(), productPrice.getUnitValue(),
+			previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
+					new ItemValues(1,productPrice.getUnitStValue(), productPrice.getUnitValue(),
 							productPrice.getUnitGrossValue(), productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue()));
 			previewItemQuantity = presentProduct.getMultiple();

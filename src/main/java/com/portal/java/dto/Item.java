@@ -9,21 +9,19 @@ public class Item {
 	private BigDecimal totalDiscount;
 	private final Product product;
 	private int quantity;
-	private ItemPrice itemPrice;
+	private ItemValues values;
 
-	public Item(BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, Product product, int quantity,
-			ItemPrice itemPrice) {
+	public Item(BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, Product product, ItemValues itemPrice) {
 		super();
 		this.budgetGlobalDiscount = budgetGlobalDiscount;
 		this.lineDiscount = lineDiscount;
 		this.totalDiscount = budgetGlobalDiscount.add(lineDiscount);
 		this.product = product;
-		this.quantity = quantity;
-		this.itemPrice = itemPrice;
+		this.values = itemPrice;
 	}
 
 	public Item() {
-		this(BigDecimal.ZERO, BigDecimal.ZERO, null, 0, null);
+		this(BigDecimal.ZERO, BigDecimal.ZERO, null, null);
 	}
 
 	public BigDecimal getBudgetGlobalDiscount() {
@@ -50,20 +48,12 @@ public class Item {
 		return totalDiscount;
 	}
 
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
-
 	public Product getProduct() {
 		return product;
 	}
 
-	public ItemPrice getItemPrice() {
-		return itemPrice;
+	public ItemValues getValues() {
+		return values;
 	}
 
 	public String line() {

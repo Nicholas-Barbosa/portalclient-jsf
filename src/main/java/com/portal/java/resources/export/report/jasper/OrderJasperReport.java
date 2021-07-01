@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import com.portal.java.dto.Order;
 import com.portal.java.dto.Customer;
 import com.portal.java.dto.Item;
-import com.portal.java.dto.ItemPrice;
+import com.portal.java.dto.ItemValues;
 import com.portal.java.resources.export.ExportEntity;
 
 public class OrderJasperReport extends ExportEntity implements Serializable {
@@ -156,14 +156,14 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 			super();
 			this.commercialCode = item.getProduct().getCommercialCode();
 			this.line = item.getProduct().getDescriptionType();
-			this.quantity = item.getQuantity();
 
-			ItemPrice prices = item.getItemPrice();
-			this.unitValue = prices.getUnitValueWithoutDiscount();
+			ItemValues values = item.getValues();
+			this.quantity = values.getQuantity();
+			this.unitValue = values.getUnitValueWithoutDiscount();
 			this.totalValue = this.unitValue.multiply(new BigDecimal(this.quantity));
-			this.totalStValue = prices.getUnitStValueWithoutDiscount().multiply(new BigDecimal(this.quantity));
+			this.totalStValue = values.getUnitStValueWithoutDiscount().multiply(new BigDecimal(this.quantity));
 			this.discGlobal = item.getBudgetGlobalDiscount();
-			this.totalGrossValue = prices.getTotalGrossValue();
+			this.totalGrossValue = values.getTotalGrossValue();
 			this.lineDisc = item.getLineDiscount();
 			this.totalGrossValueWithoutDiscount = this.totalValue.add(this.totalStValue);
 

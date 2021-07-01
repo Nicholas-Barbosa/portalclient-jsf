@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemLineDiscountForm;
-import com.portal.java.dto.ItemPrice;
+import com.portal.java.dto.ItemValues;
 import com.portal.java.exception.ItemQuantityNotAllowed;
 import com.portal.java.util.MathUtils;
 
@@ -19,8 +19,7 @@ public class ItemServiceImpl implements ItemService {
 	public void calculateDueQuantity(Item item, int quantity) throws ItemQuantityNotAllowed {
 		if (checkQuantityPolicies(item, quantity)) {
 			calculateTotals(item, quantity);
-			item.setQuantity(quantity);
-
+			item.getValues().setQuantity(quantity);
 			return;
 		}
 		throw new ItemQuantityNotAllowed(
@@ -30,7 +29,7 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public void applyGlobalDiscount(@NotNull Collection<? extends Item> items, BigDecimal discount) {
 		items.parallelStream().forEach(i -> {
-			ItemPrice price = i.getItemPrice();
+			ItemValues price = i.getValues();
 
 			BigDecimal[] unitValues = this.applyDiscount(i, discount);
 			price.setUnitGrossValue(unitValues[0]);
@@ -49,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
 		BigDecimal discount = itemLineDiscount.getDiscount();
 		String line = itemLineDiscount.getLine();
 		items.parallelStream().filter(i -> i.line().equals(line)).forEach(i -> {
-			ItemPrice price = i.getItemPrice();
+			ItemValues price = i.getValues();
 
 			price.setUnitGrossValue(
 					MathUtils.subtractValueByPercentage(discount, price.getUnitGrossValueFromGBDiscount()));
@@ -63,22 +62,23 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	private void calculateTotals(Item item) {
-		ItemPrice prices = item.getItemPrice();
-		prices.setTotalGrossValue(
-				MathUtils.calculateTotalValueOverQuantity(item.getQuantity(), prices.getUnitGrossValue()));
-		prices.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(item.getQuantity(), prices.getUnitStValue()));
-		prices.setTotalValue(MathUtils.calculateTotalValueOverQuantity(item.getQuantity(), prices.getUnitValue()));
+		ItemValues values = item.getValues();
+		values.setTotalGrossValue(
+				MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitGrossValue()));
+		values.setTotalStValue(
+				MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitStValue()));
+		values.setTotalValue(MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitValue()));
 	}
 
 	private void calculateTotals(Item item, int quantity) {
-		ItemPrice prices = item.getItemPrice();
+		ItemValues prices = item.getValues();
 		prices.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitGrossValue()));
 		prices.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitStValue()));
 		prices.setTotalValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitValue()));
 	}
 
 	private BigDecimal[] applyDiscount(Item item, BigDecimal discount) {
-		ItemPrice price = item.getItemPrice();
+		ItemValues price = item.getValues();
 		BigDecimal values[] = new BigDecimal[3];
 		BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(discount,
 				price.getUnitGrossValueWithoutDiscount());
