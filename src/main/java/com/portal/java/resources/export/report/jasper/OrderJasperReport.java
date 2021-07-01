@@ -162,9 +162,9 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 			this.unitValue = values.getUnitValueWithoutDiscount();
 			this.totalValue = this.unitValue.multiply(new BigDecimal(this.quantity));
 			this.totalStValue = values.getUnitStValueWithoutDiscount().multiply(new BigDecimal(this.quantity));
-			this.discGlobal = item.getBudgetGlobalDiscount();
+			this.discGlobal = values.getBudgetGlobalDiscount();
 			this.totalGrossValue = values.getTotalGrossValue();
-			this.lineDisc = item.getLineDiscount();
+			this.lineDisc = values.getLineDiscount();
 			this.totalGrossValueWithoutDiscount = this.totalValue.add(this.totalStValue);
 
 		}

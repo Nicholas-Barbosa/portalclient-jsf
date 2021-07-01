@@ -55,15 +55,15 @@ public class OrderExcelCalculusConference {
 					values.getTotalGrossWithoutDiscount()));
 
 			BigDecimal globalDiscValue = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
-					i.getBudgetGlobalDiscount(), values.getTotalGrossWithoutDiscount());
+					values.getBudgetGlobalDiscount(), values.getTotalGrossWithoutDiscount());
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscount"),
-					i.getBudgetGlobalDiscount()));
+					values.getBudgetGlobalDiscount()));
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscountValue"), globalDiscValue));
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueAfterDiscount"),
 					values.getTotalGrossAfterGlobalDiscount()));
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"), i.getLineDiscount()));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"), values.getLineDiscount()));
 
-			BigDecimal lineDiscValue = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(i.getLineDiscount(),
+			BigDecimal lineDiscValue = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(values.getLineDiscount(),
 					values.getTotalGrossAfterGlobalDiscount());
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscountValue"), lineDiscValue));
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValue"),

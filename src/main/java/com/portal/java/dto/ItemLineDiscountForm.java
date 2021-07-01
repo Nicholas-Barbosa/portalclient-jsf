@@ -14,6 +14,16 @@ public class ItemLineDiscountForm {
 	@Min(0)
 	private BigDecimal discount;
 
+	public ItemLineDiscountForm() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public ItemLineDiscountForm(@NotEmpty String line, @Max(100) @Min(0) BigDecimal discount) {
+		super();
+		this.line = line;
+		this.discount = discount;
+	}
+
 	public String getLine() {
 		return line;
 	}

@@ -168,11 +168,15 @@ public class BudgetController implements Serializable {
 	}
 
 	public void setProspectCustomer() {
-		CustomerOnOrder customer = new ProspectCustomerOnOrder();
-		customer.setType(CustomerType.PROSPECT);
-		((ProspectCustomerOnOrder) customer).setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
-		((ProspectCustomerOnOrder) customer).setState(prospectCustomerForm.getStateAcronym());
-		budgetService.setCustomer(budgetDTO, customer);
+		ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
+		prospectCustomer.setType(CustomerType.PROSPECT);
+		prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
+		prospectCustomer.setMessage(prospectCustomerForm.getMessage());
+		Customer originCustomer = new Customer(prospectCustomerForm.getAddress(), null, null,
+				prospectCustomerForm.getStateAcronym(), null, null, "PROSPECT", null, null,
+				prospectCustomerForm.getTable(), prospectCustomerForm.getPaymentTerms());
+		prospectCustomer.setCustomer(originCustomer);
+		budgetService.setCustomer(budgetDTO, prospectCustomer);
 	}
 
 	public void applyGlobalDiscount() {
@@ -367,9 +371,10 @@ public class BudgetController implements Serializable {
 			FacesUtils.addHeaderForResponse("product-found", true);
 			ProductPrice productPrice = presentProduct.getPrice();
 			previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
-					new ItemValues(1,productPrice.getUnitStValue(), productPrice.getUnitValue(),
-							productPrice.getUnitGrossValue(), productPrice.getUnitStValue(),
-							productPrice.getUnitValue(), productPrice.getUnitGrossValue()));
+					new ItemValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
+							productPrice.getUnitValue(), productPrice.getUnitGrossValue(),
+							productPrice.getUnitStValue(), productPrice.getUnitValue(),
+							productPrice.getUnitGrossValue()));
 			previewItemQuantity = presentProduct.getMultiple();
 			PrimeFaces.current().executeScript("$('#footer').show();");
 		}, () -> {

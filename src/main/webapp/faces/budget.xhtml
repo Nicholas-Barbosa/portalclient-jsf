@@ -20,7 +20,8 @@
 
 	<ui:define name="content">
 		<f:view locale="pt_BR">
-			<p:growl id="growl" showDetail="true" globalOnly="true" />
+			<p:growl id="growl" showDetail="true" globalOnly="true"
+				widgetVar="growl" />
 			<div class="card">
 
 				<h:form id="budgetToolsForm">
@@ -87,48 +88,51 @@
 											value="#{budgetController.budgetDTO.customerOnOrder.customer.cnpj}"
 											readonly="true" id="cnpj" mask="99.999.999/9999-99" />
 									</div>
-
-									<div class="p-field p-col-12 p-xl-5 p-lg-5 p-md-12">
-										<p:outputLabel for="endereco"
-											value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
-										<p:inputText id="endereco"
-											value="#{budgetController.budgetDTO.customerOnOrder.customer.address}, #{budgetController.budgetDTO.customerOnOrder.customer.city} - #{budgetController.budgetDTO.customerOnOrder.customer.state}"
-											readonly="true" />
-									</div>
-									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-										<p:outputLabel
-											value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
-											for="pTerms" />
-										<p:inputText
-											value="#{budgetController.budgetDTO.customerOnOrder.customer.paymentTerms}"
-											readonly="true" id="pTerms" />
-									</div>
-									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-										<p:outputLabel
-											value="#{resourceBundleServiceImpl.getMessage('tabela')}"
-											for="pTable" />
-										<p:inputText
-											value="#{budgetController.budgetDTO.customerOnOrder.customer.table}"
-											readonly="true" id="pTable" />
-									</div>
 								</ui:fragment>
+								<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
+									<p:outputLabel for="endereco"
+										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+									<p:inputText id="endereco"
+										value="#{budgetController.budgetDTO.customerOnOrder.customer.address}, #{budgetController.budgetDTO.customerOnOrder.customer.city} - #{budgetController.budgetDTO.customerOnOrder.customer.state}"
+										readonly="true" />
+								</div>
+								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+									<p:outputLabel
+										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
+										for="pTerms" />
+									<p:inputText
+										value="#{budgetController.budgetDTO.customerOnOrder.customer.paymentTerms}"
+										readonly="true" id="pTerms" />
+								</div>
+								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+									<p:outputLabel
+										value="#{resourceBundleServiceImpl.getMessage('tabela')}"
+										for="pTable" />
+									<p:inputText
+										value="#{budgetController.budgetDTO.customerOnOrder.customer.table}"
+										readonly="true" id="pTable" />
+								</div>
+
 
 								<ui:fragment
 									rendered="#{budgetController.budgetDTO.customerOnOrder.type eq 'PROSPECT'}">
-									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-										<p:outputLabel
-											value="#{resourceBundleServiceImpl.getMessage('estado')}"
-											for="state" />
-										<p:inputText
-											value="#{budgetController.budgetDTO.customerOnOrder.customer.state}"
-											readonly="true" id="state" />
-									</div>
+
 									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 										<p:outputLabel value="Vendedor" for="sellerType" />
 										<p:inputText
 											value="#{budgetController.budgetDTO.customerOnOrder.sellerType}"
 											readonly="true" id="sellerType" />
 									</div>
+
+
+									<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+										<p:outputLabel for="mensagem" value="Mensagem" />
+										<p:inputTextarea id="mensagem" rows="4" maxlength="250"
+											value="#{budgetController.budgetDTO.customerOnOrder.message}"
+											onchange="saveMessage();" />
+									</div>
+									<p:remoteCommand name="saveMessage" process="@form:mensagem" />
+
 								</ui:fragment>
 							</div>
 						</h:form>
@@ -247,7 +251,7 @@
 									headerText="#{resourceBundleServiceImpl.getMessage('desconto')}%">
 									<p:commandLink id="viewItemDiscounts"
 										oncomplete="PF('itemDiscOP').show()" update="itemDiscOP">
-										<h:outputText value="#{item.totalDiscount}">
+										<h:outputText value="#{item.values.totalDiscount}">
 											<f:convertNumber locale="pt_BR" />
 										</h:outputText>
 										<f:setPropertyActionListener value="#{item}"
@@ -522,7 +526,7 @@
 						action="#{budgetController.applyGlobalDiscount}"
 						onstart="PF('block').show()"
 						oncomplete="PF('dlgGlobalDiscount').hide();PF('block').hide()"
-						async="true" />
+						 />
 				</h:form>
 				<p:blockUI block="dlgGlobalDiscount" widgetVar="block" />
 			</p:dialog>
@@ -817,29 +821,29 @@
 			</p:dialog>
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"
-				positionType="absolute" responsive="true">
-				<p:tabView>
-					<p:tab
-						title="#{resourceBundleServiceImpl.getMessage('palavra_chave')}">
-						<h5>
-							<h:outputText
-								value="#{resourceBundleServiceImpl.getMessage('busca_por_nome_cliente')}" />
-						</h5>
-						<h:form>
+				positionType="absolute" responsive="true" style="">
+				<div style="max-height: 65vh; overflow: auto">
+					<p:tabView>
+						<p:tab
+							title="#{resourceBundleServiceImpl.getMessage('palavra_chave')}">
+							<h5>
+								<h:outputText
+									value="#{resourceBundleServiceImpl.getMessage('busca_por_nome_cliente')}" />
+							</h5>
+							<h:form>
 
-							<div class="p-formgroup-inline">
-								<div class="p-field">
-									<div class="ui-inputgroup">
-										<p:inputText type="text" placeholder="keyword"
-											value="#{budgetController.nameCustomerToFind}"
-											required="true" id="cName" />
+								<div class="p-formgroup-inline">
+									<div class="p-field">
+										<div class="ui-inputgroup">
+											<p:inputText type="text" placeholder="keyword"
+												value="#{budgetController.nameCustomerToFind}"
+												required="true" id="cName" />
 
-
-										<p:commandButton icon="pi pi-search"
-											action="#{budgetController.findCustomerByName(0)}"
-											onstart="PF('dlgSearchCustomer').hide();
+											<p:commandButton icon="pi pi-search"
+												action="#{budgetController.findCustomerByName(0)}"
+												onstart="PF('dlgSearchCustomer').hide();
 								PF('globalLoadDlg').show()"
-											oncomplete="PF('globalLoadDlg').hide();
+												oncomplete="PF('globalLoadDlg').hide();
 								let customers = xhr.getResponseHeader('customers');
 								if(customers > 1){
 									PF('dlgSelectCustomer').show();
@@ -847,55 +851,22 @@
 								}
 								if(xhr.getResponseHeader('customers-found')=='true')
 									PF('blockItems').hide();"
-											update="fomrSelectCustomer growl" />
+												update="fomrSelectCustomer growl" />
+										</div>
+
+										<p:message for="cName" />
 									</div>
 
-									<p:message for="cName" />
 								</div>
+							</h:form>
+						</p:tab>
 
-							</div>
-						</h:form>
-					</p:tab>
-					<!-- 	<p:tab
-						title="#{holdMessageView.label('codigo')} / #{holdMessageView.label('store')}">
-						<h:form>
-							<div class="p-formgroup-inline">
-								<div class="p-field ">
-									<p:outputLabel value="#{holdMessageView.label('codigo')}"
-										for="customerCode" />
-									<p:inputText value="#{budgetController.searchCustomerDTO.code}"
-										onkeypress="if(event.keyCode == 13){
-										findCustomerByCodeAndStore()
-									}"
-										id="customerCode" maxlength="6" />
-									<p:message for="@previous" />
-								</div>
-								<div class="p-field ">
-									<p:outputLabel value="#{holdMessageView.label('store')}"
-										for="customerStore" />
-									<p:inputText
-										value="#{budgetController.searchCustomerDTO.store}"
-										onkeypress="if(event.keyCode == 13){
-										
-										findCustomerByCodeAndStore()
-									}"
-										id="customerStore" />
-									<p:message for="@previous" />
-								</div>
-								<p:remoteCommand process="@form"
-									update="fomrSelectCustomer growl"
-									action="#{budgetController.findCustomerByCode}"
-									name="findCustomerByCodeAndStore"
-									id="findCustomerByCodeAndStore"
-									onstart="PF('globalLoadDlg').show();"
-									oncomplete="PF('globalLoadDlg').hide();PF('dlgSearchCustomer').hide()" />
-							</div>
-						</h:form>
-					</p:tab> -->
-					<p:tab title="PROSPECT">
-						<h:form>
-							<div class="ui-fluid">
-								<div class="p-field">
+						<p:tab title="PROSPECT">
+							<h:form>
+								<p:panelGrid columns="4"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+									style="border:0px none; background-color:transparent;">
 									<p:outputLabel for="@next" value="Vendedor" />
 									<p:selectOneMenu id="option"
 										value="#{budgetController.prospectCustomerForm.sellerType}">
@@ -904,8 +875,7 @@
 										<f:selectItem itemLabel="Motos" itemValue="MOTOS" />
 
 									</p:selectOneMenu>
-								</div>
-								<div class="p-field">
+
 									<p:outputLabel for="@next" value="Estado" />
 									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
 										value="#{budgetController.prospectCustomerForm.stateAcronym}">
@@ -913,16 +883,45 @@
 											var="state" itemLabel="#{state.name}"
 											itemValue="#{state.acronym}" />
 									</p:selectOneMenu>
-								</div>
-								<p:commandButton icon="pi pi-check"
-									styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-									action="#{budgetController.setProspectCustomer}"
-									process="@form" update=":customerForm"
-									oncomplete="PF('dlgSearchCustomer').hide();PF('blockItems').hide();" />
-							</div>
-						</h:form>
-					</p:tab>
-				</p:tabView>
+
+									<p:outputLabel for="prospEndereco"
+										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+									<p:inputText id="prospEndereco"
+										value="#{budgetController.prospectCustomerForm.address}" />
+
+									<p:outputLabel
+										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
+										for="prospTerms" />
+									<p:inputText
+										value="#{budgetController.prospectCustomerForm.paymentTerms}"
+										id="prospTerms" />
+
+									<p:outputLabel
+										value="#{resourceBundleServiceImpl.getMessage('tabela')}"
+										for="prospectTable" />
+									<p:inputText
+										value="#{budgetController.prospectCustomerForm.table}"
+										id="prospectTable" />
+
+									<p:outputLabel for="mensagem" value="Mensagem" />
+									<p:inputTextarea id="mensagem" rows="4" cols="30"
+										maxlength="250"
+										value="#{budgetController.prospectCustomerForm.message}" />
+									<p:row>
+										<p:column styleClass="ui-grid-col-12">
+											<p:commandButton icon="pi pi-check"
+												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+												action="#{budgetController.setProspectCustomer}"
+												process="@form" update=":customerForm"
+												oncomplete="PF('dlgSearchCustomer').hide();PF('blockItems').hide();" />
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+							</h:form>
+
+						</p:tab>
+					</p:tabView>
+				</div>
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="70vw"

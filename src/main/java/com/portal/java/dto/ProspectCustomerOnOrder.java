@@ -1,8 +1,15 @@
 package com.portal.java.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
+@NotEmpty
 public class ProspectCustomerOnOrder extends CustomerOnOrder {
 
 	private SellerType sellerType;
+
+	@Size(max = 250)
+	private String message;
 
 	public ProspectCustomerOnOrder() {
 		// TODO Auto-generated constructor stub
@@ -21,10 +28,12 @@ public class ProspectCustomerOnOrder extends CustomerOnOrder {
 		this.sellerType = sellerType;
 	}
 
-	public void setState(String acronym) {
-		Customer customer = new Customer(null, null, null, acronym, null, null, "PROSPECT", "PROSPECT", null, null,
-				null);
-		super.setCustomer(customer);
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public static enum SellerType {

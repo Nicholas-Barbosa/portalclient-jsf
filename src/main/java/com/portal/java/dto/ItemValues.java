@@ -5,7 +5,12 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ItemValues {
+
 	private int quantity;
+	private BigDecimal budgetGlobalDiscount;
+	private BigDecimal lineDiscount;
+	private BigDecimal totalDiscount;
+
 	private BigDecimal unitStValue;
 	private BigDecimal unitValue;
 	private BigDecimal unitGrossValue;
@@ -15,10 +20,14 @@ public class ItemValues {
 	private BigDecimal totalGrossValue;
 	private final Map<String, BigDecimal> values = new ConcurrentHashMap<>();
 
-	public ItemValues(int quantity, BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue,
-			BigDecimal totalStValue, BigDecimal totalValue, BigDecimal totalGrossValue) {
+	public ItemValues(int quantity, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, BigDecimal unitStValue,
+			BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue, BigDecimal totalValue,
+			BigDecimal totalGrossValue) {
 		super();
 		this.quantity = quantity;
+		this.budgetGlobalDiscount = budgetGlobalDiscount;
+		this.lineDiscount = lineDiscount;
+		this.totalDiscount = this.budgetGlobalDiscount.add(this.lineDiscount);
 		this.unitStValue = unitStValue;
 		this.unitValue = unitValue;
 		this.unitGrossValue = unitGrossValue;
@@ -28,6 +37,34 @@ public class ItemValues {
 		values.put("unitStValue", unitStValue);
 		values.put("unitValue", unitValue);
 		values.put("unitGrossValue", unitGrossValue);
+	}
+
+	public BigDecimal getBudgetGlobalDiscount() {
+		return budgetGlobalDiscount;
+	}
+
+	public void setBudgetGlobalDiscount(BigDecimal discount) {
+		this.totalDiscount = this.totalDiscount.subtract(this.budgetGlobalDiscount);
+		this.budgetGlobalDiscount = discount;
+		this.totalDiscount = this.totalDiscount.add(discount);
+	}
+
+	public BigDecimal getLineDiscount() {
+		return lineDiscount;
+	}
+
+	public void setLineDiscount(BigDecimal lineDiscount) {
+		this.totalDiscount = this.totalDiscount.subtract(this.lineDiscount);
+		this.lineDiscount = lineDiscount;
+		this.totalDiscount = this.totalDiscount.add(lineDiscount);
+	}
+
+	public BigDecimal getTotalDiscount() {
+		return totalDiscount;
+	}
+
+	public void setTotalDiscount(BigDecimal totalDiscount) {
+		this.totalDiscount = totalDiscount;
 	}
 
 	public int getQuantity() {

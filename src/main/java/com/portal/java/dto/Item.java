@@ -4,18 +4,12 @@ import java.math.BigDecimal;
 
 public class Item {
 
-	private BigDecimal budgetGlobalDiscount;
-	private BigDecimal lineDiscount;
-	private BigDecimal totalDiscount;
+	
 	private final Product product;
-	private int quantity;
 	private ItemValues values;
 
 	public Item(BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, Product product, ItemValues itemPrice) {
 		super();
-		this.budgetGlobalDiscount = budgetGlobalDiscount;
-		this.lineDiscount = lineDiscount;
-		this.totalDiscount = budgetGlobalDiscount.add(lineDiscount);
 		this.product = product;
 		this.values = itemPrice;
 	}
@@ -24,30 +18,7 @@ public class Item {
 		this(BigDecimal.ZERO, BigDecimal.ZERO, null, null);
 	}
 
-	public BigDecimal getBudgetGlobalDiscount() {
-		return budgetGlobalDiscount;
-	}
-
-	public void setBudgetGlobalDiscount(BigDecimal individualDiscount) {
-		this.totalDiscount = this.totalDiscount.subtract(this.budgetGlobalDiscount);
-		this.budgetGlobalDiscount = individualDiscount;
-		this.totalDiscount = this.totalDiscount.add(individualDiscount);
-	}
-
-	public BigDecimal getLineDiscount() {
-		return lineDiscount == null ? BigDecimal.ZERO : lineDiscount;
-	}
-
-	public void setLineDiscount(BigDecimal lineDiscount) {
-		this.totalDiscount = this.totalDiscount.subtract(this.lineDiscount);
-		this.lineDiscount = lineDiscount;
-		this.totalDiscount = this.totalDiscount.add(lineDiscount);
-	}
-
-	public BigDecimal getTotalDiscount() {
-		return totalDiscount;
-	}
-
+	
 	public Product getProduct() {
 		return product;
 	}

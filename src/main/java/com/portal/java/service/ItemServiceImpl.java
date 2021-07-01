@@ -35,11 +35,15 @@ public class ItemServiceImpl implements ItemService {
 			price.setUnitGrossValue(unitValues[0]);
 			price.setUnitStValue(unitValues[1]);
 			price.setUnitValue(unitValues[2]);
-			i.setBudgetGlobalDiscount(discount);
+			price.setBudgetGlobalDiscount(discount);
 			calculateTotals(i);
 			price.setUnitGrossValueFromGBDiscount(unitValues[0]);
 			price.setUnitStValueFromGBDiscount(unitValues[1]);
 			price.setUnitValueFromGBDiscount(unitValues[2]);
+
+			if (price.getLineDiscount() != null || !price.getLineDiscount().equals(BigDecimal.ZERO))
+				this.applyLineDiscount(items,
+						new ItemLineDiscountForm(i.getProduct().getDescriptionType(), price.getLineDiscount()));
 		});
 	}
 
@@ -54,7 +58,7 @@ public class ItemServiceImpl implements ItemService {
 					MathUtils.subtractValueByPercentage(discount, price.getUnitGrossValueFromGBDiscount()));
 			price.setUnitStValue(MathUtils.subtractValueByPercentage(discount, price.getUnitStValueFromGBDiscount()));
 			price.setUnitValue(MathUtils.subtractValueByPercentage(discount, price.getUnitValueFromGBDiscount()));
-			i.setLineDiscount(discount);
+			price.setLineDiscount(discount);
 			calculateTotals(i);
 
 		});
