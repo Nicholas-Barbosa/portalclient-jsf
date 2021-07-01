@@ -21,14 +21,14 @@ class XssfWriterImplTest {
 	@Test
 	void test() {
 		List<WriteCellAttribute> attributes = new ArrayList<>();
-		attributes.add(new WriteCellAttribute("NOME", CellType.STRING));
-		attributes.add(new WriteCellAttribute("IDADE", CellType.STRING));
-		WriteRowObject row1 = new WriteRowObject(attributes);
+		attributes.add(new WriteCellAttribute(0,"NOME", CellType.STRING));
+		attributes.add(new WriteCellAttribute(1,"IDADE", CellType.STRING));
+		WriteRowObject row1 = new WriteRowObject(0,attributes);
 
 		List<WriteCellAttribute> attributesForRow2 = new ArrayList<>();
-		attributesForRow2.add(new WriteCellAttribute("Nicholas", CellType.STRING));
-		attributesForRow2.add(new WriteCellAttribute(new BigDecimal(49.530000000000001136868377216160297393798828125), CellType.STRING));
-		WriteRowObject row2 = new WriteRowObject(attributesForRow2);
+		attributesForRow2.add(new WriteCellAttribute(0,"Nicholas", CellType.STRING));
+		attributesForRow2.add(new WriteCellAttribute(1,new BigDecimal(49.530000000000001136868377216160297393798828125), CellType.STRING));
+		WriteRowObject row2 = new WriteRowObject(1,attributesForRow2);
 
 		XssfWriter writer = new XssfWriterImpl();
 		byte[] streams = writer.write(List.of(row1, row2));

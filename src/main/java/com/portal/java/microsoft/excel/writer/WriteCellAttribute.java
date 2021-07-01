@@ -5,28 +5,31 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.poi.ss.usermodel.CellType;
 
 public class WriteCellAttribute {
 
-	private short cellPosition;
+	private int cellPosition;
 	private Object value;
 	private CellType cellType;
 
-	public WriteCellAttribute(Object value, CellType cellType) {
+	public WriteCellAttribute(int postion, Object value, CellType cellType) {
 		super();
+		this.cellPosition = postion;
 		this.value = value;
 		this.cellType = cellType;
 	}
 
-	public WriteCellAttribute(Object value) {
+	public WriteCellAttribute(int postion, Object value) {
 		super();
+		this.cellPosition = postion;
 		this.value = value;
 		this.cellType = CellType.STRING;
 	}
 
-	public short getCellPosition() {
+	public int getCellPosition() {
 		return cellPosition;
 	}
 
@@ -46,28 +49,53 @@ public class WriteCellAttribute {
 			numberFormat.setMaximumFractionDigits(3);
 		}
 
-		public static WriteCellAttribute of(Object value) {
-			return new WriteCellAttribute(value);
+		public static WriteCellAttribute of(int postion, Object value) {
+			return new WriteCellAttribute(postion, value);
 		}
 
-		public static WriteCellAttribute of(Object value, CellType cell) {
-			return new WriteCellAttribute(value, cell);
+		public static WriteCellAttribute of(int position, Object value, CellType cell) {
+			return new WriteCellAttribute(position, value, cell);
 		}
 
-		public static List<WriteCellAttribute> of(Object... value) {
-			return Arrays.stream(value).parallel().map(WriteCellAttributeBuilder::of).collect(CopyOnWriteArrayList::new,
-					List::add, List::addAll);
-
-		}
-
-		public static List<WriteCellAttribute> ofNumber(Number... value) {
-			return Arrays.stream(value).parallel().map(WriteCellAttributeBuilder::ofNumber)
+		public static List<WriteCellAttribute> of(int startPosition, Object... value) {
+			final AtomicInteger cellPosition = new AtomicInteger(startPosition);
+			return Arrays.stream(value)
+					.map(v -> WriteCellAttributeBuilder.of(cellPosition.getAndIncrement(), v))
 					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 
 		}
 
-		public static WriteCellAttribute ofNumber(Number value) {
-			return new WriteCellAttribute(numberFormat.format(value));
+		public static List<WriteCellAttribute> ofParallel(int startPosition, Object... value) {
+			final AtomicInteger cellPosition = new AtomicInteger(startPosition);
+			return Arrays.stream(value).parallel()
+					.map(v -> WriteCellAttributeBuilder.of(cellPosition.getAndIncrement(), v))
+					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+
+		}
+
+		public static List<WriteCellAttribute> of(boolean parallel, Object... value) {
+			if (parallel)
+				return WriteCellAttributeBuilder.ofParallel(0, value);
+			else 
+				return WriteCellAttributeBuilder.of(0, value);
+
+		}
+
+		public static List<WriteCellAttribute> ofNumber(Integer startPosition, Number... value) {
+			final AtomicInteger cellPosition = new AtomicInteger(startPosition);
+			return Arrays.stream(value).parallel()
+					.map(v -> WriteCellAttributeBuilder.ofNumber(cellPosition.getAndIncrement(), v))
+					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+
+		}
+
+		public static List<WriteCellAttribute> ofNumber(Number... value) {
+			return WriteCellAttributeBuilder.ofNumber(0, value);
+
+		}
+
+		public static WriteCellAttribute ofNumber(int position, Number value) {
+			return new WriteCellAttribute(position, numberFormat.format(value));
 		}
 	}
 }

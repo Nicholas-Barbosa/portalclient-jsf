@@ -19,23 +19,11 @@ public class XssfWriterImpl implements XssfWriter {
 	public byte[] write(List<WriteRowObject> rowObjects) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("conferência-cálculos");
-		int rowNum = 0;
-		for (WriteRowObject rowObject : rowObjects) {
-			XSSFRow row = sheet.createRow(rowNum++);
+		rowObjects.forEach(rowObject -> {
+			XSSFRow row = sheet.createRow(rowObject.getRowPosition());
+			rowObject.getAttributes().parallelStream().forEach(w -> this.createCell(w, row));
+		});
 
-			int cellNum = 0;
-			for (WriteCellAttribute attribute : rowObject.getAttributes()) {
-				Cell cell = row.createCell(cellNum++);
-				switch (attribute.getCellType()) {
-				case NUMERIC:
-					cell.setCellValue((Double) attribute.getValue());
-					break;
-				default:
-					cell.setCellValue(attribute.getValue() + "");
-					break;
-				}
-			}
-		}
 		try {
 			OutputStream out = new ByteArrayOutputStream();
 			workbook.write(out);
@@ -47,4 +35,15 @@ public class XssfWriterImpl implements XssfWriter {
 		return null;
 	}
 
+	private void createCell(WriteCellAttribute attribute, XSSFRow row) {
+		Cell cell = row.createCell(attribute.getCellPosition());
+		switch (attribute.getCellType()) {
+		case NUMERIC:
+			cell.setCellValue((Double) attribute.getValue());
+			break;
+		default:
+			cell.setCellValue(attribute.getValue() + "");
+			break;
+		}
+	}
 }
