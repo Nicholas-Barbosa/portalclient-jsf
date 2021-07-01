@@ -13,18 +13,17 @@ import java.util.concurrent.TimeoutException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.java.dto.Order;
 import com.portal.java.dto.BudgetEstimateForm;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.CustomerOnOrder.CustomerType;
+import com.portal.java.dto.Item;
+import com.portal.java.dto.Order;
 import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.microsoft.excel.reader.CellAttribute;
 import com.portal.java.microsoft.excel.reader.RowObject;
 import com.portal.java.microsoft.excel.reader.XssfReader;
 import com.portal.java.microsoft.excel.reader.XssfReaderBuilder;
-import com.portal.java.dto.Item;
 import com.portal.java.repository.BudgetRepository;
 
 @ApplicationScoped
@@ -107,16 +106,6 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public void calculateForGlobalDiscount(Order budgetDTO) {
-		if (budgetDTO.getGlobalDiscount().intValue() > 0) {
-			budgetDTO.getItems().parallelStream().forEach(p -> {
-//				productService.addDiscount(p, budgetDTO.getGlobalDiscount());
-			});
-			this.calculateTotals(budgetDTO);
-		}
-	}
-
-	@Override
 	public void addItem(Order budgetDTO, Item produc) {
 		if (produc != null) {
 			budgetDTO.getItems().add(produc);
@@ -126,13 +115,13 @@ public class BudgetServiceImpl implements BudgetService {
 
 	@Override
 	public void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed {
-		if (budget.getCustomerOnOrder().getType() == CustomerType.PROSPECT) {
-			budget.setGlobalDiscount(discount);
-			itemService.applyGlobalDiscount(budget.getItems(), discount);
-			this.calculateTotals(budget);
-			return;
-		}
-		throw new CustomerNotAllowed("You can't set global discount for a normal client!");
+//		if (budget.getCustomerOnOrder().getType() == CustomerType.PROSPECT) {
+		budget.setGlobalDiscount(discount);
+		itemService.applyGlobalDiscount(budget.getItems(), discount);
+		this.calculateTotals(budget);
+		return;
+//		}
+//		throw new CustomerNotAllowed("You can't set global discount for a normal client!");
 
 	}
 

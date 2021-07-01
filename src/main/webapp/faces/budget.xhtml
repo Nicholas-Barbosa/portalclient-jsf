@@ -175,8 +175,7 @@
 													icon="pi pi-tag" />
 												<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('global')}"
-													onclick="PF('dlgGlobalDiscount').show()" icon="pi pi-tag"
-													disabled="#{budgetController.budgetDTO.customerOnOrder.type eq 'NORMAL'}" />
+													onclick="PF('dlgGlobalDiscount').show()" icon="pi pi-tag" />
 												<p:autoUpdate on="eventAddItem" />
 											</p:menuButton>
 										</div>
@@ -525,8 +524,7 @@
 						process="@form" update="formItems:dtItems,budgetTotals"
 						action="#{budgetController.applyGlobalDiscount}"
 						onstart="PF('block').show()"
-						oncomplete="PF('dlgGlobalDiscount').hide();PF('block').hide()"
-						 />
+						oncomplete="PF('dlgGlobalDiscount').hide();PF('block').hide()" />
 				</h:form>
 				<p:blockUI block="dlgGlobalDiscount" widgetVar="block" />
 			</p:dialog>

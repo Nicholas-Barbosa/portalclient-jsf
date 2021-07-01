@@ -33,14 +33,7 @@ public interface BudgetService extends ServiceSerializable {
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
 
-	/**
-	 * Adds globalDiscout field for all budgetDTO items, then calculates all unit
-	 * and total values for budgetDTO items.Finally calculates the totals for that
-	 * budget object based on the item totals
-	 * 
-	 * @param budgetDTO
-	 */
-	void calculateForGlobalDiscount(Order budgetDTO);
+	
 
 	void addItem(Order budgetDTO, Item produc);
 

@@ -19,14 +19,16 @@ import com.portal.java.resources.export.report.jasper.OrderReport;
 
 class BudgetReportImplTest {
 
-	private final OrderItemJasper item = new OrderItemJasper("AX001", "LAMPADA", 10, BigDecimal.TEN,
-			BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
+	private final OrderItemJasper item = new OrderItemJasper("AX001", "LAMPADA", 10, BigDecimal.TEN, BigDecimal.TEN,
+			BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN, BigDecimal.TEN);
 
 	@Test
 	void test() {
 		OrderJasperReport budgetDTO = new OrderJasperReport(new BigDecimal(12.99), new BigDecimal(20.98),
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
-				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373"), Set.of(item));
+				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373", "tabela", "ddd",
+						"message"),
+				Set.of(item));
 		OrderReport budgetReport = new OrderReportImpl(new ReportService());
 		byte[] bytes = budgetReport.export(budgetDTO, ExportType.PDF);
 		System.out.println("lenght " + bytes.length);
@@ -41,8 +43,9 @@ class BudgetReportImplTest {
 	@Test
 	void testExcel() {
 		OrderJasperReport budgetDTO = new OrderJasperReport(new BigDecimal(12.99), new BigDecimal(20.98),
-				new BigDecimal(49.530000000000001136868377216160297393798828125),
-				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich"), Set.of(item));
+				new BigDecimal(49.530000000000001136868377216160297393798828125), new CustomerJasperReportDTO(
+						"Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich", "tabela", "ddd", "message"),
+				Set.of(item));
 		OrderReport budgetReport = new OrderReportImpl(new ReportService());
 		byte[] bytes = budgetReport.export(budgetDTO, ExportType.EXCEL);
 

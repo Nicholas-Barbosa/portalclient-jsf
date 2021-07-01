@@ -72,6 +72,9 @@
 	<field name="customerReportDTO.address" class="java.lang.String"/>
 	<field name="customerReportDTO.city" class="java.lang.String"/>
 	<field name="customerReportDTO.state" class="java.lang.String"/>
+	<field name="customerReportDTO.table" class="java.lang.String"/>
+	<field name="customerReportDTO.paymentTerms" class="java.lang.String"/>
+	<field name="customerReportDTO.message" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -91,49 +94,83 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="65" splitType="Stretch">
+		<band height="96" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="1" width="50" height="20" uuid="8efabbf0-6660-4373-9908-cbc8b3aac171"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="1" width="50" height="17" uuid="8efabbf0-6660-4373-9908-cbc8b3aac171"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Cliente:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="50" y="1" width="750" height="20" uuid="dfeddf02-ec29-42b2-9b72-f4d8b34fceec"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="50" y="1" width="337" height="17" uuid="dfeddf02-ec29-42b2-9b72-f4d8b34fceec"/>
+				<textElement verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{customerReportDTO.name}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="41" width="50" height="19" uuid="12743758-612a-4079-91ec-e9f9519f0f00"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="0" y="23" width="50" height="16" uuid="12743758-612a-4079-91ec-e9f9519f0f00"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="10"/>
 				</textElement>
 				<text><![CDATA[Endereço:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="50" y="41" width="750" height="19" uuid="23cd1444-8084-4b7e-b9ac-7f39ff5efbcb"/>
+				<reportElement x="51" y="23" width="358" height="16" uuid="23cd1444-8084-4b7e-b9ac-7f39ff5efbcb"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{customerReportDTO.address}+", "+$F{customerReportDTO.city}+" - "+$F{customerReportDTO.state}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="50" y="22" width="750" height="18" uuid="b4356649-2709-44e0-9e96-c913705703b7"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="431" y="1" width="367" height="17" uuid="b4356649-2709-44e0-9e96-c913705703b7"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{customerReportDTO.cgc}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="22" width="50" height="18" uuid="e58bc60b-1990-4d50-99a0-7539c74fdd20"/>
+				<reportElement key="" x="388" y="1" width="40" height="17" uuid="e58bc60b-1990-4d50-99a0-7539c74fdd20"/>
 				<textElement verticalAlignment="Middle"/>
-				<text><![CDATA[CGC:]]></text>
+				<text><![CDATA[CNPJ:]]></text>
 			</staticText>
 			<line>
-				<reportElement x="0" y="40" width="799" height="1" uuid="6b1715b8-d91b-40a1-9590-b34bbb9c687a"/>
+				<reportElement x="0" y="41" width="799" height="1" uuid="6b1715b8-d91b-40a1-9590-b34bbb9c687a"/>
 			</line>
 			<line>
-				<reportElement x="0" y="21" width="799" height="1" uuid="2808e295-6967-4cf7-8cd5-f650cd2f11e9"/>
+				<reportElement x="0" y="20" width="799" height="1" uuid="2808e295-6967-4cf7-8cd5-f650cd2f11e9"/>
 			</line>
+			<staticText>
+				<reportElement x="410" y="23" width="39" height="16" uuid="340ef23d-f6b1-40bd-89b7-78917ea3e2aa"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Tabela:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="43" width="89" height="18" uuid="6d199305-4a19-4285-818a-383fa85431ca"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<text><![CDATA[Cond. Pagamento:]]></text>
+			</staticText>
+			<line>
+				<reportElement x="0" y="62" width="800" height="1" uuid="ef096ee8-a64b-41fd-882e-1d1280bda2d7"/>
+			</line>
+			<staticText>
+				<reportElement x="1" y="64" width="59" height="27" uuid="ba602948-80db-41ba-9203-58c7a4a794d4"/>
+				<text><![CDATA[Mensagem:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="450" y="23" width="348" height="16" uuid="1f74fb72-37ab-407c-91cb-9d30f9d15122"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{customerReportDTO.table}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="90" y="43" width="708" height="18" uuid="e1c82f85-74b0-4aaa-a9ac-de1eb0320cf0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{customerReportDTO.paymentTerms}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="62" y="64" width="736" height="27" isRemoveLineWhenBlank="true" uuid="e92d03db-24b8-443a-98e9-2fb9aee25338"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{customerReportDTO.message}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -325,7 +362,7 @@
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement x="0" y="6" width="800" height="20" forecolor="#116AF0" uuid="3675df20-e713-4e50-9efb-34b70fbad74c"/>
+				<reportElement x="0" y="6" width="798" height="20" forecolor="#116AF0" uuid="3675df20-e713-4e50-9efb-34b70fbad74c"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>

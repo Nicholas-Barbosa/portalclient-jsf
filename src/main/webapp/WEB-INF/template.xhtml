@@ -20,7 +20,6 @@
 	<h:outputScript name="js/layout.js" library="rain-layout" />
 	<h:outputScript name="js/prism.js" library="rain-layout" />
 	<h:outputScript name="sections.js" library="demo" />
-	<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
 	<ui:insert name="head" />
 </h:head>
 
@@ -54,7 +53,7 @@
 		</p:ajaxStatus>
 		<p:remoteCommand action="#{session.invalidate}"
 			name="invalidateSession" process="@this" update="@none" async="true" />
-		<p:idleMonitor timeout="600000"
+		<p:idleMonitor timeout="900000"
 			onidle="PF('idleDialog').show();invalidateSession()" />
 		<p:dialog header="#{holdMessageView.label('tempo_limite')}"
 			widgetVar="idleDialog" modal="true" closable="false">
@@ -75,7 +74,7 @@
 	<h:outputStylesheet
 		name="css/demo-#{userStylePreferences.darkMode}.css" library="demo" />
 
-	
+
 </h:body>
 
 </html>

@@ -82,14 +82,22 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		private String address;
 		private String state;
 		private String cgc;
+		private String table;
+		private String paymentTerms;
+		private String message;
+		
 
-		public CustomerJasperReportDTO(String name, String city, String address, String state, String cgc) {
+		public CustomerJasperReportDTO(String name, String city, String address, String state, String cgc, String table,
+				String paymentTerms, String message) {
 			super();
 			this.name = name;
 			this.city = city;
 			this.address = address;
 			this.state = state;
 			this.cgc = cgc;
+			this.table = table;
+			this.paymentTerms = paymentTerms;
+			this.message = message;
 		}
 
 		public CustomerJasperReportDTO(Customer customer) {
@@ -99,6 +107,8 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 			this.address = customer.getAddress();
 			this.state = customer.getState();
 			this.cgc = customer.getCnpj();
+			this.table = customer.getTable();
+			this.paymentTerms = customer.getPaymentTerms();
 		}
 
 		public String getName() {
@@ -120,6 +130,24 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		public String getCgc() {
 			return cgc;
 		}
+
+		public static long getSerialversionuid() {
+			return serialVersionUID;
+		}
+
+		public String getTable() {
+			return table;
+		}
+
+		public String getPaymentTerms() {
+			return paymentTerms;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+		
+		
 	}
 
 	public static class OrderItemJasper implements Comparable<OrderItemJasper> {
