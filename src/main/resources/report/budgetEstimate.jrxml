@@ -284,7 +284,7 @@
 							<textField pattern="#,##0.###;#,##0.###-">
 								<reportElement x="0" y="0" width="79" height="20" uuid="a5e42e06-7031-4195-89aa-4fe071ad49b1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{discGlobal}%]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{discGlobal}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -301,7 +301,7 @@
 							<textField pattern="#,##0.###;#,##0.###-">
 								<reportElement x="0" y="0" width="79" height="20" uuid="6339cc03-f329-4d8e-89ab-426c509aabd3"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle"/>
-								<textFieldExpression><![CDATA[$F{lineDisc}%]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{lineDisc}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -348,23 +348,23 @@
 			<line>
 				<reportElement x="0" y="22" width="799" height="1" uuid="1e7714cc-30f1-45fa-b7a4-f6bafdf696f6"/>
 			</line>
-			<textField pattern="#,##0.###;#,##0.###-">
+			<textField pattern="¤#,##0.000;¤-#,##0.000">
 				<reportElement x="71" y="0" width="729" height="20" uuid="c0037818-437a-4cca-b5db-37fb895177e3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format($F{grossValue})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{grossValue}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.###;#,##0.###-">
+			<textField pattern="¤#,##0.000;¤-#,##0.000">
 				<reportElement x="71" y="24" width="728" height="20" uuid="a3879098-56d2-48f7-bbd7-fdff56f41bf8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format($F{liquidValue})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{liquidValue}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="1" y="44" width="799" height="1" uuid="b7d4c482-6c56-4912-af1a-ee4a562856e7"/>
 			</line>
-			<textField>
+			<textField pattern="¤#,##0.000;¤-#,##0.000">
 				<reportElement x="72" y="48" width="728" height="18" uuid="8e1b04da-5c1c-4e38-bcd5-0fd71153e65a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[NumberFormat.getCurrencyInstance(new Locale("pt", "BR")).format($F{stTotal})]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{stTotal}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="1" y="48" width="70" height="18" uuid="8f92f1be-c593-43cc-ad62-a2ec33db2197"/>

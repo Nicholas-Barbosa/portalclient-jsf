@@ -45,35 +45,39 @@ public class OrderExcelCalculusConference {
 					i.getProduct().getCommercialCode()));
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("line"), i.getProduct().getDescriptionType()));
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("quantity"), values.getQuantity()));
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("unitValue"),
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("unitValue"),
 					values.getUnitValueWithoutDiscount()));
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("totalValue"),
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalValue"),
 					values.getTotalValueWithoutDiscount()));
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("totalStValue"),
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalStValue"),
 					values.getTotalStValueWithoutDiscount()));
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("totalGrossValueWithoutDiscount"),
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueWithoutDiscount"),
 					values.getTotalGrossWithoutDiscount()));
 
 			BigDecimal globalDiscValue = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
 					i.getBudgetGlobalDiscount(), values.getTotalGrossWithoutDiscount());
-			cells.add(
-					WriteCellAttributeBuilder.of(columnsPositions.get("globalDiscount"), i.getBudgetGlobalDiscount()));
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("globalDiscountValue"), globalDiscValue));
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("lineDiscount"), i.getLineDiscount()));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscount"),
+					i.getBudgetGlobalDiscount()));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscountValue"), globalDiscValue));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueAfterDiscount"),
+					values.getTotalGrossAfterGlobalDiscount()));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"), i.getLineDiscount()));
 
 			BigDecimal lineDiscValue = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(i.getLineDiscount(),
 					values.getTotalGrossAfterGlobalDiscount());
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("lineDiscountValue"), lineDiscValue));
-			cells.add(
-					WriteCellAttributeBuilder.of(columnsPositions.get("totalGrossValue"), values.getTotalGrossValue()));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscountValue"), lineDiscValue));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValue"),
+					values.getTotalGrossValue()));
 			rowObjects.add(new WriteRowObject(rowPos.getAndIncrement(), cells));
 		});
 		return xssfWriter.write(rowObjects);
 	}
 
 	private WriteRowObject createRowForColumns() {
-		return new WriteRowObject(0, WriteCellAttributeBuilder.of(false, "Cd.Comercial", "Linha", "qtd", "unit", "vlr",
-				"st", "Preço", "Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$", "Preço Final"));
+		return new WriteRowObject(0,
+				WriteCellAttributeBuilder.of(false, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor", "ST",
+						"Preço", "Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$",
+						"Preço Final"));
 
 	}
 
