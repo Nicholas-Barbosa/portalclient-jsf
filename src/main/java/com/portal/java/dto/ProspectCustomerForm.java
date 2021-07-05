@@ -6,18 +6,31 @@ import javax.validation.constraints.Size;
 public class ProspectCustomerForm {
 
 	@NotEmpty
+	private String name;
+	@NotEmpty
 	private String sellerType;
 	@NotEmpty
 	private String stateAcronym;
 	@NotEmpty
 	private String address;
 	@NotEmpty
+	private String city;
+	@NotEmpty
+	private String district;
+	@NotEmpty
 	private String paymentTerms;
-	
 	@Size(max = 250)
 	private String message;
 	@NotEmpty
 	private String cnpj;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getSellerType() {
 		return sellerType;
@@ -39,8 +52,24 @@ public class ProspectCustomerForm {
 		return address;
 	}
 
-	public void setAddress(String endereco) {
-		this.address = endereco;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getDistrict() {
+		return district;
+	}
+
+	public void setDistrict(String district) {
+		this.district = district;
 	}
 
 	public String getPaymentTerms() {
@@ -50,7 +79,6 @@ public class ProspectCustomerForm {
 	public void setPaymentTerms(String paymentTerms) {
 		this.paymentTerms = paymentTerms;
 	}
-
 
 	public String getMessage() {
 		return message;
@@ -67,4 +95,7 @@ public class ProspectCustomerForm {
 	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
+	
+	
+
 }

@@ -23,7 +23,7 @@
 		<f:viewParam name="previousPage"
 			value="#{loginController.previousPage}"></f:viewParam>
 	</f:metadata>
-	<f:view>
+	<f:view locale="pt_BR">
 
 
 		<div class="login-image">
@@ -52,13 +52,14 @@
 					action="#{loginController.authenticate}"
 					onstart="PF('dlgLoading').show();startLogin();" process="@form"
 					update="@form messages dlgLoading"
-					oncomplete="PF('dlgLoading').hide();finishedLoginProcess=true;"
+					oncomplete="PF('dlgLoading').hide();finishedLoginProcess=true;if(xhr.getResponseHeader('ok')=='true')PF('redirectingUser').show()"
 					ajax="true" />
 
 				<p:messages id="messages" showDetail="true" closable="true"
 					globalOnly="true" />
 			</h:form>
 		</div>
+
 		<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
 			widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"
 			modal="true" closable="false" draggable="false" id="dlgLoading">
@@ -72,6 +73,10 @@
 
 				</div>
 			</div>
+		</p:dialog>
+		<p:dialog widgetVar="redirectingUser" modal="true" closable="false">
+			<p:staticMessage severity="info" summary="Usuário encontrado"
+				detail="Redirecionando..." style="width: 100%" />
 		</p:dialog>
 		<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 			library="rain-layout" />

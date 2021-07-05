@@ -14,10 +14,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import javax.faces.view.ViewScoped;
-import javax.faces.webapp.FacesServlet;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 
@@ -54,7 +54,6 @@ import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.exception.ItemQuantityNotAllowed;
-import com.portal.java.pojo.Cep;
 import com.portal.java.resources.export.OrderExport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CepService;
@@ -152,6 +151,7 @@ public class BudgetController implements Serializable {
 	private int onRowItemQuantity;
 
 	@NotEmpty
+	@Size(max = 8, min = 8)
 	private String cepToSearch;
 
 	public BudgetController() {
@@ -182,12 +182,15 @@ public class BudgetController implements Serializable {
 			cepCervice.find(cepToSearch).ifPresentOrElse(cep -> {
 				this.prospectCustomerForm.setAddress(cep.getAddress());
 				this.prospectCustomerForm.setStateAcronym(cep.getState());
-				FacesUtils.info(null, "CEP encontrado!", cep.getCity());
+				this.prospectCustomerForm.setDistrict(cep.getDistrict());
+				this.prospectCustomerForm.setCity(cep.getCity());
+				FacesUtils.info(null, "CEP encontrado!", cep.getAddress() + ", " + cep.getDistrict() + " - "
+						+ cep.getCity() + " lat: " + cep.getLat() + " lng: " + cep.getLng());
 			}, () -> {
 				FacesUtils.error(null, "CEP não encontrado", "Digite o endereço manualmente");
 			});
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			FacesUtils.fatal(null, "Não foi possível consultar o cep", "Serviço fora do ar.");
+			FacesUtils.fatal(null, "Não foi possível consultar o cep no IBGE", "Serviço fora do ar.");
 		}
 	}
 
@@ -200,17 +203,23 @@ public class BudgetController implements Serializable {
 	}
 
 	public void setProspectCustomer() {
-		System.out.println("set prospect customer cnpj size " + prospectCustomerForm.getCnpj().length());
-		ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
-		prospectCustomer.setType(CustomerType.PROSPECT);
-		prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
-		prospectCustomer.setMessage(prospectCustomerForm.getMessage());
-		Customer originCustomer = new Customer(prospectCustomerForm.getAddress(), null, null,
-				prospectCustomerForm.getStateAcronym(), prospectCustomerForm.getCnpj(), null, "PROSPECT", null, null,
-				null, prospectCustomerForm.getPaymentTerms());
-		prospectCustomer.setCustomer(originCustomer);
-		budgetService.setCustomer(budgetDTO, prospectCustomer);
-		PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
+		if (prospectCustomerForm.getCity() != null && !prospectCustomerForm.getCity().isEmpty()) {
+			ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
+			prospectCustomer.setType(CustomerType.PROSPECT);
+			prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
+			prospectCustomer.setMessage(prospectCustomerForm.getMessage());
+			Customer originCustomer = new Customer(
+					prospectCustomerForm.getAddress() + ", " + prospectCustomerForm.getDistrict(), null, null,
+					prospectCustomerForm.getStateAcronym(), prospectCustomerForm.getCnpj(), null,
+					prospectCustomerForm.getName(), prospectCustomerForm.getName(), prospectCustomerForm.getCity(),
+					null, prospectCustomerForm.getPaymentTerms());
+			prospectCustomer.setCustomer(originCustomer);
+			budgetService.setCustomer(budgetDTO, prospectCustomer);
+			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
+			return;
+		}
+		FacesUtils.fatal(null, "Digite as informações relevantes ao endereço!", null);
+		PrimeFaces.current().ajax().update("growl");
 	}
 
 	public void applyGlobalDiscount() {
@@ -296,9 +305,13 @@ public class BudgetController implements Serializable {
 	}
 
 	public void exportOrder() {
+		if (budgetDTO == null || budgetDTO.getItems().size() == 0) {
+			FacesUtils.error(null, "Objeto de pedido não está pronto",
+					"Entre com as informações necessárias para criar um pedido/orçamento.");
+			return;
+		}
 		try {
 			byte[] btes = orderExporter.export(budgetDTO, downloadStreamsForm.getContentType());
-			System.out.println("btes " + btes.length);
 			FacesUtils.prepareResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());
 		} catch (Exception e) {

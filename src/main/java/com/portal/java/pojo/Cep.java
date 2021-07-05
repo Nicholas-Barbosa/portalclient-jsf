@@ -9,13 +9,14 @@ public class Cep {
 	private final String address;
 	private final String city;
 	private final String state;
+	private final String district;
 	private final String lat;
 	private final String lng;
 
 	@JsonbCreator
 	public Cep(@JsonbProperty("cep") String cep, @JsonbProperty("address") String address,
 			@JsonbProperty("city") String city, @JsonbProperty("state") String state, @JsonbProperty("lat") String lat,
-			@JsonbProperty("lng") String lng) {
+			@JsonbProperty("lng") String lng, @JsonbProperty("district") final String district) {
 		super();
 		this.cep = cep;
 		this.address = address;
@@ -23,6 +24,7 @@ public class Cep {
 		this.state = state;
 		this.lat = lat;
 		this.lng = lng;
+		this.district = district;
 	}
 
 	public String getCep() {
@@ -49,4 +51,7 @@ public class Cep {
 		return lng;
 	}
 
+	public String getDistrict() {
+		return district;
+	}
 }

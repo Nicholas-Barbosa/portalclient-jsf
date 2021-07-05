@@ -12,6 +12,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 
 import com.portal.java.cdi.qualifier.Simple;
+import com.portal.java.exception.IllegalResponseStatusException;
 
 @Simple
 public class SimpleRestClient implements RestClient {
@@ -24,7 +25,7 @@ public class SimpleRestClient implements RestClient {
 	@Override
 	public <T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, E requestBody, String mediaType)
-			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Client client = null;
 		try {
 			client = getClientFollowingMediaType(mediaType);
@@ -43,6 +44,10 @@ public class SimpleRestClient implements RestClient {
 			return resource.request().accept(mediaType).post(entityRequest, responseType);
 
 		} catch (ProcessingException p) {
+			if (p.getCause() instanceof IllegalResponseStatusException) {
+				System.out.println("illegal!");
+				return this.post(uri, responseType, queryParams, pathParams, requestBody, mediaType);
+			}
 			RestClient.super.checkProcessingException(p);
 			throw p;
 		} finally {
