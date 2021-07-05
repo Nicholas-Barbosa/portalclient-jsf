@@ -93,7 +93,7 @@
 		</band>
 	</title>
 	<columnHeader>
-		<band height="96" splitType="Stretch">
+		<band height="104" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="1" width="50" height="17" uuid="8efabbf0-6660-4373-9908-cbc8b3aac171"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
@@ -145,7 +145,7 @@
 				<reportElement x="0" y="62" width="800" height="1" uuid="ef096ee8-a64b-41fd-882e-1d1280bda2d7"/>
 			</line>
 			<staticText>
-				<reportElement x="1" y="64" width="59" height="27" uuid="ba602948-80db-41ba-9203-58c7a4a794d4"/>
+				<reportElement x="1" y="64" width="59" height="36" uuid="ba602948-80db-41ba-9203-58c7a4a794d4"/>
 				<text><![CDATA[Mensagem:]]></text>
 			</staticText>
 			<textField>
@@ -154,7 +154,7 @@
 				<textFieldExpression><![CDATA[$F{customerReportDTO.paymentTerms}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="62" y="64" width="736" height="27" isRemoveLineWhenBlank="true" uuid="e92d03db-24b8-443a-98e9-2fb9aee25338"/>
+				<reportElement x="62" y="64" width="736" height="36" isRemoveLineWhenBlank="true" uuid="e92d03db-24b8-443a-98e9-2fb9aee25338"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="8" isBold="true"/>
 				</textElement>

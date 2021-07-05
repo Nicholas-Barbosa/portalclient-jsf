@@ -14,8 +14,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import javax.faces.view.ViewScoped;
+import javax.faces.webapp.FacesServlet;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.NotEmpty;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 
@@ -52,8 +54,10 @@ import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.exception.ItemQuantityNotAllowed;
+import com.portal.java.pojo.Cep;
 import com.portal.java.resources.export.OrderExport;
 import com.portal.java.service.BudgetService;
+import com.portal.java.service.CepService;
 import com.portal.java.service.CustomerService;
 import com.portal.java.service.ItemService;
 import com.portal.java.service.ProductService;
@@ -89,6 +93,8 @@ public class BudgetController implements Serializable {
 	private final ProductService productService;
 
 	private final ItemService itemService;
+
+	private final CepService cepCervice;
 
 	private LazyDataModel<Product> lazyProducts;
 
@@ -145,15 +151,18 @@ public class BudgetController implements Serializable {
 
 	private int onRowItemQuantity;
 
+	@NotEmpty
+	private String cepToSearch;
+
 	public BudgetController() {
-		this(null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
 			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
-			ItemService itemService) {
+			ItemService itemService, CepService cep) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
@@ -165,6 +174,21 @@ public class BudgetController implements Serializable {
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
+		this.cepCervice = cep;
+	}
+
+	public void findCep() {
+		try {
+			cepCervice.find(cepToSearch).ifPresentOrElse(cep -> {
+				this.prospectCustomerForm.setAddress(cep.getAddress());
+				this.prospectCustomerForm.setStateAcronym(cep.getState());
+				FacesUtils.info(null, "CEP encontrado!", cep.getCity());
+			}, () -> {
+				FacesUtils.error(null, "CEP não encontrado", "Digite o endereço manualmente");
+			});
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+			FacesUtils.fatal(null, "Não foi possível consultar o cep", "Serviço fora do ar.");
+		}
 	}
 
 	public void saveMessageOrder() {
@@ -176,7 +200,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void setProspectCustomer() {
-		System.out.println("set prospect customer cnpj size "+prospectCustomerForm.getCnpj().length());
+		System.out.println("set prospect customer cnpj size " + prospectCustomerForm.getCnpj().length());
 		ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
 		prospectCustomer.setType(CustomerType.PROSPECT);
 		prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
@@ -576,6 +600,14 @@ public class BudgetController implements Serializable {
 
 	public void setOnRowItemQuantity(int onRowItemQuantity) {
 		this.onRowItemQuantity = onRowItemQuantity;
+	}
+
+	public String getCepToSearch() {
+		return cepToSearch;
+	}
+
+	public void setCepToSearch(String cepToSearch) {
+		this.cepToSearch = cepToSearch;
 	}
 
 }

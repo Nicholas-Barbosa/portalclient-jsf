@@ -101,7 +101,7 @@
 										value="#{budgetController.budgetDTO.customerOnOrder.customer.paymentTerms}"
 										readonly="true" id="pTerms" />
 								</div>
-				
+
 								<ui:fragment
 									rendered="#{budgetController.budgetDTO.customerOnOrder.type eq 'PROSPECT'}">
 
@@ -152,7 +152,7 @@
 											<p:splitButton type="button"
 												onclick="PF('serachProductDialog').show()" icon="pi pi-plus"
 												styleClass="ui-button-raised ui-button-success p-mr-2">
-											<!--  	<p:menuitem
+												<!--  	<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('descricao')}"
 													onclick="PF('searchProductDialog').show()" />-->
 											</p:splitButton>
@@ -855,6 +855,19 @@
 									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
 									style="border:0px none; background-color:transparent;">
+
+									<p:outputLabel
+										value="#{resourceBundleServiceImpl.getMessage('nome')}"
+										for="prospName" />
+									<p:inputText
+										value="#{budgetController.prospectCustomerForm.paymentTerms}"
+										id="prospName" />
+
+									<p:outputLabel for="prospCnpj" value="CNPJ" />
+									<p:inputMask id="prospCnpj"
+										value="#{budgetController.prospectCustomerForm.cnpj}"
+										mask="99.999.999/9999-99" validateMask="true" />
+
 									<p:outputLabel for="@next" value="Vendedor" />
 									<p:selectOneMenu id="option"
 										value="#{budgetController.prospectCustomerForm.sellerType}">
@@ -864,6 +877,26 @@
 
 									</p:selectOneMenu>
 
+									<p:outputLabel
+										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
+										for="prospTerms" />
+									<p:inputText
+										value="#{budgetController.prospectCustomerForm.paymentTerms}"
+										id="prospTerms" />
+
+									<p:row styleClass="my-heading-row">
+           				 				Endereço
+        							</p:row>
+
+									<p:outputLabel for="cep" value="CEP" />
+									<p:inputText id="cep" value="#{budgetController.cepToSearch}"
+										onblur="findCep()" />
+
+									<p:outputLabel for="prospEndereco"
+										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+									<p:inputText id="prospEndereco"
+										value="#{budgetController.prospectCustomerForm.address}" />
+
 									<p:outputLabel for="@next" value="Estado" />
 									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
 										value="#{budgetController.prospectCustomerForm.stateAcronym}">
@@ -872,22 +905,6 @@
 											itemValue="#{state.acronym}" />
 									</p:selectOneMenu>
 
-									<p:outputLabel for="prospCnpj" value="CNPJ" />
-									<p:inputMask id="prospCnpj"
-										value="#{budgetController.prospectCustomerForm.cnpj}"
-										mask="99.999.999/9999-99" validateMask="true" />
-
-									<p:outputLabel for="prospEndereco"
-										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
-									<p:inputText id="prospEndereco"
-										value="#{budgetController.prospectCustomerForm.address}" />
-
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
-										for="prospTerms" />
-									<p:inputText
-										value="#{budgetController.prospectCustomerForm.paymentTerms}"
-										id="prospTerms" />
 
 									<p:outputLabel for="mensagem" value="Mensagem" />
 									<p:inputTextarea id="mensagem" rows="4" cols="30"
@@ -904,6 +921,8 @@
 										<p:growl for="prospCnpj" id="growlForCnpj" />
 									</p:row>
 								</p:panelGrid>
+								<p:remoteCommand action="#{budgetController.findCep}"
+									name="findCep" process="@this,@form:cep" update="growl,@form:prospEndereco,@form:es"/>
 							</h:form>
 
 						</p:tab>
@@ -1011,6 +1030,17 @@
 	background-color: #ff9999 !important;
 	background-image: none !important;
 	color: #000000 !important;
+}
+
+/* reset on the showcase style*/
+body .ui-panelgrid .ui-panelgrid-cell {
+	background-color: transparent;
+}
+
+/* example use of styles for your form */
+.my-heading-row {
+	background-color: var(- -surface-c);
+	font-weight: bold;
 }
 </style>
 
