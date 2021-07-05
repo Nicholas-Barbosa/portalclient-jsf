@@ -26,7 +26,7 @@ class BudgetReportImplTest {
 	void test() {
 		OrderJasperReport budgetDTO = new OrderJasperReport(new BigDecimal(12.99), new BigDecimal(20.98),
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
-				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373", "tabela", "ddd",
+				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373", "ddd",
 						"message"),
 				Set.of(item));
 		OrderReport budgetReport = new OrderReportImpl(new ReportService());
@@ -44,7 +44,7 @@ class BudgetReportImplTest {
 	void testExcel() {
 		OrderJasperReport budgetDTO = new OrderJasperReport(new BigDecimal(12.99), new BigDecimal(20.98),
 				new BigDecimal(49.530000000000001136868377216160297393798828125), new CustomerJasperReportDTO(
-						"Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich", "tabela", "ddd", "message"),
+						"Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich", "ddd", "message"),
 				Set.of(item));
 		OrderReport budgetReport = new OrderReportImpl(new ReportService());
 		byte[] bytes = budgetReport.export(budgetDTO, ExportType.EXCEL);

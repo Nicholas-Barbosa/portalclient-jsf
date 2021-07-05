@@ -8,6 +8,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.portal.java.dto.Order;
 import com.portal.java.dto.Customer;
+import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemValues;
 import com.portal.java.resources.export.ExportEntity;
@@ -43,7 +44,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		this.liquidValue = budgetDTO.getLiquidValue();
 		this.grossValue = budgetDTO.getGrossValue();
 		this.stTotal = budgetDTO.getStValue();
-		this.customerReportDTO = new CustomerJasperReportDTO(budgetDTO.getCustomerOnOrder().getCustomer());
+		this.customerReportDTO = new CustomerJasperReportDTO(budgetDTO.getCustomerOnOrder());
 		this.items = budgetDTO.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
 				Set::add, Set::addAll);
 	}
@@ -82,12 +83,10 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		private String address;
 		private String state;
 		private String cgc;
-		private String table;
 		private String paymentTerms;
 		private String message;
-		
 
-		public CustomerJasperReportDTO(String name, String city, String address, String state, String cgc, String table,
+		public CustomerJasperReportDTO(String name, String city, String address, String state, String cgc,
 				String paymentTerms, String message) {
 			super();
 			this.name = name;
@@ -95,20 +94,20 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 			this.address = address;
 			this.state = state;
 			this.cgc = cgc;
-			this.table = table;
 			this.paymentTerms = paymentTerms;
 			this.message = message;
 		}
 
-		public CustomerJasperReportDTO(Customer customer) {
+		public CustomerJasperReportDTO(CustomerOnOrder customer) {
 			super();
-			this.name = customer.getName();
-			this.city = customer.getCity();
-			this.address = customer.getAddress();
-			this.state = customer.getState();
-			this.cgc = customer.getCnpj();
-			this.table = customer.getTable();
-			this.paymentTerms = customer.getPaymentTerms();
+			Customer originCustomer = customer.getCustomer();
+			this.name = originCustomer.getName();
+			this.city = originCustomer.getCity();
+			this.address = originCustomer.getAddress();
+			this.state = originCustomer.getState();
+			this.cgc = originCustomer.getCnpj();
+			this.paymentTerms = originCustomer.getPaymentTerms();
+			this.message = customer.getMessage();
 		}
 
 		public String getName() {
@@ -135,9 +134,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 			return serialVersionUID;
 		}
 
-		public String getTable() {
-			return table;
-		}
+		
 
 		public String getPaymentTerms() {
 			return paymentTerms;
@@ -146,8 +143,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		public String getMessage() {
 			return message;
 		}
-		
-		
+
 	}
 
 	public static class OrderItemJasper implements Comparable<OrderItemJasper> {

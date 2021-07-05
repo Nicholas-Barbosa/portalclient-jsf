@@ -80,15 +80,12 @@
 									</div>
 								</div>
 
-								<ui:fragment
-									rendered="#{budgetController.budgetDTO.customerOnOrder.type eq 'NORMAL'}">
-									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-										<p:outputLabel value="CNPJ" for="cnpj" />
-										<p:inputMask
-											value="#{budgetController.budgetDTO.customerOnOrder.customer.cnpj}"
-											readonly="true" id="cnpj" mask="99.999.999/9999-99" />
-									</div>
-								</ui:fragment>
+								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+									<p:outputLabel value="CNPJ" for="cnpj" />
+									<p:inputMask
+										value="#{budgetController.budgetDTO.customerOnOrder.customer.cnpj}"
+										readonly="true" id="cnpj" mask="99.999.999/9999-99" />
+								</div>
 								<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
 									<p:outputLabel for="endereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
@@ -104,16 +101,7 @@
 										value="#{budgetController.budgetDTO.customerOnOrder.customer.paymentTerms}"
 										readonly="true" id="pTerms" />
 								</div>
-								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('tabela')}"
-										for="pTable" />
-									<p:inputText
-										value="#{budgetController.budgetDTO.customerOnOrder.customer.table}"
-										readonly="true" id="pTable" />
-								</div>
-
-
+				
 								<ui:fragment
 									rendered="#{budgetController.budgetDTO.customerOnOrder.type eq 'PROSPECT'}">
 
@@ -124,16 +112,18 @@
 											readonly="true" id="sellerType" />
 									</div>
 
-
-									<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
-										<p:outputLabel for="mensagem" value="Mensagem" />
-										<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-											value="#{budgetController.budgetDTO.customerOnOrder.message}"
-											onchange="saveMessage();" />
-									</div>
-									<p:remoteCommand name="saveMessage" process="@form:mensagem" />
-
 								</ui:fragment>
+								<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+									<p:outputLabel for="mensagem" value="Mensagem" />
+									<p:inputTextarea id="mensagem" rows="4" maxlength="250"
+										value="#{budgetController.budgetDTO.customerOnOrder.message}"
+										onchange="saveMessage();" />
+								</div>
+								<p:remoteCommand name="saveMessage"
+									process="@this,@form:mensagem"
+									action="#{budgetController.saveMessageOrder}" update="growl" />
+
+
 							</div>
 						</h:form>
 					</div>
@@ -162,9 +152,9 @@
 											<p:splitButton type="button"
 												onclick="PF('serachProductDialog').show()" icon="pi pi-plus"
 												styleClass="ui-button-raised ui-button-success p-mr-2">
-												<p:menuitem
+											<!--  	<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('descricao')}"
-													onclick="PF('searchProductDialog').show()" />
+													onclick="PF('searchProductDialog').show()" />-->
 											</p:splitButton>
 											<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
@@ -882,6 +872,11 @@
 											itemValue="#{state.acronym}" />
 									</p:selectOneMenu>
 
+									<p:outputLabel for="prospCnpj" value="CNPJ" />
+									<p:inputMask id="prospCnpj"
+										value="#{budgetController.prospectCustomerForm.cnpj}"
+										mask="99.999.999/9999-99" validateMask="true" />
+
 									<p:outputLabel for="prospEndereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 									<p:inputText id="prospEndereco"
@@ -894,13 +889,6 @@
 										value="#{budgetController.prospectCustomerForm.paymentTerms}"
 										id="prospTerms" />
 
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('tabela')}"
-										for="prospectTable" />
-									<p:inputText
-										value="#{budgetController.prospectCustomerForm.table}"
-										id="prospectTable" />
-
 									<p:outputLabel for="mensagem" value="Mensagem" />
 									<p:inputTextarea id="mensagem" rows="4" cols="30"
 										maxlength="250"
@@ -910,9 +898,10 @@
 											<p:commandButton icon="pi pi-check"
 												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
 												action="#{budgetController.setProspectCustomer}"
-												process="@form" update=":customerForm"
-												oncomplete="PF('dlgSearchCustomer').hide();PF('blockItems').hide();" />
+												process="@form" update=":customerForm @form"
+												oncomplete="PF('blockItems').hide();" />
 										</p:column>
+										<p:growl for="prospCnpj" id="growlForCnpj" />
 									</p:row>
 								</p:panelGrid>
 							</h:form>

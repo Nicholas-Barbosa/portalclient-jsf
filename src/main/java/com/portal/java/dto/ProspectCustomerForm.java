@@ -3,20 +3,21 @@ package com.portal.java.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-
 public class ProspectCustomerForm {
 
 	@NotEmpty
 	private String sellerType;
 	@NotEmpty
 	private String stateAcronym;
+	@NotEmpty
 	private String address;
 	@NotEmpty
 	private String paymentTerms;
-	@NotEmpty
-	private String table;
+	
 	@Size(max = 250)
 	private String message;
+	@NotEmpty
+	private String cnpj;
 
 	public String getSellerType() {
 		return sellerType;
@@ -50,13 +51,6 @@ public class ProspectCustomerForm {
 		this.paymentTerms = paymentTerms;
 	}
 
-	public String getTable() {
-		return table;
-	}
-
-	public void setTable(String table) {
-		this.table = table;
-	}
 
 	public String getMessage() {
 		return message;
@@ -66,4 +60,11 @@ public class ProspectCustomerForm {
 		this.message = message;
 	}
 
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
 }

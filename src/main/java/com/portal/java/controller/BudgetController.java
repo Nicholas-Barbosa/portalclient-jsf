@@ -167,16 +167,26 @@ public class BudgetController implements Serializable {
 		this.itemService = itemService;
 	}
 
+	public void saveMessageOrder() {
+		if (budgetDTO != null && budgetDTO.getCustomerOnOrder().getCustomer() != null) {
+			FacesUtils.info(null, "Mensagem salva!", null);
+			return;
+		}
+		FacesUtils.warn(null, "Cliente não configurado", "Escolha um cliente antes de digitar uma mensagem");
+	}
+
 	public void setProspectCustomer() {
+		System.out.println("set prospect customer cnpj size "+prospectCustomerForm.getCnpj().length());
 		ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
 		prospectCustomer.setType(CustomerType.PROSPECT);
 		prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
 		prospectCustomer.setMessage(prospectCustomerForm.getMessage());
 		Customer originCustomer = new Customer(prospectCustomerForm.getAddress(), null, null,
-				prospectCustomerForm.getStateAcronym(), null, null, "PROSPECT", null, null,
-				prospectCustomerForm.getTable(), prospectCustomerForm.getPaymentTerms());
+				prospectCustomerForm.getStateAcronym(), prospectCustomerForm.getCnpj(), null, "PROSPECT", null, null,
+				null, prospectCustomerForm.getPaymentTerms());
 		prospectCustomer.setCustomer(originCustomer);
 		budgetService.setCustomer(budgetDTO, prospectCustomer);
+		PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
 	}
 
 	public void applyGlobalDiscount() {
@@ -313,30 +323,6 @@ public class BudgetController implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public void findCustomerByCode() {
-//		try {
-//			Optional<Customer> maybeCustomer = customerService.findByCodeAndStore(searchCustomerDTO);
-//			maybeCustomer.ifPresentOrElse(c -> {
-//				if (c.getBlocked().equals("Sim")) {
-//					FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
-//					selectedCustomer = null;
-//				} else {
-//					selectedCustomer = c;
-//				}
-//			}, () -> {
-//				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
-//				selectedCustomer = null;
-//			});
-//		} catch (ClientErrorException e) {
-//			FacesUtils.error(null, resourceBundleService.getMessage("resposta_servidor"),
-//					e.getResponse().getEntity().toString());
-//			selectedCustomer = null;
-//		} catch (SocketTimeoutException | SocketException | TimeoutException p) {
-//			processingExceptionMessageHelper.displayMessage(p, null);
-//			selectedCustomer = null;
-//		}
 	}
 
 	public void findProductByCode() {

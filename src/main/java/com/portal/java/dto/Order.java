@@ -19,6 +19,7 @@ public class Order {
 		this.liquidValue = BigDecimal.ZERO;
 		this.stValue = BigDecimal.ZERO;
 		this.globalDiscount = BigDecimal.ZERO;
+		this.customerOnOrder = new CustomerOnOrder();
 	}
 
 	public CustomerOnOrder getCustomerOnOrder() {

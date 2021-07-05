@@ -1,17 +1,38 @@
 package com.portal.java.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 public class CustomerOnOrder {
 
+	@NotEmpty
 	private Customer customer;
+	@NotEmpty
 	private CustomerType type;
+	@Size(max = 250)
+	private String message;
 
 	public CustomerOnOrder() {
 		// TODO Auto-generated constructor stub
 	}
-	public CustomerOnOrder(Customer customer, CustomerType type) {
+
+	
+
+	
+	public CustomerOnOrder(@NotEmpty Customer customer, @NotEmpty CustomerType type) {
 		super();
 		this.customer = customer;
 		this.type = type;
+	}
+
+
+
+
+	public CustomerOnOrder(@NotEmpty Customer customer, @NotEmpty CustomerType type, @Size(max = 250) String message) {
+		super();
+		this.customer = customer;
+		this.type = type;
+		this.message = message;
 	}
 
 	public Customer getCustomer() {
@@ -32,5 +53,13 @@ public class CustomerOnOrder {
 
 	public static enum CustomerType {
 		NORMAL, PROSPECT
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }
