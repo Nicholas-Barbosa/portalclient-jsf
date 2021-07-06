@@ -297,7 +297,7 @@
 
 						</h:form>
 						<p:blockUI block="formItems" widgetVar="blockItems"
-							blocked="#{budgetController.budgetDTO.customerOnOrder == null}">
+							blocked="#{budgetController.budgetDTO.customerOnOrder.customer == null}">
 							<i class="pi pi-lock" style="font-size: 3rem" />
 						</p:blockUI>
 					</div>

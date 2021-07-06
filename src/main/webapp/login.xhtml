@@ -74,9 +74,11 @@
 				</div>
 			</div>
 		</p:dialog>
-		<p:dialog widgetVar="redirectingUser" modal="true" closable="false">
-			<p:staticMessage severity="info" summary="Usuário encontrado"
-				detail="Redirecionando..." style="width: 100%" />
+		<p:dialog widgetVar="redirectingUser" modal="true" closable="false" header="#{resourceBundleServiceImpl.getMessage('aguarde')}">
+			<p:staticMessage severity="info"
+				summary="#{resourceBundleServiceImpl.getMessage('usuario_encontrado')}"
+				detail="#{resourceBundleServiceImpl.getMessage('redirecionando')}"
+				style="width: 100%" />
 		</p:dialog>
 		<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 			library="rain-layout" />

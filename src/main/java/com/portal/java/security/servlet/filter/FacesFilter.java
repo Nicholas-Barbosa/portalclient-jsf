@@ -37,8 +37,7 @@ public class FacesFilter implements Filter {
 
 		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
-			String loginUrl = String.format("%s/%s?previousPage=%s", httpRequest.getContextPath(), "login.xhtml",
-					getPreviousPage(httpRequest));
+			String loginUrl = String.format("%s/%s", httpRequest.getContextPath(), "login.xhtml");
 			if (isAjaxRequest(httpRequest)) {
 
 				httpResponse.setContentType("text/html;charset=UTF-8");
