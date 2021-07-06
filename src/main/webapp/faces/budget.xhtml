@@ -305,7 +305,6 @@
 
 				<div class="p-col-12" id="totals">
 					<div class="card">
-						<p:messages globalOnly="true" id="msgQuoteSuccess" />
 						<h:form id="budgetTotals">
 							<div class="ui-fluid p-formgrid p-grid">
 								<div class="p-field p-col-12 p-md-3">
@@ -915,16 +914,13 @@
 											itemValue="#{state.acronym}" itemDisabled="true" />
 									</p:selectOneMenu>
 
-									<p:outputLabel for="mensagem" value="Mensagem" />
-									<p:inputTextarea id="mensagem" rows="4" cols="30"
-										maxlength="250"
-										value="#{budgetController.prospectCustomerForm.message}" />
+								
 									<p:row>
 										<p:column styleClass="ui-grid-col-12">
 											<p:commandButton icon="pi pi-check"
 												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
 												action="#{budgetController.setProspectCustomer}"
-												process="@this,prospName,prospCnpj,prospVendor,prospTerms,prospEndereco,mensagem"
+												process="@this,prospName,prospCnpj,prospVendor,prospTerms,prospEndereco"
 												update=":customerForm @form"
 												oncomplete="PF('blockItems').hide();" />
 										</p:column>

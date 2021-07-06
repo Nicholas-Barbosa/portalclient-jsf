@@ -207,7 +207,6 @@ public class BudgetController implements Serializable {
 			ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
 			prospectCustomer.setType(CustomerType.PROSPECT);
 			prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
-			prospectCustomer.setMessage(prospectCustomerForm.getMessage());
 			Customer originCustomer = new Customer(
 					prospectCustomerForm.getAddress() + ", " + prospectCustomerForm.getDistrict(), null, null,
 					prospectCustomerForm.getStateAcronym(), prospectCustomerForm.getCnpj(), null,
@@ -442,25 +441,23 @@ public class BudgetController implements Serializable {
 	}
 
 	private final void bulkInstantiationObjectsInBackGround() {
-		new Thread(() -> {
-			this.lazyProducts = new ProductLazyDataModel();
-			this.lazyCustomers = new CustomerLazyDataModel();
-			this.selectedProducts = new HashSet<>();
-			itemsOnCartToPost = new HashSet<>();
-			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-			this.downloadStreamsForm = new DownloadStreamsForm();
-			this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-			this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
-			findProductByCodeForm = new FindProductByCodeForm();
-			this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
-					(short) 1, (short) 2, (short) 0);
-			this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
-			this.budgetDTO = new Order();
-			this.itemLines = new HashSet<>();
-			this.itemLineDiscount = new ItemLineDiscountForm();
-			this.prospectCustomerForm = new ProspectCustomerForm();
-			this.discView = new DiscountView();
-		}).start();
+		this.lazyProducts = new ProductLazyDataModel();
+		this.lazyCustomers = new CustomerLazyDataModel();
+		this.selectedProducts = new HashSet<>();
+		itemsOnCartToPost = new HashSet<>();
+		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
+		this.downloadStreamsForm = new DownloadStreamsForm();
+		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
+		this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
+		findProductByCodeForm = new FindProductByCodeForm();
+		this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
+				(short) 1, (short) 2, (short) 0);
+		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
+		this.budgetDTO = new Order();
+		this.itemLines = new HashSet<>();
+		this.itemLineDiscount = new ItemLineDiscountForm();
+		this.prospectCustomerForm = new ProspectCustomerForm();
+		this.discView = new DiscountView();
 	}
 
 	public LazyDataModel<Product> getLazyProducts() {
