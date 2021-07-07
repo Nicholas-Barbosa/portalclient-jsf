@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -178,6 +179,18 @@ public class BudgetController implements Serializable {
 		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
 		this.cepCervice = cep;
+	}
+
+	public void showCustomerDetail(Customer customer) {
+		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("customer_to_detail", customer);
+		Map<String, Object> options = new HashMap<>();
+		options.put("modal", true);
+		options.put("draggable", true);
+		options.put("position", "center");
+		options.put("contentWidth", "60vw");
+		options.put("contentHeight", "50vh");
+		options.put("responsive", "true");
+		PrimeFaces.current().dialog().openDynamic("customerDetail", options, null);
 	}
 
 	public void findCep() {

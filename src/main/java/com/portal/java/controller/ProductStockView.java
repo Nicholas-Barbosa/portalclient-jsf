@@ -21,7 +21,6 @@ public class ProductStockView {
 	}
 
 	public void setMsgAvaliableStock(Product product) {
-		System.out.println("product stock " +product.getAvaliableStock());
 		this.msgAvaliableStock = resourceBundleServiceImpl.getMessage("quantiade_em_estoque",
 				product.getAvaliableStock(), product.getCommercialCode());
 	}

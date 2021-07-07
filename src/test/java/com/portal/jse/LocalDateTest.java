@@ -9,11 +9,11 @@ class LocalDateTest {
 
 	@Test
 	void test() {
-		String dateToParse = "2021-06-04T19:29:21-03:00";
+		String dateToParse = "2020-07-27T14:48:34";
 		int lasIndexOf = dateToParse.lastIndexOf("-");
-		
+
 		System.out.println(LocalDateTime.now());
-		System.out.println(DateTimeFormatter.ofPattern("yyyy-dd-MM'T'HH:mm:ss"). parse(dateToParse.substring(0,lasIndexOf)));
+		System.out.println(LocalDateTime.parse(dateToParse, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")));
 	}
 
 }

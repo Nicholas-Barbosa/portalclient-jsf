@@ -968,6 +968,7 @@
 							listener="#{budgetController.onPageCustomers}" async="true"
 							onstart="detectLongProcess()"
 							oncomplete="onCompletePageProducts()" process="@this" />
+
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
 							<h:outputText value="#{customer.code}" />
@@ -985,11 +986,16 @@
 						</p:column>
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
-							<p:commandLink value="#{customer.street}" />
+							<h:outputText value="#{customer.street}" />
 						</p:column>
 						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}">
+							headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}"
+							style="width:6rem">
 							<h:outputText value="#{customer.blocked}" />
+						</p:column>
+						<p:column style="width:2rem">
+							<p:commandButton icon="pi pi-eye"
+								rendered="#{customer.blocked != 'Sim'}" action="#{budgetController.showCustomerDetail(customer)}"/>
 						</p:column>
 					</p:dataTable>
 					<p:blockUI block="dtSelectCustomers" widgetVar="blockDt">

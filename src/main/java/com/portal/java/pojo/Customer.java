@@ -47,9 +47,11 @@ public final class Customer implements Serializable {
 
 	private static LocalDateTime formatLastPurschase(String text) {
 		try {
+			System.out.println("last purchase " + text);
 			return LocalDateTime.parse(text.substring(0, text.lastIndexOf("-")),
-					DateTimeFormatter.ofPattern("yyyy-MM-dd'T'hh:mm:ss"));
+					DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 		} catch (Exception e) {
+			e.printStackTrace();
 			return LocalDateTime.of(2004, 6, 14, 20, 10, 10);
 		}
 	}
@@ -108,6 +110,14 @@ public final class Customer implements Serializable {
 		return this.address.getStreet();
 	}
 
+	public String getDistrict() {
+		return address.getDistrict();
+	}
+
+	public String getZipCode() {
+		return address.getZipCode();
+	}
+
 	public String getCity() {
 		return address.getCity();
 	}
@@ -126,5 +136,33 @@ public final class Customer implements Serializable {
 
 	public String getPaymentTerms() {
 		return financialInfo.getPaymentTerms();
+	}
+
+	public Character getRisk() {
+		return financialInfo.getRisk();
+	}
+
+	public String getTable() {
+		return financialInfo.getTable();
+	}
+
+	public float getDiscount() {
+		return financialInfo.getDiscount();
+	}
+
+	public float getDiscount2() {
+		return financialInfo.getDiscount2();
+	}
+
+	public float getDiscount3() {
+		return financialInfo.getDiscount3();
+	}
+
+	public String getEmail() {
+		return contact.getEmail();
+	}
+
+	public String getEmail2() {
+		return contact.getEmail2();
 	}
 }
