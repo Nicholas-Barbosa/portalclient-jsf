@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.portal.java.dto.Order;
-import com.portal.java.dto.Customer;
+import com.portal.java.pojo.Customer;
 import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemValues;
@@ -103,7 +103,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 			Customer originCustomer = customer.getCustomer();
 			this.name = originCustomer.getName();
 			this.city = originCustomer.getCity();
-			this.address = originCustomer.getAddress();
+			this.address = originCustomer.getStreet();
 			this.state = originCustomer.getState();
 			this.cgc = originCustomer.getCnpj();
 			this.paymentTerms = originCustomer.getPaymentTerms();

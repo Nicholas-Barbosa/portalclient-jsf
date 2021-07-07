@@ -89,7 +89,7 @@
 									<p:outputLabel for="endereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 									<p:inputText id="endereco"
-										value="#{budgetController.budgetDTO.customerOnOrder.customer.address}, #{budgetController.budgetDTO.customerOnOrder.customer.city} - #{budgetController.budgetDTO.customerOnOrder.customer.state}"
+										value="#{budgetController.budgetDTO.customerOnOrder.customer.street}, #{budgetController.budgetDTO.customerOnOrder.customer.city} - #{budgetController.budgetDTO.customerOnOrder.customer.state}"
 										readonly="true" />
 								</div>
 								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
@@ -899,22 +899,25 @@
 									<p:outputLabel for="prospBairro"
 										value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
 									<p:inputText id="prospBairro"
-										value="#{budgetController.prospectCustomerForm.district}" readonly="true"/>
+										value="#{budgetController.prospectCustomerForm.district}"
+										readonly="true" />
 
 									<p:outputLabel for="prospCidade"
 										value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
 									<p:inputText id="prospCidade"
-										value="#{budgetController.prospectCustomerForm.city}" readonly="true"/>
+										value="#{budgetController.prospectCustomerForm.city}"
+										readonly="true" />
 
 									<p:outputLabel for="@next" value="Estado" />
 									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
-										value="#{budgetController.prospectCustomerForm.stateAcronym}" editable="false">
+										value="#{budgetController.prospectCustomerForm.stateAcronym}"
+										editable="false">
 										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
 											var="state" itemLabel="#{state.name}"
 											itemValue="#{state.acronym}" itemDisabled="true" />
 									</p:selectOneMenu>
 
-								
+
 									<p:row>
 										<p:column styleClass="ui-grid-col-12">
 											<p:commandButton icon="pi pi-check"
@@ -982,8 +985,7 @@
 						</p:column>
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
-							<h:outputText
-								value="#{customer.address},#{customer.city}-#{customer.state}" />
+							<p:commandLink value="#{customer.street}" />
 						</p:column>
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}">

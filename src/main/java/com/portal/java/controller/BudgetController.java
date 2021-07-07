@@ -31,7 +31,6 @@ import org.primefaces.model.LazyDataModel;
 import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
-import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.CustomerOnOrder.CustomerType;
 import com.portal.java.dto.CustomerPageDTO;
@@ -54,6 +53,10 @@ import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.exception.ItemQuantityNotAllowed;
+import com.portal.java.pojo.Customer;
+import com.portal.java.pojo.CustomerAddress;
+import com.portal.java.pojo.CustomerContact;
+import com.portal.java.pojo.CustomerPurchaseInfo;
 import com.portal.java.resources.export.OrderExport;
 import com.portal.java.service.BudgetService;
 import com.portal.java.service.CepService;
@@ -207,11 +210,16 @@ public class BudgetController implements Serializable {
 			ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
 			prospectCustomer.setType(CustomerType.PROSPECT);
 			prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
-			Customer originCustomer = new Customer(
-					prospectCustomerForm.getAddress() + ", " + prospectCustomerForm.getDistrict(), null, null,
-					prospectCustomerForm.getStateAcronym(), prospectCustomerForm.getCnpj(), null,
-					prospectCustomerForm.getName(), prospectCustomerForm.getName(), prospectCustomerForm.getCity(),
-					null, prospectCustomerForm.getPaymentTerms());
+
+			CustomerAddress customerAddress = new CustomerAddress(prospectCustomerForm.getAddress(),
+					prospectCustomerForm.getDistrict(), prospectCustomerForm.getCity(), cepToSearch,
+					prospectCustomerForm.getStateAcronym());
+			CustomerPurchaseInfo purshaseInfo = new CustomerPurchaseInfo(0f, 0f, 0f, null, null,
+					prospectCustomerForm.getPaymentTerms(), null, null);
+			CustomerContact contact = new CustomerContact(null, null);
+			Customer originCustomer = new Customer(null, null, prospectCustomerForm.getCnpj(), null,
+					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo,
+					contact);
 			prospectCustomer.setCustomer(originCustomer);
 			budgetService.setCustomer(budgetDTO, prospectCustomer);
 			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
@@ -376,7 +384,7 @@ public class BudgetController implements Serializable {
 						customer.getCustomer().getState(), customer.getSellerType().getType());
 				break;
 			}
-			this.checkPossibleProduct(product);
+			this.getOptionalProduct(product);
 			findProductByCodeForm = new FindProductByCodeForm();
 		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
@@ -388,7 +396,7 @@ public class BudgetController implements Serializable {
 
 	}
 
-	private void checkPossibleProduct(Optional<Product> product) {
+	private void getOptionalProduct(Optional<Product> product) {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
 			ProductPrice productPrice = presentProduct.getPrice();

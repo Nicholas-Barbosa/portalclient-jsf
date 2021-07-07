@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.java.pojo.Customer;
+
 public class BudgetEstimatedDTO implements Serializable {
 
 	/**

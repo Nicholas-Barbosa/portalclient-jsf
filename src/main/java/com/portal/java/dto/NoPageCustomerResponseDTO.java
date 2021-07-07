@@ -5,6 +5,8 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.java.pojo.Customer;
+
 public class NoPageCustomerResponseDTO {
 
 	private List<Customer> clients;

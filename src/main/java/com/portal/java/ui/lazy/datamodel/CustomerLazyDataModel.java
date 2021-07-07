@@ -9,7 +9,7 @@ import org.primefaces.model.FilterMeta;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
-import com.portal.java.dto.Customer;
+import com.portal.java.pojo.Customer;
 
 public class CustomerLazyDataModel extends LazyDataModel<Customer> implements LazyOperations<Customer> {
 
