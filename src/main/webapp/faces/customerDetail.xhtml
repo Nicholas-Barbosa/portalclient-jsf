@@ -17,177 +17,164 @@
 			type="image/x-icon"></link>
 	</f:facet>
 	<title>#{resourceBundleServiceImpl.getMessage('cliente_detalhes')}</title>
-	<h:outputScript name="js/layout.js" library="rain-layout" />
-	<h:outputScript name="js/prism.js" library="rain-layout" />
-	<h:outputScript name="sections.js" library="demo" />
-
 </h:head>
 
 <h:body styleClass="#{userStylePreferences.inputStyleClass}">
-	<div
-		class="layout-wrapper layout-topbar-#{userStylePreferences.topbarTheme} layout-menu-#{userStylePreferences.menuTheme} #{userStylePreferences.menuMode}">
-		<div class="layout-main">
-			<div class="layout-content">
-				<div class="card">
-					<p:tabView dynamic="true" cache="true">
+	
+		<p:growl globalOnly="true" id="growl" showDetail="true"/>
+		<div class="card">
+			<p:tabView dynamic="true" cache="true" >
+				<p:tab title="#{resourceBundleServiceImpl.getMessage('cliente')}"
+					effect="fade" effectDuration="fast">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;">
 
-						<p:tab title="#{resourceBundleServiceImpl.getMessage('cliente')}"
-							effect="fade" effectDuration="fast">
-							<p:panelGrid columns="4"
-								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-								layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-								style="border:0px none; background-color:transparent;">
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('nome')}" />
+						<p:inputText value="#{customerDetailController.customer.name}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('nome')}" />
-								<p:inputText value="#{customerDetailController.customer.name}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}" />
+						<p:inputText
+							value="#{customerDetailController.customer.fantasyName}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}" />
-								<p:inputText
-									value="#{customerDetailController.customer.fantasyName}"
-									readonly="true" />
+						<p:outputLabel for="@next" value="CNPJ" />
+						<p:inputText value="#{customerDetailController.customer.cnpj}"
+							readonly="true" />
 
-								<p:outputLabel for="@next" value="CNPJ" />
-								<p:inputText value="#{customerDetailController.customer.cnpj}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('codigo')}" />
+						<p:inputText value="#{customerDetailController.customer.code}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('codigo')}" />
-								<p:inputText value="#{customerDetailController.customer.code}"
-									readonly="true" />
+						<p:outputLabel for="@next" value="Email" />
+						<p:inputText value="#{customerDetailController.customer.email}"
+							readonly="true" />
 
-								<p:outputLabel for="@next" value="Email" />
-								<p:inputText value="#{customerDetailController.customer.email}"
-									readonly="true" />
+						<p:outputLabel for="@next" value="Email2" />
+						<p:inputText value="#{customerDetailController.customer.email2}"
+							readonly="true" />
 
-								<p:outputLabel for="@next" value="Email2" />
-								<p:inputText value="#{customerDetailController.customer.email2}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('bloqueado')}" />
+						<p:inputText value="#{customerDetailController.customer.blocked}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('bloqueado')}" />
-								<p:inputText
-									value="#{customerDetailController.customer.blocked}"
-									readonly="true" />
+					</p:panelGrid>
+				</p:tab>
+				<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
 
-							</p:panelGrid>
-						</p:tab>
-						<p:tab
-							title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;">
 
-							<p:panelGrid columns="4"
-								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-								layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-								style="border:0px none; background-color:transparent;">
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('limite')}" />
+						<p:inputText value="#{customerDetailController.customer.limit}"
+							readonly="true">
+							<f:convertNumber currencySymbol="R$" locale="pt_BR"
+								type="currency" />
+						</p:inputText>
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('limite')}" />
-								<p:inputText value="#{customerDetailController.customer.limit}"
-									readonly="true">
-									<f:convertNumber currencySymbol="R$" locale="pt_BR"
-										type="currency" />
-								</p:inputText>
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('risco')}" />
+						<p:inputText value="#{customerDetailController.customer.risk}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('risco')}" />
-								<p:inputText value="#{customerDetailController.customer.risk}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('ultima_compra')}" />
+						<p:inputText
+							value="#{customerDetailController.customer.lastPurchase}"
+							readonly="true">
+							<f:convertDateTime locale="pt_BR" type="localDateTime" />
+						</p:inputText>
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}" />
+						<p:inputText
+							value="#{customerDetailController.customer.paymentTerms}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('ultima_compra')}" />
-								<p:inputText
-									value="#{customerDetailController.customer.lastPurchase}"
-									readonly="true">
-									<f:convertDateTime locale="pt_BR" type="localDateTime" />
-								</p:inputText>
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}" />
-								<p:inputText
-									value="#{customerDetailController.customer.paymentTerms}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('tabela')}" />
+						<p:inputText value="#{customerDetailController.customer.table}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('tabela')}" />
-								<p:inputText value="#{customerDetailController.customer.table}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
+						<p:inputText value="#{customerDetailController.customer.discount}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
-								<p:inputText
-									value="#{customerDetailController.customer.discount}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('desconto')}2" />
+						<p:inputText
+							value="#{customerDetailController.customer.discount2}"
+							readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('desconto')}2" />
-								<p:inputText
-									value="#{customerDetailController.customer.discount2}"
-									readonly="true" />
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('desconto')}3" />
+						<p:inputText
+							value="#{customerDetailController.customer.discount3}"
+							readonly="true" />
+					</p:panelGrid>
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('desconto')}3" />
-								<p:inputText
-									value="#{customerDetailController.customer.discount3}"
-									readonly="true" />
-							</p:panelGrid>
+				</p:tab>
+				<p:tab
+					title="#{resourceBundleServiceImpl.getMessage('geolocalizacao')}">
+					<h:form>
+						<p:panelGrid columns="4"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+							style="border:0px none; background-color:transparent;">
 
-						</p:tab>
-						<p:tab
-							title="#{resourceBundleServiceImpl.getMessage('geolocalizacao')}">
-							<p:panelGrid columns="4"
-								columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-								layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-								style="border:0px none; background-color:transparent;">
+							<p:outputLabel for="@next" value="CEP" />
+							<p:inputText value="#{customerDetailController.customer.zipCode}"
+								readonly="true" />
 
-								<p:outputLabel for="@next" value="CEP" />
-								<p:inputText
-									value="#{customerDetailController.customer.zipCode}"
-									readonly="true" />
+							<p:outputLabel for="@next"
+								value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+							<p:inputText value="#{customerDetailController.customer.street}"
+								readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
-								<p:inputText value="#{customerDetailController.customer.street}"
-									readonly="true" />
+							<p:outputLabel for="@next"
+								value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
+							<p:inputText
+								value="#{customerDetailController.customer.district}"
+								readonly="true" />
 
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
-								<p:inputText
-									value="#{customerDetailController.customer.district}"
-									readonly="true" />
-
-								<p:outputLabel for="@next"
-									value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
-								<p:inputText
-									value="#{customerDetailController.customer.city}, #{customerDetailController.customer.state}"
-									readonly="true" />
-								<p:row>
+							<p:outputLabel for="@next"
+								value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
+							<p:inputText
+								value="#{customerDetailController.customer.city}, #{customerDetailController.customer.state}"
+								readonly="true" />
+							<p:row>
 								Maps
 								</p:row>
-								<p:gmap center="#{customerDetailController.currentLatLng}"
-									zoom="15" type="hybrid" style="width:85vw;height:80vh"
-									model="#{customerDetailController.gMap}" id="map" />
-							</p:panelGrid>
-							<p:remoteCommand name="loadMap"
-								action="#{customerDetailController.loadGMap}" process="@this"
-								update="map" />
-						</p:tab>
-					</p:tabView>
+							<p:gmap center="#{customerDetailController.currentLatLng}" zoom="20" type="roadmap"
+								style="width:93.5vw;height:80vh"
+								model="#{customerDetailController.gMap}" id="map" />
+						</p:panelGrid>
+						<p:remoteCommand name="loadMap"
+							action="#{customerDetailController.loadGMap}" process="@this"
+							update="map" autoRun="true"  />
+					</h:form>
+				</p:tab>
+			</p:tabView>
 
-				</div>
-			</div>
 		</div>
-	</div>
-	<h:outputStylesheet name="css/primeicons.css" library="rain-layout" />
-	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+	
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
-	<h:outputStylesheet
-		name="css/demo-#{userStylePreferences.darkMode}.css" library="demo" />
 	
+
 	<script type="text/javascript"
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3OLz2OAPNufe4j9t5vF6AS879LDUzAvw&amp;callback=initMap&amp;libraries=&amp;v=weekly"
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3OLz2OAPNufe4j9t5vF6AS879LDUzAvw"
 		async="async" defer="defer"></script>
+
 
 </h:body>
 

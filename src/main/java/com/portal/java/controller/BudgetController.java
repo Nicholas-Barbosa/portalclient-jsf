@@ -188,7 +188,7 @@ public class BudgetController implements Serializable {
 		options.put("draggable", true);
 		options.put("position", "center");
 		options.put("contentWidth", "60vw");
-		options.put("contentHeight", "50vh");
+		options.put("contentHeight", "35vh");
 		options.put("responsive", "true");
 		PrimeFaces.current().dialog().openDynamic("customerDetail", options, null);
 	}

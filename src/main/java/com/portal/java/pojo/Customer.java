@@ -47,11 +47,9 @@ public final class Customer implements Serializable {
 
 	private static LocalDateTime formatLastPurschase(String text) {
 		try {
-			System.out.println("last purchase " + text);
 			return LocalDateTime.parse(text.substring(0, text.lastIndexOf("-")),
 					DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
 		} catch (Exception e) {
-			e.printStackTrace();
 			return LocalDateTime.of(2004, 6, 14, 20, 10, 10);
 		}
 	}

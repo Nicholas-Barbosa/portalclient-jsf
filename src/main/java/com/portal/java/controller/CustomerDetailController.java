@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
@@ -17,11 +18,13 @@ import org.primefaces.model.map.Marker;
 
 import com.portal.java.pojo.Customer;
 import com.portal.java.service.CepService;
+import com.portal.java.util.jsf.FacesUtils;
 
 @RequestScoped
 @Named
 public class CustomerDetailController {
 
+	
 	@Inject
 	private HttpSession session;
 
@@ -37,7 +40,7 @@ public class CustomerDetailController {
 	@PostConstruct
 	public void init() {
 		customer = (Customer) session.getAttribute("customer_to_detail");
-
+		currentLatLng = "-25.504460, -49.331579";
 	}
 
 	public void loadGMap() {
@@ -45,10 +48,13 @@ public class CustomerDetailController {
 			gMap = new DefaultMapModel();
 			try {
 				cepService.find(customer.getZipCode()).ifPresentOrElse(c -> {
-					Marker marker = new Marker(new LatLng(c.getLat(), c.getLng()));
+					Marker marker = new Marker(new LatLng(c.getLat(), c.getLng()), customer.getName());
 					gMap.addOverlay(marker);
 					currentLatLng = c.getLat() + ", " + c.getLng();
-				}, null);
+				}, () -> {
+					FacesUtils.error(null, "CEP não encontrado", customer.getZipCode() +" não encontrado. O mapa será centralizado usando as configurações padrões.");
+					PrimeFaces.current().ajax().update("growl");
+				});
 			} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
