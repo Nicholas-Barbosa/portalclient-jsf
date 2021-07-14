@@ -44,14 +44,17 @@
 								onclick="PF('dlgForImport').show()" />
 							<i class="pi pi-bars p-px-2" />
 							<p:commandButton type="button" title="Print" icon="pi pi-print"
-								styleClass="ui-button-warning p-mr-2"
+								styleClass="ui-button-success p-mr-2"
 								onclick="PF('downloadDialog').show()" />
-							<p:commandButton icon="pi pi-share-alt"
-								styleClass="ui-button-help  p-mr-2" />
-							<p:commandButton
-								title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
-								icon="pi pi-wallet" styleClass="ui-button-warning "
-								action="#{budgetController.showOpenedTitlesPageOnDialog}" />
+
+							<p:menuButton id="btnViewCDetails"
+								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
+								disabled="#{budgetController.budgetDTO.customerOnOrder.customer eq null}">
+								<p:menuitem
+									value="#{resourceBundleServiceImpl.getMessage('detalhes')}"
+									icon="pi pi-eye"
+									action="#{budgetController.showCustomerDetail(budgetController.budgetDTO.customerOnOrder.customer)}" />
+							</p:menuButton>
 						</p:toolbarGroup>
 					</p:toolbar>
 					<p:sticky target="tb" />
@@ -823,7 +826,7 @@
 												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
 												action="#{budgetController.setProspectCustomer}"
 												process="@this,prospName,prospCnpj,prospVendor,prospTerms,prospEndereco"
-												update=":customerForm @form"
+												update=":customerForm,@form,budgetToolsForm:btnViewCDetails"
 												oncomplete="PF('blockItems').hide();" />
 										</p:column>
 										<p:growl for="prospCnpj" id="growlForCnpj" />
@@ -861,7 +864,8 @@
 							return;
 							}
 							PF('blockItems').show();"
-							update="growl :customerForm" onstart="PF('blockDt').show()"
+							update="growl :customerForm budgetToolsForm:btnViewCDetails"
+							onstart="PF('blockDt').show()"
 							listener="#{budgetController.selectCustomer}" />
 						<p:ajax event="page"
 							listener="#{budgetController.onPageCustomers}" async="true"

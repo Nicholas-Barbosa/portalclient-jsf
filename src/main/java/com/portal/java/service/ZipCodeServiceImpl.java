@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
-import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
@@ -27,19 +26,23 @@ public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 	 */
 	private static final long serialVersionUID = -7183651257515145651L;
 
-	@Inject
-	@Simple
 	private RestClient restClient;
 
-	@EJB
-	private ConfigPropertyResolver resourcesReader;
+	private ConfigPropertyResolver configPropertiesResolver;
+
+	@Inject
+	public ZipCodeServiceImpl(@Simple RestClient restClient, ConfigPropertyResolver resourcesReader) {
+		super();
+		this.restClient = restClient;
+		this.configPropertiesResolver = resourcesReader;
+	}
 
 	@Override
 	public Optional<ZipCode> find(String cep)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		// TODO Auto-generated method stub
 		try {
-			return Optional.of(restClient.get(resourcesReader.getProperty("cep_api_url"), ZipCode.class, null,
+			return Optional.of(restClient.get(configPropertiesResolver.getProperty("cep_api_url"), ZipCode.class, null,
 					Map.of("cep", cep), MediaType.APPLICATION_JSON));
 		} catch (NotFoundException e) {
 			return Optional.empty();
