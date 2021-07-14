@@ -7,6 +7,7 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+		<h:outputScript name="dataTable.js" library="javascript" />
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}</ui:define>
@@ -26,12 +27,14 @@
 				<div class="card" id="divDTContent">
 					<h:form id="formTitlesDT">
 						<p:remoteCommand name="initDtTiles"
-							action="#{financialBondsController.loadTitles(1)}" autoRun="true"
-							process="@this" update="titlesDT" />
+							action="#{financialBondsController.loadTitles(1)}"
+							oncomplete="editScrollBodyMaxHeight('titlesDT','95vh')"
+							autoRun="true" process="@this" update="titlesDT" />
 
-						<p:dataTable id="titlesDT" var="title"
+						<p:dataTable id="titlesDT" widgetVar="titlesDT" var="title"
 							value="#{financialBondsController.titles}" reflow="true"
-							paginator="true" rows="10" paginatorPosition="bottom" lazy="true">
+							paginator="true" rows="15" paginatorPosition="bottom" lazy="true"
+							scrollable="true">
 							<p:ajax event="page"
 								listener="#{financialBondsController.onPage}"
 								onstart="$('#divLoading').show();$('#divDTContent').hide()"
@@ -105,5 +108,6 @@
 
 			</div>
 		</div>
+		
 	</ui:define>
 </ui:composition>

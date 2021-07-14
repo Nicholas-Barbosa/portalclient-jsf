@@ -57,7 +57,7 @@ public class FinancialBondsController implements Serializable {
 		if (titles == null)
 			titles = new FinancialTitleLazyDataModel();
 		try {
-			Optional<FinancialBondsPageDTO> optional = bondsService.find(page, 10);
+			Optional<FinancialBondsPageDTO> optional = bondsService.find(page, 15);
 			optional.ifPresentOrElse(f -> {
 				LazyPopulateUtils.populate(titles, f);
 			}, () -> {
