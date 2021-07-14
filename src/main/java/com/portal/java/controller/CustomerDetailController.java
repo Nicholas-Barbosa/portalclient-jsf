@@ -17,7 +17,7 @@ import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
 import com.portal.java.dto.Customer;
-import com.portal.java.service.CepService;
+import com.portal.java.service.ZipCodeService;
 import com.portal.java.util.jsf.FacesUtils;
 
 @RequestScoped
@@ -29,7 +29,7 @@ public class CustomerDetailController {
 	private HttpSession session;
 
 	@Inject
-	private CepService cepService;
+	private ZipCodeService cepService;
 
 	private Customer customer;
 

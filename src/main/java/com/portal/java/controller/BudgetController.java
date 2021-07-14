@@ -56,7 +56,7 @@ import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.exception.ItemQuantityNotAllowed;
 import com.portal.java.resources.export.OrderExport;
 import com.portal.java.service.BudgetService;
-import com.portal.java.service.CepService;
+import com.portal.java.service.ZipCodeService;
 import com.portal.java.service.CustomerService;
 import com.portal.java.service.ItemService;
 import com.portal.java.service.ProductService;
@@ -93,7 +93,7 @@ public class BudgetController implements Serializable {
 
 	private final ItemService itemService;
 
-	private final CepService cepCervice;
+	private final ZipCodeService cepCervice;
 
 	private LazyDataModel<Product> lazyProducts;
 
@@ -156,7 +156,7 @@ public class BudgetController implements Serializable {
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
 			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
-			ItemService itemService, CepService cep) {
+			ItemService itemService, ZipCodeService cep) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;

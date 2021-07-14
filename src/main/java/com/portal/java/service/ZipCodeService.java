@@ -8,7 +8,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.portal.java.pojo.ZipCode;
 
-public interface CepService {
+public interface ZipCodeService {
 
 	Optional<ZipCode> find(String cep)throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 }

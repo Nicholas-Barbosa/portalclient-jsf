@@ -20,7 +20,7 @@ import com.portal.java.pojo.ZipCode;
 import com.portal.java.resources.ConfigPropertyResolver;
 
 @ApplicationScoped
-public class CepServiceImpl implements CepService, Serializable {
+public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 
 	/**
 	 * 
