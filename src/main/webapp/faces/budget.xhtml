@@ -586,7 +586,8 @@
 												value="#{budgetController.previewItem.product.line}"
 												readonly="true" />
 										</div>
-										<ui:fragment rendered="#{!budgetController.previewItem.product.applicability.blank}">
+										<ui:fragment
+											rendered="#{!budgetController.previewItem.product.applicability.blank}">
 											<div class="p-field">
 												<p:outputLabel for="aplicability">#{resourceBundleServiceImpl.getMessage('aplicacao')}</p:outputLabel>
 												<p:inputText id="aplicability"
@@ -787,7 +788,7 @@
 
 									<p:outputLabel for="cep" value="CEP" />
 									<p:inputText id="cep" value="#{budgetController.cepToSearch}"
-										onchange="findCep()" maxlength="8" />
+										maxlength="8" oninput="if(this.value.length == 8)findCep()" />
 
 									<p:outputLabel for="prospEndereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
