@@ -25,7 +25,7 @@
 				<div class="card">
 					<h:form id="formTitlesDT">
 						<p:dataTable widgetVar="titlesDT" id="titlesDT" var="title"
-							value="#{openedTitlesController.titles}" reflow="true"
+							value="#{financialBondsController.titles}" reflow="true"
 							paginator="true" rows="10" paginatorPosition="bottom">
 
 							<p:column
@@ -40,7 +40,8 @@
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
 								<h:outputText value="#{title.sale}">
-									<f:convertNumber locale="pt_BR" currencySymbol="R$" type="currency" />
+									<f:convertNumber locale="pt_BR" currencySymbol="R$"
+										type="currency" />
 								</h:outputText>
 							</p:column>
 							<p:column
@@ -57,9 +58,8 @@
 
 						</p:dataTable>
 						<p:remoteCommand name="initDtTiles"
-							action="#{openedTitlesController.loadTitles(1)}" autoRun="true"
-							 process="@this"
-							update="titlesDT" />
+							action="#{financialBondsController.loadTitles(1)}" autoRun="true"
+							process="@this" update="titlesDT" />
 						<p:blockUI animate="true" block="titlesDT" blocked="true"
 							widgetVar="blockTitlesDT">
 							<i class="pi pi-spin pi-spinner" style="font-size: 3rem;"></i>

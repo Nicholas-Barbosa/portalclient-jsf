@@ -136,7 +136,6 @@ body .ui-panelgrid .ui-panelgrid-cell {
 			</p:tab>
 			<p:tab
 				title="#{resourceBundleServiceImpl.getMessage('geolocalizacao')}">
-
 				<h:form>
 					<p:panelGrid columns="4"
 						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
@@ -166,13 +165,17 @@ body .ui-panelgrid .ui-panelgrid-cell {
 								Maps #{customerDetailController.currentLatLng}
 								</p:row>
 						<p:gmap center="#{customerDetailController.currentLatLng}"
-							zoom="20" type="roadmap" style="width:93.5vw;height:80vh"
+							zoom="15" type="roadmap" style="width:93.5vw;height:80vh"
 							model="#{customerDetailController.gMap}" id="map" />
 					</p:panelGrid>
 					<p:remoteCommand name="loadMap"
 						action="#{customerDetailController.loadGMap}" process="@this"
 						update="map" autoRun="true" />
 				</h:form>
+			</p:tab>
+			<p:tab
+				title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
+			
 			</p:tab>
 		</p:tabView>
 

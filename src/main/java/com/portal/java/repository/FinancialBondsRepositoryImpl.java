@@ -26,6 +26,7 @@ public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
+		queryParams.put("searchOrder", "DESC");
 		return restClient.get("ORCAMENTO_API", "titles", FinancialBondsPageDTO.class, queryParams, null,
 				MediaType.APPLICATION_JSON);
 	}

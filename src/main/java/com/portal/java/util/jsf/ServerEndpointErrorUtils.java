@@ -6,13 +6,13 @@ import java.util.Map;
 import javax.faces.context.FacesContext;
 import javax.ws.rs.core.Response;
 
-public class ClientExceptionFacesUtils {
+public class ServerEndpointErrorUtils {
 
-	private ClientExceptionFacesUtils() {
+	private ServerEndpointErrorUtils() {
 
 	}
 
-	public static void openClientExcpetionView(Response response) {
+	public static void openEndpointErrorOnDialog(Response response) {
 		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		sessionMap.put("response", response);
 		Map<String, Object> options = new HashMap<String, Object>();
@@ -20,6 +20,6 @@ public class ClientExceptionFacesUtils {
 		options.put("draggable", true);
 		options.put("fitViewport", true);
 		options.put("position", "center");
-		FacesUtils.openViewOnDialog(options, "clientError");
+		FacesUtils.openViewOnDialog(options, "/errorpages/serverEndpointError");
 	}
 }

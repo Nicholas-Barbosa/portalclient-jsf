@@ -19,8 +19,16 @@ public class FinancialBondsServiceImpl implements FinancialBondsService,Serializ
 	 * 
 	 */
 	private static final long serialVersionUID = -8498999751949468744L;
-	@Inject
+	
 	private FinancialBondsRepository repository;
+
+	
+	@Inject
+	public FinancialBondsServiceImpl(FinancialBondsRepository repository) {
+		super();
+		this.repository = repository;
+	}
+
 
 	@Override
 	public FinancialBondsPageDTO find(int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
