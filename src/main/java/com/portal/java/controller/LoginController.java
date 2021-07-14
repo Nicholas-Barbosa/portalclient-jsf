@@ -10,8 +10,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
 
-import org.primefaces.PrimeFaces;
-
 import com.portal.java.dto.LoginForm;
 import com.portal.java.repository.AuthenticationRepository;
 import com.portal.java.service.ResourceBundleService;

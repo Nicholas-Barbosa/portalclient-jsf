@@ -163,4 +163,6 @@ public final class Customer implements Serializable {
 	public String getEmail2() {
 		return contact.getEmail2();
 	}
+	
+	
 }

@@ -16,8 +16,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.java.cdi.qualifier.Simple;
 import com.portal.java.client.rest.RestClient;
-import com.portal.java.pojo.Cep;
-import com.portal.java.resources.ResourcesReader;
+import com.portal.java.pojo.ZipCode;
+import com.portal.java.resources.ConfigPropertyResolver;
 
 @ApplicationScoped
 public class CepServiceImpl implements CepService, Serializable {
@@ -32,14 +32,14 @@ public class CepServiceImpl implements CepService, Serializable {
 	private RestClient restClient;
 
 	@EJB
-	private ResourcesReader resourcesReader;
+	private ConfigPropertyResolver resourcesReader;
 
 	@Override
-	public Optional<Cep> find(String cep)
+	public Optional<ZipCode> find(String cep)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		// TODO Auto-generated method stub
 		try {
-			return Optional.of(restClient.get(resourcesReader.getProperty("cep_api_url"), Cep.class, null,
+			return Optional.of(restClient.get(resourcesReader.getProperty("cep_api_url"), ZipCode.class, null,
 					Map.of("cep", cep), MediaType.APPLICATION_JSON));
 		} catch (NotFoundException e) {
 			return Optional.empty();

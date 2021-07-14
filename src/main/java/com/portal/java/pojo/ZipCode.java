@@ -3,7 +3,7 @@ package com.portal.java.pojo;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class Cep {
+public class ZipCode {
 
 	private final String cep;
 	private final String address;
@@ -14,7 +14,7 @@ public class Cep {
 	private final Double lng;
 
 	@JsonbCreator
-	public Cep(@JsonbProperty("cep") String cep, @JsonbProperty("address") String address,
+	public ZipCode(@JsonbProperty("cep") String cep, @JsonbProperty("address") String address,
 			@JsonbProperty("city") String city, @JsonbProperty("state") String state, @JsonbProperty("lat") Double lat,
 			@JsonbProperty("lng") Double lng, @JsonbProperty("district") final String district) {
 		super();

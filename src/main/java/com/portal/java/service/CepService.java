@@ -6,9 +6,9 @@ import java.net.SocketTimeoutException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
-import com.portal.java.pojo.Cep;
+import com.portal.java.pojo.ZipCode;
 
 public interface CepService {
 
-	Optional<Cep> find(String cep)throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
+	Optional<ZipCode> find(String cep)throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 }

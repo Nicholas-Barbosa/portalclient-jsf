@@ -43,7 +43,7 @@ public class ItemServiceImpl implements ItemService {
 
 			if (price.getLineDiscount() != null || !price.getLineDiscount().equals(BigDecimal.ZERO))
 				this.applyLineDiscount(items,
-						new ItemLineDiscountForm(i.getProduct().getDescriptionType(), price.getLineDiscount()));
+						new ItemLineDiscountForm(i.getProduct().getLine(), price.getLineDiscount()));
 		});
 	}
 

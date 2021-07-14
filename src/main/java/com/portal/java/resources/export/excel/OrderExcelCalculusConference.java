@@ -43,7 +43,7 @@ public class OrderExcelCalculusConference {
 
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("productCode"),
 					i.getProduct().getCommercialCode()));
-			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("line"), i.getProduct().getDescriptionType()));
+			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("line"), i.getProduct().getLine()));
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("quantity"), values.getQuantity()));
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("unitValue"),
 					values.getUnitValueWithoutDiscount()));
@@ -61,7 +61,8 @@ public class OrderExcelCalculusConference {
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscountValue"), globalDiscValue));
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueAfterDiscount"),
 					values.getTotalGrossAfterGlobalDiscount()));
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"), values.getLineDiscount()));
+			cells.add(
+					WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"), values.getLineDiscount()));
 
 			BigDecimal lineDiscValue = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(values.getLineDiscount(),
 					values.getTotalGrossAfterGlobalDiscount());

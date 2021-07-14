@@ -1,26 +1,17 @@
 package com.portal.java.service;
 
 import java.math.BigDecimal;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
 
-import com.portal.java.dto.Order;
-import com.portal.java.dto.BudgetEstimateForm;
-import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.Item;
+import com.portal.java.dto.Order;
 import com.portal.java.exception.CustomerNotAllowed;
 
 public interface BudgetService extends ServiceSerializable {
 
 	void findAll(int page, int pageSize);
-
-	BudgetEstimatedDTO estimate(BudgetEstimateForm budgetEstimateForm)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
 	/**
 	 * Calculate the totals for that object based on the item totals.
@@ -32,8 +23,6 @@ public interface BudgetService extends ServiceSerializable {
 	void removeItem(Order budget, Item itemToRemove);
 
 	BudgetXlsxPreviewedDTO previewXlsxContent(BudgetXlsxPreviewForm form);
-
-	
 
 	void addItem(Order budgetDTO, Item produc);
 
@@ -50,6 +39,6 @@ public interface BudgetService extends ServiceSerializable {
 	 * @param budget
 	 * @param discount
 	 */
-	void setDiscount(Order budget, BigDecimal discount)throws CustomerNotAllowed;
+	void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed;
 
 }

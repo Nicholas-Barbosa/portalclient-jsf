@@ -8,94 +8,106 @@ import javax.json.bind.annotation.JsonbProperty;
 public class Product {
 
 	private final String code;
-
-	private final String descriptionType;
-
 	private final String commercialCode;
-
-	private final String type;
-
+	private final String applicability;
 	private final String description;
-
-	private int avaliableStock;
-
-	private final ProductInfo info;
-
+	private final String line;
+	private final String acronymLine;
+	private int stock;
+	private final int multiple;
+	private final boolean commercialBlock;
+	private ProductImage image;
 	private final ProductPrice price;
 
-	private final int multiple;
-
 	@JsonbCreator
-	public Product(@JsonbProperty("code") String code,
-			@JsonbProperty("description_product_type") String descriptionType,
-			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("product_type") String type,
-			@JsonbProperty("description") String description, @JsonbProperty("multiple") Integer multiple,
-			@JsonbProperty("st_value") BigDecimal stValue, @JsonbProperty("unit_price") BigDecimal unitValue,
-			@JsonbProperty("unit_gross_value") BigDecimal grossValue, @JsonbProperty("stock") int stock) {
-		this.code = code;
-		this.descriptionType = descriptionType;
-		this.commercialCode = commercialCode;
-		this.type = type;
-		this.description = description;
-		this.price = new ProductPrice(stValue, unitValue, grossValue);
-		this.avaliableStock = stock;
-		this.multiple = multiple;
-		this.info = new ProductInfo();
+	public static Product ofJsonb(@JsonbProperty("application") String application,
+			@JsonbProperty("gross_price") BigDecimal grossPrice, @JsonbProperty("code") String code,
+			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
+			@JsonbProperty("multiple") int multiple, @JsonbProperty("commercial_block") String commercialBlock,
+			@JsonbProperty("commercial_code") String cCode, @JsonbProperty("st_value") BigDecimal stValue,
+			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("stock") int stock,
+			@JsonbProperty("description") String description,
+			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
+		ProductPrice price = new ProductPrice(stValue, unitValue, unitGrossValue);
+		return new Product(code, cCode, application, description, line, acronymLine, stock, multiple,
+				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price);
 	}
 
-	public Product(Product product) {
+	public Product(String code, String commercialCode, String applicability, String description, String line,
+			String acronymLine, int stock, int multiple, boolean commercialBlock, ProductImage image,
+			ProductPrice price) {
 		super();
-		this.code = product.code;
-		this.descriptionType = product.descriptionType;
-		this.commercialCode = product.commercialCode;
-		this.type = product.type;
-		this.description = product.description;
-		this.info = product.info;
-		this.price = product.price;
-		this.avaliableStock = product.avaliableStock;
-		this.multiple = product.multiple;
+		this.code = code;
+		this.commercialCode = commercialCode;
+		this.applicability = applicability;
+		this.description = description;
+		this.line = line;
+		this.acronymLine = acronymLine;
+		this.stock = stock;
+		this.multiple = multiple;
+		this.commercialBlock = commercialBlock;
+		this.image = image;
+		this.price = price;
 	}
 
 	public String getCode() {
 		return code;
 	}
 
-	public String getDescriptionType() {
-		return descriptionType;
-	}
-
 	public String getCommercialCode() {
 		return commercialCode;
 	}
 
-	public String getType() {
-		return type;
+	public String getApplicability() {
+		return applicability;
 	}
 
 	public String getDescription() {
 		return description;
 	}
 
-	public int getAvaliableStock() {
-		return avaliableStock;
+	public String getLine() {
+		return line;
 	}
 
-	public void setAvaliableStock(int avaliableStock) {
-		this.avaliableStock = avaliableStock;
+	public String getAcronymLine() {
+		return acronymLine;
 	}
 
-	public ProductInfo getInfo() {
-		return info;
-	}
-
-	public ProductPrice getPrice() {
-		return price;
+	public int getStock() {
+		return stock;
 	}
 
 	public int getMultiple() {
 		return multiple;
 	}
 
+	public boolean isCommercialBlock() {
+		return commercialBlock;
+	}
+
+	public ProductImage getImage() {
+		return image;
+	}
+
+	public byte[] getImageStreams() {
+		return image.getImageStreams();
+	}
+	public ProductPrice getPrice() {
+		return price;
+	}
+
+	public void setImage(ProductImage productImage) {
+		this.image = productImage;
+	}
+	
+	public void setImage(byte[]streams) {
+		if(image==null) {
+			image= new ProductImage(streams);
+			return;
+		}
+		image.setImageStreams(streams);
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -121,29 +133,5 @@ public class Product {
 		return true;
 	}
 
-	public static class ProductPrice {
-		private final BigDecimal unitStValue;
-		private final BigDecimal unitValue;
-		private final BigDecimal unitGrossValue;
-
-		public ProductPrice(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue) {
-			super();
-			this.unitStValue = unitStValue;
-			this.unitValue = unitValue;
-			this.unitGrossValue = unitGrossValue;
-		}
-
-		public BigDecimal getUnitStValue() {
-			return unitStValue;
-		}
-
-		public BigDecimal getUnitValue() {
-			return unitValue;
-		}
-
-		public BigDecimal getUnitGrossValue() {
-			return unitGrossValue;
-		}
-
-	}
+	
 }

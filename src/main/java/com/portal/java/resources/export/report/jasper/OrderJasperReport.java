@@ -179,7 +179,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		public OrderItemJasper(Item item) {
 			super();
 			this.commercialCode = item.getProduct().getCommercialCode();
-			this.line = item.getProduct().getDescriptionType();
+			this.line = item.line();
 
 			ItemValues values = item.getValues();
 			this.quantity = values.getQuantity();

@@ -10,11 +10,11 @@ import javax.ejb.TransactionAttributeType;
 
 @Singleton
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class ResourcesReader {
+public class ConfigPropertyResolver {
 
 	private Properties properties;
 
-	public ResourcesReader() {
+	public ConfigPropertyResolver() {
 		properties = new Properties();
 		loadProperties();
 	}

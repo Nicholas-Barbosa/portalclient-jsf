@@ -6,12 +6,12 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class NoPageProductResponseDTO {
+public class ProductJsonWrapper {
 
 	private List<Product> products;
 
 	@JsonbCreator
-	public NoPageProductResponseDTO(@JsonbProperty("products") List<Product> products) {
+	public ProductJsonWrapper(@JsonbProperty("products") List<Product> products) {
 		super();
 		this.products = new ArrayList<>(products);
 	}

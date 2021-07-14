@@ -29,7 +29,6 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
-import com.portal.java.dto.BudgetEstimatedDTO;
 import com.portal.java.dto.BudgetXlsxPreviewForm;
 import com.portal.java.dto.BudgetXlsxPreviewedDTO;
 import com.portal.java.dto.CustomerOnOrder;
@@ -37,7 +36,6 @@ import com.portal.java.dto.CustomerOnOrder.CustomerType;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.DiscountView;
 import com.portal.java.dto.DownloadStreamsForm;
-import com.portal.java.dto.EstimatedItemDTO;
 import com.portal.java.dto.FindProductByCodeForm;
 import com.portal.java.dto.FindProductByDescriptionDTO;
 import com.portal.java.dto.Item;
@@ -45,8 +43,6 @@ import com.portal.java.dto.ItemLineDiscountForm;
 import com.portal.java.dto.ItemValues;
 import com.portal.java.dto.Order;
 import com.portal.java.dto.Product;
-import com.portal.java.dto.Product.ProductPrice;
-import com.portal.java.dto.ProductBudgetForm;
 import com.portal.java.dto.ProductPageDTO;
 import com.portal.java.dto.ProspectCustomerForm;
 import com.portal.java.dto.ProspectCustomerOnOrder;
@@ -107,8 +103,6 @@ public class BudgetController implements Serializable {
 
 	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
 
-	private Set<ProductBudgetForm> itemsOnCartToPost;
-
 	private Set<Product> selectedProducts;
 
 	private FindProductByDescriptionDTO findProductByDescriptionDTO;
@@ -120,11 +114,7 @@ public class BudgetController implements Serializable {
 
 	private String nameCustomerToFind;
 
-	private BudgetEstimatedDTO budgetEstimateDTO;
-
 	private DownloadStreamsForm downloadStreamsForm;
-
-	private EstimatedItemDTO selectedItemToViewStock;
 
 	private FindProductByCodeForm findProductByCodeForm;
 
@@ -412,7 +402,7 @@ public class BudgetController implements Serializable {
 	private void getOptionalProduct(Optional<Product> product) {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
-			ProductPrice productPrice = presentProduct.getPrice();
+			com.portal.java.dto.ProductPrice productPrice = presentProduct.getPrice();
 			previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
 					new ItemValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue(),
@@ -449,11 +439,11 @@ public class BudgetController implements Serializable {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
 
-	public void removeSelectedProduct(Product product) {
-		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
-				.start();
-		this.selectedProducts.remove(product);
-	}
+//	public void removeSelectedProduct(Product product) {
+//		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
+//				.start();
+//		this.selectedProducts.remove(product);
+//	}
 
 	public void onProductSelected(Product productDTO) {
 		selectedProducts.add(productDTO);
@@ -465,7 +455,6 @@ public class BudgetController implements Serializable {
 		this.lazyProducts = new ProductLazyDataModel();
 		this.lazyCustomers = new CustomerLazyDataModel();
 		this.selectedProducts = new HashSet<>();
-		itemsOnCartToPost = new HashSet<>();
 		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 		this.downloadStreamsForm = new DownloadStreamsForm();
 		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
@@ -533,20 +522,8 @@ public class BudgetController implements Serializable {
 		return lazyCustomers;
 	}
 
-	public BudgetEstimatedDTO getBudgetEstimateDTO() {
-		return budgetEstimateDTO;
-	}
-
 	public DownloadStreamsForm getDownloadStreamsForm() {
 		return downloadStreamsForm;
-	}
-
-	public EstimatedItemDTO getSelectedItemToViewStock() {
-		return selectedItemToViewStock;
-	}
-
-	public void setSelectedItemToViewStock(EstimatedItemDTO selectedItemToViewStock) {
-		this.selectedItemToViewStock = selectedItemToViewStock;
 	}
 
 	public ClientErrorExceptionController getResponseController() {

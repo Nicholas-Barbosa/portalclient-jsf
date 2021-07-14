@@ -19,7 +19,8 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.java.cdi.qualifier.OAuth2RestAuth;
 import com.portal.java.client.rest.auth.AuthenticatedRestClient;
-import com.portal.java.dto.NoPageProductResponseDTO;
+import com.portal.java.dto.Product;
+import com.portal.java.dto.ProductJsonWrapper;
 import com.portal.java.dto.ProductPageDTO;
 
 @ApplicationScoped
@@ -32,7 +33,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	private AuthenticatedRestClient authRestClient;
 
 	@Override
-	public Optional<NoPageProductResponseDTO> findByCode(String code, String customerCode, String store)
+	public Optional<Product> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Map<String, Object> pathParmas = new HashMap<>();
 		pathParmas.put("code", code);
@@ -41,7 +42,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		try {
 			return Optional
 					.of(authRestClient.get("ORCAMENTO_API", "products/{code}/client/{customerCode}/store/{store}",
-							NoPageProductResponseDTO.class, null, pathParmas, MediaType.APPLICATION_JSON));
+							ProductJsonWrapper.class, null, pathParmas, MediaType.APPLICATION_JSON).getProducts().get(0));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}
@@ -49,7 +50,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Future<NoPageProductResponseDTO> findByCodeAsync(String code, String customerCode, String store)
+	public Future<ProductJsonWrapper> findByCodeAsync(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Map<String, Object> pathParams = new HashMap<>();
 		pathParams.put("code", code);
@@ -57,7 +58,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		pathParams.put("store", store);
 		try {
 			return authRestClient.getAsync("ORCAMENTO_API", "products/{code}/client/{customerCode}/store/{store}",
-					NoPageProductResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON);
+					ProductJsonWrapper.class, null, pathParams, MediaType.APPLICATION_JSON);
 		} catch (NotFoundException e) {
 			return null;
 		}
@@ -92,17 +93,17 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Future<NoPageProductResponseDTO> findByCodeForProspectAsync(String code, String state, String sellerType)
+	public Future<ProductJsonWrapper> findByCodeForProspectAsync(String code, String state, String sellerType)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Map<String, Object> pathParmas = new HashMap<>();
 		pathParmas.put("code", code);
-		
+
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("state", state);
 		queryParams.put("type", sellerType);
 		try {
-			return authRestClient.getAsync("ORCAMENTO_API", "products/{code}",
-					NoPageProductResponseDTO.class, queryParams, pathParmas, MediaType.APPLICATION_JSON);
+			return authRestClient.getAsync("ORCAMENTO_API", "products/{code}", ProductJsonWrapper.class,
+					queryParams, pathParmas, MediaType.APPLICATION_JSON);
 		} catch (NotFoundException e) {
 			return null;
 		}

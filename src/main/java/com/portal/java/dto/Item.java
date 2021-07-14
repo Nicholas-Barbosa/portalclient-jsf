@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 public class Item {
 
-	
 	private final Product product;
 	private ItemValues values;
 
@@ -28,7 +27,7 @@ public class Item {
 	}
 
 	public String line() {
-		return product.getDescriptionType();
+		return product.getLine();
 	}
 
 	@Override
