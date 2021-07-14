@@ -22,12 +22,19 @@
 		<div class="p-grid table-demo">
 			<div class="p-col-12">
 
-				<div class="card">
+				<div class="card" id="divDTContent">
 					<h:form id="formTitlesDT">
-						<p:dataTable widgetVar="titlesDT" id="titlesDT" var="title"
-							value="#{financialBondsController.titles}" reflow="true"
-							paginator="true" rows="10" paginatorPosition="bottom">
+						<p:remoteCommand name="initDtTiles"
+							action="#{financialBondsController.loadTitles(1)}" autoRun="true"
+							process="@this" update="titlesDT" />
 
+						<p:dataTable id="titlesDT" var="title"
+							value="#{financialBondsController.titles}" reflow="true"
+							paginator="true" rows="10" paginatorPosition="bottom" lazy="true">
+							<p:ajax event="page"
+								listener="#{financialBondsController.onPage}"
+								onstart="$('#divLoading').show();$('#divDTContent').hide()"
+								oncomplete="$('#divLoading').hide();$('#divDTContent').show()" />
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
 								<h:outputText value="#{title.docNumber}" />
@@ -57,22 +64,45 @@
 							</p:column>
 
 						</p:dataTable>
-						<p:remoteCommand name="initDtTiles"
-							action="#{financialBondsController.loadTitles(1)}" autoRun="true"
-							process="@this" update="titlesDT" />
-						<p:blockUI animate="true" block="titlesDT" blocked="true"
-							widgetVar="blockTitlesDT">
+
+						<p:blockUI animate="true" block="titlesDT"
+							widgetVar="blockTitlesDT" blocked="true" trigger="titlesDT">
 							<i class="pi pi-spin pi-spinner" style="font-size: 3rem;"></i>
 						</p:blockUI>
-					</h:form>
 
+					</h:form>
+				</div>
+
+				<div class="card" id="divLoading" style="display: none">
+
+					<h5>Loading...</h5>
+					<p:dataTable var="product"
+						value="#{financialBondsController.skeleton()}">
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('situacao')}">
+							<p:skeleton />
+						</p:column>
+					</p:dataTable>
 
 				</div>
+
 			</div>
 		</div>
-
-		<script type="text/javascript">
-			
-		</script>
 	</ui:define>
 </ui:composition>
