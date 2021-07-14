@@ -66,7 +66,7 @@ import com.portal.java.ui.lazy.datamodel.LazyOperations;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.java.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.java.util.jsf.FacesUtils;
-import com.portal.java.util.jsf.ResourceExceptionMessageHelper;
+import com.portal.java.util.jsf.ExternalServerExceptionFacesHelper;
 
 @Named
 @ViewScoped
@@ -87,7 +87,7 @@ public class BudgetController implements Serializable {
 
 	private final ClientErrorExceptionController responseController;
 
-	private final ResourceExceptionMessageHelper processingExceptionMessageHelper;
+	private final ExternalServerExceptionFacesHelper processingExceptionMessageHelper;
 
 	private final ProductService productService;
 
@@ -155,7 +155,7 @@ public class BudgetController implements Serializable {
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
-			ResourceExceptionMessageHelper processingExceptionMessageHelper, ProductService productService,
+			ExternalServerExceptionFacesHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService, ZipCodeService cep) {
 		super();
 		bulkInstantiationObjectsInBackGround();

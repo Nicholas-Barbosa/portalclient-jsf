@@ -175,7 +175,74 @@ body .ui-panelgrid .ui-panelgrid-cell {
 			</p:tab>
 			<p:tab
 				title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
-			
+				<h:form>
+					<p:remoteCommand name="loadTitles"
+						action="#{customerDetailController.loadFinancialBonds(1)}"
+						autoRun="true" update="dtBonds" onstart="$('#divLoading').show()"
+						oncomplete="$('#divLoading').hide()" />
+
+					<p:dataTable id="dtBonds" var="title"
+						value="#{customerDetailController.titles}" reflow="true"
+						paginator="true" rows="10" paginatorPosition="bottom" lazy="true">
+						<p:ajax event="page"
+							listener="#{customerDetailController.onBondsPage}" />
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
+							<h:outputText value="#{title.docNumber}" />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+
+							<h:outputText value="#{title.customerName}" />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
+							<h:outputText value="#{title.sale}">
+								<f:convertNumber locale="pt_BR" currencySymbol="R$"
+									type="currency" />
+							</h:outputText>
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
+							<h:outputText value="#{title.dueDate}">
+								<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
+									type="localDateTime" />
+							</h:outputText>
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('situacao')}">
+							<h:outputText value="#{title.situation}" />
+						</p:column>
+					</p:dataTable>
+
+					<div class="card" id="divLoading" style="display: none">
+						<h5>Loading...</h5>
+						<p:dataTable var="product"
+							value="#{dataTableSkeletonObjects.getSkeleton(10)}">
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
+								<p:skeleton />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+								<p:skeleton />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
+								<p:skeleton />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
+								<p:skeleton />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('situacao')}">
+								<p:skeleton />
+							</p:column>
+						</p:dataTable>
+
+					</div>
+				</h:form>
 			</p:tab>
 		</p:tabView>
 

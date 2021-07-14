@@ -9,5 +9,9 @@ import com.portal.java.dto.FinancialBondsPageDTO;
 
 public interface FinancialBondsRepository {
 
-	FinancialBondsPageDTO find(int page, int pageSize)throws SocketTimeoutException, ConnectException, TimeoutException,SocketException;
+	FinancialBondsPageDTO find(int page, int pageSize)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
+
+	FinancialBondsPageDTO findByCustomerName(int page, int pageSize, String name)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 }

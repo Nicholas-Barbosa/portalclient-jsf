@@ -14,7 +14,7 @@ import com.portal.java.dto.LoginForm;
 import com.portal.java.repository.AuthenticationRepository;
 import com.portal.java.service.ResourceBundleService;
 import com.portal.java.util.jsf.FacesUtils;
-import com.portal.java.util.jsf.ResourceExceptionMessageHelper;
+import com.portal.java.util.jsf.ExternalServerExceptionFacesHelper;
 
 @RequestScoped
 @Named
@@ -30,7 +30,7 @@ public class LoginController {
 	private String headerDlgMessage;
 	private String previousPage;
 	@EJB
-	private ResourceExceptionMessageHelper processingExceptionMessageHelper;
+	private ExternalServerExceptionFacesHelper processingExceptionMessageHelper;
 
 	@Inject
 	public LoginController(AuthenticationRepository authenticationRepository,

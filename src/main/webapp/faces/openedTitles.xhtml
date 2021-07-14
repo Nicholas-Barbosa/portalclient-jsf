@@ -19,6 +19,7 @@
 	</ui:define>
 
 	<ui:define name="content">
+		<p:growl id="growl" globalOnly="true" />
 		<div class="p-grid table-demo">
 			<div class="p-col-12">
 
@@ -77,7 +78,7 @@
 
 					<h5>Loading...</h5>
 					<p:dataTable var="product"
-						value="#{financialBondsController.skeleton()}">
+						value="#{dataTableSkeletonObjects.getSkeleton(10)}">
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
 							<p:skeleton />

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,16 +12,18 @@ import java.util.stream.Stream;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.ClientErrorException;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
+import com.portal.java.dto.FinancialBondsPageDTO;
 import com.portal.java.dto.FinancialBondsPageDTO.FinacialBondsDTO;
 import com.portal.java.service.FinancialBondsService;
 import com.portal.java.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.java.util.jsf.ServerEndpointErrorUtils;
+import com.portal.java.util.jsf.ExternalServerExceptionFacesHelper;
+import com.portal.java.util.jsf.FacesUtils;
 
 @Named
 @RequestScoped
@@ -32,11 +35,14 @@ public class FinancialBondsController implements Serializable {
 	private static final long serialVersionUID = -3811638445093267666L;
 	private FinancialBondsService bondsService;
 	private LazyDataModel<FinacialBondsDTO> titles;
+	private ExternalServerExceptionFacesHelper externalExceptionHelper;
 
 	@Inject
-	public FinancialBondsController(FinancialBondsService fiTitleService) {
+	public FinancialBondsController(FinancialBondsService fiTitleService,
+			ExternalServerExceptionFacesHelper externalExceptionHelper) {
 		super();
 		this.bondsService = fiTitleService;
+		this.externalExceptionHelper = externalExceptionHelper;
 	}
 
 	public List<Integer> skeleton() {
@@ -51,12 +57,16 @@ public class FinancialBondsController implements Serializable {
 		if (titles == null)
 			titles = new FinancialTitleLazyDataModel();
 		try {
-			LazyPopulateUtils.populate(titles, bondsService.find(page, 10));
+			Optional<FinancialBondsPageDTO> optional = bondsService.find(page, 10);
+			optional.ifPresentOrElse(f -> {
+				LazyPopulateUtils.populate(titles, f);
+			}, () -> {
+				FacesUtils.error(null, "Nenhum título encontrado", null);
+				PrimeFaces.current().ajax().update("growl");
+			});
+
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientErrorException e) {
-			ServerEndpointErrorUtils.openEndpointErrorOnDialog(e.getResponse());
+			externalExceptionHelper.displayMessage(e, null);
 		}
 	}
 

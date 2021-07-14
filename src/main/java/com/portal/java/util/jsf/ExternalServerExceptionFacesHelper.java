@@ -9,13 +9,24 @@ import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 
+import org.primefaces.PrimeFaces;
+
 import com.portal.java.service.ResourceBundleService;
 
 @Singleton
-public class ResourceExceptionMessageHelper {
+public class ExternalServerExceptionFacesHelper {
+
+	private ResourceBundleService resourceBundleService;
+
+	public ExternalServerExceptionFacesHelper() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@Inject
-	private ResourceBundleService resourceBundleService;
+	public ExternalServerExceptionFacesHelper(ResourceBundleService resourceBundleService) {
+		super();
+		this.resourceBundleService = resourceBundleService;
+	}
 
 	public void displayMessage(Exception exception, String clientId) {
 		if (exception instanceof SocketException) {
@@ -33,4 +44,8 @@ public class ResourceExceptionMessageHelper {
 		}
 	}
 
+	public void displayMessage(Exception exception, String clientId, String messageIdToUpdate) {
+		this.displayMessage(exception, clientId);
+		PrimeFaces.current().ajax().update(messageIdToUpdate);
+	}
 }
