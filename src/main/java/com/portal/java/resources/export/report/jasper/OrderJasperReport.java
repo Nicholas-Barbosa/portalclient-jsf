@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.portal.java.dto.Order;
-import com.portal.java.pojo.Customer;
+import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemValues;

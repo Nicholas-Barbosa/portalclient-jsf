@@ -1,4 +1,4 @@
-package com.portal.java.pojo;
+package com.portal.java.dto;
 
 public final class CustomerAddress {
 

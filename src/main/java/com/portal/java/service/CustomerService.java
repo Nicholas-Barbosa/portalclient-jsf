@@ -6,9 +6,9 @@ import java.net.SocketTimeoutException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
+import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.java.pojo.Customer;
 
 public interface CustomerService extends ServiceSerializable {
 

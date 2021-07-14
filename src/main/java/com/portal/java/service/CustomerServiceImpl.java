@@ -9,9 +9,9 @@ import java.util.concurrent.TimeoutException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerPageDTO;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.java.pojo.Customer;
 import com.portal.java.repository.CustomerRepository;
 
 @ApplicationScoped

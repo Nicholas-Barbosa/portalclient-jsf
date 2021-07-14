@@ -16,7 +16,7 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
-import com.portal.java.pojo.Customer;
+import com.portal.java.dto.Customer;
 import com.portal.java.service.CepService;
 import com.portal.java.util.jsf.FacesUtils;
 

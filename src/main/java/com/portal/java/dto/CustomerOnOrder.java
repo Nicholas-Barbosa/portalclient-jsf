@@ -3,8 +3,6 @@ package com.portal.java.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.portal.java.pojo.Customer;
-
 public class CustomerOnOrder {
 
 	@NotEmpty
