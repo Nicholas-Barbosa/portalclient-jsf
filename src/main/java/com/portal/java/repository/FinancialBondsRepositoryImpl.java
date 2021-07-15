@@ -32,15 +32,14 @@ public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 	}
 
 	@Override
-	public FinancialBondsPageDTO findByCustomerName(int page, int pageSize, String name)
+	public FinancialBondsPageDTO findByCustomerCodeStore(int page, int pageSize, String code, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
-		queryParams.put("searchKey", name);
-		return restClient.get("ORCAMENTO_API", "titles", FinancialBondsPageDTO.class, queryParams, null,
-				MediaType.APPLICATION_JSON);
+		return restClient.get("ORCAMENTO_API", "titles/{code}/loja/{store}", FinancialBondsPageDTO.class, queryParams,
+				Map.of("code", code, "store", store), MediaType.APPLICATION_JSON);
 	}
 
 }

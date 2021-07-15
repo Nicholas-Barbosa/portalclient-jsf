@@ -13,6 +13,6 @@ public interface FinancialBondsService {
 	Optional<FinancialBondsPageDTO> find(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	Optional<FinancialBondsPageDTO> findByCustomerName(int page, int pageSize, String name)
+	Optional<FinancialBondsPageDTO> findByCustomerCodeStore(int page, int pageSize, String code,String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 }

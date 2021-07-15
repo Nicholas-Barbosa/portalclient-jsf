@@ -41,10 +41,10 @@ public class FinancialBondsServiceImpl implements FinancialBondsService, Seriali
 	}
 
 	@Override
-	public Optional<FinancialBondsPageDTO> findByCustomerName(int page, int pageSize, String name)
+	public Optional<FinancialBondsPageDTO> findByCustomerCodeStore(int page, int pageSize, String code, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		try {
-			return Optional.of(repository.findByCustomerName(page, pageSize, name));
+			return Optional.of(repository.findByCustomerCodeStore(page, pageSize, code, store));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}

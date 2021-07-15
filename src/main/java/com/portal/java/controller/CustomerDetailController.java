@@ -85,8 +85,8 @@ public class CustomerDetailController {
 			titles = new FinancialTitleLazyDataModel();
 		if (customer.getCode() != null)
 			try {
-				Optional<FinancialBondsPageDTO> optional = bondsService.findByCustomerName(page, 10,
-						customer.getCode());
+				Optional<FinancialBondsPageDTO> optional = bondsService.findByCustomerCodeStore(page, 10,
+						customer.getCode(), customer.getStore());
 				optional.ifPresentOrElse(f -> {
 					LazyPopulateUtils.populate(titles, f);
 				}, () -> {
