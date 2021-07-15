@@ -75,8 +75,18 @@ public class FacesUtils {
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, summary, detail));
 	}
 
+	public static void error(String clientId, String summary, String detail, String messageIdToUpdate) {
+		FacesContext.getCurrentInstance().addMessage(clientId,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, summary, detail));
+		ajaxUpdate(messageIdToUpdate);
+	}
+
 	public static void addHeaderForResponse(String name, Object value) {
 		FacesContext.getCurrentInstance().getExternalContext().addResponseHeader(name, value.toString());
+	}
+
+	public static void ajaxUpdate(String... id) {
+		PrimeFaces.current().ajax().update(id);
 	}
 
 	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, ExportType contentType)

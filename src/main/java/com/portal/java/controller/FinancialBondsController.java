@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import com.portal.java.dto.FinancialBondsPageDTO;
 import com.portal.java.dto.FinancialBondsPageDTO.FinacialBondsDTO;
 import com.portal.java.service.FinancialBondsService;
 import com.portal.java.ui.lazy.datamodel.FinancialTitleLazyDataModel;
+import com.portal.java.ui.lazy.datamodel.LazyOperations;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.java.util.jsf.ExternalServerExceptionFacesHelper;
 import com.portal.java.util.jsf.FacesUtils;
@@ -45,8 +47,12 @@ public class FinancialBondsController implements Serializable {
 		this.externalExceptionHelper = externalExceptionHelper;
 	}
 
-	public List<Integer> skeleton() {
-		return Stream.iterate(1, i -> i <= 10, i -> i + 1).collect(Collectors.toList());
+	public void openExporter() {
+		if (titles != null) {
+			FacesUtils.openViewOnDialog(Map.of("responsive", true), "exportFinancialBonds");
+			return;
+		}
+		FacesUtils.error(null, "Não há títulos para exportar", null, "growl");
 	}
 
 	public void onPage(PageEvent event) {
@@ -54,15 +60,16 @@ public class FinancialBondsController implements Serializable {
 	}
 
 	public void loadTitles(int page) {
+
 		if (titles == null)
 			titles = new FinancialTitleLazyDataModel();
+		
 		try {
 			Optional<FinancialBondsPageDTO> optional = bondsService.find(page, 15);
 			optional.ifPresentOrElse(f -> {
 				LazyPopulateUtils.populate(titles, f);
 			}, () -> {
-				FacesUtils.error(null, "Nenhum título encontrado", null);
-				PrimeFaces.current().ajax().update("growl");
+				FacesUtils.error(null, "Nenhum título encontrado", null, "growl");
 			});
 
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {

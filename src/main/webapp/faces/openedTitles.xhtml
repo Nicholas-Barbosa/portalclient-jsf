@@ -25,7 +25,9 @@
 			<div class="p-col-12">
 
 				<div class="card" id="divDTContent">
+
 					<h:form id="formTitlesDT">
+
 						<p:remoteCommand name="initDtTiles"
 							action="#{financialBondsController.loadTitles(1)}"
 							oncomplete="editScrollBodyMaxHeight('titlesDT','95vh')"
@@ -39,6 +41,14 @@
 								listener="#{financialBondsController.onPage}"
 								onstart="$('#divLoading').show();$('#divDTContent').hide()"
 								oncomplete="$('#divLoading').hide();$('#divDTContent').show()" />
+
+							<f:facet name="header">
+
+								<p:commandButton
+									action="#{financialBondsController.openExporter}"
+									process="@this" update="@none" icon="pi pi-share-alt"
+									value="Exportar" />
+							</f:facet>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
 								<h:outputText value="#{title.docNumber}" />
@@ -108,6 +118,6 @@
 
 			</div>
 		</div>
-		
+
 	</ui:define>
 </ui:composition>
