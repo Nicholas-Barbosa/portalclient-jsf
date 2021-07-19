@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
 import com.portal.java.dto.Product;
 
-public class ProductLazyDataModel extends LazyDataModel<Product> implements LazyOperations<Product> {
+public class ProductLazyDataModel extends LazyDataModelBase<Product> {
 
 	/**
 	 * 
@@ -25,8 +24,7 @@ public class ProductLazyDataModel extends LazyDataModel<Product> implements Lazy
 	}
 
 	@Override
-	public List<Product> load(int first, int pageSize, Map<String, SortMeta> sortBy,
-			Map<String, FilterMeta> filterBy) {
+	public List<Product> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 		// TODO Auto-generated method stub
 		return products;
 	}

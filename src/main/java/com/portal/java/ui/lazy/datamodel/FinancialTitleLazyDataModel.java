@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.primefaces.model.FilterMeta;
-import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortMeta;
 
 import com.portal.java.dto.FinancialBondsPageDTO.FinacialBondsDTO;
 
-public class FinancialTitleLazyDataModel extends LazyDataModel<FinacialBondsDTO>
-		implements LazyOperations<FinacialBondsDTO> {
+public class FinancialTitleLazyDataModel extends LazyDataModelBase<FinacialBondsDTO> {
 
 	/**
 	 * 

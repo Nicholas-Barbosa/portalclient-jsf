@@ -1,4 +1,4 @@
-package com.portal.java.resources.export.excel;
+package com.portal.java.export;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -76,9 +76,8 @@ public class OrderExcelCalculusConference {
 
 	private WriteRowObject createRowForColumns() {
 		return new WriteRowObject(0,
-				WriteCellAttributeBuilder.of(false, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor", "ST",
-						"Preço", "Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$",
-						"Preço Final"));
+				WriteCellAttributeBuilder.of(0, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor", "ST", "Preço",
+						"Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$", "Preço Final"));
 
 	}
 

@@ -3,26 +3,22 @@ package com.portal.java.controller;
 import java.io.Serializable;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 
 import com.portal.java.dto.FinancialBondsPageDTO;
 import com.portal.java.dto.FinancialBondsPageDTO.FinacialBondsDTO;
+import com.portal.java.export.FinancialBondsExporter;
 import com.portal.java.service.FinancialBondsService;
 import com.portal.java.ui.lazy.datamodel.FinancialTitleLazyDataModel;
-import com.portal.java.ui.lazy.datamodel.LazyOperations;
+import com.portal.java.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.java.util.jsf.ExternalServerExceptionFacesHelper;
 import com.portal.java.util.jsf.FacesUtils;
@@ -36,23 +32,23 @@ public class FinancialBondsController implements Serializable {
 	 */
 	private static final long serialVersionUID = -3811638445093267666L;
 	private FinancialBondsService bondsService;
-	private LazyDataModel<FinacialBondsDTO> titles;
+	private LazyDataModelBase<FinacialBondsDTO> titles;
 	private ExternalServerExceptionFacesHelper externalExceptionHelper;
+	private FinancialBondsExporter exporter;
+	private int pagesToExport = 1;
 
 	@Inject
 	public FinancialBondsController(FinancialBondsService fiTitleService,
-			ExternalServerExceptionFacesHelper externalExceptionHelper) {
+			ExternalServerExceptionFacesHelper externalExceptionHelper, FinancialBondsExporter exporter) {
 		super();
 		this.bondsService = fiTitleService;
 		this.externalExceptionHelper = externalExceptionHelper;
 	}
 
-	public void openExporter() {
-		if (titles != null) {
-			FacesUtils.openViewOnDialog(Map.of("responsive", true), "exportFinancialBonds");
-			return;
+	public void export() {
+		if (titles != null && titles.getWrappedData().size() <= 15) {
+
 		}
-		FacesUtils.error(null, "Não há títulos para exportar", null, "growl");
 	}
 
 	public void onPage(PageEvent event) {
@@ -63,7 +59,7 @@ public class FinancialBondsController implements Serializable {
 
 		if (titles == null)
 			titles = new FinancialTitleLazyDataModel();
-		
+
 		try {
 			Optional<FinancialBondsPageDTO> optional = bondsService.find(page, 15);
 			optional.ifPresentOrElse(f -> {
@@ -77,7 +73,11 @@ public class FinancialBondsController implements Serializable {
 		}
 	}
 
-	public LazyDataModel<FinacialBondsDTO> getTitles() {
+	public LazyDataModelBase<FinacialBondsDTO> getTitles() {
 		return titles;
+	}
+
+	public int getPagesToExport() {
+		return pagesToExport;
 	}
 }

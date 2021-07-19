@@ -1,4 +1,4 @@
-package com.portal.java.resources.export.report;
+package com.portal.java.export.jasper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 @Singleton
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class ReportService {
+public class JasperHelper {
 
 	/**
 	 * Export to pdf in bytes. This method will close input stream inside

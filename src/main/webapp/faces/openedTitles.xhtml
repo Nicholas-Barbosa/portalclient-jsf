@@ -43,11 +43,9 @@
 								oncomplete="$('#divLoading').hide();$('#divDTContent').show()" />
 
 							<f:facet name="header">
-
-								<p:commandButton
-									action="#{financialBondsController.openExporter}"
-									process="@this" update="@none" icon="pi pi-share-alt"
-									value="Exportar" />
+								<p:button icon="pi pi-share-alt" value="Exportar"
+									onclick="PF('exportDlg').show()"
+									rendered="#{financialBondsController.titles != null}" />
 							</f:facet>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
@@ -116,6 +114,27 @@
 
 				</div>
 
+				<p:dialog header="Exportar títulos" modal="true"
+					widgetVar="exportDlg" responsive="true" style="max-width:30vw">
+					<h:form>
+						<div class="p-field ui-fluid">
+
+							<label for="username">Páginas</label>
+							<p:spinner id="basic"
+								value="#{financialBondsController.pagesToExport}" min="1" />
+							<small style="font-size: 0.75rem">Páginas que serão
+								exportadas ao excel. Cada página possui 15 registros. Quanto
+								maior o número, mais demorado será esta operação. Lembre-se, os
+								registros estão classificados na ordem descendente perante a
+								dta.vencimento! </small>
+
+
+
+						</div>
+						<p:commandButton ajax="false" icon="pi pi-download" action="#{financialBondsController.export}"/>
+					</h:form>
+
+				</p:dialog>
 			</div>
 		</div>
 

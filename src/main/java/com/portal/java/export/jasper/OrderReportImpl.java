@@ -1,4 +1,4 @@
-package com.portal.java.resources.export.report.jasper;
+package com.portal.java.export.jasper;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -9,8 +9,7 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import com.portal.java.resources.export.ExportType;
-import com.portal.java.resources.export.report.ReportService;
+import com.portal.java.export.OrderExportType;
 
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -20,7 +19,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 public class OrderReportImpl implements OrderReport {
 
 	@EJB
-	private ReportService reportService;
+	private JasperHelper reportService;
 
 	private final String GAUSS_LOGO = getLogos("GAUSS");
 	private final String CDG_LOGO = getLogos("CDG");
@@ -29,13 +28,13 @@ public class OrderReportImpl implements OrderReport {
 		// TODO Auto-generated constructor stub
 	}
 
-	public OrderReportImpl(ReportService reportService) {
+	public OrderReportImpl(JasperHelper reportService) {
 		super();
 		this.reportService = reportService;
 	}
 
 	@Override
-	public byte[] export(OrderJasperReport budget, ExportType type) {
+	public byte[] export(OrderJasper budget, OrderExportType type) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
 		params.put("logoGaussPath", GAUSS_LOGO);

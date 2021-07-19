@@ -1,13 +1,12 @@
-package com.portal.java.resources.export;
+package com.portal.java.export;
 
 import java.io.Serializable;
 
 import javax.inject.Inject;
 
 import com.portal.java.dto.Order;
-import com.portal.java.resources.export.excel.OrderExcelCalculusConference;
-import com.portal.java.resources.export.report.jasper.OrderJasperReport;
-import com.portal.java.resources.export.report.jasper.OrderReport;
+import com.portal.java.export.jasper.OrderJasper;
+import com.portal.java.export.jasper.OrderReport;
 
 public class OrderExportImpl implements OrderExport,Serializable {
 
@@ -23,12 +22,12 @@ public class OrderExportImpl implements OrderExport,Serializable {
 	private OrderExcelCalculusConference orderExcelCalculusConference;
 
 	@Override
-	public byte[] export(Order order, ExportType type) {
+	public byte[] export(Order order, OrderExportType type) {
 		switch (type) {
 		case PDF:
-			return orderReport.export(new OrderJasperReport(order), type);
+			return orderReport.export(new OrderJasper(order), type);
 		case EXCEL:
-			return orderReport.export(new OrderJasperReport(order), type);
+			return orderReport.export(new OrderJasper(order), type);
 		case EXCEL_CALC_CONFERENCE:
 			return orderExcelCalculusConference.createWorkbook(order);
 		}

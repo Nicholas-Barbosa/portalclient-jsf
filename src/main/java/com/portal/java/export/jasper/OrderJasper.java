@@ -1,4 +1,4 @@
-package com.portal.java.resources.export.report.jasper;
+package com.portal.java.export.jasper;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -6,14 +6,13 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.java.dto.Order;
 import com.portal.java.dto.Customer;
 import com.portal.java.dto.CustomerOnOrder;
 import com.portal.java.dto.Item;
 import com.portal.java.dto.ItemValues;
-import com.portal.java.resources.export.ExportEntity;
+import com.portal.java.dto.Order;
 
-public class OrderJasperReport extends ExportEntity implements Serializable {
+public class OrderJasper implements Serializable {
 
 	/**
 	 * 
@@ -30,7 +29,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 
 	private Set<OrderItemJasper> items;
 
-	public OrderJasperReport(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
+	public OrderJasper(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
 			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items) {
 		super();
 		this.liquidValue = liquidValue;
@@ -40,7 +39,7 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		this.items = new HashSet<>(items);
 	}
 
-	public OrderJasperReport(Order budgetDTO) {
+	public OrderJasper(Order budgetDTO) {
 		this.liquidValue = budgetDTO.getLiquidValue();
 		this.grossValue = budgetDTO.getGrossValue();
 		this.stTotal = budgetDTO.getStValue();
@@ -133,8 +132,6 @@ public class OrderJasperReport extends ExportEntity implements Serializable {
 		public static long getSerialversionuid() {
 			return serialVersionUID;
 		}
-
-		
 
 		public String getPaymentTerms() {
 			return paymentTerms;

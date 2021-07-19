@@ -65,21 +65,6 @@ public class WriteCellAttribute {
 
 		}
 
-		public static List<WriteCellAttribute> ofParallel(int startPosition, Object... value) {
-			final AtomicInteger cellPosition = new AtomicInteger(startPosition);
-			return Arrays.stream(value).parallel()
-					.map(v -> WriteCellAttributeBuilder.of(cellPosition.getAndIncrement(), v))
-					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
-
-		}
-
-		public static List<WriteCellAttribute> of(boolean parallel, Object... value) {
-			if (parallel)
-				return WriteCellAttributeBuilder.ofParallel(0, value);
-			else 
-				return WriteCellAttributeBuilder.of(0, value);
-
-		}
 
 		public static List<WriteCellAttribute> ofNumber(Integer startPosition, Number... value) {
 			final AtomicInteger cellPosition = new AtomicInteger(startPosition);

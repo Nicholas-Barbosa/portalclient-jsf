@@ -1,13 +1,13 @@
-package com.portal.java.resources.export;
+package com.portal.java.export;
 
-public enum ExportType {
+public enum OrderExportType {
 
 	PDF("application/pdf"), EXCEL("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
 	EXCEL_CALC_CONFERENCE("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 
 	private final String type;
 
-	private ExportType(String t) {
+	private OrderExportType(String t) {
 		this.type = t;
 	}
 

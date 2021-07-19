@@ -11,7 +11,7 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 
-import com.portal.java.resources.export.ExportType;
+import com.portal.java.export.OrderExportType;
 
 public class FacesUtils {
 
@@ -89,7 +89,7 @@ public class FacesUtils {
 		PrimeFaces.current().ajax().update(id);
 	}
 
-	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, ExportType contentType)
+	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, OrderExportType contentType)
 			throws IOException {
 
 		switch (contentType) {

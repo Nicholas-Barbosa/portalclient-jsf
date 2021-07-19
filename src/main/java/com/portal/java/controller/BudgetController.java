@@ -54,19 +54,20 @@ import com.portal.java.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.java.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.java.exception.CustomerNotAllowed;
 import com.portal.java.exception.ItemQuantityNotAllowed;
-import com.portal.java.resources.export.OrderExport;
+import com.portal.java.export.OrderExport;
 import com.portal.java.service.BudgetService;
-import com.portal.java.service.ZipCodeService;
 import com.portal.java.service.CustomerService;
 import com.portal.java.service.ItemService;
 import com.portal.java.service.ProductService;
 import com.portal.java.service.ResourceBundleService;
+import com.portal.java.service.ZipCodeService;
 import com.portal.java.ui.lazy.datamodel.CustomerLazyDataModel;
+import com.portal.java.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.java.ui.lazy.datamodel.LazyOperations;
 import com.portal.java.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.java.ui.lazy.datamodel.ProductLazyDataModel;
-import com.portal.java.util.jsf.FacesUtils;
 import com.portal.java.util.jsf.ExternalServerExceptionFacesHelper;
+import com.portal.java.util.jsf.FacesUtils;
 
 @Named
 @ViewScoped
@@ -95,9 +96,9 @@ public class BudgetController implements Serializable {
 
 	private final ZipCodeService cepCervice;
 
-	private LazyDataModel<Product> lazyProducts;
+	private LazyDataModelBase<Product> lazyProducts;
 
-	private LazyDataModel<Customer> lazyCustomers;
+	private LazyDataModelBase<Customer> lazyCustomers;
 
 	private String h5DivLoadCustomers, h5DivLoadProducts;
 
@@ -470,7 +471,7 @@ public class BudgetController implements Serializable {
 		this.discView = new DiscountView();
 	}
 
-	public LazyDataModel<Product> getLazyProducts() {
+	public LazyDataModelBase<Product> getLazyProducts() {
 		return lazyProducts;
 	}
 
@@ -518,7 +519,7 @@ public class BudgetController implements Serializable {
 		this.nameCustomerToFind = nameCustomerToFind;
 	}
 
-	public LazyDataModel<Customer> getLazyCustomers() {
+	public LazyDataModelBase<Customer> getLazyCustomers() {
 		return lazyCustomers;
 	}
 
