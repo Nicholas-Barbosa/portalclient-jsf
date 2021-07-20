@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Test;
 
+import com.portal.client.util.MathUtils;
+
 class MathUtilsTest {
 
 	@Test

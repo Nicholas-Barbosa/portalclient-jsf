@@ -131,7 +131,8 @@
 
 
 						</div>
-						<p:commandButton ajax="false" icon="pi pi-download" action="#{financialBondsController.export}"/>
+						<p:commandButton ajax="false" icon="pi pi-download"
+							action="#{financialBondsController.export}" process="@form" />
 					</h:form>
 
 				</p:dialog>

@@ -9,13 +9,13 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import com.portal.java.export.jasper.OrderJasper;
-import com.portal.java.export.jasper.OrderReport;
-import com.portal.java.export.jasper.OrderReportImpl;
-import com.portal.java.export.OrderExportType;
-import com.portal.java.export.jasper.JasperHelper;
-import com.portal.java.export.jasper.OrderJasper.CustomerJasperReportDTO;
-import com.portal.java.export.jasper.OrderJasper.OrderItemJasper;
+import com.portal.client.export.OrderExportType;
+import com.portal.client.export.jasper.JasperHelper;
+import com.portal.client.export.jasper.OrderJasper;
+import com.portal.client.export.jasper.OrderReport;
+import com.portal.client.export.jasper.OrderReportImpl;
+import com.portal.client.export.jasper.OrderJasper.CustomerJasperReportDTO;
+import com.portal.client.export.jasper.OrderJasper.OrderItemJasper;
 
 class BudgetReportImplTest {
 

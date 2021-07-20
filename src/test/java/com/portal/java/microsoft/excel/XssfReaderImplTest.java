@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.portal.java.microsoft.excel.reader.CellAttribute;
-import com.portal.java.microsoft.excel.reader.RowObject;
-import com.portal.java.microsoft.excel.reader.XssfReader;
-import com.portal.java.microsoft.excel.reader.XssfReaderBuilder;
+import com.portal.client.microsoft.excel.reader.CellAttribute;
+import com.portal.client.microsoft.excel.reader.RowObject;
+import com.portal.client.microsoft.excel.reader.XssfReader;
+import com.portal.client.microsoft.excel.reader.XssfReaderBuilder;
 
 class XssfReaderImplTest {
 
