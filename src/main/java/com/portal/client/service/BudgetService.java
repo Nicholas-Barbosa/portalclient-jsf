@@ -6,13 +6,13 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
-import com.portal.client.dto.BudgetListPage;
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
-import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.Item;
 import com.portal.client.dto.Order;
 import com.portal.client.exception.CustomerNotAllowed;
+import com.portal.client.vo.BudgetListPage;
+import com.portal.client.vo.CustomerOnOrder;
 
 public interface BudgetService extends ServiceSerializable {
 

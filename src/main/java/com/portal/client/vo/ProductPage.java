@@ -1,4 +1,4 @@
-package com.portal.client.dto;
+package com.portal.client.vo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,12 +6,12 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductJsonWrapper {
+public class ProductPage {
 
 	private List<Product> products;
 
 	@JsonbCreator
-	public ProductJsonWrapper(@JsonbProperty("products") List<Product> products) {
+	public ProductPage(@JsonbProperty("products") List<Product> products) {
 		super();
 		this.products = new ArrayList<>(products);
 	}

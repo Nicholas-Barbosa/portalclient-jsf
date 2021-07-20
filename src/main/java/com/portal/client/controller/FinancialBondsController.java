@@ -12,8 +12,6 @@ import javax.inject.Named;
 
 import org.primefaces.event.data.PageEvent;
 
-import com.portal.client.dto.FinancialBondsPageDTO;
-import com.portal.client.dto.FinancialBondsPageDTO.FinacialBondsDTO;
 import com.portal.client.export.FinancialBondsExporter;
 import com.portal.client.service.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
@@ -21,6 +19,8 @@ import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.util.jsf.ExternalServerExceptionFacesHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.FinancialBondsPage;
+import com.portal.client.vo.FinancialBondsPage.FinacialBondsDTO;
 
 @Named
 @RequestScoped
@@ -61,7 +61,7 @@ public class FinancialBondsController implements Serializable {
 			titles = new FinancialTitleLazyDataModel();
 
 		try {
-			Optional<FinancialBondsPageDTO> optional = bondsService.find(page, 15);
+			Optional<FinancialBondsPage> optional = bondsService.find(page, 15);
 			optional.ifPresentOrElse(f -> {
 				LazyPopulateUtils.populate(titles, f);
 			}, () -> {

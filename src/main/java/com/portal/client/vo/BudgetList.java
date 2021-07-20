@@ -1,4 +1,4 @@
-package com.portal.client.dto;
+package com.portal.client.vo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

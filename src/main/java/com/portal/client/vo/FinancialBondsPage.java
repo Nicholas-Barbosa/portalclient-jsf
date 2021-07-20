@@ -1,4 +1,4 @@
-package com.portal.client.dto;
+package com.portal.client.vo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,9 +10,10 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.FinancialBondsPageDTO.FinacialBondsDTO;
+import com.portal.client.dto.BasePageDTO;
+import com.portal.client.vo.FinancialBondsPage.FinacialBondsDTO;
 
-public class FinancialBondsPageDTO extends BasePageDTO<FinacialBondsDTO> {
+public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 
 	/**
 	 * 
@@ -21,7 +22,7 @@ public class FinancialBondsPageDTO extends BasePageDTO<FinacialBondsDTO> {
 	private Set<FinacialBondsDTO> financialBonds;
 
 	@JsonbCreator
-	public FinancialBondsPageDTO(@JsonbProperty("total_items") int totalItems,
+	public FinancialBondsPage(@JsonbProperty("total_items") int totalItems,
 			@JsonbProperty("total_page") int totalPage, @JsonbProperty("page_size") int pageSize,
 			@JsonbProperty("page") int page, @JsonbProperty("titles") Set<FinacialBondsDTO> titles) {
 		super(page, pageSize, totalItems, totalPage);

@@ -30,12 +30,6 @@ import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerAddress;
-import com.portal.client.dto.CustomerContact;
-import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.CustomerPageDTO;
-import com.portal.client.dto.CustomerPurchaseInfo;
 import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
@@ -44,12 +38,9 @@ import com.portal.client.dto.Item;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ItemValues;
 import com.portal.client.dto.Order;
-import com.portal.client.dto.Product;
-import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
@@ -67,6 +58,15 @@ import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.ExternalServerExceptionFacesHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.Customer;
+import com.portal.client.vo.CustomerAddress;
+import com.portal.client.vo.CustomerContact;
+import com.portal.client.vo.CustomerOnOrder;
+import com.portal.client.vo.CustomerPageDTO;
+import com.portal.client.vo.CustomerPurchaseInfo;
+import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductPageDTO;
+import com.portal.client.vo.CustomerOnOrder.CustomerType;
 
 @Named
 @ViewScoped
@@ -402,7 +402,7 @@ public class BudgetController implements Serializable {
 	private void getOptionalProduct(Optional<Product> product) {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
-			com.portal.client.dto.ProductPrice productPrice = presentProduct.getPrice();
+			com.portal.client.vo.ProductPrice productPrice = presentProduct.getPrice();
 			previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
 					new ItemValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue(),

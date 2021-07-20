@@ -11,8 +11,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 
-import com.portal.client.dto.FinancialBondsPageDTO;
 import com.portal.client.repository.FinancialBondsRepository;
+import com.portal.client.vo.FinancialBondsPage;
 
 @ApplicationScoped
 public class FinancialBondsServiceImpl implements FinancialBondsService, Serializable {
@@ -31,7 +31,7 @@ public class FinancialBondsServiceImpl implements FinancialBondsService, Seriali
 	}
 
 	@Override
-	public Optional<FinancialBondsPageDTO> find(int page, int pageSize)
+	public Optional<FinancialBondsPage> find(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		try {
 			return Optional.of(repository.find(page, pageSize));
@@ -41,7 +41,7 @@ public class FinancialBondsServiceImpl implements FinancialBondsService, Seriali
 	}
 
 	@Override
-	public Optional<FinancialBondsPageDTO> findByCustomerCodeStore(int page, int pageSize, String code, String store)
+	public Optional<FinancialBondsPage> findByCustomerCodeStore(int page, int pageSize, String code, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		try {
 			return Optional.of(repository.findByCustomerCodeStore(page, pageSize, code, store));

@@ -2,6 +2,8 @@ package com.portal.client.dto;
 
 import java.util.Collection;
 
+import com.portal.client.vo.Page;
+
 public class BasePageDTO<T> implements Page<T> {
 
 	/**

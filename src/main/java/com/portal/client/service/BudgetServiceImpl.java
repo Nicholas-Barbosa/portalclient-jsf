@@ -13,7 +13,6 @@ import java.util.concurrent.TimeoutException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BudgetListPage;
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Item;
@@ -24,6 +23,7 @@ import com.portal.client.microsoft.excel.reader.RowObject;
 import com.portal.client.microsoft.excel.reader.XssfReader;
 import com.portal.client.microsoft.excel.reader.XssfReaderBuilder;
 import com.portal.client.repository.BudgetRepository;
+import com.portal.client.vo.BudgetListPage;
 
 @ApplicationScoped
 public class BudgetServiceImpl implements BudgetService {

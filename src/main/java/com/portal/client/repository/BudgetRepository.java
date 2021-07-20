@@ -6,7 +6,7 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
-import com.portal.client.dto.BudgetListPage;
+import com.portal.client.vo.BudgetListPage;
 
 public interface BudgetRepository extends Serializable {
 

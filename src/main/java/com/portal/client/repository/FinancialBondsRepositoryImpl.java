@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.client.rest.auth.AuthenticatedRestClient;
-import com.portal.client.dto.FinancialBondsPageDTO;
+import com.portal.client.vo.FinancialBondsPage;
 
 public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 
@@ -21,24 +21,24 @@ public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 	private AuthenticatedRestClient restClient;
 
 	@Override
-	public FinancialBondsPageDTO find(int page, int pageSize)
+	public FinancialBondsPage find(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
-		return restClient.get("ORCAMENTO_API", "titles", FinancialBondsPageDTO.class, queryParams, null,
+		return restClient.get("ORCAMENTO_API", "titles", FinancialBondsPage.class, queryParams, null,
 				MediaType.APPLICATION_JSON);
 	}
 
 	@Override
-	public FinancialBondsPageDTO findByCustomerCodeStore(int page, int pageSize, String code, String store)
+	public FinancialBondsPage findByCustomerCodeStore(int page, int pageSize, String code, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
-		return restClient.get("ORCAMENTO_API", "titles/{code}/loja/{store}", FinancialBondsPageDTO.class, queryParams,
+		return restClient.get("ORCAMENTO_API", "titles/{code}/loja/{store}", FinancialBondsPage.class, queryParams,
 				Map.of("code", code, "store", store), MediaType.APPLICATION_JSON);
 	}
 

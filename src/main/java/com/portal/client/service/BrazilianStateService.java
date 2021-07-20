@@ -2,7 +2,7 @@ package com.portal.client.service;
 
 import java.util.List;
 
-import com.portal.client.dto.BrazilianState;
+import com.portal.client.vo.BrazilianState;
 
 public interface BrazilianStateService {
 

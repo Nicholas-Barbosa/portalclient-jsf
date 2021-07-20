@@ -6,11 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.Item;
 import com.portal.client.dto.ItemValues;
 import com.portal.client.dto.Order;
+import com.portal.client.vo.Customer;
+import com.portal.client.vo.CustomerOnOrder;
 
 public class OrderJasper implements Serializable {
 

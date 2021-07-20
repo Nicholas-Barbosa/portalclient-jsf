@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.client.rest.auth.AuthenticatedRestClient;
-import com.portal.client.dto.BudgetListPage;
+import com.portal.client.vo.BudgetListPage;
 
 @ApplicationScoped
 public class BudgetRepositoryImpl implements BudgetRepository {

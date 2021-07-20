@@ -15,10 +15,10 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.client.rest.auth.AuthenticatedRestClient;
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.NoPageCustomerResponseDTO;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.vo.Customer;
+import com.portal.client.vo.CustomerPageDTO;
 
 @ApplicationScoped
 public class CustomerRepositoryImpl implements CustomerRepository {

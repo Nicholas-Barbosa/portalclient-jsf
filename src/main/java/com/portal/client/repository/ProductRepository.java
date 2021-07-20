@@ -7,9 +7,9 @@ import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
-import com.portal.client.dto.Product;
-import com.portal.client.dto.ProductJsonWrapper;
-import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductPage;
+import com.portal.client.vo.ProductPageDTO;
 
 public interface ProductRepository {
 
@@ -22,9 +22,9 @@ public interface ProductRepository {
 	Optional<Product> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	Future<ProductJsonWrapper> findByCodeAsync(String code, String customerCode, String store)
+	Future<ProductPage> findByCodeAsync(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	Future<ProductJsonWrapper> findByCodeForProspectAsync(String code, String state, String sellerType)
+	Future<ProductPage> findByCodeForProspectAsync(String code, String state, String sellerType)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 }

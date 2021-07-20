@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.portal.client.vo.CustomerOnOrder;
+
 public class Order {
 
 	private CustomerOnOrder customerOnOrder;

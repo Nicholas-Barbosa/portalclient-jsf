@@ -14,11 +14,11 @@ import javax.inject.Inject;
 
 import com.google.cloud.storage.Blob;
 import com.portal.client.cdi.qualifier.ProductBucket;
-import com.portal.client.dto.Product;
-import com.portal.client.dto.ProductJsonWrapper;
-import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.google.cloud.storage.BucketClient;
 import com.portal.client.repository.ProductRepository;
+import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductPage;
+import com.portal.client.vo.ProductPageDTO;
 
 @ApplicationScoped
 public class ProductServiceImpl implements ProductService {
@@ -45,9 +45,9 @@ public class ProductServiceImpl implements ProductService {
 	public Optional<Product> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
-		Future<ProductJsonWrapper> ftProduct = productRepository.findByCodeAsync(code, customerCode, store);
+		Future<ProductPage> ftProduct = productRepository.findByCodeAsync(code, customerCode, store);
 		try {
-			ProductJsonWrapper response = ftProduct.get();
+			ProductPage response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
 				Product product = response.getProducts().get(0);
@@ -111,9 +111,9 @@ public class ProductServiceImpl implements ProductService {
 	public Optional<Product> findByCodeForProspect(String code, String state, String sellerType)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
-		Future<ProductJsonWrapper> ftProduct = productRepository.findByCodeForProspectAsync(code, state, sellerType);
+		Future<ProductPage> ftProduct = productRepository.findByCodeForProspectAsync(code, state, sellerType);
 		try {
-			ProductJsonWrapper response = ftProduct.get();
+			ProductPage response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
 				Product product = response.getProducts().get(0);

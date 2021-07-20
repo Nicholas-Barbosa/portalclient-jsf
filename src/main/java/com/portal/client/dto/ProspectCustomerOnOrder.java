@@ -2,6 +2,8 @@ package com.portal.client.dto;
 
 import javax.validation.constraints.NotEmpty;
 
+import com.portal.client.vo.CustomerOnOrder;
+
 @NotEmpty
 public class ProspectCustomerOnOrder extends CustomerOnOrder {
 
