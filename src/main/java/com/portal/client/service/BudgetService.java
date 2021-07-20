@@ -11,12 +11,12 @@ import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Item;
 import com.portal.client.dto.Order;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.vo.BudgetListPage;
+import com.portal.client.vo.BudgetPage;
 import com.portal.client.vo.CustomerOnOrder;
 
 public interface BudgetService extends ServiceSerializable {
 
-	BudgetListPage findAll(int page, int pageSize)
+	BudgetPage findAll(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
 	/**

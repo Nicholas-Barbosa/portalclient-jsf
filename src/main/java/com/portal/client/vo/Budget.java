@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class BudgetList {
+public class Budget {
 
 	private final String customerCode;
 	private final String customerStore;
@@ -16,7 +16,7 @@ public class BudgetList {
 	private final BigDecimal stValue;
 
 	@JsonbCreator
-	public BudgetList(@JsonbProperty("cliente_code") String customerCode,
+	public Budget(@JsonbProperty("cliente_code") String customerCode,
 			@JsonbProperty("store") String customerStore, @JsonbProperty("budget_code") String budgetCode,
 			@JsonbProperty("creation_date") String createdAt, @JsonbProperty("st_value") BigDecimal stValue) {
 		super();

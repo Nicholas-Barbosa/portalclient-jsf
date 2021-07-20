@@ -7,7 +7,7 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class BudgetListPage implements Page<BudgetList> {
+public class BudgetPage implements Page<Budget> {
 
 	/**
 	 * 
@@ -18,12 +18,12 @@ public class BudgetListPage implements Page<BudgetList> {
 	private final int totalPage;
 	private final int pageSize;
 	private final int page;
-	private final List<BudgetList> budgets;
+	private final List<Budget> budgets;
 
 	@JsonbCreator
-	public BudgetListPage(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPage,
+	public BudgetPage(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPage,
 			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
-			@JsonbProperty("budget") List<BudgetList> budgets) {
+			@JsonbProperty("budget") List<Budget> budgets) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPage = totalPage;
@@ -57,7 +57,7 @@ public class BudgetListPage implements Page<BudgetList> {
 	}
 
 	@Override
-	public Collection<BudgetList> getContent() {
+	public Collection<Budget> getContent() {
 		// TODO Auto-generated method stub
 		return new ArrayList<>(budgets);
 	}

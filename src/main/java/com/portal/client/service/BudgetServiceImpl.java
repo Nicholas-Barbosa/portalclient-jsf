@@ -23,7 +23,7 @@ import com.portal.client.microsoft.excel.reader.RowObject;
 import com.portal.client.microsoft.excel.reader.XssfReader;
 import com.portal.client.microsoft.excel.reader.XssfReaderBuilder;
 import com.portal.client.repository.BudgetRepository;
-import com.portal.client.vo.BudgetListPage;
+import com.portal.client.vo.BudgetPage;
 
 @ApplicationScoped
 public class BudgetServiceImpl implements BudgetService {
@@ -45,7 +45,7 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public BudgetListPage findAll(int page, int pageSize)
+	public BudgetPage findAll(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		return budgetRepository.findAll(page, pageSize);
 

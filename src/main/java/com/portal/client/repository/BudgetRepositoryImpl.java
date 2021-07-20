@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.cdi.qualifier.OAuth2RestAuth;
 import com.portal.client.client.rest.auth.AuthenticatedRestClient;
-import com.portal.client.vo.BudgetListPage;
+import com.portal.client.vo.BudgetPage;
 
 @ApplicationScoped
 public class BudgetRepositoryImpl implements BudgetRepository {
@@ -34,8 +34,8 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public BudgetListPage findAll(int page, int pageSize) throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
-		return restClient.get("ORCAMENTO_API", "budgets", BudgetListPage.class,
+	public BudgetPage findAll(int page, int pageSize) throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+		return restClient.get("ORCAMENTO_API", "budgets", BudgetPage.class,
 				Map.of("page", page, "pageSize", pageSize), null, MediaType.APPLICATION_JSON);
 	}
 
