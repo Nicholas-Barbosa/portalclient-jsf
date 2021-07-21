@@ -10,15 +10,22 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.cdi.qualifier.OAuth2RestAuth;
-import com.portal.client.client.rest.auth.AuthenticatedRestClient;
+import com.portal.client.client.rest.RestClient;
+import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.security.api.ServerAPI;
 import com.portal.client.vo.FinancialBondsPage;
 
 public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 
+	private RestClient restClient;
+	private UserSessionAPIManager apiManager;
+
 	@Inject
-	@OAuth2RestAuth
-	private AuthenticatedRestClient restClient;
+	public FinancialBondsRepositoryImpl(RestClient restClient, UserSessionAPIManager endpointBuilder) {
+		super();
+		this.restClient = restClient;
+		this.apiManager = endpointBuilder;
+	}
 
 	@Override
 	public FinancialBondsPage find(int page, int pageSize)
@@ -27,8 +34,10 @@ public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
-		return restClient.get("ORCAMENTO_API", "titles", FinancialBondsPage.class, queryParams, null,
-				MediaType.APPLICATION_JSON);
+
+		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
+		return restClient.get(apiManager.buildEndpoint(server, "titles"), server.getToken(), server.getTokenPrefix(),
+				FinancialBondsPage.class, queryParams, null, MediaType.APPLICATION_JSON);
 	}
 
 	@Override
@@ -38,8 +47,11 @@ public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
-		return restClient.get("ORCAMENTO_API", "titles/{code}/loja/{store}", FinancialBondsPage.class, queryParams,
-				Map.of("code", code, "store", store), MediaType.APPLICATION_JSON);
+
+		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
+		return restClient.get(apiManager.buildEndpoint(server, "titles/{code}/loja/{store}"), server.getToken(),
+				server.getTokenPrefix(), FinancialBondsPage.class, queryParams, Map.of("code", code, "store", store),
+				MediaType.APPLICATION_JSON);
 	}
 
 }

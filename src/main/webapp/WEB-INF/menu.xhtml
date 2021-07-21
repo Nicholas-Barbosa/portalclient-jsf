@@ -36,14 +36,21 @@
 					<p:submenu id="om_homepage"
 						label="#{holdMessageView.getLabel('compras_message')}"
 						icon="pi pi-shopping-cart">
-						<p:menuitem id="om_orcamento"
-							value="#{resourceBundleServiceImpl.getMessage('orcamento_message')}"
-							icon="pi pi-shopping-cart" outcome="budget" />
+						<p:submenu
+							label="#{resourceBundleServiceImpl.getMessage('orcamento_message')}"
+							icon="pi pi-shopping-cart">
+							<p:menuitem 
+								value="#{resourceBundleServiceImpl.getMessage('orcamentos')}"
+								icon="pi pi-list" outcome="budgetList" />
+							<p:menuitem 
+								value="#{resourceBundleServiceImpl.getMessage('novo')}"
+								icon="pi pi-plus" outcome="budget" />
+						</p:submenu>
+
 					</p:submenu>
-					<p:submenu 
-						label="#{holdMessageView.getLabel('financeiro')}"
+					<p:submenu label="#{holdMessageView.getLabel('financeiro')}"
 						icon="pi pi-wallet">
-						<p:menuitem 
+						<p:menuitem
 							value="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
 							icon="pi pi-wallet" outcome="openedTitles" />
 					</p:submenu>

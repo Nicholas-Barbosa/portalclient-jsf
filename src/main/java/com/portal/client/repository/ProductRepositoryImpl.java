@@ -7,6 +7,7 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -17,8 +18,9 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.cdi.qualifier.OAuth2RestAuth;
-import com.portal.client.client.rest.auth.AuthenticatedRestClient;
+import com.portal.client.client.rest.RestClient;
+import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.security.api.ServerAPI;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPage;
 import com.portal.client.vo.ProductPageDTO;
@@ -28,9 +30,15 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	private static final long serialVersionUID = 4463669170628763803L;
 
+	private RestClient restClient;
+	private UserSessionAPIManager apiManager;
+
 	@Inject
-	@OAuth2RestAuth
-	private AuthenticatedRestClient authRestClient;
+	public ProductRepositoryImpl(RestClient restClient, UserSessionAPIManager userSessionAPIManager) {
+		super();
+		this.restClient = restClient;
+		this.apiManager = userSessionAPIManager;
+	}
 
 	@Override
 	public Optional<Product> findByCode(String code, String customerCode, String store)
@@ -39,10 +47,13 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		pathParmas.put("code", code);
 		pathParmas.put("customerCode", customerCode);
 		pathParmas.put("store", store);
+		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
 		try {
-			return Optional
-					.of(authRestClient.get("ORCAMENTO_API", "products/{code}/client/{customerCode}/store/{store}",
-							ProductPage.class, null, pathParmas, MediaType.APPLICATION_JSON).getProducts().get(0));
+			return Optional.of(restClient
+					.get(apiManager.buildEndpoint(server, "products/{code}/client/{customerCode}/store/{store}"),
+							server.getToken(), server.getTokenPrefix(), ProductPage.class, null, pathParmas,
+							MediaType.APPLICATION_JSON)
+					.getProducts().get(0));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}
@@ -51,17 +62,16 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	@Override
 	public Future<ProductPage> findByCodeAsync(String code, String customerCode, String store)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+			throws ExecutionException {
 		Map<String, Object> pathParams = new HashMap<>();
 		pathParams.put("code", code);
 		pathParams.put("customerCode", customerCode);
 		pathParams.put("store", store);
-		try {
-			return authRestClient.getAsync("ORCAMENTO_API", "products/{code}/client/{customerCode}/store/{store}",
-					ProductPage.class, null, pathParams, MediaType.APPLICATION_JSON);
-		} catch (NotFoundException e) {
-			return null;
-		}
+		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
+		return restClient.getAsync(
+				apiManager.buildEndpoint(server, "products/{code}/client/{customerCode}/store/{store}"),
+				server.getToken(), server.getTokenPrefix(), ProductPage.class, null, pathParams,
+				MediaType.APPLICATION_JSON);
 	}
 
 	@Override
@@ -69,8 +79,11 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
-		ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.get("ORCAMENTO_API", "products",
-				ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON);
+		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
+
+		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(apiManager.buildEndpoint(server, "products"),
+				server.getToken(), server.getTokenPrefix(), ProductPageDTO.class, queryParams, null,
+				MediaType.APPLICATION_JSON);
 
 		return productPageDto;
 	}
@@ -82,8 +95,10 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", description);
+		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
 		try {
-			ProductPageDTO productPageDto = (ProductPageDTO) authRestClient.get("ORCAMENTO_API", "products",
+			ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(
+					apiManager.buildEndpoint(server, "products"), server.getToken(), server.getTokenPrefix(),
 					ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON);
 			return Optional.of(productPageDto);
 		} catch (NotFoundException e) {
@@ -94,19 +109,17 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	@Override
 	public Future<ProductPage> findByCodeForProspectAsync(String code, String state, String sellerType)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+			throws ExecutionException {
 		Map<String, Object> pathParmas = new HashMap<>();
 		pathParmas.put("code", code);
 
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("state", state);
 		queryParams.put("type", sellerType);
-		try {
-			return authRestClient.getAsync("ORCAMENTO_API", "products/{code}", ProductPage.class,
-					queryParams, pathParmas, MediaType.APPLICATION_JSON);
-		} catch (NotFoundException e) {
-			return null;
-		}
+		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
+		return restClient.getAsync(apiManager.buildEndpoint(server, "products/{code}"), server.getToken(),
+				server.getTokenPrefix(), ProductPage.class, queryParams, pathParmas, MediaType.APPLICATION_JSON);
+
 	}
 
 }

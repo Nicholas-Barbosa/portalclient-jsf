@@ -1,11 +1,17 @@
 package com.portal.client.controller;
 
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.TimeoutException;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.portal.client.service.BudgetService;
+import com.portal.client.ui.lazy.datamodel.BudgetLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
+import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.vo.Budget;
 
 @RequestScoped
@@ -20,6 +26,17 @@ public class BudgetListController {
 	public BudgetListController(BudgetService buService) {
 		super();
 		this.buService = buService;
+	}
+
+	public void loadBudgets() {
+		if (budgets == null)
+			this.budgets = new BudgetLazyDataModel();
+		try {
+			LazyPopulateUtils.populate(budgets, buService.findAll(1, 15));
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public LazyDataModelBase<Budget> getBudgets() {

@@ -6,10 +6,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.SessionScoped;
 
-import com.portal.client.security.api.ExternalApiResource;
+import com.portal.client.security.api.ServerAPI;
 
+/**
+ * All ServerAPI which the current session client has been authenticated.
+ * 
+ * @author nicholas-barbosa
+ *
+ */
 @SessionScoped
-public class UserManagerProperties implements Serializable {
+public class UserSessionAPIManager implements Serializable {
 
 	/**
 	 * 
@@ -17,16 +23,15 @@ public class UserManagerProperties implements Serializable {
 	private static final long serialVersionUID = 6271296356737609480L;
 
 	private String name;
-	private final Map<String, ExternalApiResource> authenticatedServices = new ConcurrentHashMap<>();
+	private final Map<String, ServerAPI> authenticatedServices = new ConcurrentHashMap<>();
 
-	
 	/**
 	 * Register this service to the hash table.
 	 * 
 	 * @param key
 	 * @param service
 	 */
-	public void registerAuthenticatedService(String key, ExternalApiResource service) {
+	public void registerAuthenticatedService(String key, ServerAPI service) {
 		this.authenticatedServices.putIfAbsent(key, service);
 	}
 
@@ -45,7 +50,7 @@ public class UserManagerProperties implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public ExternalApiResource findServiceApi(String key) {
+	public ServerAPI getAPI(String key) {
 		return this.authenticatedServices.get(key);
 	}
 
@@ -73,5 +78,13 @@ public class UserManagerProperties implements Serializable {
 
 	public boolean isAuthenticated() {
 		return !authenticatedServices.isEmpty();
+	}
+	
+	public String buildEndpoint(String serverKey, String endpoint) {
+		return new StringBuilder(getAPI(serverKey).getBasePath()).append("/" + endpoint).toString();
+	}
+
+	public String buildEndpoint(ServerAPI serverAPI, String endpoint) {
+		return new StringBuilder(serverAPI.getBasePath()).append("/" + endpoint).toString();
 	}
 }

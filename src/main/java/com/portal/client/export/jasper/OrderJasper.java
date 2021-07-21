@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.client.dto.Item;
-import com.portal.client.dto.ItemValues;
-import com.portal.client.dto.Order;
+import com.portal.client.dto.ItemBudgetRequest;
+import com.portal.client.dto.ItemBuRequestValues;
+import com.portal.client.dto.BudgetRequest;
 import com.portal.client.vo.Customer;
 import com.portal.client.vo.CustomerOnOrder;
 
@@ -39,7 +39,7 @@ public class OrderJasper implements Serializable {
 		this.items = new HashSet<>(items);
 	}
 
-	public OrderJasper(Order budgetDTO) {
+	public OrderJasper(BudgetRequest budgetDTO) {
 		this.liquidValue = budgetDTO.getLiquidValue();
 		this.grossValue = budgetDTO.getGrossValue();
 		this.stTotal = budgetDTO.getStValue();
@@ -173,12 +173,12 @@ public class OrderJasper implements Serializable {
 
 		}
 
-		public OrderItemJasper(Item item) {
+		public OrderItemJasper(ItemBudgetRequest item) {
 			super();
 			this.commercialCode = item.getProduct().getCommercialCode();
 			this.line = item.line();
 
-			ItemValues values = item.getValues();
+			ItemBuRequestValues values = item.getValues();
 			this.quantity = values.getQuantity();
 			this.unitValue = values.getUnitValueWithoutDiscount();
 			this.totalValue = this.unitValue.multiply(new BigDecimal(this.quantity));

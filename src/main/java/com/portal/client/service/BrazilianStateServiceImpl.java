@@ -16,7 +16,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.cdi.qualifier.Simple;
 import com.portal.client.client.rest.RestClient;
 import com.portal.client.vo.BrazilianState;
 
@@ -34,7 +33,7 @@ public class BrazilianStateServiceImpl implements BrazilianStateService, Seriali
 	private final RestClient restClient;
 
 	@Inject
-	public BrazilianStateServiceImpl(@Simple RestClient restClient) {
+	public BrazilianStateServiceImpl(RestClient restClient) {
 		super();
 		this.restClient = restClient;
 		loadStates();

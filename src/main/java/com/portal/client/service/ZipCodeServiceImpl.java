@@ -13,7 +13,6 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.cdi.qualifier.Simple;
 import com.portal.client.client.rest.RestClient;
 import com.portal.client.pojo.ZipCode;
 import com.portal.client.resources.ConfigPropertyResolver;
@@ -31,7 +30,7 @@ public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 	private ConfigPropertyResolver configPropertiesResolver;
 
 	@Inject
-	public ZipCodeServiceImpl(@Simple RestClient restClient, ConfigPropertyResolver resourcesReader) {
+	public ZipCodeServiceImpl(RestClient restClient, ConfigPropertyResolver resourcesReader) {
 		super();
 		this.restClient = restClient;
 		this.configPropertiesResolver = resourcesReader;

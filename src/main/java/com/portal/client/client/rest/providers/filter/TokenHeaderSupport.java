@@ -10,17 +10,20 @@ import javax.ws.rs.ext.Provider;
 
 @Provider
 @Priority(10)
-public final class OAuth2Support implements ClientRequestFilter {
+public final class TokenHeaderSupport implements ClientRequestFilter {
 
 	private final String token;
 
-	public OAuth2Support(String token) {
+	private final String tokenPrefix;
+
+	public TokenHeaderSupport(String token, String tokenPrefix) {
 		super();
 		this.token = token;
+		this.tokenPrefix = tokenPrefix;
 	}
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
-		requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, "Bearer " + this.token);
+		requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + this.token);
 	}
 }

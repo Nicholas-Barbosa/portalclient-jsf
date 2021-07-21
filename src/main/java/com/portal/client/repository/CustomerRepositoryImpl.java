@@ -13,10 +13,11 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.cdi.qualifier.OAuth2RestAuth;
-import com.portal.client.client.rest.auth.AuthenticatedRestClient;
+import com.portal.client.client.rest.RestClient;
 import com.portal.client.dto.NoPageCustomerResponseDTO;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.security.api.ServerAPI;
 import com.portal.client.vo.Customer;
 import com.portal.client.vo.CustomerPageDTO;
 
@@ -27,41 +28,46 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	 * 
 	 */
 	private static final long serialVersionUID = -8042300828676622038L;
-	private final AuthenticatedRestClient restClient;
+	private final RestClient restClient;
+	private final UserSessionAPIManager apiManager;
 
 	public CustomerRepositoryImpl() {
-		this(null);
+		this(null, null);
 	}
 
 	@Inject
-	public CustomerRepositoryImpl(@OAuth2RestAuth AuthenticatedRestClient restClient) {
+	public CustomerRepositoryImpl(RestClient restClient, UserSessionAPIManager endpointBuilder) {
 		super();
 		this.restClient = restClient;
+		this.apiManager = endpointBuilder;
 	}
 
 	@Override
 	public CustomerPageDTO find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
 		queryParms.put("pageSize", pageSize);
-
-		CustomerPageDTO customerPage = restClient.get("ORCAMENTO_API", "clients", CustomerPageDTO.class, queryParms,
-				null, MediaType.APPLICATION_JSON);
+		ServerAPI api = apiManager.getAPI("ORCAMENTO_API");
+		CustomerPageDTO customerPage = restClient.get(apiManager.buildEndpoint("ORCAMENTO_API", "client"),
+				api.getToken(), api.getTokenPrefix(), CustomerPageDTO.class, queryParms, null,
+				MediaType.APPLICATION_JSON);
 		return customerPage;
 
 	}
 
 	@Override
 	public Optional<Customer> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
-			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		try {
 			Map<String, Object> pathParams = getMapInstance();
 			pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
 			pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
-			return Optional.of(restClient.get("ORCAMENTO_API", "clients/{code}/loja/{codeStore}",
-					NoPageCustomerResponseDTO.class, null, pathParams, MediaType.APPLICATION_JSON).getClients().get(0));
+			ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
+			return Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients/{code}/loja/{codeStore}"),
+					serverAPI.getToken(), serverAPI.getTokenPrefix(), NoPageCustomerResponseDTO.class, null, pathParams,
+					MediaType.APPLICATION_JSON).getClients().get(0));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}
@@ -69,14 +75,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
 	@Override
 	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException,SocketException {
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		try {
 			Map<String, Object> queryParams = getMapInstance();
 			queryParams.put("page", page);
 			queryParams.put("pageSize", pageSize);
 			queryParams.put("searchKey", name);
-			Optional<CustomerPageDTO> cPage = Optional.of(restClient.get("ORCAMENTO_API", "clients",
-					CustomerPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON));
+			ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
+			Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients"),
+					serverAPI.getToken(), serverAPI.getTokenPrefix(), CustomerPageDTO.class, queryParams, null,
+					MediaType.APPLICATION_JSON));
 
 			return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();
 		} catch (NotFoundException e) {

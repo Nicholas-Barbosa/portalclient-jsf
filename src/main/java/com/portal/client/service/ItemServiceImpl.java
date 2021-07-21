@@ -6,9 +6,9 @@ import java.util.Collection;
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.constraints.NotNull;
 
-import com.portal.client.dto.Item;
+import com.portal.client.dto.ItemBudgetRequest;
 import com.portal.client.dto.ItemLineDiscountForm;
-import com.portal.client.dto.ItemValues;
+import com.portal.client.dto.ItemBuRequestValues;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.util.MathUtils;
 
@@ -16,7 +16,7 @@ import com.portal.client.util.MathUtils;
 public class ItemServiceImpl implements ItemService {
 
 	@Override
-	public void calculateDueQuantity(Item item, int quantity) throws ItemQuantityNotAllowed {
+	public void calculateDueQuantity(ItemBudgetRequest item, int quantity) throws ItemQuantityNotAllowed {
 		if (checkQuantityPolicies(item, quantity)) {
 			calculateTotals(item, quantity);
 			item.getValues().setQuantity(quantity);
@@ -27,9 +27,9 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public void applyGlobalDiscount(@NotNull Collection<? extends Item> items, BigDecimal discount) {
+	public void applyGlobalDiscount(@NotNull Collection<? extends ItemBudgetRequest> items, BigDecimal discount) {
 		items.parallelStream().forEach(i -> {
-			ItemValues price = i.getValues();
+			ItemBuRequestValues price = i.getValues();
 
 			BigDecimal[] unitValues = this.applyDiscount(i, discount);
 			price.setUnitGrossValue(unitValues[0]);
@@ -48,11 +48,11 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public void applyLineDiscount(@NotNull Collection<? extends Item> items, ItemLineDiscountForm itemLineDiscount) {
+	public void applyLineDiscount(@NotNull Collection<? extends ItemBudgetRequest> items, ItemLineDiscountForm itemLineDiscount) {
 		BigDecimal discount = itemLineDiscount.getDiscount();
 		String line = itemLineDiscount.getLine();
 		items.parallelStream().filter(i -> i.line().equals(line)).forEach(i -> {
-			ItemValues price = i.getValues();
+			ItemBuRequestValues price = i.getValues();
 
 			price.setUnitGrossValue(
 					MathUtils.subtractValueByPercentage(discount, price.getUnitGrossValueFromGBDiscount()));
@@ -65,8 +65,8 @@ public class ItemServiceImpl implements ItemService {
 
 	}
 
-	private void calculateTotals(Item item) {
-		ItemValues values = item.getValues();
+	private void calculateTotals(ItemBudgetRequest item) {
+		ItemBuRequestValues values = item.getValues();
 		values.setTotalGrossValue(
 				MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitGrossValue()));
 		values.setTotalStValue(
@@ -74,15 +74,15 @@ public class ItemServiceImpl implements ItemService {
 		values.setTotalValue(MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitValue()));
 	}
 
-	private void calculateTotals(Item item, int quantity) {
-		ItemValues prices = item.getValues();
+	private void calculateTotals(ItemBudgetRequest item, int quantity) {
+		ItemBuRequestValues prices = item.getValues();
 		prices.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitGrossValue()));
 		prices.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitStValue()));
 		prices.setTotalValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitValue()));
 	}
 
-	private BigDecimal[] applyDiscount(Item item, BigDecimal discount) {
-		ItemValues price = item.getValues();
+	private BigDecimal[] applyDiscount(ItemBudgetRequest item, BigDecimal discount) {
+		ItemBuRequestValues price = item.getValues();
 		BigDecimal values[] = new BigDecimal[3];
 		BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(discount,
 				price.getUnitGrossValueWithoutDiscount());
@@ -95,7 +95,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public boolean checkQuantityPolicies(Item item, int quantity) {
+	public boolean checkQuantityPolicies(ItemBudgetRequest item, int quantity) {
 		// TODO Auto-generated method stub
 		return quantity % item.getProduct().getMultiple() == 0 ? true : false;
 	}

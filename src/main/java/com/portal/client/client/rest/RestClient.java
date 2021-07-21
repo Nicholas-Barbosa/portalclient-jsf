@@ -1,13 +1,11 @@
 package com.portal.client.client.rest;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.net.URLEncoder;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -16,56 +14,32 @@ import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.Response;
 
-import com.portal.client.client.rest.providers.filter.ProcessingExceptionLauncherFilter;
+import com.portal.client.client.rest.providers.filter.WebApplicationExceptionExceptionLauncherFilter;
 import com.portal.client.client.rest.providers.message.reader.JsonMessageReader;
 import com.portal.client.client.rest.providers.message.writer.JsonMessageWriter;
-import com.portal.client.exception.IllegalResponseStatusException;
 
-public interface RestClient extends Serializable {
+public interface RestClient {
 
-	default <T> T get(String uri, Class<T> responseType, Map<String, Object> queryParams,
+	<T> T get(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
+			String media) throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
+
+	<T> Future<T> getAsync(String uri, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, String media) throws ExecutionException;
+
+	<T> T get(String uri, String token, String tokenPrefix, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, String media)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
-		Client client = null;
-		try {
-			client = getClientFollowingMediaType(media);
-			WebTarget resource = client.target(uri);
-			if (pathParams != null) {
-				resource = resource.resolveTemplatesFromEncoded(pathParams);
-			}
-			if (queryParams != null) {
-				Set<String> paramsInSet = queryParams.keySet();
-				for (String st : paramsInSet) {
-					try {
-						resource = resource.queryParam(st, URLEncoder.encode(queryParams.get(st).toString(), "UTF-8"));
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-			}
-			Response rawResponse = resource.request().accept(media).get();
-			T t = rawResponse.readEntity(responseType);
-			return t;
-		} catch (ProcessingException e) {
-			if (e.getCause() instanceof IllegalResponseStatusException) {
-				return this.get(uri, responseType, queryParams, pathParams, media);
-			}
-			checkProcessingException(e);
-			throw e;
-		} finally {
-			if (client != null)
-				client.close();
-		}
-
-	}
+	<T> Future<T> getAsync(String uri, String token, String tokenPrefix, Class<T> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ExecutionException;
 
 	<T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
 			E requestBody, String mediaType)
+			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
+
+	<T, E> T post(String uri, String token, String tokenPrefix, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, E requestBody, String mediaType)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
 	default Client getClientFollowingMediaType(String media) {
@@ -73,7 +47,7 @@ public interface RestClient extends Serializable {
 				? ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
 						.build().register(JsonMessageReader.class).register(JsonMessageWriter.class)
 				: null;
-		client.register(ProcessingExceptionLauncherFilter.class);
+		client.register(WebApplicationExceptionExceptionLauncherFilter.class);
 		return client;
 	}
 

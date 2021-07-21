@@ -23,7 +23,7 @@ import com.portal.client.service.ZipCodeService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.client.util.jsf.ExternalServerExceptionFacesHelper;
+import com.portal.client.util.jsf.ServerApiExceptionFacesHelper;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Customer;
 import com.portal.client.vo.FinancialBondsPage;
@@ -45,7 +45,7 @@ public class CustomerDetailController {
 
 	private LazyDataModelBase<FinacialBondsDTO> titles;
 
-	private ExternalServerExceptionFacesHelper externalExcpetionHelper;
+	private ServerApiExceptionFacesHelper externalExcpetionHelper;
 
 	@Inject
 	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,

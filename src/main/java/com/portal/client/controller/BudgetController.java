@@ -28,23 +28,24 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
+import com.portal.client.dto.BudgetRequest;
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
-import com.portal.client.dto.Item;
+import com.portal.client.dto.ItemBudgetRequest;
 import com.portal.client.dto.ItemLineDiscountForm;
-import com.portal.client.dto.ItemValues;
-import com.portal.client.dto.Order;
+import com.portal.client.dto.ItemBuRequestValues;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
-import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
+import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.export.OrderExport;
+import com.portal.client.service.BudgetRequestService;
 import com.portal.client.service.BudgetService;
 import com.portal.client.service.CustomerService;
 import com.portal.client.service.ItemService;
@@ -56,17 +57,17 @@ import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyOperations;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
-import com.portal.client.util.jsf.ExternalServerExceptionFacesHelper;
+import com.portal.client.util.jsf.ServerApiExceptionFacesHelper;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Customer;
 import com.portal.client.vo.CustomerAddress;
 import com.portal.client.vo.CustomerContact;
 import com.portal.client.vo.CustomerOnOrder;
+import com.portal.client.vo.CustomerOnOrder.CustomerType;
 import com.portal.client.vo.CustomerPageDTO;
 import com.portal.client.vo.CustomerPurchaseInfo;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPageDTO;
-import com.portal.client.vo.CustomerOnOrder.CustomerType;
 
 @Named
 @ViewScoped
@@ -87,13 +88,15 @@ public class BudgetController implements Serializable {
 
 	private final ClientErrorExceptionController responseController;
 
-	private final ExternalServerExceptionFacesHelper processingExceptionMessageHelper;
+	private final ServerApiExceptionFacesHelper processingExceptionMessageHelper;
 
 	private final ProductService productService;
 
 	private final ItemService itemService;
 
 	private final ZipCodeService cepCervice;
+
+	private final BudgetRequestService buRequestService;
 
 	private LazyDataModelBase<Product> lazyProducts;
 
@@ -118,7 +121,7 @@ public class BudgetController implements Serializable {
 
 	private FindProductByCodeForm findProductByCodeForm;
 
-	private Item previewItem;
+	private ItemBudgetRequest previewItem;
 
 	private byte[] imageToSeeOnDlg;
 
@@ -126,7 +129,7 @@ public class BudgetController implements Serializable {
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
-	private Order budgetDTO;
+	private BudgetRequest budgetDTO;
 
 	private BigDecimal itemDiscountToView;
 
@@ -149,14 +152,14 @@ public class BudgetController implements Serializable {
 	private String cepToSearch;
 
 	public BudgetController() {
-		this(null, null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
-			ExternalServerExceptionFacesHelper processingExceptionMessageHelper, ProductService productService,
-			ItemService itemService, ZipCodeService cep) {
+			ServerApiExceptionFacesHelper processingExceptionMessageHelper, ProductService productService,
+			ItemService itemService, ZipCodeService cep, BudgetRequestService budgetRequestService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
@@ -169,6 +172,7 @@ public class BudgetController implements Serializable {
 		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
 		this.cepCervice = cep;
+		this.buRequestService = budgetRequestService;
 	}
 
 	public void showCustomerDetail(Customer customer) {
@@ -224,7 +228,7 @@ public class BudgetController implements Serializable {
 					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo,
 					contact);
 			prospectCustomer.setCustomer(originCustomer);
-			budgetService.setCustomer(budgetDTO, prospectCustomer);
+			buRequestService.setCustomer(budgetDTO, prospectCustomer);
 			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
 			return;
 		}
@@ -234,7 +238,7 @@ public class BudgetController implements Serializable {
 
 	public void applyGlobalDiscount() {
 		try {
-			budgetService.setDiscount(budgetDTO, globalDiscount);
+			buRequestService.setDiscount(budgetDTO, globalDiscount);
 		} catch (CustomerNotAllowed e) {
 			FacesUtils.fatal(null, "Cliente não autorizado", null);
 			PrimeFaces.current().ajax().update("growl");
@@ -243,15 +247,15 @@ public class BudgetController implements Serializable {
 
 	public void applyLineDiscount() {
 		itemService.applyLineDiscount(budgetDTO.getItems(), itemLineDiscount);
-		budgetService.calculateTotals(budgetDTO);
+		buRequestService.calculateTotals(budgetDTO);
 	}
 
 	public void loadCurrentItemLines() {
-		this.itemLines = budgetDTO.getItems().parallelStream().map(Item::line).collect(Collectors.toSet());
+		this.itemLines = budgetDTO.getItems().parallelStream().map(ItemBudgetRequest::line).collect(Collectors.toSet());
 	}
 
 	public void addPreviewItemToBudget() {
-		budgetService.addItem(budgetDTO, previewItem);
+		buRequestService.addItem(budgetDTO, previewItem);
 		previewItem = null;
 	}
 
@@ -263,13 +267,13 @@ public class BudgetController implements Serializable {
 		calculateItemQuantity(previewItem, previewItemQuantity);
 	}
 
-	public void onRowItemEdit(RowEditEvent<Item> event) {
+	public void onRowItemEdit(RowEditEvent<ItemBudgetRequest> event) {
 		calculateItemQuantity(event.getObject(), onRowItemQuantity);
-		budgetService.calculateTotals(budgetDTO);
+		buRequestService.calculateTotals(budgetDTO);
 		onRowItemQuantity = 1;
 	}
 
-	private void calculateItemQuantity(Item item, int quantity) {
+	private void calculateItemQuantity(ItemBudgetRequest item, int quantity) {
 		try {
 			itemService.calculateDueQuantity(item, quantity);
 		} catch (ItemQuantityNotAllowed e) {
@@ -280,15 +284,14 @@ public class BudgetController implements Serializable {
 	}
 
 	public void previewBudgetXlsxContent() {
-		budgetXlsxPreview = budgetService.previewXlsxContent(budgetImportXlsxForm);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
 		budgetImportXlsxForm.setXlsxStreams(event.getFile().getContent());
 	}
 
-	public void removeItem(Item item) {
-		budgetService.removeItem(budgetDTO, item);
+	public void removeItem(ItemBudgetRequest item) {
+		buRequestService.removeItem(budgetDTO, item);
 	}
 
 	public void showOpenedTitlesPageOnDialog() {
@@ -311,7 +314,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void newBudgetObject() throws InterruptedException {
-		this.budgetDTO = new Order();
+		this.budgetDTO = new BudgetRequest();
 	}
 
 	public void exportOrder() {
@@ -335,7 +338,7 @@ public class BudgetController implements Serializable {
 			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		budgetService.setCustomer(budgetDTO, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
+		buRequestService.setCustomer(budgetDTO, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
 		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
@@ -362,14 +365,9 @@ public class BudgetController implements Serializable {
 				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
 				FacesUtils.addHeaderForResponse("customers-found", false);
 			});
-		} catch (ProcessingException p) {
+		} catch (SocketTimeoutException | SocketException | TimeoutException p) {
 			processingExceptionMessageHelper.displayMessage(p, null);
-		} catch (ClientErrorException e) {
-			FacesUtils.error("customerDTO", resourceBundleService.getMessage("resposta_servidor"),
-					e.getResponse().getEntity().toString());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		} 
 	}
 
 	public void findProductByCode() {
@@ -403,8 +401,8 @@ public class BudgetController implements Serializable {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
 			com.portal.client.vo.ProductPrice productPrice = presentProduct.getPrice();
-			previewItem = new Item(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
-					new ItemValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
+			previewItem = new ItemBudgetRequest(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
+					new ItemBuRequestValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue(),
 							productPrice.getUnitStValue(), productPrice.getUnitValue(),
 							productPrice.getUnitGrossValue()));
@@ -463,7 +461,7 @@ public class BudgetController implements Serializable {
 		this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
 				(short) 1, (short) 2, (short) 0);
 		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
-		this.budgetDTO = new Order();
+		this.budgetDTO = new BudgetRequest();
 		this.itemLines = new HashSet<>();
 		this.itemLineDiscount = new ItemLineDiscountForm();
 		this.prospectCustomerForm = new ProspectCustomerForm();
@@ -534,11 +532,11 @@ public class BudgetController implements Serializable {
 		return findProductByCodeForm;
 	}
 
-	public Item getPreviewItem() {
+	public ItemBudgetRequest getPreviewItem() {
 		return previewItem;
 	}
 
-	public void changePreviewItem(Item previewItem) {
+	public void changePreviewItem(ItemBudgetRequest previewItem) {
 		this.previewItem = previewItem;
 	}
 
@@ -558,7 +556,7 @@ public class BudgetController implements Serializable {
 		return budgetXlsxPreview;
 	}
 
-	public Order getBudgetDTO() {
+	public BudgetRequest getBudgetDTO() {
 		return budgetDTO;
 	}
 

@@ -27,12 +27,15 @@ public class ProductServiceImpl implements ProductService {
 	 * 
 	 */
 	private static final long serialVersionUID = -7904939451132445103L;
-	@Inject
 	private ProductRepository productRepository;
+	private BucketClient bucketClient;
 
 	@Inject
-	@ProductBucket
-	private BucketClient bucketClient;
+	public ProductServiceImpl(ProductRepository productRepository, @ProductBucket BucketClient bucketClient) {
+		super();
+		this.productRepository = productRepository;
+		this.bucketClient = bucketClient;
+	}
 
 	@Override
 	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)
@@ -45,8 +48,8 @@ public class ProductServiceImpl implements ProductService {
 	public Optional<Product> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
-		Future<ProductPage> ftProduct = productRepository.findByCodeAsync(code, customerCode, store);
 		try {
+			Future<ProductPage> ftProduct = productRepository.findByCodeAsync(code, customerCode, store);
 			ProductPage response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
@@ -55,32 +58,21 @@ public class ProductServiceImpl implements ProductService {
 				return Optional.of(product);
 			}
 			ftBlob.cancel(true);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
+		} catch (ExecutionException | InterruptedException e) {
+			Throwable cause = e.getCause();
+			if (cause instanceof SocketTimeoutException)
+				throw (SocketTimeoutException) cause;
+			else if (cause instanceof ConnectException)
+				throw (ConnectException) cause;
+			else if (cause instanceof TimeoutException)
+				throw (TimeoutException) cause;
+			else if (cause instanceof SocketException)
+				throw (SocketException) cause;
 			e.printStackTrace();
 		}
 
 		return Optional.empty();
 	}
-
-//	@Override
-//	public void loadImage(Collection<ProductJsonWrapper> products) {
-//		Stream<Blob> productBlobs = bucketClient.getObjects(products.parallelStream().map(p -> p.getCommercialCode())
-//				.collect(CopyOnWriteArrayList::new, List::add, List::addAll));
-//		Map<String, byte[]> productsBytes = productBlobs.filter(b -> b != null)
-//				.collect(Collectors.toConcurrentMap(k -> {
-//					Path path = Paths.get(k.getName());
-//					String code = removeExtension(path.getFileName().toString());
-//					return code;
-//				}, v -> v.getContent()));
-//
-//		products.parallelStream().forEach(p -> {
-//			ImageInfo imgInfo = p.getInfo().getImageInfo();
-//			imgInfo.setImageStreams(productsBytes.get(p.getCommercialCode()));
-//		});
-//	}
 
 	@Override
 	public void loadImage(Product product) {
@@ -111,8 +103,9 @@ public class ProductServiceImpl implements ProductService {
 	public Optional<Product> findByCodeForProspect(String code, String state, String sellerType)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
-		Future<ProductPage> ftProduct = productRepository.findByCodeForProspectAsync(code, state, sellerType);
+
 		try {
+			Future<ProductPage> ftProduct = productRepository.findByCodeForProspectAsync(code, state, sellerType);
 			ProductPage response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);

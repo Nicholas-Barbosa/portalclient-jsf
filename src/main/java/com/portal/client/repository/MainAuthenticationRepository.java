@@ -6,22 +6,18 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.cdi.qualifier.Simple;
 import com.portal.client.client.rest.RestClient;
 import com.portal.client.dto.LoginForm;
 import com.portal.client.dto.LoginGssResponseDTO;
 import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.security.UserManagerProperties;
-import com.portal.client.security.api.ExternalApiResource;
-import com.portal.client.security.api.ExternalOAuth2ApiResource;
-import com.portal.client.security.api.TokenType;
+import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.security.api.ServerAPI;
 
 public class MainAuthenticationRepository implements AuthenticationRepository, Serializable {
 
@@ -30,7 +26,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	 */
 	private static final long serialVersionUID = -6233748924596132481L;
 	private final RestClient restClient;
-	private final UserManagerProperties userPropertyHolder;
+	private final UserSessionAPIManager userPropertyHolder;
 	@EJB
 	private ConfigPropertyResolver propertiesReader;
 
@@ -39,7 +35,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	}
 
 	@Inject
-	public MainAuthenticationRepository(@Simple RestClient restClient, UserManagerProperties userPropertyHolder) {
+	public MainAuthenticationRepository(RestClient restClient, UserSessionAPIManager userPropertyHolder) {
 		super();
 		this.restClient = restClient;
 		this.userPropertyHolder = userPropertyHolder;
@@ -59,17 +55,11 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 
 		LoginGssResponseDTO doPost = restClient.post(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
 				MediaType.APPLICATION_JSON);
-		ExternalApiResource service = this.createServiceApi(loginForm.getUsername(), loginForm.getPassword(),
-				currentEniviromentUrl, "v1/token", TokenType.Bearer, doPost.getAccessToken(), doPost.getRefreshToken(),
-				"password", "default", 1l, TimeUnit.HOURS);
-		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", service);
+		ServerAPI server = new ServerAPI(loginForm.getUsername(), loginForm.getPassword().toCharArray(),
+				currentEniviromentUrl, "v1/token", doPost.getAccessToken(), "Bearer");
+
+		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", server);
 		loginForm = null;
 	}
 
-	private ExternalApiResource createServiceApi(String username, String password, String basePath,
-			String loginEndpoint, com.portal.client.security.api.TokenType token, String accessToken, String refreshToken,
-			String grantType, String scope, Long duration, TimeUnit timeUnit) {
-		return new ExternalOAuth2ApiResource(username, password.toCharArray(), basePath, loginEndpoint, token,
-				accessToken, refreshToken, grantType, scope, duration, timeUnit);
-	}
 }

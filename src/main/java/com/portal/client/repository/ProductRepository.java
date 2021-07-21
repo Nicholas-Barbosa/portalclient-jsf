@@ -4,6 +4,7 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
@@ -22,9 +23,8 @@ public interface ProductRepository {
 	Optional<Product> findByCode(String code, String customerCode, String store)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	Future<ProductPage> findByCodeAsync(String code, String customerCode, String store)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
+	Future<ProductPage> findByCodeAsync(String code, String customerCode, String store) throws ExecutionException;
 
 	Future<ProductPage> findByCodeForProspectAsync(String code, String state, String sellerType)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
+			throws ExecutionException;
 }

@@ -14,16 +14,16 @@ import org.primefaces.PrimeFaces;
 import com.portal.client.service.ResourceBundleService;
 
 @Singleton
-public class ExternalServerExceptionFacesHelper {
+public class ServerApiExceptionFacesHelper {
 
 	private ResourceBundleService resourceBundleService;
 
-	public ExternalServerExceptionFacesHelper() {
+	public ServerApiExceptionFacesHelper() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
-	public ExternalServerExceptionFacesHelper(ResourceBundleService resourceBundleService) {
+	public ServerApiExceptionFacesHelper(ResourceBundleService resourceBundleService) {
 		super();
 		this.resourceBundleService = resourceBundleService;
 	}

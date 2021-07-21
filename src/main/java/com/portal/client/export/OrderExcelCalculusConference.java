@@ -11,8 +11,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.ItemValues;
-import com.portal.client.dto.Order;
+import com.portal.client.dto.ItemBuRequestValues;
+import com.portal.client.dto.BudgetRequest;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.microsoft.excel.writer.WriteRowObject;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
@@ -31,7 +31,7 @@ public class OrderExcelCalculusConference {
 		this.intiColumnsPositions();
 	}
 
-	public byte[] createWorkbook(Order order) {
+	public byte[] createWorkbook(BudgetRequest order) {
 		List<WriteRowObject> rowObjects = new CopyOnWriteArrayList<>();
 		rowObjects.add(createRowForColumns());
 
@@ -39,7 +39,7 @@ public class OrderExcelCalculusConference {
 
 		order.getItems().parallelStream().forEach(i -> {
 			List<WriteCellAttribute> cells = new LinkedList<>();
-			ItemValues values = i.getValues();
+			ItemBuRequestValues values = i.getValues();
 
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("productCode"),
 					i.getProduct().getCommercialCode()));

@@ -19,7 +19,7 @@ import javax.ws.rs.ext.Provider;
 import com.portal.client.exception.IllegalResponseStatusException;
 
 @Provider
-public class ProcessingExceptionLauncherFilter implements ClientResponseFilter {
+public class WebApplicationExceptionExceptionLauncherFilter implements ClientResponseFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
@@ -46,7 +46,11 @@ public class ProcessingExceptionLauncherFilter implements ClientResponseFilter {
 
 	private String readResponse(final InputStream input) {
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
-			return reader.readLine();
+			StringBuilder response = new StringBuilder();
+			String currentLine = null;
+			while ((currentLine = reader.readLine()) != null)
+				response.append(currentLine);
+			return response.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

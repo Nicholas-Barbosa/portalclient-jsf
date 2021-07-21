@@ -13,7 +13,7 @@ import javax.ws.rs.NotAuthorizedException;
 import com.portal.client.dto.LoginForm;
 import com.portal.client.repository.AuthenticationRepository;
 import com.portal.client.service.ResourceBundleService;
-import com.portal.client.util.jsf.ExternalServerExceptionFacesHelper;
+import com.portal.client.util.jsf.ServerApiExceptionFacesHelper;
 import com.portal.client.util.jsf.FacesUtils;
 
 @RequestScoped
@@ -30,7 +30,7 @@ public class LoginController {
 	private String headerDlgMessage;
 	private String previousPage;
 	@EJB
-	private ExternalServerExceptionFacesHelper processingExceptionMessageHelper;
+	private ServerApiExceptionFacesHelper processingExceptionMessageHelper;
 
 	@Inject
 	public LoginController(AuthenticationRepository authenticationRepository,

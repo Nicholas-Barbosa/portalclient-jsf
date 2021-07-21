@@ -5,7 +5,7 @@ import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
 
-import com.portal.client.dto.Item;
+import com.portal.client.dto.ItemBudgetRequest;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 
@@ -16,16 +16,16 @@ public interface ItemService {
 	 * 
 	 * @param item
 	 */
-	void calculateDueQuantity(Item item, int quantity)throws ItemQuantityNotAllowed;
+	void calculateDueQuantity(ItemBudgetRequest item, int quantity)throws ItemQuantityNotAllowed;
 
 	/**
 	 * Calculate unit values based on new discount.
 	 * 
 	 * @param item
 	 */
-	void applyGlobalDiscount(@NotNull Collection<? extends Item> items, BigDecimal discount);
+	void applyGlobalDiscount(@NotNull Collection<? extends ItemBudgetRequest> items, BigDecimal discount);
 
-	void applyLineDiscount(@NotNull Collection<? extends Item> items, ItemLineDiscountForm itemLineDiscount);
+	void applyLineDiscount(@NotNull Collection<? extends ItemBudgetRequest> items, ItemLineDiscountForm itemLineDiscount);
 
-	boolean checkQuantityPolicies(Item item, int quantity);
+	boolean checkQuantityPolicies(ItemBudgetRequest item, int quantity);
 }

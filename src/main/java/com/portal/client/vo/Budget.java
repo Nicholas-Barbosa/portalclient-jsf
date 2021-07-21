@@ -14,17 +14,19 @@ public class Budget {
 	private final String budgetCode;
 	private final LocalDateTime createdAt;
 	private final BigDecimal stValue;
+	private final BigDecimal liquidOrderValue;
 
 	@JsonbCreator
-	public Budget(@JsonbProperty("cliente_code") String customerCode,
-			@JsonbProperty("store") String customerStore, @JsonbProperty("budget_code") String budgetCode,
-			@JsonbProperty("creation_date") String createdAt, @JsonbProperty("st_value") BigDecimal stValue) {
+	public Budget(@JsonbProperty("client_code") String customerCode, @JsonbProperty("store") String customerStore,
+			@JsonbProperty("budget_code") String budgetCode, @JsonbProperty("creation_date") String createdAt,
+			@JsonbProperty("st_value") BigDecimal stValue, @JsonbProperty("liquid_order_value") BigDecimal liquidOrderValue) {
 		super();
 		this.customerCode = customerCode;
 		this.customerStore = customerStore;
 		this.budgetCode = budgetCode;
 		this.createdAt = this.convertToLdt(createdAt);
 		this.stValue = stValue;
+		this.liquidOrderValue = liquidOrderValue;
 	}
 
 	private LocalDateTime convertToLdt(String dateInString) {
@@ -50,6 +52,10 @@ public class Budget {
 
 	public BigDecimal getStValue() {
 		return stValue;
+	}
+
+	public BigDecimal getLiquidOrderValue() {
+		return liquidOrderValue;
 	}
 
 }

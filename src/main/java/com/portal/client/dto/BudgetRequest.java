@@ -6,16 +6,16 @@ import java.util.Set;
 
 import com.portal.client.vo.CustomerOnOrder;
 
-public class Order {
+public class BudgetRequest extends BudgetRequestJsonSerializableFields {
 
 	private CustomerOnOrder customerOnOrder;
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
 	private BigDecimal stValue;
 	private BigDecimal globalDiscount;
-	private final Set<Item> items;
+	private final Set<ItemBudgetRequest> items;
 
-	public Order() {
+	public BudgetRequest() {
 		this.items = new HashSet<>();
 		this.grossValue = BigDecimal.ZERO;
 		this.liquidValue = BigDecimal.ZERO;
@@ -30,6 +30,8 @@ public class Order {
 
 	public void setCustomerOnOrder(CustomerOnOrder customer) {
 		this.customerOnOrder = customer;
+		super.setCustomerCode(customer.getCustomer().getCode());
+		super.setCustomerStore(customer.getCustomer().getStore());
 	}
 
 	public BigDecimal getGrossValue() {
@@ -64,7 +66,7 @@ public class Order {
 		this.globalDiscount = globalDiscount;
 	}
 
-	public Set<Item> getItems() {
+	public Set<ItemBudgetRequest> getItems() {
 		return items;
 	}
 

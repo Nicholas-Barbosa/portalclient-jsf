@@ -13,19 +13,19 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.portal.client.security.UserManagerProperties;
+import com.portal.client.security.UserSessionAPIManager;
 
 @WebFilter(value = "/faces/*")
 public class FacesFilter implements Filter {
 
-	private final UserManagerProperties userPropertyHolder;
+	private final UserSessionAPIManager userPropertyHolder;
 
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
 
 	@Inject
-	public FacesFilter(UserManagerProperties userPropertyHolder) {
+	public FacesFilter(UserSessionAPIManager userPropertyHolder) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
 	}

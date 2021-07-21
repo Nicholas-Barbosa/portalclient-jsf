@@ -9,16 +9,82 @@
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
 	</ui:define>
 
-	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
+	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamentos')}</ui:define>
 
 	<ui:define name="viewname">
 		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/budgetList">#{holdMessageView.getLabel('orcamento_message')}</p:link>
+		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li><p:link outcome="/faces/budgetList">#{resourceBundleServiceImpl.getMessage('orcamentos')}</p:link>
 		</li>
 	</ui:define>
 
 	<ui:define name="content">
+		<div class="p-grid table-demo">
+			<div class="p-col-12">
+				<div id="divListContent" class="card" style="display: none">
+					<h:form>
+						<p:remoteCommand action="#{budgetListController.loadBudgets()}"
+							process="@this" update="dtBudgets" autoRun="true"
+							oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
+						<p:dataTable id="dtBudgets" var="budget"
+							value="#{budgetListController.budgets}" paginator="true"
+							paginatorPosition="bottom" rows="15">
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
+								<h:outputText value="#{budget.budgetCode}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
+								<h:outputText value="#{budget.createdAt}">
+									<f:convertDateTime type="localDateTime" locale="pt_BR"
+										dateStyle="long" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
+								<h:outputText value="#{budget.stValue}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('valor_liquido')}">
+								<h:outputText value="#{budget.liquidOrderValue}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+								<h:outputText value="#{budget.customerCode}" />
+							</p:column>
+						</p:dataTable>
 
+					</h:form>
+				</div>
+				<div id="divLoading" class="card">
+					<p:dataTable var="budget"
+						value="#{dataTableSkeletonObjects.getSkeleton(10)}">
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('valor_liquido')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+							<p:skeleton />
+						</p:column>
+					</p:dataTable>
+
+				</div>
+			</div>
+		</div>
 	</ui:define>
 </ui:composition>
