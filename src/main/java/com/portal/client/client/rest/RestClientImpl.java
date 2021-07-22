@@ -103,7 +103,6 @@ public class RestClientImpl implements RestClient {
 	private Client getClient(String token, String tokenPrefix, String mediaType) {
 		Client client = null;
 		client = getClientFollowingMediaType(mediaType);
-		System.out.println("getting client instance, token " + token + " tokenPrefix " + tokenPrefix);
 		if (token != null && tokenPrefix != null) {
 			TokenHeaderSupport tokenHeaderSupport = new TokenHeaderSupport(token, tokenPrefix);
 			client = client.register(tokenHeaderSupport);

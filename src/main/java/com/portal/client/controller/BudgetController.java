@@ -372,17 +372,18 @@ public class BudgetController implements Serializable {
 	}
 
 	public void onPageCustomers(PageEvent pageEvent) {
-		findCustomerByName(pageEvent.getPage() + 1);
+		findCustomerByName(pageEvent.getPage() + 1, false);
 	}
 
-	public void findCustomerByName(int page) {
+	public void findCustomerByName(int page, boolean updateFormSelectCustomer) {
 		try {
 			Optional<CustomerPageDTO> maybeCustomer = this.customerService.findByName(nameCustomerToFind, page, 5);
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.totalItems() > 1) {
 					FacesUtils.addHeaderForResponse("customers", c.totalItems());
 					LazyPopulateUtils.populate(lazyCustomers, c);
-					FacesUtils.ajaxUpdate("fomrSelectCustomer");
+					if (updateFormSelectCustomer)
+						FacesUtils.ajaxUpdate("fomrSelectCustomer");
 				} else {
 					Customer cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {

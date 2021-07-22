@@ -775,7 +775,7 @@
 												required="true" id="cName" />
 
 											<p:commandButton icon="pi pi-search"
-												action="#{budgetController.findCustomerByName(0)}"
+												action="#{budgetController.findCustomerByName(0,true)}"
 												onstart="PF('dlgSearchCustomer').hide();
 								PF('globalLoadDlg').show()"
 												oncomplete="PF('globalLoadDlg').hide();
