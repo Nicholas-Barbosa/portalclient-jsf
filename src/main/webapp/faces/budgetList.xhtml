@@ -25,12 +25,15 @@
 			<div class="p-col-12">
 				<div id="divListContent" class="card" style="display: none">
 					<h:form>
-						<p:remoteCommand action="#{budgetListController.loadBudgets()}"
+						<p:remoteCommand action="#{budgetListController.loadBudgets(1)}"
 							process="@this" update="dtBudgets" autoRun="true"
 							oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
 						<p:dataTable id="dtBudgets" var="budget"
 							value="#{budgetListController.budgets}" paginator="true"
 							paginatorPosition="bottom" rows="15">
+							<p:ajax event="page" listener="#{budgetListController.onPage}"
+								onstart="$('#divLoading').show();$('#divListContent').hide();"
+								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('orcamento')}">
 								<h:outputText value="#{budget.budgetCode}" />
