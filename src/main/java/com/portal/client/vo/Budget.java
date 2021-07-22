@@ -1,6 +1,7 @@
 package com.portal.client.vo;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -12,14 +13,15 @@ public class Budget {
 	private final String customerCode;
 	private final String customerStore;
 	private final String budgetCode;
-	private final LocalDateTime createdAt;
+	private final LocalDate createdAt;
 	private final BigDecimal stValue;
 	private final BigDecimal liquidOrderValue;
 
 	@JsonbCreator
 	public Budget(@JsonbProperty("client_code") String customerCode, @JsonbProperty("store") String customerStore,
 			@JsonbProperty("budget_code") String budgetCode, @JsonbProperty("creation_date") String createdAt,
-			@JsonbProperty("st_value") BigDecimal stValue, @JsonbProperty("liquid_order_value") BigDecimal liquidOrderValue) {
+			@JsonbProperty("st_value") BigDecimal stValue,
+			@JsonbProperty("liquid_order_value") BigDecimal liquidOrderValue) {
 		super();
 		this.customerCode = customerCode;
 		this.customerStore = customerStore;
@@ -29,9 +31,9 @@ public class Budget {
 		this.liquidOrderValue = liquidOrderValue;
 	}
 
-	private LocalDateTime convertToLdt(String dateInString) {
+	private LocalDate convertToLdt(String dateInString) {
 		return LocalDateTime.parse(dateInString.substring(0, dateInString.lastIndexOf("-")),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
+				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")).toLocalDate();
 	}
 
 	public String getCustomerCode() {
@@ -46,7 +48,7 @@ public class Budget {
 		return budgetCode;
 	}
 
-	public LocalDateTime getCreatedAt() {
+	public LocalDate getCreatedAt() {
 		return createdAt;
 	}
 
