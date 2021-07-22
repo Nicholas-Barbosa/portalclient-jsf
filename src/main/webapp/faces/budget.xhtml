@@ -382,14 +382,12 @@
 
 			<p:dialog modal="true" closable="false" responsive="true"
 				widgetVar="savingBudget">
-				<div class="p-field p-col-12 p-md-6">
-					<h5 class="p-mt-3">Salavando orçamento...</h5>
-					<div class="p-d-flex p-ai-end">
-						<p:skeleton size="2rem" class="p-mr-2" />
-						<p:skeleton size="3rem" class="p-mr-2" />
-						<p:skeleton size="4rem" class="p-mr-2" />
-						<p:skeleton size="5rem" />
-					</div>
+				<h5 class="p-mt-3">#{resourceBundleServiceImpl.getMessage('salvando_orcamento')}</h5>
+				<div class="p-d-flex p-ai-end">
+					<p:skeleton size="2rem" class="p-mr-2" />
+					<p:skeleton size="3rem" class="p-mr-2" />
+					<p:skeleton size="4rem" class="p-mr-2" />
+					<p:skeleton size="5rem" />
 				</div>
 			</p:dialog>
 			<p:dialog widgetVar="dlgLineDiscount" header="Descontos"
