@@ -16,16 +16,11 @@ public class CustomerOnOrder {
 		// TODO Auto-generated constructor stub
 	}
 
-	
-
-	
 	public CustomerOnOrder(@NotEmpty Customer customer, @NotEmpty CustomerType type) {
 		super();
 		this.customer = customer;
 		this.type = type;
 	}
-
-
 
 
 	public CustomerOnOrder(@NotEmpty Customer customer, @NotEmpty CustomerType type, @Size(max = 250) String message) {

@@ -17,7 +17,7 @@ import com.portal.client.service.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.client.util.jsf.ServerApiExceptionFacesHelper;
+import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.FinancialBondsPage;
 import com.portal.client.vo.FinancialBondsPage.FinacialBondsDTO;
@@ -32,13 +32,13 @@ public class FinancialBondsController implements Serializable {
 	private static final long serialVersionUID = -3811638445093267666L;
 	private FinancialBondsService bondsService;
 	private LazyDataModelBase<FinacialBondsDTO> titles;
-	private ServerApiExceptionFacesHelper externalExceptionHelper;
+	private ServerApiExceptionFacesMessageHelper externalExceptionHelper;
 	private FinancialBondsExporter exporter;
 	private int pagesToExport = 1;
 
 	@Inject
 	public FinancialBondsController(FinancialBondsService fiTitleService,
-			ServerApiExceptionFacesHelper externalExceptionHelper, FinancialBondsExporter exporter) {
+			ServerApiExceptionFacesMessageHelper externalExceptionHelper, FinancialBondsExporter exporter) {
 		super();
 		this.bondsService = fiTitleService;
 		this.externalExceptionHelper = externalExceptionHelper;

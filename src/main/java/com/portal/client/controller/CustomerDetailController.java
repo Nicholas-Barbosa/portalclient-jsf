@@ -23,7 +23,7 @@ import com.portal.client.service.ZipCodeService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.client.util.jsf.ServerApiExceptionFacesHelper;
+import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Customer;
 import com.portal.client.vo.FinancialBondsPage;
@@ -45,16 +45,17 @@ public class CustomerDetailController {
 
 	private LazyDataModelBase<FinacialBondsDTO> titles;
 
-	private ServerApiExceptionFacesHelper externalExcpetionHelper;
+	private ServerApiExceptionFacesMessageHelper externalExcpetionHelper;
 
 	@Inject
 	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,
-			FinancialBondsService bondsService) {
+			FinancialBondsService bondsService, ServerApiExceptionFacesMessageHelper externalExcpetionHelper) {
 		super();
 		this.zipCodeService = zipCodeService;
 		this.bondsService = bondsService;
 		currentLatLng = "-25.504460, -49.331579";
 		customer = (Customer) session.getAttribute("customer_to_detail");
+		this.externalExcpetionHelper = externalExcpetionHelper;
 	}
 
 	public void loadGMap() {

@@ -19,8 +19,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
@@ -28,16 +26,18 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
-import com.portal.client.dto.BudgetRequest;
+import com.portal.client.dto.BudgetResponse;
+import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
+import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
-import com.portal.client.dto.ItemBudgetRequest;
+import com.portal.client.dto.ItemBudgetToSaveValues;
+import com.portal.client.dto.ItemBudgetToSave;
 import com.portal.client.dto.ItemLineDiscountForm;
-import com.portal.client.dto.ItemBuRequestValues;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
@@ -57,8 +57,8 @@ import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyOperations;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
-import com.portal.client.util.jsf.ServerApiExceptionFacesHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.vo.Customer;
 import com.portal.client.vo.CustomerAddress;
 import com.portal.client.vo.CustomerContact;
@@ -88,7 +88,7 @@ public class BudgetController implements Serializable {
 
 	private final ClientErrorExceptionController responseController;
 
-	private final ServerApiExceptionFacesHelper processingExceptionMessageHelper;
+	private final ServerApiExceptionFacesMessageHelper serverExceptionFacesMessageHelper;
 
 	private final ProductService productService;
 
@@ -121,7 +121,7 @@ public class BudgetController implements Serializable {
 
 	private FindProductByCodeForm findProductByCodeForm;
 
-	private ItemBudgetRequest previewItem;
+	private ItemBudgetToSave previewItem;
 
 	private byte[] imageToSeeOnDlg;
 
@@ -129,7 +129,7 @@ public class BudgetController implements Serializable {
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
-	private BudgetRequest budgetDTO;
+	private BudgetToSave budgetRequest;
 
 	private BigDecimal itemDiscountToView;
 
@@ -151,6 +151,10 @@ public class BudgetController implements Serializable {
 	@Size(max = 8, min = 8)
 	private String cepToSearch;
 
+	private CustomerRepresentativeOrderForm customerRepresentativeOrderForm;
+
+	private BudgetResponse budgetResponse;
+
 	public BudgetController() {
 		this(null, null, null, null, null, null, null, null, null, null);
 	}
@@ -158,7 +162,7 @@ public class BudgetController implements Serializable {
 	@Inject
 	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
-			ServerApiExceptionFacesHelper processingExceptionMessageHelper, ProductService productService,
+			ServerApiExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService, ZipCodeService cep, BudgetRequestService budgetRequestService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
@@ -167,12 +171,35 @@ public class BudgetController implements Serializable {
 		this.budgetService = budgetService;
 		this.orderExporter = orderExporter;
 		this.responseController = responseController;
-		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
+		this.serverExceptionFacesMessageHelper = processingExceptionMessageHelper;
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
 		this.cepCervice = cep;
 		this.buRequestService = budgetRequestService;
+	}
+
+	public void saveBudget() {
+		try {
+			budgetResponse = budgetService.save(budgetRequest, customerRepresentativeOrderForm);
+			FacesUtils.ajaxUpdate("successSavedBudget", "customerForm", "formItems:dtItems", "budgetTotals");
+			PrimeFaces.current().executeScript("PF('successSavedBudget').show()");
+			this.newBudgetObject();
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void checkBudgetRequestObj() {
+		try {
+			budgetService.checkBudgetState(budgetRequest);
+			PrimeFaces.current().executeScript("PF('saveBudget').show()");
+		} catch (IllegalArgumentException e) {
+			FacesUtils.error(null, "Não é possível efetivar o orçamento neste momento.",
+					"Objeto incompleto. Entre com os dados necessário.", "growl");
+		}
+
 	}
 
 	public void showCustomerDetail(Customer customer) {
@@ -205,7 +232,7 @@ public class BudgetController implements Serializable {
 	}
 
 	public void saveMessageOrder() {
-		if (budgetDTO != null && budgetDTO.getCustomerOnOrder().getCustomer() != null) {
+		if (budgetRequest != null && budgetRequest.getCustomerOnOrder().getCustomer() != null) {
 			FacesUtils.info(null, "Mensagem salva!", null);
 			return;
 		}
@@ -228,7 +255,7 @@ public class BudgetController implements Serializable {
 					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo,
 					contact);
 			prospectCustomer.setCustomer(originCustomer);
-			buRequestService.setCustomer(budgetDTO, prospectCustomer);
+			buRequestService.setCustomer(budgetRequest, prospectCustomer);
 			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
 			return;
 		}
@@ -238,7 +265,7 @@ public class BudgetController implements Serializable {
 
 	public void applyGlobalDiscount() {
 		try {
-			buRequestService.setDiscount(budgetDTO, globalDiscount);
+			buRequestService.setDiscount(budgetRequest, globalDiscount);
 		} catch (CustomerNotAllowed e) {
 			FacesUtils.fatal(null, "Cliente não autorizado", null);
 			PrimeFaces.current().ajax().update("growl");
@@ -246,16 +273,17 @@ public class BudgetController implements Serializable {
 	}
 
 	public void applyLineDiscount() {
-		itemService.applyLineDiscount(budgetDTO.getItems(), itemLineDiscount);
-		buRequestService.calculateTotals(budgetDTO);
+		itemService.applyLineDiscount(budgetRequest.getItems(), itemLineDiscount);
+		buRequestService.calculateTotals(budgetRequest);
 	}
 
 	public void loadCurrentItemLines() {
-		this.itemLines = budgetDTO.getItems().parallelStream().map(ItemBudgetRequest::line).collect(Collectors.toSet());
+		this.itemLines = budgetRequest.getItems().parallelStream().map(ItemBudgetToSave::line)
+				.collect(Collectors.toSet());
 	}
 
 	public void addPreviewItemToBudget() {
-		buRequestService.addItem(budgetDTO, previewItem);
+		buRequestService.addItem(budgetRequest, previewItem);
 		previewItem = null;
 	}
 
@@ -267,13 +295,13 @@ public class BudgetController implements Serializable {
 		calculateItemQuantity(previewItem, previewItemQuantity);
 	}
 
-	public void onRowItemEdit(RowEditEvent<ItemBudgetRequest> event) {
+	public void onRowItemEdit(RowEditEvent<ItemBudgetToSave> event) {
 		calculateItemQuantity(event.getObject(), onRowItemQuantity);
-		buRequestService.calculateTotals(budgetDTO);
+		buRequestService.calculateTotals(budgetRequest);
 		onRowItemQuantity = 1;
 	}
 
-	private void calculateItemQuantity(ItemBudgetRequest item, int quantity) {
+	private void calculateItemQuantity(ItemBudgetToSave item, int quantity) {
 		try {
 			itemService.calculateDueQuantity(item, quantity);
 		} catch (ItemQuantityNotAllowed e) {
@@ -290,8 +318,8 @@ public class BudgetController implements Serializable {
 		budgetImportXlsxForm.setXlsxStreams(event.getFile().getContent());
 	}
 
-	public void removeItem(ItemBudgetRequest item) {
-		buRequestService.removeItem(budgetDTO, item);
+	public void removeItem(ItemBudgetToSave item) {
+		buRequestService.removeItem(budgetRequest, item);
 	}
 
 	public void showOpenedTitlesPageOnDialog() {
@@ -313,18 +341,18 @@ public class BudgetController implements Serializable {
 		this.productService.loadImage(product);
 	}
 
-	public void newBudgetObject() throws InterruptedException {
-		this.budgetDTO = new BudgetRequest();
+	public void newBudgetObject() {
+		this.budgetRequest = new BudgetToSave();
 	}
 
 	public void exportOrder() {
-		if (budgetDTO == null || budgetDTO.getItems().size() == 0) {
+		if (budgetRequest == null || budgetRequest.getItems().size() == 0) {
 			FacesUtils.error(null, "Objeto de pedido não está pronto",
 					"Entre com as informações necessárias para criar um pedido/orçamento.");
 			return;
 		}
 		try {
-			byte[] btes = orderExporter.export(budgetDTO, downloadStreamsForm.getContentType());
+			byte[] btes = orderExporter.export(budgetRequest, downloadStreamsForm.getContentType());
 			FacesUtils.prepareResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());
 		} catch (Exception e) {
@@ -338,7 +366,7 @@ public class BudgetController implements Serializable {
 			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		buRequestService.setCustomer(budgetDTO, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
+		buRequestService.setCustomer(budgetRequest, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
 		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
@@ -366,21 +394,21 @@ public class BudgetController implements Serializable {
 				FacesUtils.addHeaderForResponse("customers-found", false);
 			});
 		} catch (SocketTimeoutException | SocketException | TimeoutException p) {
-			processingExceptionMessageHelper.displayMessage(p, null);
-		} 
+			serverExceptionFacesMessageHelper.displayMessage(p, null);
+		}
 	}
 
 	public void findProductByCode() {
 		try {
 			Optional<Product> product = null;
-			switch (budgetDTO.getCustomerOnOrder().getType()) {
+			switch (budgetRequest.getCustomerOnOrder().getType()) {
 			case NORMAL:
 				product = productService.findByCode(findProductByCodeForm.getCode(),
-						budgetDTO.getCustomerOnOrder().getCustomer().getCode(),
-						budgetDTO.getCustomerOnOrder().getCustomer().getStore());
+						budgetRequest.getCustomerOnOrder().getCustomer().getCode(),
+						budgetRequest.getCustomerOnOrder().getCustomer().getStore());
 				break;
 			default:
-				ProspectCustomerOnOrder customer = (ProspectCustomerOnOrder) budgetDTO.getCustomerOnOrder();
+				ProspectCustomerOnOrder customer = (ProspectCustomerOnOrder) budgetRequest.getCustomerOnOrder();
 				product = productService.findByCodeForProspect(findProductByCodeForm.getCode(),
 						customer.getCustomer().getState(), customer.getSellerType().getType());
 				break;
@@ -388,7 +416,7 @@ public class BudgetController implements Serializable {
 			this.getOptionalProduct(product);
 			findProductByCodeForm = new FindProductByCodeForm();
 		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
-			processingExceptionMessageHelper.displayMessage(p, null);
+			serverExceptionFacesMessageHelper.displayMessage(p, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			// e.printStackTrace();
 		} catch (NullPointerException e) {
@@ -401,8 +429,8 @@ public class BudgetController implements Serializable {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
 			com.portal.client.vo.ProductPrice productPrice = presentProduct.getPrice();
-			previewItem = new ItemBudgetRequest(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
-					new ItemBuRequestValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
+			previewItem = new ItemBudgetToSave(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
+					new ItemBudgetToSaveValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue(),
 							productPrice.getUnitStValue(), productPrice.getUnitValue(),
 							productPrice.getUnitGrossValue()));
@@ -427,7 +455,7 @@ public class BudgetController implements Serializable {
 			});
 
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			processingExceptionMessageHelper.displayMessage(e, null);
+			serverExceptionFacesMessageHelper.displayMessage(e, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			e.printStackTrace();
 		}
@@ -461,11 +489,12 @@ public class BudgetController implements Serializable {
 		this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
 				(short) 1, (short) 2, (short) 0);
 		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
-		this.budgetDTO = new BudgetRequest();
+		this.budgetRequest = new BudgetToSave();
 		this.itemLines = new HashSet<>();
 		this.itemLineDiscount = new ItemLineDiscountForm();
 		this.prospectCustomerForm = new ProspectCustomerForm();
 		this.discView = new DiscountView();
+		this.customerRepresentativeOrderForm = new CustomerRepresentativeOrderForm();
 	}
 
 	public LazyDataModelBase<Product> getLazyProducts() {
@@ -532,11 +561,11 @@ public class BudgetController implements Serializable {
 		return findProductByCodeForm;
 	}
 
-	public ItemBudgetRequest getPreviewItem() {
+	public ItemBudgetToSave getPreviewItem() {
 		return previewItem;
 	}
 
-	public void changePreviewItem(ItemBudgetRequest previewItem) {
+	public void changePreviewItem(ItemBudgetToSave previewItem) {
 		this.previewItem = previewItem;
 	}
 
@@ -556,8 +585,8 @@ public class BudgetController implements Serializable {
 		return budgetXlsxPreview;
 	}
 
-	public BudgetRequest getBudgetDTO() {
-		return budgetDTO;
+	public BudgetToSave getBudgetDTO() {
+		return budgetRequest;
 	}
 
 	public BigDecimal getItemDiscountToView() {
@@ -616,4 +645,11 @@ public class BudgetController implements Serializable {
 		this.cepToSearch = cepToSearch;
 	}
 
+	public CustomerRepresentativeOrderForm getCustomerRepresentativeOrderForm() {
+		return customerRepresentativeOrderForm;
+	}
+
+	public BudgetResponse getBudgetResponse() {
+		return budgetResponse;
+	}
 }

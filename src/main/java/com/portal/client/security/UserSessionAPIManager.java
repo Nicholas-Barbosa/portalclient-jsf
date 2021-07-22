@@ -5,6 +5,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.portal.client.security.api.ServerAPI;
 
@@ -25,6 +30,8 @@ public class UserSessionAPIManager implements Serializable {
 	private String name;
 	private final Map<String, ServerAPI> authenticatedServices = new ConcurrentHashMap<>();
 
+	private final Logger logger = LoggerFactory.getLogger(UserSessionAPIManager.class);
+
 	/**
 	 * Register this service to the hash table.
 	 * 
@@ -32,6 +39,7 @@ public class UserSessionAPIManager implements Serializable {
 	 * @param service
 	 */
 	public void registerAuthenticatedService(String key, ServerAPI service) {
+		logger.debug("Registering server API with key " + key + " with token " + service.getToken());
 		this.authenticatedServices.putIfAbsent(key, service);
 	}
 
@@ -41,6 +49,7 @@ public class UserSessionAPIManager implements Serializable {
 	 * @param key
 	 */
 	public void unRegisterAuthenticatedService(String key) {
+		logger.debug("Unregistering server API with key " + key);
 		this.authenticatedServices.remove(key);
 	}
 
@@ -79,7 +88,7 @@ public class UserSessionAPIManager implements Serializable {
 	public boolean isAuthenticated() {
 		return !authenticatedServices.isEmpty();
 	}
-	
+
 	public String buildEndpoint(String serverKey, String endpoint) {
 		return new StringBuilder(getAPI(serverKey).getBasePath()).append("/" + endpoint).toString();
 	}

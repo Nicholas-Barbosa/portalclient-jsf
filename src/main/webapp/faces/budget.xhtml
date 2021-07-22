@@ -42,8 +42,12 @@
 							</p:commandButton>
 							<p:commandButton type="button"
 								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
-								icon="pi pi-folder-open" styleClass="ui-button-success"
+								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
 								onclick="PF('dlgForImport').show()" />
+							<p:commandButton
+								action="#{budgetController.checkBudgetRequestObj}"
+								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
+								icon="pi pi-check" styleClass="ui-button-success " />
 							<i class="pi pi-bars p-px-2" />
 							<p:commandButton type="button" title="Print" icon="pi pi-print"
 								styleClass="ui-button-success p-mr-2"
@@ -345,6 +349,49 @@
 
 
 			</div>
+			<p:dialog widgetVar="successSavedBudget" modal="true"
+				responsive="true" id="successSavedBudget"
+				header="#{budgetController.budgetResponse.code}">
+				<p:staticMessage severity="info"
+					summary="Orçamento salvo com sucesso."
+					detail="Orçamento salvo com identificador: #{budgetController.budgetResponse.code}"
+					style="width: 100%" />
+			</p:dialog>
+			<p:dialog widgetVar="saveBudget" modal="true"
+				header="#{resourceBundleServiceImpl.getMessage('efetivar_orcamento')}"
+				responsive="true">
+				<h:form>
+					<div class="ui-fluid p-formgrid p-grid">
+						<div class="p-field p-col">
+							<label for="pR">#{resourceBundleServiceImpl.getMessage('pedido_representante')}</label>
+							<p:inputText id="pR" type="text"
+								value="#{budgetController.customerRepresentativeOrderForm.representativeOrder}" />
+						</div>
+						<div class="p-field p-col">
+							<label for="pC">#{resourceBundleServiceImpl.getMessage('pedido_cliente')}</label>
+							<p:inputText id="pC" type="text"
+								value="#{budgetController.customerRepresentativeOrderForm.customerOrder}" />
+						</div>
+					</div>
+					<p:commandButton icon="pi pi-check" styleClass="ui-button-success"
+						process="@this,@form" action="#{budgetController.saveBudget}"
+						onstart="PF('savingBudget').show();"
+						oncomplete="PF('savingBudget').hide();PF('saveBudget').hide()" />
+				</h:form>
+			</p:dialog>
+
+			<p:dialog modal="true" closable="false" responsive="true"
+				widgetVar="savingBudget">
+				<div class="p-field p-col-12 p-md-6">
+					<h5 class="p-mt-3">Salavando orçamento...</h5>
+					<div class="p-d-flex p-ai-end">
+						<p:skeleton size="2rem" class="p-mr-2" />
+						<p:skeleton size="3rem" class="p-mr-2" />
+						<p:skeleton size="4rem" class="p-mr-2" />
+						<p:skeleton size="5rem" />
+					</div>
+				</div>
+			</p:dialog>
 			<p:dialog widgetVar="dlgLineDiscount" header="Descontos"
 				responsive="true" fitViewport="true" modal="true"
 				onShow="loadLines()" id="dlgLineDiscount">

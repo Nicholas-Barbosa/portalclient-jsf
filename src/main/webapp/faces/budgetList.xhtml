@@ -32,7 +32,7 @@
 							value="#{budgetListController.budgets}" paginator="true"
 							paginatorPosition="bottom" rows="15">
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
+								headerText="#{resourceBundleServiceImpl.getMessage('orcamento')}">
 								<h:outputText value="#{budget.budgetCode}" />
 							</p:column>
 							<p:column
@@ -44,11 +44,17 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
-								<h:outputText value="#{budget.stValue}" />
+								<h:outputText value="#{budget.stValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('valor_liquido')}">
-								<h:outputText value="#{budget.liquidOrderValue}" />
+								<h:outputText value="#{budget.liquidOrderValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">

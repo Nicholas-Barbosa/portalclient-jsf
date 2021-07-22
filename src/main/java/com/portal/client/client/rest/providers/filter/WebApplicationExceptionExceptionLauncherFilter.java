@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import javax.annotation.Priority;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
@@ -19,6 +20,7 @@ import javax.ws.rs.ext.Provider;
 import com.portal.client.exception.IllegalResponseStatusException;
 
 @Provider
+@Priority(0)
 public class WebApplicationExceptionExceptionLauncherFilter implements ClientResponseFilter {
 
 	@Override

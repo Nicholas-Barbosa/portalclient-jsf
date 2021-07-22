@@ -2,8 +2,8 @@ package com.portal.client.service;
 
 import java.math.BigDecimal;
 
-import com.portal.client.dto.BudgetRequest;
-import com.portal.client.dto.ItemBudgetRequest;
+import com.portal.client.dto.BudgetToSave;
+import com.portal.client.dto.ItemBudgetToSave;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.vo.CustomerOnOrder;
 
@@ -14,13 +14,13 @@ public interface BudgetRequestService {
 	 * 
 	 * @param budget
 	 */
-	void calculateTotals(BudgetRequest budget);
+	void calculateTotals(BudgetToSave budget);
 
-	void removeItem(BudgetRequest budget, ItemBudgetRequest itemToRemove);
+	void removeItem(BudgetToSave budget, ItemBudgetToSave itemToRemove);
 
-	void addItem(BudgetRequest budgetDTO, ItemBudgetRequest produc);
+	void addItem(BudgetToSave budgetDTO, ItemBudgetToSave produc);
 
-	default void setCustomer(BudgetRequest budget, CustomerOnOrder customer) {
+	default void setCustomer(BudgetToSave budget, CustomerOnOrder customer) {
 		if (budget.getItems().size() >= 1)
 			throw new UnsupportedOperationException(
 					"You can't set a client at this moment. Because this budget has many items.");
@@ -33,6 +33,6 @@ public interface BudgetRequestService {
 	 * @param budget
 	 * @param discount
 	 */
-	void setDiscount(BudgetRequest budget, BigDecimal discount) throws CustomerNotAllowed;
+	void setDiscount(BudgetToSave budget, BigDecimal discount) throws CustomerNotAllowed;
 
 }

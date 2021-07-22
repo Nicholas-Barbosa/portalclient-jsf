@@ -4,34 +4,35 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.json.bind.annotation.JsonbTransient;
+
 import com.portal.client.vo.CustomerOnOrder;
 
-public class BudgetRequest extends BudgetRequestJsonSerializableFields {
+public class BudgetToSave  {
 
 	private CustomerOnOrder customerOnOrder;
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
 	private BigDecimal stValue;
 	private BigDecimal globalDiscount;
-	private final Set<ItemBudgetRequest> items;
+	private final Set<ItemBudgetToSave> items;
 
-	public BudgetRequest() {
+	public BudgetToSave() {
 		this.items = new HashSet<>();
 		this.grossValue = BigDecimal.ZERO;
 		this.liquidValue = BigDecimal.ZERO;
 		this.stValue = BigDecimal.ZERO;
 		this.globalDiscount = BigDecimal.ZERO;
-		this.customerOnOrder = new CustomerOnOrder();
 	}
 
+	@JsonbTransient
 	public CustomerOnOrder getCustomerOnOrder() {
 		return customerOnOrder;
 	}
 
 	public void setCustomerOnOrder(CustomerOnOrder customer) {
 		this.customerOnOrder = customer;
-		super.setCustomerCode(customer.getCustomer().getCode());
-		super.setCustomerStore(customer.getCustomer().getStore());
+		
 	}
 
 	public BigDecimal getGrossValue() {
@@ -66,7 +67,7 @@ public class BudgetRequest extends BudgetRequestJsonSerializableFields {
 		this.globalDiscount = globalDiscount;
 	}
 
-	public Set<ItemBudgetRequest> getItems() {
+	public Set<ItemBudgetToSave> getItems() {
 		return items;
 	}
 
