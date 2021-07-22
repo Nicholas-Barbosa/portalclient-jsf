@@ -382,12 +382,16 @@ public class BudgetController implements Serializable {
 				if (c.totalItems() > 1) {
 					FacesUtils.addHeaderForResponse("customers", c.totalItems());
 					LazyPopulateUtils.populate(lazyCustomers, c);
+					FacesUtils.ajaxUpdate("fomrSelectCustomer");
 				} else {
 					Customer cDTO = c.getClients().get(0);
 					if (cDTO.getBlocked().equals("Sim")) {
 						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 						return;
 					}
+					buRequestService.setCustomer(budgetRequest, new CustomerOnOrder(cDTO, CustomerType.NORMAL));
+					FacesUtils.ajaxUpdate(":customerForm", "budgetToolsForm:btnViewCDetail");
+					FacesUtils.addHeaderForResponse("customers-found", true);
 				}
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);

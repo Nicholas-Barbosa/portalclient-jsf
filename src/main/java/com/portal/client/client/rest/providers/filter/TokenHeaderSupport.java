@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Provider
-@Priority(10)
+@Priority(1)
 public final class TokenHeaderSupport implements ClientRequestFilter {
 
 	private final String token;
@@ -31,6 +31,6 @@ public final class TokenHeaderSupport implements ClientRequestFilter {
 	public void filter(ClientRequestContext requestContext) throws IOException {
 		logger.debug("Setting header authorization, " + tokenPrefix + " " + token);
 		requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + this.token);
-
+		
 	}
 }

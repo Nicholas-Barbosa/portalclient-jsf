@@ -40,7 +40,7 @@ public class RestClientImpl implements RestClient {
 			return t;
 		} catch (ProcessingException e) {
 			if (e.getCause() instanceof IllegalResponseStatusException) {
-				return this.get(uri, responseType, queryParams, pathParams, media);
+				return this.get(uri, token, tokenPrefix, responseType, queryParams, pathParams, media);
 			}
 			checkProcessingException(e);
 			throw e;
@@ -74,7 +74,7 @@ public class RestClientImpl implements RestClient {
 
 		} catch (ProcessingException p) {
 			if (p.getCause() instanceof IllegalResponseStatusException) {
-				return this.post(uri, responseType, queryParams, pathParams, requestBody, mediaType);
+				return this.post(uri,token,tokenPrefix, responseType, queryParams, pathParams, requestBody, mediaType);
 			}
 			checkProcessingException(p);
 			throw p;
@@ -103,6 +103,7 @@ public class RestClientImpl implements RestClient {
 	private Client getClient(String token, String tokenPrefix, String mediaType) {
 		Client client = null;
 		client = getClientFollowingMediaType(mediaType);
+		System.out.println("getting client instance, token " + token + " tokenPrefix " + tokenPrefix);
 		if (token != null && tokenPrefix != null) {
 			TokenHeaderSupport tokenHeaderSupport = new TokenHeaderSupport(token, tokenPrefix);
 			client = client.register(tokenHeaderSupport);
