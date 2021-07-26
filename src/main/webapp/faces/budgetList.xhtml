@@ -63,6 +63,12 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
 								<h:outputText value="#{budget.customerCode}" />
 							</p:column>
+							<p:column>
+								<p:commandButton icon="pi pi-pencil"
+									styleClass="edit-button rounded-button ui-button-success"
+									action="#{budgetListController.showEditBudget(budget)}"
+									process="@this" />
+							</p:column>
 						</p:dataTable>
 
 					</h:form>

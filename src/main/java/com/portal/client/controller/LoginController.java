@@ -46,7 +46,7 @@ public class LoginController {
 		try {
 			this.authenticationRepository.login(loginForm);
 			FacesUtils.addHeaderForResponse("ok", true);
-			return "BUDGET_PREVIEW";
+			return "NEW_BUDGET";
 		} catch (NotAuthorizedException e) {
 			FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"),
 					resourceBundleService.getMessage("usuario_nao_encontrado"));

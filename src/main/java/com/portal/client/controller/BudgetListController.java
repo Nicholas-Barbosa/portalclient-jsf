@@ -1,13 +1,15 @@
 package com.portal.client.controller;
 
+import java.io.Serializable;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.service.BudgetService;
@@ -16,9 +18,14 @@ import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.vo.Budget;
 
-@RequestScoped
+@ViewScoped
 @Named
-public class BudgetListController {
+public class BudgetListController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9093802333014411573L;
 
 	private BudgetService buService;
 
@@ -28,6 +35,10 @@ public class BudgetListController {
 	public BudgetListController(BudgetService buService) {
 		super();
 		this.buService = buService;
+	}
+
+	public void showEditBudget(Budget budget) {
+		PrimeFaces.current().executeScript("alert('orçamento " + budget.getBudgetCode() + "')");
 	}
 
 	public void loadBudgets(int page) {

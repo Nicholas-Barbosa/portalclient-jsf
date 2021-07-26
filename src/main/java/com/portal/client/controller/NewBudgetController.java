@@ -71,7 +71,7 @@ import com.portal.client.vo.ProductPageDTO;
 
 @Named
 @ViewScoped
-public class BudgetController implements Serializable {
+public class NewBudgetController implements Serializable {
 
 	/**
 	 * 
@@ -155,12 +155,16 @@ public class BudgetController implements Serializable {
 
 	private BudgetResponse budgetResponse;
 
-	public BudgetController() {
+	private String paramBudgetID;
+
+	private boolean paramEditBudget;
+
+	public NewBudgetController() {
 		this(null, null, null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
-	public BudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
+	public NewBudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
 			ServerApiExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService, ZipCodeService cep, BudgetRequestService budgetRequestService) {
@@ -657,4 +661,22 @@ public class BudgetController implements Serializable {
 	public BudgetResponse getBudgetResponse() {
 		return budgetResponse;
 	}
+
+	public String getParamBudgetID() {
+		return paramBudgetID;
+	}
+
+	public void setParamBudgetID(String paramBudgetID) {
+		this.paramBudgetID = paramBudgetID;
+	}
+
+	public boolean isParamEditBudget() {
+		return paramEditBudget;
+	}
+
+	public void setParamEditBudget(boolean paramEditBudget) {
+		this.paramEditBudget = paramEditBudget;
+	}
+
+	
 }
