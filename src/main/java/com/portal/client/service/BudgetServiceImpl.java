@@ -3,17 +3,19 @@ package com.portal.client.service;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BudgetResponse;
+import com.portal.client.dto.BudgetFullProjection;
+import com.portal.client.dto.BudgetPage;
+import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.repository.BudgetRepository;
-import com.portal.client.vo.BudgetPage;
 
 @ApplicationScoped
 public class BudgetServiceImpl implements BudgetService {
@@ -39,11 +41,17 @@ public class BudgetServiceImpl implements BudgetService {
 	}
 
 	@Override
-	public BudgetResponse save(BudgetToSave budgetRequest, CustomerRepresentativeOrderForm ordersForm)
+	public BudgetSavedResponse save(BudgetToSave budgetRequest, CustomerRepresentativeOrderForm ordersForm)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		checkBudgetState(budgetRequest);
 		BudgetToSaveJsonSerializable toSave = new BudgetToSaveJsonSerializable(budgetRequest, ordersForm);
 		return budgetRepository.save(toSave);
+	}
+
+	@Override
+	public Optional<BudgetFullProjection> findByCode(String code)
+			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+		return budgetRepository.findByCode(code);
 	}
 
 	@Override
@@ -55,4 +63,5 @@ public class BudgetServiceImpl implements BudgetService {
 		if (budgetRequest.getItems().size() == 0)
 			throw new IllegalArgumentException("No items on budget!");
 	}
+
 }

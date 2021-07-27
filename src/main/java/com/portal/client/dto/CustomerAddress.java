@@ -1,4 +1,4 @@
-package com.portal.client.vo;
+package com.portal.client.dto;
 
 public final class CustomerAddress {
 

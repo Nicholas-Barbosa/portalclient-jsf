@@ -6,8 +6,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 
-import com.portal.client.vo.Customer;
-
 public class BudgetToSaveJsonSerializable {
 
 	@JsonbTransient

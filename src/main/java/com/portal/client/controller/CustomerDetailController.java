@@ -18,6 +18,9 @@ import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
+import com.portal.client.dto.Customer;
+import com.portal.client.dto.FinancialBondsPage;
+import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 import com.portal.client.service.FinancialBondsService;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
@@ -25,9 +28,6 @@ import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.vo.Customer;
-import com.portal.client.vo.FinancialBondsPage;
-import com.portal.client.vo.FinancialBondsPage.FinacialBondsDTO;
 
 @RequestScoped
 @Named

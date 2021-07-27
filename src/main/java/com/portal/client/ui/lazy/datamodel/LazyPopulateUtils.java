@@ -3,7 +3,7 @@ package com.portal.client.ui.lazy.datamodel;
 import java.util.Collection;
 import java.util.List;
 
-import com.portal.client.vo.Page;
+import com.portal.client.dto.Page;
 
 public class LazyPopulateUtils {
 

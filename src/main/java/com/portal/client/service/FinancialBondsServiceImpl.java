@@ -11,8 +11,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 
+import com.portal.client.dto.FinancialBondsPage;
 import com.portal.client.repository.FinancialBondsRepository;
-import com.portal.client.vo.FinancialBondsPage;
 
 @ApplicationScoped
 public class FinancialBondsServiceImpl implements FinancialBondsService, Serializable {

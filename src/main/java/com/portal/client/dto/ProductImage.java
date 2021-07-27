@@ -1,4 +1,4 @@
-package com.portal.client.vo;
+package com.portal.client.dto;
 
 public class ProductImage {
 	private byte[] imageStreams;

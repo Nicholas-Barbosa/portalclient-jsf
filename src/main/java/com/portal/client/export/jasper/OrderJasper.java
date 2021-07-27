@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import com.portal.client.dto.ItemBudgetToSave;
 import com.portal.client.dto.ItemBudgetToSaveValues;
 import com.portal.client.dto.BudgetToSave;
-import com.portal.client.vo.Customer;
-import com.portal.client.vo.CustomerOnOrder;
+import com.portal.client.dto.Customer;
+import com.portal.client.dto.CustomerOnOrder;
 
 public class OrderJasper implements Serializable {
 

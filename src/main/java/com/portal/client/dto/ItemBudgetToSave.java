@@ -2,8 +2,6 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 
-import com.portal.client.vo.Product;
-
 public class ItemBudgetToSave {
 
 	private final Product product;

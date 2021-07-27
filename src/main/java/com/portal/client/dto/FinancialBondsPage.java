@@ -1,4 +1,4 @@
-package com.portal.client.vo;
+package com.portal.client.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -10,8 +10,7 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.BasePageDTO;
-import com.portal.client.vo.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 
 public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 

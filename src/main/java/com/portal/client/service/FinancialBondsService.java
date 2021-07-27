@@ -6,7 +6,7 @@ import java.net.SocketTimeoutException;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
-import com.portal.client.vo.FinancialBondsPage;
+import com.portal.client.dto.FinancialBondsPage;
 
 public interface FinancialBondsService {
 

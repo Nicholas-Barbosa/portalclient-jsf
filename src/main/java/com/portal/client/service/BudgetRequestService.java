@@ -3,9 +3,9 @@ package com.portal.client.service;
 import java.math.BigDecimal;
 
 import com.portal.client.dto.BudgetToSave;
+import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ItemBudgetToSave;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.vo.CustomerOnOrder;
 
 public interface BudgetRequestService {
 

@@ -12,11 +12,11 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.data.PageEvent;
 
+import com.portal.client.dto.BudgetSemiProjection;
 import com.portal.client.service.BudgetService;
 import com.portal.client.ui.lazy.datamodel.BudgetLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.client.vo.Budget;
 
 @ViewScoped
 @Named
@@ -29,7 +29,7 @@ public class BudgetListController implements Serializable {
 
 	private BudgetService buService;
 
-	private LazyDataModelBase<Budget> budgets;
+	private LazyDataModelBase<BudgetSemiProjection> budgets;
 
 	@Inject
 	public BudgetListController(BudgetService buService) {
@@ -37,8 +37,8 @@ public class BudgetListController implements Serializable {
 		this.buService = buService;
 	}
 
-	public void showEditBudget(Budget budget) {
-		PrimeFaces.current().executeScript("alert('orçamento " + budget.getBudgetCode() + "')");
+	public void showEditBudget(BudgetSemiProjection budget) {
+		PrimeFaces.current().executeScript("alert('orçamento " + budget.getCode() + "')");
 	}
 
 	public void loadBudgets(int page) {
@@ -56,7 +56,7 @@ public class BudgetListController implements Serializable {
 		this.loadBudgets(page.getPage() + 1);
 	}
 
-	public LazyDataModelBase<Budget> getBudgets() {
+	public LazyDataModelBase<BudgetSemiProjection> getBudgets() {
 		return budgets;
 	}
 

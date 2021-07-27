@@ -1,4 +1,4 @@
-package com.portal.client.vo;
+package com.portal.client.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class BudgetPage implements Page<Budget> {
+public class BudgetPage implements Page<BudgetSemiProjection> {
 
 	/**
 	 * 
@@ -18,12 +18,12 @@ public class BudgetPage implements Page<Budget> {
 	private final int totalPage;
 	private final int pageSize;
 	private final int page;
-	private final List<Budget> budgets;
+	private final List<BudgetSemiProjection> budgets;
 
 	@JsonbCreator
 	public BudgetPage(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPage,
 			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
-			@JsonbProperty("budget") List<Budget> budgets) {
+			@JsonbProperty("budget") List<BudgetSemiProjection> budgets) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPage = totalPage;
@@ -57,7 +57,7 @@ public class BudgetPage implements Page<Budget> {
 	}
 
 	@Override
-	public Collection<Budget> getContent() {
+	public Collection<BudgetSemiProjection> getContent() {
 		// TODO Auto-generated method stub
 		return new ArrayList<>(budgets);
 	}

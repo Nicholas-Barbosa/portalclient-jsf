@@ -6,8 +6,6 @@ import java.util.Set;
 
 import javax.json.bind.annotation.JsonbTransient;
 
-import com.portal.client.vo.CustomerOnOrder;
-
 public class BudgetToSave  {
 
 	private CustomerOnOrder customerOnOrder;

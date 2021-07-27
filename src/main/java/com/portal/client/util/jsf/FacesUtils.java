@@ -49,6 +49,11 @@ public class FacesUtils {
 				new FacesMessage(FacesMessage.SEVERITY_INFO, summary, detail));
 	}
 
+	public static void info(String clientId, String summary, String detail, String messageIdToUpdate) {
+		info(clientId, summary, detail);
+		ajaxUpdate(messageIdToUpdate);
+	}
+
 	/**
 	 * Add a fatal message to the current request object(FacesContext)
 	 * 
@@ -60,6 +65,12 @@ public class FacesUtils {
 	public static void fatal(String clientId, String summary, String detail) {
 		FacesContext.getCurrentInstance().addMessage(clientId,
 				new FacesMessage(FacesMessage.SEVERITY_FATAL, summary, detail));
+	}
+
+	public static void fatal(String clientId, String summary, String detail, String messageIdToUpdate) {
+		FacesContext.getCurrentInstance().addMessage(clientId,
+				new FacesMessage(FacesMessage.SEVERITY_FATAL, summary, detail));
+		ajaxUpdate(messageIdToUpdate);
 	}
 
 	/**

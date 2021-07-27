@@ -17,7 +17,7 @@ import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.client.rest.RestClient;
-import com.portal.client.vo.BrazilianState;
+import com.portal.client.dto.BrazilianState;
 
 @ApplicationScoped
 @Named

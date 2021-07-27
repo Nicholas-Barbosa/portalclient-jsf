@@ -5,8 +5,6 @@ import java.math.BigDecimal;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 
-import com.portal.client.vo.Product;
-
 public class ItemBudgetToSaveJsonSerializable implements Comparable<ItemBudgetToSaveJsonSerializable> {
 
 	@JsonbTransient

@@ -1,4 +1,4 @@
-package com.portal.client.vo;
+package com.portal.client.dto;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;

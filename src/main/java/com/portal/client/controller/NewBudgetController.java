@@ -26,10 +26,16 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
-import com.portal.client.dto.BudgetResponse;
+import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
+import com.portal.client.dto.Customer;
+import com.portal.client.dto.CustomerAddress;
+import com.portal.client.dto.CustomerContact;
+import com.portal.client.dto.CustomerOnOrder;
+import com.portal.client.dto.CustomerPageDTO;
+import com.portal.client.dto.CustomerPurchaseInfo;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.DownloadStreamsForm;
@@ -38,10 +44,13 @@ import com.portal.client.dto.FindProductByDescriptionDTO;
 import com.portal.client.dto.ItemBudgetToSaveValues;
 import com.portal.client.dto.ItemBudgetToSave;
 import com.portal.client.dto.ItemLineDiscountForm;
+import com.portal.client.dto.Product;
+import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.export.OrderExport;
@@ -59,15 +68,6 @@ import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
-import com.portal.client.vo.Customer;
-import com.portal.client.vo.CustomerAddress;
-import com.portal.client.vo.CustomerContact;
-import com.portal.client.vo.CustomerOnOrder;
-import com.portal.client.vo.CustomerOnOrder.CustomerType;
-import com.portal.client.vo.CustomerPageDTO;
-import com.portal.client.vo.CustomerPurchaseInfo;
-import com.portal.client.vo.Product;
-import com.portal.client.vo.ProductPageDTO;
 
 @Named
 @ViewScoped
@@ -153,7 +153,7 @@ public class NewBudgetController implements Serializable {
 
 	private CustomerRepresentativeOrderForm customerRepresentativeOrderForm;
 
-	private BudgetResponse budgetResponse;
+	private BudgetSavedResponse budgetResponse;
 
 	private String paramBudgetID;
 
@@ -437,7 +437,7 @@ public class NewBudgetController implements Serializable {
 	private void getOptionalProduct(Optional<Product> product) {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
-			com.portal.client.vo.ProductPrice productPrice = presentProduct.getPrice();
+			com.portal.client.dto.ProductPrice productPrice = presentProduct.getPrice();
 			previewItem = new ItemBudgetToSave(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
 					new ItemBudgetToSaveValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
 							productPrice.getUnitValue(), productPrice.getUnitGrossValue(),
@@ -658,7 +658,7 @@ public class NewBudgetController implements Serializable {
 		return customerRepresentativeOrderForm;
 	}
 
-	public BudgetResponse getBudgetResponse() {
+	public BudgetSavedResponse getBudgetResponse() {
 		return budgetResponse;
 	}
 

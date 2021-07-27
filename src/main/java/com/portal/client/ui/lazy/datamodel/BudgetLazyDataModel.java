@@ -8,19 +8,19 @@ import java.util.Map;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 
-import com.portal.client.vo.Budget;
+import com.portal.client.dto.BudgetSemiProjection;
 
-public class BudgetLazyDataModel extends LazyDataModelBase<Budget> {
+public class BudgetLazyDataModel extends LazyDataModelBase<BudgetSemiProjection> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -2515085178956100553L;
 
-	private List<Budget> budgets;
+	private List<BudgetSemiProjection> budgets;
 
 	@Override
-	public void addCollection(Collection<Budget> list) {
+	public void addCollection(Collection<BudgetSemiProjection> list) {
 		this.budgets = new ArrayList<>(list);
 
 	}
@@ -32,7 +32,7 @@ public class BudgetLazyDataModel extends LazyDataModelBase<Budget> {
 	}
 
 	@Override
-	public Collection<Budget> getCollection() {
+	public Collection<BudgetSemiProjection> getCollection() {
 		return new ArrayList<>(budgets);
 	}
 
@@ -43,7 +43,7 @@ public class BudgetLazyDataModel extends LazyDataModelBase<Budget> {
 	}
 
 	@Override
-	public List<Budget> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
+	public List<BudgetSemiProjection> load(int first, int pageSize, Map<String, SortMeta> sortBy, Map<String, FilterMeta> filterBy) {
 		return budgets;
 	}
 

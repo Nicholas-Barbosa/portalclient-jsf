@@ -9,10 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 import com.portal.client.microsoft.excel.writer.WriteRowObject;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
-import com.portal.client.vo.FinancialBondsPage.FinacialBondsDTO;
 
 @ApplicationScoped
 public class FinancialBondsExporterImpl implements FinancialBondsExporter {

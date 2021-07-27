@@ -2,7 +2,7 @@ package com.portal.client.export;
 
 import java.util.Collection;
 
-import com.portal.client.vo.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 
 public interface FinancialBondsExporter {
 

@@ -4,8 +4,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.portal.client.dto.Product;
 import com.portal.client.service.ResourceBundleServiceImpl;
-import com.portal.client.vo.Product;
 
 @RequestScoped
 @Named

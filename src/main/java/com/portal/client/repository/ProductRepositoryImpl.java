@@ -19,11 +19,11 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.client.rest.RestClient;
+import com.portal.client.dto.Product;
+import com.portal.client.dto.ProductPage;
+import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
-import com.portal.client.vo.Product;
-import com.portal.client.vo.ProductPage;
-import com.portal.client.vo.ProductPageDTO;
 
 @ApplicationScoped
 public class ProductRepositoryImpl implements ProductRepository, Serializable {

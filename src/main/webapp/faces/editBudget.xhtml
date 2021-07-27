@@ -16,7 +16,8 @@
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/newBudget">#{resourceBundleServiceImpl.getMessage('novo_orcamento')}</p:link>
+		<li><p:link
+				outcome="/faces/editBudget?budgetID=#{editBudgetController.budgetID}">#{resourceBundleServiceImpl.getMessage('editar')} - #{editBudgetController.budgetID}</p:link>
 		</li>
 	</ui:define>
 
@@ -31,8 +32,98 @@
 					requiredMessage="ID do orçamento é obrigatório para esta visualização."
 					id="idParam" />
 			</f:metadata>
+			<h:form>
+				<p:remoteCommand autoRun="true"
+					action="#{editBudgetController.getById}" process="@this"
+					oncomplete="$('#divLoading').hide()" update="dtItems,totals" />
+			</h:form>
 
+			<div class="card" id="divLoading">
+				Loading...
+				<div class="custom-skeleton p-p-4">
+					<div class="p-d-flex p-mb-3">
+						<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+						<div>
+							<p:skeleton width="10rem" class="p-mb-2" />
+							<p:skeleton width="5rem" class="p-mb-2" />
+							<p:skeleton height=".5rem" />
+						</div>
+					</div>
+					<p:skeleton width="100%" height="150px" />
+					<div class="p-d-flex p-jc-between p-mt-3">
+						<p:skeleton width="4rem" height="2rem" />
+						<p:skeleton width="4rem" height="2rem" />
+					</div>
+				</div>
+			</div>
 
+			<div class="card">
+				<h:form prependId="false">
+					<p:dataTable var="item"
+						value="#{editBudgetController.budget.items}" id="dtItems">
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
+							<h:outputText value="#{item.commercialCode}" />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
+							<h:outputText value="#{item.quantity}" />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('valor_unitario')}">
+							<h:outputText value="#{item.unitValue}">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('valor')}">
+							<h:outputText value="#{item.total}">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('valor_bruto')}">
+							<h:outputText value="#{item.grossValue}">
+								<f:convertNumber currencySymbol="R$" type="currency"
+									locale="pt_BR" />
+							</h:outputText>
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</div>
+			<div class="card">
+				<h:form id="totals">
+					<div class="ui-fluid p-formgrid p-grid">
+						<div class="p-field p-col-12 p-md-3">
+							<p:outputLabel for="liquidV"
+								value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
+							<p:inputNumber id="liquidV"
+								value="#{editBudgetController.budget.liquidValue}" symbol="R$ "
+								symbolPosition="p" readonly="true" decimalSeparator=","
+								thousandSeparator="." />
+						</div>
+						<div class="p-field p-col-12 p-md-3">
+							<p:outputLabel for="stT"
+								value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
+							<p:inputNumber id="stT"
+								value="#{editBudgetController.budget.stValue}" symbol="R$ "
+								symbolPosition="p" readonly="true" decimalSeparator=","
+								thousandSeparator="." />
+						</div>
+						<div class="p-field p-col-12 p-md-3">
+							<p:outputLabel for="grossV"
+								value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
+							<p:inputNumber id="grossV"
+								value="#{editBudgetController.budget.grossValue}" symbol="R$ "
+								symbolPosition="p" readonly="true" decimalSeparator=","
+								thousandSeparator="." />
+						</div>
+					</div>
+					<p:autoUpdate on="eventAddItem" />
+				</h:form>
+			</div>
 		</f:view>
 	</ui:define>
 

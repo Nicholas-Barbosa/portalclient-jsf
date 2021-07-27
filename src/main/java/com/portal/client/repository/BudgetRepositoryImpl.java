@@ -4,6 +4,7 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -11,11 +12,12 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.client.rest.RestClient;
-import com.portal.client.dto.BudgetResponse;
+import com.portal.client.dto.BudgetFullProjection;
+import com.portal.client.dto.BudgetPage;
+import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
-import com.portal.client.vo.BudgetPage;
 
 @ApplicationScoped
 public class BudgetRepositoryImpl implements BudgetRepository {
@@ -26,6 +28,8 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	private static final long serialVersionUID = -1758905240244736233L;
 	private final RestClient restClient;
 	private final UserSessionAPIManager apiManager;
+
+	private final String orcamentoKey = "ORCAMENTO_API";
 
 	public BudgetRepositoryImpl() {
 		this(null, null);
@@ -41,7 +45,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	@Override
 	public BudgetPage findAll(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
-		ServerAPI api = apiManager.getAPI("ORCAMENTO_API");
+		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		StringBuilder endpointURL = new StringBuilder(api.getBasePath());
 		endpointURL.append("/budgets");
 		return restClient.get(endpointURL.toString(), api.getToken(), api.getTokenPrefix(), BudgetPage.class,
@@ -49,11 +53,24 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public BudgetResponse save(BudgetToSaveJsonSerializable request)
+	public BudgetSavedResponse save(BudgetToSaveJsonSerializable request)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
-		ServerAPI api = apiManager.getAPI("ORCAMENTO_API");
+		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		return restClient.post(apiManager.buildEndpoint(api, "budgets"), api.getToken(), api.getTokenPrefix(),
-				BudgetResponse.class, null, null, request, MediaType.APPLICATION_JSON);
+				BudgetSavedResponse.class, null, null, request, MediaType.APPLICATION_JSON);
+	}
+
+	@Override
+	public Optional<BudgetFullProjection> findByCode(String code)
+			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+		ServerAPI api = apiManager.getAPI(orcamentoKey);
+		try {
+			return Optional.of(restClient.get(apiManager.buildEndpoint(api, "budgets/{code}"), api.getToken(),
+					api.getTokenPrefix(), BudgetFullProjection.class, null, Map.of("code", code),
+					MediaType.APPLICATION_JSON));
+		} catch (javax.ws.rs.NotFoundException e) {
+			return Optional.empty();
+		}
 	}
 
 }
