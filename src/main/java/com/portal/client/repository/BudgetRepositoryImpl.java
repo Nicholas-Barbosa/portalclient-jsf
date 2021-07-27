@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.client.rest.RestClient;
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
@@ -53,11 +54,14 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public BudgetSavedResponse save(BudgetToSaveJsonSerializable request)
+	public BaseBudget save(BudgetToSaveJsonSerializable budget)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
-		return restClient.post(apiManager.buildEndpoint(api, "budgets"), api.getToken(), api.getTokenPrefix(),
-				BudgetSavedResponse.class, null, null, request, MediaType.APPLICATION_JSON);
+
+		BudgetSavedResponse response = restClient.post(apiManager.buildEndpoint(api, "budgets"), api.getToken(),
+				api.getTokenPrefix(), BudgetSavedResponse.class, null, null, budget, MediaType.APPLICATION_JSON);
+		budget.setIdCode(response.getCode());
+		return budget;
 	}
 
 	@Override

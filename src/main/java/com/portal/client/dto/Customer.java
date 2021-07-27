@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public final class Customer implements Serializable {
+public class Customer implements Serializable {
 
 	/**
 	 * 
@@ -66,6 +66,11 @@ public final class Customer implements Serializable {
 		this.address = address;
 		this.financialInfo = financialInfo;
 		this.contact = contact;
+	}
+
+	public Customer(Customer customer) {
+		this(customer.code, customer.store, customer.cnpj, customer.blocked, customer.name, customer.fantasyName,
+				customer.address, customer.financialInfo, customer.contact);
 	}
 
 	public String getCode() {
@@ -163,6 +168,5 @@ public final class Customer implements Serializable {
 	public String getEmail2() {
 		return contact.getEmail2();
 	}
-	
-	
+
 }

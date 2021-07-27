@@ -44,8 +44,6 @@ public class JsonMessageWriter implements MessageBodyWriter<Object> {
 		// TODO Auto-generated method stub
 		try {
 			jsonWriter.toJson(t, entityStream);
-			jsonWriter.toJson(t,
-					new FileOutputStream("C:\\Users\\nicho\\OneDrive\\Documentos\\testing_excel-poi\\request.json"));
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);
 		}

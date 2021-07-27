@@ -2,7 +2,7 @@ package com.portal.client.service;
 
 import java.math.BigDecimal;
 
-import com.portal.client.dto.BudgetToSave;
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ItemBudget;
 import com.portal.client.exception.CustomerNotAllowed;
@@ -14,13 +14,13 @@ public interface BudgetCommonBehaviorHelper {
 	 * 
 	 * @param budget
 	 */
-	void calculateTotals(BudgetToSave budget);
+	void calculateTotals(BaseBudget budget);
 
-	void removeItem(BudgetToSave budget, ItemBudget itemToRemove);
+	void removeItem(BaseBudget budget, ItemBudget itemToRemove);
 
-	void addItem(BudgetToSave budgetDTO, ItemBudget produc);
+	void addItem(BaseBudget budgetDTO, ItemBudget produc);
 
-	default void setCustomer(BudgetToSave budget, CustomerOnOrder customer) {
+	default void setCustomer(BaseBudget budget, CustomerOnOrder customer) {
 		if (budget.getItems().size() >= 1)
 			throw new UnsupportedOperationException(
 					"You can't set a client at this moment. Because this budget has many items.");
@@ -33,6 +33,6 @@ public interface BudgetCommonBehaviorHelper {
 	 * @param budget
 	 * @param discount
 	 */
-	void setDiscount(BudgetToSave budget, BigDecimal discount) throws CustomerNotAllowed;
+	void setDiscount(BaseBudget budget, BigDecimal discount) throws CustomerNotAllowed;
 
 }

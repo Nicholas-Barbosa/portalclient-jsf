@@ -4,17 +4,20 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.client.ResponseProcessingException;
 
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
-import com.portal.client.dto.BudgetSavedResponse;
-import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
+import com.portal.client.dto.ItemBudgetToSaveJsonSerializable;
 import com.portal.client.repository.BudgetRepository;
 
 @ApplicationScoped
@@ -41,10 +44,17 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public BudgetSavedResponse save(BudgetToSave budgetRequest, CustomerRepresentativeOrderForm ordersForm)
+	public BaseBudget save(BaseBudget baseSourceToSave, CustomerRepresentativeOrderForm ordersForm)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
-		checkBudgetState(budgetRequest);
-		BudgetToSaveJsonSerializable toSave = new BudgetToSaveJsonSerializable(budgetRequest, ordersForm);
+		checkBudgetState(baseSourceToSave);
+
+		BaseBudget baseToSave = new BaseBudget(baseSourceToSave.getCustomerOnOrder(), baseSourceToSave.getGrossValue(),
+				baseSourceToSave.getLiquidValue(), baseSourceToSave.getStValue(), baseSourceToSave.getGlobalDiscount(),
+				baseSourceToSave.getItems().parallelStream().map(ItemBudgetToSaveJsonSerializable::new)
+						.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
+		baseSourceToSave = null;
+
+		BudgetToSaveJsonSerializable toSave = new BudgetToSaveJsonSerializable(baseToSave, ordersForm);
 		return budgetRepository.save(toSave);
 	}
 
@@ -55,7 +65,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public void checkBudgetState(BudgetToSave budgetRequest) {
+	public void checkBudgetState(BaseBudget budgetRequest) {
 		if (budgetRequest == null)
 			throw new IllegalArgumentException("parameter is null!");
 		if (budgetRequest.getCustomerOnOrder() == null)

@@ -6,11 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import com.portal.client.dto.BaseBudget;
+import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemBudgetValue;
-import com.portal.client.dto.BudgetToSave;
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerOnOrder;
 
 public class OrderJasper implements Serializable {
 
@@ -39,7 +38,7 @@ public class OrderJasper implements Serializable {
 		this.items = new HashSet<>(items);
 	}
 
-	public OrderJasper(BudgetToSave budgetDTO) {
+	public OrderJasper(BaseBudget budgetDTO) {
 		this.liquidValue = budgetDTO.getLiquidValue();
 		this.grossValue = budgetDTO.getGrossValue();
 		this.stTotal = budgetDTO.getStValue();
@@ -99,13 +98,12 @@ public class OrderJasper implements Serializable {
 
 		public CustomerJasperReportDTO(CustomerOnOrder customer) {
 			super();
-			Customer originCustomer = customer.getCustomer();
-			this.name = originCustomer.getName();
-			this.city = originCustomer.getCity();
-			this.address = originCustomer.getStreet();
-			this.state = originCustomer.getState();
-			this.cgc = originCustomer.getCnpj();
-			this.paymentTerms = originCustomer.getPaymentTerms();
+			this.name = customer.getName();
+			this.city = customer.getCity();
+			this.address = customer.getStreet();
+			this.state = customer.getState();
+			this.cgc = customer.getCnpj();
+			this.paymentTerms = customer.getPaymentTerms();
 			this.message = customer.getMessage();
 		}
 

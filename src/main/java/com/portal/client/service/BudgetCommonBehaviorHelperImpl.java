@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BudgetToSave;
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.ItemBudget;
 import com.portal.client.exception.CustomerNotAllowed;
 
@@ -26,7 +26,7 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	}
 
 	@Override
-	public void calculateTotals(BudgetToSave budget) {
+	public void calculateTotals(BaseBudget budget) {
 		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalGrossValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalValue())
@@ -39,22 +39,22 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	}
 
 	@Override
-	public void removeItem(BudgetToSave budget, ItemBudget itemToRemove) {
-		if (budget.getItems().remove(itemToRemove)) {
+	public void removeItem(BaseBudget budget, ItemBudget itemToRemove) {
+		if (budget.removeItem(itemToRemove)) {
 			calculateTotals(budget);
 		}
 	}
 
 	@Override
-	public void addItem(BudgetToSave budgetDTO, ItemBudget produc) {
+	public void addItem(BaseBudget budget, ItemBudget produc) {
 		if (produc != null) {
-			budgetDTO.getItems().add(produc);
-			this.calculateTotals(budgetDTO);
+			budget.addItem(produc);
+			this.calculateTotals(budget);
 		}
 	}
 
 	@Override
-	public void setDiscount(BudgetToSave budget, BigDecimal discount) throws CustomerNotAllowed {
+	public void setDiscount(BaseBudget budget, BigDecimal discount) throws CustomerNotAllowed {
 		budget.setGlobalDiscount(discount);
 		itemService.applyGlobalDiscount(budget.getItems(), discount);
 		this.calculateTotals(budget);

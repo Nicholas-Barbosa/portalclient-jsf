@@ -1,9 +1,9 @@
 package com.portal.client.export;
 
-import com.portal.client.dto.BudgetToSave;
+import com.portal.client.dto.BaseBudget;
 
 public interface OrderExport {
 
-	byte[] export(BudgetToSave order, OrderExportType type);
+	byte[] export(BaseBudget order, OrderExportType type);
 
 }

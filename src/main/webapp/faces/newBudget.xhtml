@@ -22,7 +22,7 @@
 
 	<ui:define name="content">
 		<f:view locale="pt_BR">
-			
+
 			<p:growl id="growl" showDetail="true" globalOnly="true"
 				widgetVar="growl" />
 			<div class="card">
@@ -56,11 +56,11 @@
 
 							<p:menuButton id="btnViewCDetails"
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
-								disabled="#{newBudgetController.budgetDTO.customerOnOrder.customer eq null}">
+								disabled="#{newBudgetController.budget.customerOnOrder eq null}">
 								<p:menuitem
 									value="#{resourceBundleServiceImpl.getMessage('detalhes')}"
 									icon="pi pi-eye"
-									action="#{newBudgetController.showCustomerDetail(newBudgetController.budgetDTO.customerOnOrder.customer)}" />
+									action="#{newBudgetController.showCustomerDetail(newBudgetController.budget.customerOnOrder)}" />
 							</p:menuButton>
 						</p:toolbarGroup>
 					</p:toolbar>
@@ -78,11 +78,11 @@
 										value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 									<div class="ui-inputgroup">
 										<p:inputText
-											value="#{newBudgetController.budgetDTO.customerOnOrder.customer.name}-#{newBudgetController.budgetDTO.customerOnOrder.customer.store}"
+											value="#{newBudgetController.budget.customerOnOrder.name}-#{newBudgetController.budget.customerOnOrder.store}"
 											readonly="true" />
 										<p:button icon="pi pi-search" styleClass="ui-button-warning"
 											onclick="PF('dlgSearchCustomer').show()"
-											disabled="#{not empty newBudgetController.budgetDTO.items}"
+											disabled="#{not empty newBudgetController.budget.items}"
 											id="btnShowSearchCustomer">
 											<p:autoUpdate on="eventAddItem" />
 										</p:button>
@@ -92,14 +92,14 @@
 								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 									<p:outputLabel value="CNPJ" for="cnpj" />
 									<p:inputMask
-										value="#{newBudgetController.budgetDTO.customerOnOrder.customer.cnpj}"
+										value="#{newBudgetController.budget.customerOnOrder.cnpj}"
 										readonly="true" id="cnpj" mask="99.999.999/9999-99" />
 								</div>
 								<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
 									<p:outputLabel for="endereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 									<p:inputText id="endereco"
-										value="#{newBudgetController.budgetDTO.customerOnOrder.customer.street}, #{newBudgetController.budgetDTO.customerOnOrder.customer.city} - #{newBudgetController.budgetDTO.customerOnOrder.customer.state}"
+										value="#{newBudgetController.budget.customerOnOrder.street}, #{newBudgetController.budget.customerOnOrder.city} - #{newBudgetController.budget.customerOnOrder.state}"
 										readonly="true" />
 								</div>
 								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
@@ -107,17 +107,17 @@
 										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 										for="pTerms" />
 									<p:inputText
-										value="#{newBudgetController.budgetDTO.customerOnOrder.customer.paymentTerms}"
+										value="#{newBudgetController.budget.customerOnOrder.paymentTerms}"
 										readonly="true" id="pTerms" />
 								</div>
 
 								<ui:fragment
-									rendered="#{newBudgetController.budgetDTO.customerOnOrder.type eq 'PROSPECT'}">
+									rendered="#{newBudgetController.budget.customerOnOrder.type eq 'PROSPECT'}">
 
 									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 										<p:outputLabel value="Vendedor" for="sellerType" />
 										<p:inputText
-											value="#{newBudgetController.budgetDTO.customerOnOrder.sellerType}"
+											value="#{newBudgetController.budget.customerOnOrder.sellerType}"
 											readonly="true" id="sellerType" />
 									</div>
 
@@ -125,7 +125,7 @@
 								<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 									<p:outputLabel for="mensagem" value="Mensagem" />
 									<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-										value="#{newBudgetController.budgetDTO.customerOnOrder.message}"
+										value="#{newBudgetController.budget.customerOnOrder.message}"
 										onchange="saveMessage();" />
 								</div>
 								<p:remoteCommand name="saveMessage"
@@ -146,7 +146,7 @@
 						<h:form id="formItems">
 							<p:remoteCommand name="updateDtItems" action="#" process="@none"
 								update="dtItems" />
-							<p:dataTable value="#{newBudgetController.budgetDTO.items}"
+							<p:dataTable value="#{newBudgetController.budget.items}"
 								var="item" editable="true" rowKey="#{item.commercialCode}"
 								id="dtItems" reflow="true" size="small" scrollable="true"
 								widgetVar="dtItems" rowIndexVar="crrIndex">
@@ -167,7 +167,7 @@
 											</p:splitButton>
 											<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
-												disabled="#{empty newBudgetController.budgetDTO.items}">
+												disabled="#{empty newBudgetController.budget.items}">
 												<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('linha')}"
 													onclick="PF('dlgLineDiscount').show()" process="@none"
@@ -187,7 +187,7 @@
 								</f:facet>
 								<f:facet name="footer">
 									<span class="p-text-bold">Há
-										#{fn:length(newBudgetController.budgetDTO.items)} produtos.</span>
+										#{fn:length(newBudgetController.budget.items)} produtos.</span>
 								</f:facet>
 								<p:column>
 									<h:outputText value="#{crrIndex+1}" />
@@ -296,7 +296,8 @@
 									</p:overlayPanel>
 									<p:commandButton icon="pi pi-times"
 										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
-										title="Remover" action="#{newBudgetController.removeItem(item)}"
+										title="Remover"
+										action="#{newBudgetController.removeItem(item)}"
 										update="formItems:dtItems,budgetTotals,customerForm:btnShowSearchCustomer"
 										process="@this"
 										oncomplete="turnDtScrollBodyResponsive('dtItems','32vh')" />
@@ -306,7 +307,7 @@
 
 						</h:form>
 						<p:blockUI block="formItems" widgetVar="blockItems"
-							blocked="#{newBudgetController.budgetDTO.customerOnOrder.customer == null}">
+							blocked="#{newBudgetController.budget.customerOnOrder == null}">
 							<i class="pi pi-lock" style="font-size: 3rem" />
 						</p:blockUI>
 					</div>
@@ -320,7 +321,7 @@
 									<p:outputLabel for="liquidV"
 										value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
 									<p:inputNumber id="liquidV"
-										value="#{newBudgetController.budgetDTO.liquidValue}" symbol="R$ "
+										value="#{newBudgetController.budget.liquidValue}" symbol="R$ "
 										symbolPosition="p" readonly="true" decimalSeparator=","
 										thousandSeparator="." />
 								</div>
@@ -328,7 +329,7 @@
 									<p:outputLabel for="stT"
 										value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
 									<p:inputNumber id="stT"
-										value="#{newBudgetController.budgetDTO.stValue}" symbol="R$ "
+										value="#{newBudgetController.budget.stValue}" symbol="R$ "
 										symbolPosition="p" readonly="true" decimalSeparator=","
 										thousandSeparator="." />
 								</div>
@@ -336,7 +337,7 @@
 									<p:outputLabel for="grossV"
 										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
 									<p:inputNumber id="grossV"
-										value="#{newBudgetController.budgetDTO.grossValue}" symbol="R$ "
+										value="#{newBudgetController.budget.grossValue}" symbol="R$ "
 										symbolPosition="p" readonly="true" decimalSeparator=","
 										thousandSeparator="." />
 								</div>
@@ -350,12 +351,16 @@
 
 
 			</div>
+			<p:remoteCommand name="cleanBudgetObj"
+				action="#{newBudgetController.newBudgetObject}" process="@this"
+				update="customerForm, formItems:dtItems, budgetTotals" />
 			<p:dialog widgetVar="successSavedBudget" modal="true"
 				responsive="true" id="successSavedBudget"
-				header="#{newBudgetController.budgetResponse.code}">
+				header="#{newBudgetController.budget.idCode}"
+				onHide="cleanBudgetObj()">
 				<p:staticMessage severity="info"
 					summary="Orçamento salvo com sucesso."
-					detail="Orçamento salvo com identificador: #{newBudgetController.budgetResponse.code}"
+					detail="Orçamento salvo com identificador: #{newBudgetController.budget.idCode}"
 					style="width: 100%" />
 			</p:dialog>
 			<p:dialog widgetVar="saveBudget" modal="true"
@@ -400,10 +405,10 @@
 							update="@form:lines"
 							action="#{newBudgetController.loadCurrentItemLines}" />
 						<p:selectOneListbox id="lines"
-							value="#{newBudgetController.itemLineDiscount.line}" filter="true"
-							required="true">
-							<f:selectItems value="#{newBudgetController.itemLines}" var="line"
-								itemLabel="#{line}" itemValue="#{line}" />
+							value="#{newBudgetController.itemLineDiscount.line}"
+							filter="true" required="true">
+							<f:selectItems value="#{newBudgetController.itemLines}"
+								var="line" itemLabel="#{line}" itemValue="#{line}" />
 						</p:selectOneListbox>
 						<p:message for="lines" />
 					</div>
@@ -838,8 +843,9 @@
         							</p:row>
 
 									<p:outputLabel for="cep" value="CEP" />
-									<p:inputText id="cep" value="#{newBudgetController.cepToSearch}"
-										maxlength="8" oninput="if(this.value.length == 8)findCep()" />
+									<p:inputText id="cep"
+										value="#{newBudgetController.cepToSearch}" maxlength="8"
+										oninput="if(this.value.length == 8)findCep()" />
 
 									<p:outputLabel for="prospEndereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />

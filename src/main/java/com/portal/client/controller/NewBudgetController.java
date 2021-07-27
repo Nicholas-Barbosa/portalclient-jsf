@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import javax.ws.rs.ClientErrorException;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
@@ -26,14 +27,15 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetSavedResponse;
-import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerAddress;
 import com.portal.client.dto.CustomerContact;
 import com.portal.client.dto.CustomerOnOrder;
+import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.CustomerPurchaseInfo;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
@@ -41,8 +43,8 @@ import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
-import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.dto.ItemBudget;
+import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPageDTO;
@@ -51,7 +53,6 @@ import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.export.OrderExport;
@@ -69,6 +70,7 @@ import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
+import com.portal.client.util.jsf.ServerEndpointErrorUtils;
 
 @Named
 @ViewScoped
@@ -130,7 +132,7 @@ public class NewBudgetController implements Serializable {
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
-	private BudgetToSave budgetRequest;
+	private BaseBudget budget;
 
 	private BigDecimal itemDiscountToView;
 
@@ -153,8 +155,6 @@ public class NewBudgetController implements Serializable {
 	private String cepToSearch;
 
 	private CustomerRepresentativeOrderForm customerRepresentativeOrderForm;
-
-	private BudgetSavedResponse budgetResponse;
 
 	private String paramBudgetID;
 
@@ -187,19 +187,20 @@ public class NewBudgetController implements Serializable {
 
 	public void saveBudget() {
 		try {
-			budgetResponse = budgetService.save(budgetRequest, customerRepresentativeOrderForm);
-			FacesUtils.ajaxUpdate("successSavedBudget", "customerForm", "formItems:dtItems", "budgetTotals");
-			PrimeFaces.current().executeScript("PF('successSavedBudget').show()");
-			this.newBudgetObject();
+			this.budget = budgetService.save(budget, customerRepresentativeOrderForm);
+			PrimeFaces.current().executeScript("PF('successSavedBudget').show();");
+			FacesUtils.ajaxUpdate("successSavedBudget");
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ClientErrorException e) {
+			ServerEndpointErrorUtils.openEndpointErrorOnDialog(e.getResponse());
 		}
 	}
 
 	public void checkBudgetRequestObj() {
 		try {
-			budgetService.checkBudgetState(budgetRequest);
+			budgetService.checkBudgetState(budget);
 			PrimeFaces.current().executeScript("PF('saveBudget').show()");
 		} catch (IllegalArgumentException e) {
 			FacesUtils.error(null, "Não é possível efetivar o orçamento neste momento.",
@@ -238,7 +239,7 @@ public class NewBudgetController implements Serializable {
 	}
 
 	public void saveMessageOrder() {
-		if (budgetRequest != null && budgetRequest.getCustomerOnOrder().getCustomer() != null) {
+		if (budget != null && budget.getCustomerOnOrder() != null) {
 			FacesUtils.info(null, "Mensagem salva!", null);
 			return;
 		}
@@ -247,9 +248,6 @@ public class NewBudgetController implements Serializable {
 
 	public void setProspectCustomer() {
 		if (prospectCustomerForm.getCity() != null && !prospectCustomerForm.getCity().isEmpty()) {
-			ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder();
-			prospectCustomer.setType(CustomerType.PROSPECT);
-			prospectCustomer.setSellerType(SellerType.valueOf(prospectCustomerForm.getSellerType()));
 
 			CustomerAddress customerAddress = new CustomerAddress(prospectCustomerForm.getAddress(),
 					prospectCustomerForm.getDistrict(), prospectCustomerForm.getCity(), cepToSearch,
@@ -260,8 +258,9 @@ public class NewBudgetController implements Serializable {
 			Customer originCustomer = new Customer(null, null, prospectCustomerForm.getCnpj(), null,
 					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo,
 					contact);
-			prospectCustomer.setCustomer(originCustomer);
-			buRequestService.setCustomer(budgetRequest, prospectCustomer);
+			ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder(originCustomer,
+					SellerType.valueOf(prospectCustomerForm.getSellerType()));
+			buRequestService.setCustomer(budget, prospectCustomer);
 			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
 			return;
 		}
@@ -271,7 +270,7 @@ public class NewBudgetController implements Serializable {
 
 	public void applyGlobalDiscount() {
 		try {
-			buRequestService.setDiscount(budgetRequest, globalDiscount);
+			buRequestService.setDiscount(budget, globalDiscount);
 		} catch (CustomerNotAllowed e) {
 			FacesUtils.fatal(null, "Cliente não autorizado", null);
 			PrimeFaces.current().ajax().update("growl");
@@ -279,16 +278,16 @@ public class NewBudgetController implements Serializable {
 	}
 
 	public void applyLineDiscount() {
-		itemService.applyLineDiscount(budgetRequest.getItems(), itemLineDiscount);
-		buRequestService.calculateTotals(budgetRequest);
+		itemService.applyLineDiscount(budget.getItems(), itemLineDiscount);
+		buRequestService.calculateTotals(budget);
 	}
 
 	public void loadCurrentItemLines() {
-		this.itemLines = budgetRequest.getItems().parallelStream().map(ItemBudget::line).collect(Collectors.toSet());
+		this.itemLines = budget.getItems().parallelStream().map(ItemBudget::line).collect(Collectors.toSet());
 	}
 
 	public void addPreviewItemToBudget() {
-		buRequestService.addItem(budgetRequest, previewItem);
+		buRequestService.addItem(budget, previewItem);
 		previewItem = null;
 	}
 
@@ -302,7 +301,7 @@ public class NewBudgetController implements Serializable {
 
 	public void onRowItemEdit(RowEditEvent<ItemBudget> event) {
 		calculateItemQuantity(event.getObject(), onRowItemQuantity);
-		buRequestService.calculateTotals(budgetRequest);
+		buRequestService.calculateTotals(budget);
 		onRowItemQuantity = 1;
 	}
 
@@ -324,7 +323,7 @@ public class NewBudgetController implements Serializable {
 	}
 
 	public void removeItem(ItemBudget item) {
-		buRequestService.removeItem(budgetRequest, item);
+		buRequestService.removeItem(budget, item);
 	}
 
 	public void showOpenedTitlesPageOnDialog() {
@@ -347,17 +346,17 @@ public class NewBudgetController implements Serializable {
 	}
 
 	public void newBudgetObject() {
-		this.budgetRequest = new BudgetToSave();
+		this.budget = new BaseBudget();
 	}
 
 	public void exportOrder() {
-		if (budgetRequest == null || budgetRequest.getItems().size() == 0) {
+		if (budget == null || budget.getItems().size() == 0) {
 			FacesUtils.error(null, "Objeto de pedido não está pronto",
 					"Entre com as informações necessárias para criar um pedido/orçamento.");
 			return;
 		}
 		try {
-			byte[] btes = orderExporter.export(budgetRequest, downloadStreamsForm.getContentType());
+			byte[] btes = orderExporter.export(budget, downloadStreamsForm.getContentType());
 			FacesUtils.prepareResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
 					downloadStreamsForm.getContentType());
 		} catch (Exception e) {
@@ -371,7 +370,7 @@ public class NewBudgetController implements Serializable {
 			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		buRequestService.setCustomer(budgetRequest, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
+		buRequestService.setCustomer(budget, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
 		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
@@ -395,7 +394,7 @@ public class NewBudgetController implements Serializable {
 						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 						return;
 					}
-					buRequestService.setCustomer(budgetRequest, new CustomerOnOrder(cDTO, CustomerType.NORMAL));
+					buRequestService.setCustomer(budget, new CustomerOnOrder(cDTO, CustomerType.NORMAL));
 					FacesUtils.ajaxUpdate(":customerForm", "budgetToolsForm:btnViewCDetail");
 					FacesUtils.addHeaderForResponse("customers-found", true);
 				}
@@ -411,16 +410,15 @@ public class NewBudgetController implements Serializable {
 	public void findProductByCode() {
 		try {
 			Optional<Product> product = null;
-			switch (budgetRequest.getCustomerOnOrder().getType()) {
+			switch (budget.getCustomerOnOrder().getType()) {
 			case NORMAL:
 				product = productService.findByCode(findProductByCodeForm.getCode(),
-						budgetRequest.getCustomerOnOrder().getCustomer().getCode(),
-						budgetRequest.getCustomerOnOrder().getCustomer().getStore());
+						budget.getCustomerOnOrder().getCode(), budget.getCustomerOnOrder().getStore());
 				break;
 			default:
-				ProspectCustomerOnOrder customer = (ProspectCustomerOnOrder) budgetRequest.getCustomerOnOrder();
-				product = productService.findByCodeForProspect(findProductByCodeForm.getCode(),
-						customer.getCustomer().getState(), customer.getSellerType().getType());
+				ProspectCustomerOnOrder customer = (ProspectCustomerOnOrder) budget.getCustomerOnOrder();
+				product = productService.findByCodeForProspect(findProductByCodeForm.getCode(), customer.getState(),
+						customer.getSellerType().getType());
 				break;
 			}
 			this.getOptionalProduct(product);
@@ -499,7 +497,7 @@ public class NewBudgetController implements Serializable {
 		this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
 				(short) 1, (short) 2, (short) 0);
 		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
-		this.budgetRequest = new BudgetToSave();
+		this.budget = new BaseBudget();
 		this.itemLines = new HashSet<>();
 		this.itemLineDiscount = new ItemLineDiscountForm();
 		this.prospectCustomerForm = new ProspectCustomerForm();
@@ -595,8 +593,8 @@ public class NewBudgetController implements Serializable {
 		return budgetXlsxPreview;
 	}
 
-	public BudgetToSave getBudgetDTO() {
-		return budgetRequest;
+	public BaseBudget getBudget() {
+		return budget;
 	}
 
 	public BigDecimal getItemDiscountToView() {
@@ -657,10 +655,6 @@ public class NewBudgetController implements Serializable {
 
 	public CustomerRepresentativeOrderForm getCustomerRepresentativeOrderForm() {
 		return customerRepresentativeOrderForm;
-	}
-
-	public BudgetSavedResponse getBudgetResponse() {
-		return budgetResponse;
 	}
 
 	public String getParamBudgetID() {

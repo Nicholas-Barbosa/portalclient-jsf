@@ -22,6 +22,27 @@ public class BaseBudget {
 		this.globalDiscount = BigDecimal.ZERO;
 	}
 
+	public BaseBudget(BaseBudget budget) {
+		this.idCode = budget.idCode;
+		this.customerOnOrder = budget.customerOnOrder;
+		this.grossValue = budget.grossValue;
+		this.liquidValue = budget.liquidValue;
+		this.stValue = budget.stValue;
+		this.globalDiscount = budget.globalDiscount;
+		this.items = new HashSet<>(budget.getItems());
+	}
+
+	public BaseBudget(CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue,
+			BigDecimal stValue, BigDecimal globalDiscount, Set<ItemBudget> items) {
+		super();
+		this.customerOnOrder = customerOnOrder;
+		this.grossValue = grossValue;
+		this.liquidValue = liquidValue;
+		this.stValue = stValue;
+		this.globalDiscount = globalDiscount;
+		this.items = items;
+	}
+
 	public String getIdCode() {
 		return idCode;
 	}
@@ -71,8 +92,16 @@ public class BaseBudget {
 		this.globalDiscount = globalDiscount;
 	}
 
-	public Set<ItemBudget> getItems() {
-		return items;
+	public Set<? extends ItemBudget> getItems() {
+		return new HashSet<>(items);
+	}
+
+	public void addItem(ItemBudget item) {
+		this.items.add(item);
+	}
+
+	public boolean removeItem(ItemBudget item) {
+		return this.items.remove(item);
 	}
 
 }

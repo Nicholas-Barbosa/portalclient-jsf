@@ -11,12 +11,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.ItemBudgetValue;
-import com.portal.client.dto.BudgetToSave;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute;
+import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.microsoft.excel.writer.WriteRowObject;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
-import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.util.MathUtils;
 
 @ApplicationScoped
@@ -31,7 +31,7 @@ public class OrderExcelCalculusConference {
 		this.intiColumnsPositions();
 	}
 
-	public byte[] createWorkbook(BudgetToSave order) {
+	public byte[] createWorkbook(BaseBudget order) {
 		List<WriteRowObject> rowObjects = new CopyOnWriteArrayList<>();
 		rowObjects.add(createRowForColumns());
 

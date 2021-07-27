@@ -1,17 +1,17 @@
 package com.portal.client.dto;
 
-import javax.validation.constraints.NotEmpty;
-
-@NotEmpty
 public class ProspectCustomerOnOrder extends CustomerOnOrder {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3307367266965324272L;
 	private SellerType sellerType;
 
-	public ProspectCustomerOnOrder() {
-		// TODO Auto-generated constructor stub
+	public ProspectCustomerOnOrder(Customer customer,SellerType selletType) {
+		super(customer, CustomerType.PROSPECT);
 	}
 
-	
 	public SellerType getSellerType() {
 		return sellerType;
 	}
