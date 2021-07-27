@@ -72,8 +72,8 @@
 							<p:column>
 								<p:commandButton icon="pi pi-pencil"
 									styleClass="edit-button rounded-button ui-button-success"
-									action="#{budgetListController.showEditBudget(budget)}"
-									process="@this" />
+									action="#{budgetEditRedirectController.redirect(budget.code)}"
+									update="@none" process="@this" />
 							</p:column>
 						</p:dataTable>
 

@@ -68,9 +68,10 @@
 		<h:form>
 			<div class="ui-inputgroup">
 				<p:inputText placeholder="Budget ID" required="true"
-					value="#{budgetRedirectController.budgetId}" />
+					value="#{budgetEditRedirectController.budgetId}" />
 				<p:commandButton icon="pi pi-search" styleClass="ui-button-warning"
-					process="@this,@form" action="#{budgetRedirectController.redirect}" />
+					process="@this,@form"
+					action="#{budgetEditRedirectController.redirect}" />
 			</div>
 		</h:form>
 

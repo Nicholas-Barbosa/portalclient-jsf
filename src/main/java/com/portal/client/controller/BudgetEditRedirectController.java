@@ -5,12 +5,17 @@ import javax.inject.Named;
 
 @Named
 @RequestScoped
-public class BudgetRedirectController {
+public class BudgetEditRedirectController {
 
 	private String budgetId;
 
 	public String redirect() {
 		return "editBudget?faces-redirect=true&budgetID=" + budgetId;
+	}
+
+	public String redirect(String budgetID) {
+		this.budgetId = budgetID;
+		return this.redirect();
 	}
 
 	public String getBudgetId() {
