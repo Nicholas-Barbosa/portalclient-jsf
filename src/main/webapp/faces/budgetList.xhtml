@@ -7,6 +7,7 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+		<h:outputScript name="dataTable.js" library="javascript" />
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamentos')}</ui:define>
@@ -26,17 +27,22 @@
 				<div id="divListContent" class="card" style="display: none">
 					<h:form>
 						<p:remoteCommand action="#{budgetListController.loadBudgets(1)}"
-							process="@this" update="dtBudgets" autoRun="true"
-							oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
-						<p:dataTable id="dtBudgets" var="budget"
+							process="@this" autoRun="true"
+							oncomplete="$('#divLoading').hide();$('#divListContent').show();updateBudgets()" />
+						<p:remoteCommand name="updateBudgets" update="dtBudgets"
+							action="@none" process="@none"
+							oncomplete="editScrollBodyMaxHeight('dtBudgets','90vh')" />
+
+						<p:dataTable id="dtBudgets" widgetVar="dtBudgets" var="budget"
 							value="#{budgetListController.budgets}" paginator="true"
-							paginatorPosition="bottom" rows="15">
+							paginatorPosition="bottom" rows="15" scrollable="true"
+							lazy="true" reflow="true">
 							<p:ajax event="page" listener="#{budgetListController.onPage}"
 								onstart="$('#divLoading').show();$('#divListContent').hide();"
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('orcamento')}">
-								<h:outputText value="#{budget.budgetCode}" />
+								<h:outputText value="#{budget.code}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
@@ -54,7 +60,7 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('valor_liquido')}">
-								<h:outputText value="#{budget.liquidOrderValue}">
+								<h:outputText value="#{budget.liquidValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>

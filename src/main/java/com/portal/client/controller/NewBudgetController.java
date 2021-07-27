@@ -41,11 +41,12 @@ import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
-import com.portal.client.dto.ItemBudgetToSaveValues;
-import com.portal.client.dto.ItemBudgetToSave;
+import com.portal.client.dto.ItemBudgetValue;
+import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.dto.ProductValue;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
@@ -54,13 +55,13 @@ import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.export.OrderExport;
-import com.portal.client.service.BudgetRequestService;
-import com.portal.client.service.BudgetService;
+import com.portal.client.service.BudgetCommonBehaviorHelper;
 import com.portal.client.service.CustomerService;
 import com.portal.client.service.ItemService;
 import com.portal.client.service.ProductService;
 import com.portal.client.service.ResourceBundleService;
 import com.portal.client.service.ZipCodeService;
+import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyOperations;
@@ -82,7 +83,7 @@ public class NewBudgetController implements Serializable {
 
 	private final CustomerService customerService;
 
-	private final BudgetService budgetService;
+	private final BudgetCrudService budgetService;
 
 	private final OrderExport orderExporter;
 
@@ -96,7 +97,7 @@ public class NewBudgetController implements Serializable {
 
 	private final ZipCodeService cepCervice;
 
-	private final BudgetRequestService buRequestService;
+	private final BudgetCommonBehaviorHelper buRequestService;
 
 	private LazyDataModelBase<Product> lazyProducts;
 
@@ -121,7 +122,7 @@ public class NewBudgetController implements Serializable {
 
 	private FindProductByCodeForm findProductByCodeForm;
 
-	private ItemBudgetToSave previewItem;
+	private ItemBudget previewItem;
 
 	private byte[] imageToSeeOnDlg;
 
@@ -165,9 +166,10 @@ public class NewBudgetController implements Serializable {
 
 	@Inject
 	public NewBudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
-			BudgetService budgetService, OrderExport orderExporter, ClientErrorExceptionController responseController,
+			BudgetCrudService budgetService, OrderExport orderExporter,
+			ClientErrorExceptionController responseController,
 			ServerApiExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
-			ItemService itemService, ZipCodeService cep, BudgetRequestService budgetRequestService) {
+			ItemService itemService, ZipCodeService cep, BudgetCommonBehaviorHelper budgetRequestService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
@@ -282,8 +284,7 @@ public class NewBudgetController implements Serializable {
 	}
 
 	public void loadCurrentItemLines() {
-		this.itemLines = budgetRequest.getItems().parallelStream().map(ItemBudgetToSave::line)
-				.collect(Collectors.toSet());
+		this.itemLines = budgetRequest.getItems().parallelStream().map(ItemBudget::line).collect(Collectors.toSet());
 	}
 
 	public void addPreviewItemToBudget() {
@@ -299,13 +300,13 @@ public class NewBudgetController implements Serializable {
 		calculateItemQuantity(previewItem, previewItemQuantity);
 	}
 
-	public void onRowItemEdit(RowEditEvent<ItemBudgetToSave> event) {
+	public void onRowItemEdit(RowEditEvent<ItemBudget> event) {
 		calculateItemQuantity(event.getObject(), onRowItemQuantity);
 		buRequestService.calculateTotals(budgetRequest);
 		onRowItemQuantity = 1;
 	}
 
-	private void calculateItemQuantity(ItemBudgetToSave item, int quantity) {
+	private void calculateItemQuantity(ItemBudget item, int quantity) {
 		try {
 			itemService.calculateDueQuantity(item, quantity);
 		} catch (ItemQuantityNotAllowed e) {
@@ -322,7 +323,7 @@ public class NewBudgetController implements Serializable {
 		budgetImportXlsxForm.setXlsxStreams(event.getFile().getContent());
 	}
 
-	public void removeItem(ItemBudgetToSave item) {
+	public void removeItem(ItemBudget item) {
 		buRequestService.removeItem(budgetRequest, item);
 	}
 
@@ -437,12 +438,12 @@ public class NewBudgetController implements Serializable {
 	private void getOptionalProduct(Optional<Product> product) {
 		product.ifPresentOrElse(presentProduct -> {
 			FacesUtils.addHeaderForResponse("product-found", true);
-			com.portal.client.dto.ProductPrice productPrice = presentProduct.getPrice();
-			previewItem = new ItemBudgetToSave(BigDecimal.ZERO, BigDecimal.ZERO, presentProduct,
-					new ItemBudgetToSaveValues(1, BigDecimal.ZERO, BigDecimal.ZERO, productPrice.getUnitStValue(),
-							productPrice.getUnitValue(), productPrice.getUnitGrossValue(),
-							productPrice.getUnitStValue(), productPrice.getUnitValue(),
-							productPrice.getUnitGrossValue()));
+			ProductValue productValue = presentProduct.getPrice();
+			ItemBudgetValue itemValue = new ItemBudgetValue(1, BigDecimal.ZERO, BigDecimal.ZERO,
+					productValue.getUnitStValue(), productValue.getUnitValue(), productValue.getUnitGrossValue(),
+					productValue.getUnitStValue(), productValue.getUnitValue(), productValue.getUnitGrossValue());
+			previewItem = new ItemBudget(presentProduct, itemValue);
+
 			previewItemQuantity = presentProduct.getMultiple();
 			PrimeFaces.current().executeScript("$('#footer').show();");
 		}, () -> {
@@ -570,11 +571,11 @@ public class NewBudgetController implements Serializable {
 		return findProductByCodeForm;
 	}
 
-	public ItemBudgetToSave getPreviewItem() {
+	public ItemBudget getPreviewItem() {
 		return previewItem;
 	}
 
-	public void changePreviewItem(ItemBudgetToSave previewItem) {
+	public void changePreviewItem(ItemBudget previewItem) {
 		this.previewItem = previewItem;
 	}
 
@@ -678,5 +679,4 @@ public class NewBudgetController implements Serializable {
 		this.paramEditBudget = paramEditBudget;
 	}
 
-	
 }

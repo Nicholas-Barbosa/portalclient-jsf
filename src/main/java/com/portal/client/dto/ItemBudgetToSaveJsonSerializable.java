@@ -3,78 +3,43 @@ package com.portal.client.dto;
 import java.math.BigDecimal;
 
 import javax.json.bind.annotation.JsonbProperty;
-import javax.json.bind.annotation.JsonbTransient;
 
-public class ItemBudgetToSaveJsonSerializable implements Comparable<ItemBudgetToSaveJsonSerializable> {
+public class ItemBudgetToSaveJsonSerializable extends ItemBudget
+		implements Comparable<ItemBudgetToSaveJsonSerializable> {
 
-	@JsonbTransient
-	private ItemBudgetToSave item;
-	@JsonbTransient
-	private ItemBudgetToSaveValues values;
-	@JsonbTransient
-	private Product itemProduct;
-
-	public ItemBudgetToSaveJsonSerializable(ItemBudgetToSave item) {
-		super();
-		this.item = item;
-		this.values = item.getValues();
-		this.itemProduct = item.getProduct();
+	public ItemBudgetToSaveJsonSerializable(ItemBudget item) {
+		super(item);
 	}
 
 	@JsonbProperty("line_discount")
 	public BigDecimal getLineDiscount() {
-		return values.getLineDiscount();
+		return super.getValues().getLineDiscount();
 
 	}
 
 	@JsonbProperty("product_code")
 	public String getProductCode() {
-		return itemProduct.getCode();
+		return super.getProduct().getCode();
 	}
 
 	@JsonbProperty("commercial_code")
 	public String getProductCommercialCode() {
-		return itemProduct.getCommercialCode();
+		return super.getProduct().getCommercialCode();
 	}
 
 	@JsonbProperty("unit_price")
 	public BigDecimal getProductUnitValue() {
-		return values.getUnitValue();
+		return super.getValues().getUnitValue();
 	}
 
 	@JsonbProperty("st_value")
 	public BigDecimal getProductStValue() {
-		return values.getTotalStValue();
+		return super.getValues().getTotalStValue();
 	}
 
 	@JsonbProperty("quantity")
 	private int getQuantity() {
-		return values.getQuantity();
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((itemProduct == null) ? 0 : itemProduct.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		ItemBudgetToSaveJsonSerializable other = (ItemBudgetToSaveJsonSerializable) obj;
-		if (itemProduct == null) {
-			if (other.itemProduct != null)
-				return false;
-		} else if (!itemProduct.equals(other.itemProduct))
-			return false;
-		return true;
+		return super.getValues().getQuantity();
 	}
 
 	@Override

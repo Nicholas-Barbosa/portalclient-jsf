@@ -7,11 +7,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BudgetToSave;
-import com.portal.client.dto.ItemBudgetToSave;
+import com.portal.client.dto.ItemBudget;
 import com.portal.client.exception.CustomerNotAllowed;
 
 @ApplicationScoped
-public class BudgetRequestServiceImpl implements BudgetRequestService, Serializable {
+public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelper, Serializable {
 
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class BudgetRequestServiceImpl implements BudgetRequestService, Serializa
 	private ItemService itemService;
 
 	@Inject
-	public BudgetRequestServiceImpl(ItemService itemService) {
+	public BudgetCommonBehaviorHelperImpl(ItemService itemService) {
 		super();
 		this.itemService = itemService;
 	}
@@ -39,14 +39,14 @@ public class BudgetRequestServiceImpl implements BudgetRequestService, Serializa
 	}
 
 	@Override
-	public void removeItem(BudgetToSave budget, ItemBudgetToSave itemToRemove) {
+	public void removeItem(BudgetToSave budget, ItemBudget itemToRemove) {
 		if (budget.getItems().remove(itemToRemove)) {
 			calculateTotals(budget);
 		}
 	}
 
 	@Override
-	public void addItem(BudgetToSave budgetDTO, ItemBudgetToSave produc) {
+	public void addItem(BudgetToSave budgetDTO, ItemBudget produc) {
 		if (produc != null) {
 			budgetDTO.getItems().add(produc);
 			this.calculateTotals(budgetDTO);
@@ -55,13 +55,10 @@ public class BudgetRequestServiceImpl implements BudgetRequestService, Serializa
 
 	@Override
 	public void setDiscount(BudgetToSave budget, BigDecimal discount) throws CustomerNotAllowed {
-//		if (budget.getCustomerOnOrder().getType() == CustomerType.PROSPECT) {
 		budget.setGlobalDiscount(discount);
 		itemService.applyGlobalDiscount(budget.getItems(), discount);
 		this.calculateTotals(budget);
 		return;
-//		}
-//		throw new CustomerNotAllowed("You can't set global discount for a normal client!");
 
 	}
 

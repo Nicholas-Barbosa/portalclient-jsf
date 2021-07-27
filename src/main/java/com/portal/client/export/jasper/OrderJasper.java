@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.client.dto.ItemBudgetToSave;
-import com.portal.client.dto.ItemBudgetToSaveValues;
+import com.portal.client.dto.ItemBudget;
+import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
@@ -173,12 +173,12 @@ public class OrderJasper implements Serializable {
 
 		}
 
-		public OrderItemJasper(ItemBudgetToSave item) {
+		public OrderItemJasper(ItemBudget item) {
 			super();
 			this.commercialCode = item.getProduct().getCommercialCode();
 			this.line = item.line();
 
-			ItemBudgetToSaveValues values = item.getValues();
+			ItemBudgetValue values = item.getValues();
 			this.quantity = values.getQuantity();
 			this.unitValue = values.getUnitValueWithoutDiscount();
 			this.totalValue = this.unitValue.multiply(new BigDecimal(this.quantity));

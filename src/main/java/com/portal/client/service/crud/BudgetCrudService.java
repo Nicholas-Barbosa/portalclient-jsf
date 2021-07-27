@@ -1,4 +1,4 @@
-package com.portal.client.service;
+package com.portal.client.service.crud;
 
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -11,8 +11,9 @@ import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
+import com.portal.client.service.ServiceSerializable;
 
-public interface BudgetService extends ServiceSerializable {
+public interface BudgetCrudService extends ServiceSerializable, CrudService {
 
 	BudgetPage findAll(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;

@@ -1,4 +1,4 @@
-package com.portal.client.service;
+package com.portal.client.service.crud;
 
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -18,7 +18,7 @@ import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.repository.BudgetRepository;
 
 @ApplicationScoped
-public class BudgetServiceImpl implements BudgetService {
+public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	/**
 	 * 
@@ -28,7 +28,7 @@ public class BudgetServiceImpl implements BudgetService {
 	private BudgetRepository budgetRepository;
 
 	@Inject
-	public BudgetServiceImpl(BudgetRepository budgetRepository) {
+	public BudgetCrudServiceImpl(BudgetRepository budgetRepository) {
 		super();
 		this.budgetRepository = budgetRepository;
 	}

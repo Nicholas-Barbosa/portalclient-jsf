@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ItemBudgetToSaveValues {
+public class ItemBudgetValue {
 
 	private int quantity;
 	private BigDecimal budgetGlobalDiscount;
@@ -20,7 +20,7 @@ public class ItemBudgetToSaveValues {
 	private BigDecimal totalGrossValue;
 	private final Map<String, BigDecimal> values = new ConcurrentHashMap<>();
 
-	public ItemBudgetToSaveValues(int quantity, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, BigDecimal unitStValue,
+	public ItemBudgetValue(int quantity, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, BigDecimal unitStValue,
 			BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue, BigDecimal totalValue,
 			BigDecimal totalGrossValue) {
 		super();

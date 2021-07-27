@@ -2,13 +2,13 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 
-public class ProductPrice {
+public class ProductValue {
 
 	private final BigDecimal unitStValue;
 	private final BigDecimal unitValue;
 	private final BigDecimal unitGrossValue;
 
-	public ProductPrice(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue) {
+	public ProductValue(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue) {
 		super();
 		this.unitStValue = unitStValue;
 		this.unitValue = unitValue;

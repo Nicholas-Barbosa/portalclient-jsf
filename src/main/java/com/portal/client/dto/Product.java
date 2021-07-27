@@ -17,7 +17,7 @@ public class Product {
 	private final int multiple;
 	private final boolean commercialBlock;
 	private ProductImage image;
-	private final ProductPrice price;
+	private final ProductValue price;
 
 	@JsonbCreator
 	public static Product ofJsonb(@JsonbProperty("application") String application,
@@ -28,14 +28,14 @@ public class Product {
 			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("stock") int stock,
 			@JsonbProperty("description") String description,
 			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
-		ProductPrice price = new ProductPrice(stValue, unitValue, unitGrossValue);
+		ProductValue price = new ProductValue(stValue, unitValue, unitGrossValue);
 		return new Product(code, cCode, application, description, line, acronymLine, stock, multiple,
 				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price);
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
 			String acronymLine, int stock, int multiple, boolean commercialBlock, ProductImage image,
-			ProductPrice price) {
+			ProductValue price) {
 		super();
 		this.code = code;
 		this.commercialCode = commercialCode;
@@ -93,7 +93,7 @@ public class Product {
 	public byte[] getImageStreams() {
 		return image.getImageStreams();
 	}
-	public ProductPrice getPrice() {
+	public ProductValue getPrice() {
 		return price;
 	}
 

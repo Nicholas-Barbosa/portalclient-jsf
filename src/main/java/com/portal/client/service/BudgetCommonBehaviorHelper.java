@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 
 import com.portal.client.dto.BudgetToSave;
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ItemBudgetToSave;
+import com.portal.client.dto.ItemBudget;
 import com.portal.client.exception.CustomerNotAllowed;
 
-public interface BudgetRequestService {
+public interface BudgetCommonBehaviorHelper {
 
 	/**
 	 * Calculate the totals for that object based on the item totals.
@@ -16,9 +16,9 @@ public interface BudgetRequestService {
 	 */
 	void calculateTotals(BudgetToSave budget);
 
-	void removeItem(BudgetToSave budget, ItemBudgetToSave itemToRemove);
+	void removeItem(BudgetToSave budget, ItemBudget itemToRemove);
 
-	void addItem(BudgetToSave budgetDTO, ItemBudgetToSave produc);
+	void addItem(BudgetToSave budgetDTO, ItemBudget produc);
 
 	default void setCustomer(BudgetToSave budget, CustomerOnOrder customer) {
 		if (budget.getItems().size() >= 1)

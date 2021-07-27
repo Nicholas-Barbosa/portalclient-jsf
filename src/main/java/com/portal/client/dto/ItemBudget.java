@@ -1,31 +1,36 @@
 package com.portal.client.dto;
 
-import java.math.BigDecimal;
+import javax.json.bind.annotation.JsonbTransient;
 
-public class ItemBudgetToSave {
+public class ItemBudget {
 
+	@JsonbTransient
 	private final Product product;
-	private ItemBudgetToSaveValues values;
+	@JsonbTransient
+	private ItemBudgetValue values;
 
-	public ItemBudgetToSave(BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, Product product,
-			ItemBudgetToSaveValues itemPrice) {
+	public ItemBudget(Product product, ItemBudgetValue itemPrice) {
 		super();
 		this.product = product;
 		this.values = itemPrice;
 	}
 
-	public ItemBudgetToSave() {
-		this(BigDecimal.ZERO, BigDecimal.ZERO, null, null);
+	public ItemBudget() {
+		this(null, null);
+	}
+
+	public ItemBudget(ItemBudget item) {
+		this(item.product, item.values);
 	}
 
 	public Product getProduct() {
 		return product;
 	}
 
-	public ItemBudgetToSaveValues getValues() {
+	public ItemBudgetValue getValues() {
 		return values;
 	}
-
+	@JsonbTransient
 	public String line() {
 		return product.getLine();
 	}
@@ -46,7 +51,7 @@ public class ItemBudgetToSave {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ItemBudgetToSave other = (ItemBudgetToSave) obj;
+		ItemBudget other = (ItemBudget) obj;
 		if (product == null) {
 			if (other.product != null)
 				return false;

@@ -28,7 +28,7 @@ public class DiscountView {
 	}
 
 	
-	public void setItem(ItemBudgetToSave item) {
+	public void setItem(ItemBudget item) {
 		lineDiscount = item.getValues().getLineDiscount();
 		globalDiscount = item.getValues().getBudgetGlobalDiscount();
 	}

@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.ItemBudgetToSaveValues;
+import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.dto.BudgetToSave;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.microsoft.excel.writer.WriteRowObject;
@@ -39,7 +39,7 @@ public class OrderExcelCalculusConference {
 
 		order.getItems().parallelStream().forEach(i -> {
 			List<WriteCellAttribute> cells = new LinkedList<>();
-			ItemBudgetToSaveValues values = i.getValues();
+			ItemBudgetValue values = i.getValues();
 
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("productCode"),
 					i.getProduct().getCommercialCode()));

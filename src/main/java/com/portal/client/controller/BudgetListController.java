@@ -13,7 +13,7 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.dto.BudgetSemiProjection;
-import com.portal.client.service.BudgetService;
+import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.ui.lazy.datamodel.BudgetLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
@@ -27,12 +27,12 @@ public class BudgetListController implements Serializable {
 	 */
 	private static final long serialVersionUID = 9093802333014411573L;
 
-	private BudgetService buService;
+	private BudgetCrudService buService;
 
 	private LazyDataModelBase<BudgetSemiProjection> budgets;
 
 	@Inject
-	public BudgetListController(BudgetService buService) {
+	public BudgetListController(BudgetCrudService buService) {
 		super();
 		this.buService = buService;
 	}

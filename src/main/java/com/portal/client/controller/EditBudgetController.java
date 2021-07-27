@@ -10,21 +10,21 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.portal.client.dto.BudgetFullProjection;
-import com.portal.client.service.BudgetService;
+import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.util.jsf.FacesUtils;
 
 @Named
 @RequestScoped
 public class EditBudgetController {
 
-	private BudgetService budgetService;
+	private BudgetCrudService budgetService;
 
 	private BudgetFullProjection budget;
 
 	private String budgetID;
 
 	@Inject
-	public EditBudgetController(BudgetService budgetService) {
+	public EditBudgetController(BudgetCrudService budgetService) {
 		super();
 		this.budgetService = budgetService;
 	}
