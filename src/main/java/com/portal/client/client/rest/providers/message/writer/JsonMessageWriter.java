@@ -1,6 +1,5 @@
 package com.portal.client.client.rest.providers.message.writer;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;

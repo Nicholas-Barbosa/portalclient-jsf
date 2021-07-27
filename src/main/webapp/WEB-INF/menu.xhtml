@@ -39,14 +39,17 @@
 						<p:submenu
 							label="#{resourceBundleServiceImpl.getMessage('orcamento_message')}"
 							icon="pi pi-shopping-cart">
-							<p:menuitem 
+							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('orcamentos')}"
 								icon="pi pi-list" outcome="budgetList" />
-							<p:menuitem 
+							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-plus" outcome="newBudget" />
+							<p:menuitem
+								value="#{resourceBundleServiceImpl.getMessage('editar')}"
+								icon="pi pi-pencil" action="@none" update="@none"
+								onclick="PF('budgetEditRedirect').show()" />
 						</p:submenu>
-
 					</p:submenu>
 					<p:submenu label="#{holdMessageView.getLabel('financeiro')}"
 						icon="pi pi-wallet">
@@ -55,8 +58,21 @@
 							icon="pi pi-wallet" outcome="openedTitles" />
 					</p:submenu>
 				</pr:menu>
-			</h:form>
-		</div>
-	</div>
 
+			</h:form>
+
+		</div>
+
+	</div>
+	<p:dialog widgetVar="budgetEditRedirect" modal="true" responsive="true">
+		<h:form>
+			<div class="ui-inputgroup">
+				<p:inputText placeholder="Budget ID" required="true"
+					value="#{budgetRedirectController.budgetId}" />
+				<p:commandButton icon="pi pi-search" styleClass="ui-button-warning"
+					process="@this,@form" action="#{budgetRedirectController.redirect}" />
+			</div>
+		</h:form>
+
+	</p:dialog>
 </ui:composition>
