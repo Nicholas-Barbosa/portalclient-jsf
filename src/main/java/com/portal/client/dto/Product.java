@@ -17,7 +17,7 @@ public class Product {
 	private final int multiple;
 	private final boolean commercialBlock;
 	private ProductImage image;
-	private final ProductValue price;
+	private final ProductValue value;
 
 	@JsonbCreator
 	public static Product ofJsonb(@JsonbProperty("application") String application,
@@ -47,7 +47,7 @@ public class Product {
 		this.multiple = multiple;
 		this.commercialBlock = commercialBlock;
 		this.image = image;
-		this.price = price;
+		this.value = price;
 	}
 
 	public String getCode() {
@@ -94,9 +94,11 @@ public class Product {
 		return image.getImageStreams();
 	}
 	public ProductValue getPrice() {
-		return price;
+		return value;
 	}
-
+	public ProductValue getValue() {
+		return value;
+	}
 	public void setImage(ProductImage productImage) {
 		this.image = productImage;
 	}

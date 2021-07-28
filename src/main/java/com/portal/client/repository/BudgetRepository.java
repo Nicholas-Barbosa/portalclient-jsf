@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 
@@ -20,7 +19,7 @@ public interface BudgetRepository extends Serializable {
 	BaseBudget save(BudgetToSaveJsonSerializable request)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
-	Optional<BudgetFullProjection> findByCode(String code)
+	Optional<BaseBudget> findByCode(String code)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
 }

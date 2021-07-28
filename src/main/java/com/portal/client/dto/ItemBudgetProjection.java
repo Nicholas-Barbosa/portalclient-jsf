@@ -1,74 +1,52 @@
 package com.portal.client.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ItemBudgetProjection {
+import com.portal.client.util.MathUtils;
 
-	private BigDecimal grossValue;
-	private float lineDiscount;
-	private final String commercialCode;
-	private final String productCode;
-	private final BigDecimal unitValue;
-	private int quantity;
-	private BigDecimal total;
-	private BigDecimal stValue;
+public class ItemBudgetProjection extends ItemBudget {
 
 	@JsonbCreator
 	public static ItemBudgetProjection ofJsonb(@JsonbProperty("unit_gross_value") BigDecimal grossValue,
-			@JsonbProperty("line_discount") float lineDiscount, @JsonbProperty("commercial_code") String commercialCode,
-			@JsonbProperty("product_code") String productCode, @JsonbProperty("unit_price") BigDecimal unitValue,
-			@JsonbProperty("quantity") int quantity, @JsonbProperty("total_price") BigDecimal total,
-			@JsonbProperty("st_value") BigDecimal stValue) {
-		return new ItemBudgetProjection(grossValue, lineDiscount, commercialCode, productCode, unitValue, quantity,
-				total, stValue);
+			@JsonbProperty("line_discount") BigDecimal lineDiscount,
+			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("product_code") String productCode,
+			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("quantity") int quantity,
+			@JsonbProperty("total_price") BigDecimal totalValue, @JsonbProperty("st_value") BigDecimal stValue) {
+		BigDecimal quantityBgDecimal = new BigDecimal(quantity);
+
+		Product product = createProduct(stValue, unitValue, grossValue, lineDiscount, quantityBgDecimal, productCode,
+				commercialCode);
+
+		ItemBudgetValue value = new ItemBudgetValue(quantity, BigDecimal.ZERO, lineDiscount,
+				stValue.divide(quantityBgDecimal, RoundingMode.HALF_UP), unitValue,
+				grossValue.divide(quantityBgDecimal, RoundingMode.HALF_UP), stValue, totalValue, grossValue,
+				product.getValue());
+
+		return new ItemBudgetProjection(product, value);
+
 	}
 
-	public ItemBudgetProjection(BigDecimal grossValue, float lineDiscount, String commercialCode, String productCode,
-			BigDecimal unitValue, int quantity, BigDecimal total, BigDecimal stValue) {
-		super();
-		this.grossValue = grossValue;
-		this.lineDiscount = lineDiscount;
-		this.commercialCode = commercialCode;
-		this.productCode = productCode;
-		this.unitValue = unitValue;
-		this.quantity = quantity;
-		this.total = total;
-		this.stValue = stValue;
+	public ItemBudgetProjection(Product product, ItemBudgetValue value) {
+		super(product, value);
+
 	}
 
-	public BigDecimal getGrossValue() {
-		return grossValue;
-	}
+	private static Product createProduct(BigDecimal rawStValue, BigDecimal rawUnitValue, BigDecimal rawGrossValue,
+			BigDecimal lineDiscount, BigDecimal quantity, String code, String commercialCode) {
+		BigDecimal unitStValue = MathUtils.addValueByPercentage(lineDiscount,
+				rawStValue.divide(quantity, RoundingMode.HALF_UP));
+		BigDecimal unitValue = MathUtils.addValueByPercentage(lineDiscount, rawUnitValue);
+		BigDecimal unitGrossValue = MathUtils.addValueByPercentage(lineDiscount,
+				rawGrossValue.divide(quantity, RoundingMode.HALF_UP));
 
-	public float getLineDiscount() {
-		return lineDiscount;
-	}
+		ProductValue productValue = new ProductValue(unitStValue, unitValue, unitGrossValue);
 
-	public String getCommercialCode() {
-		return commercialCode;
-	}
-
-	public String getProductCode() {
-		return productCode;
-	}
-
-	public BigDecimal getUnitValue() {
-		return unitValue;
-	}
-
-	public int getQuantity() {
-		return quantity;
-	}
-
-	public BigDecimal getTotal() {
-		return total;
-	}
-
-	public BigDecimal getStValue() {
-		return stValue;
+		Product product = new Product(code, commercialCode, null, null, null, null, 0, 0, false, null, productValue);
+		return product;
 	}
 
 }

@@ -439,7 +439,8 @@ public class NewBudgetController implements Serializable {
 			ProductValue productValue = presentProduct.getPrice();
 			ItemBudgetValue itemValue = new ItemBudgetValue(1, BigDecimal.ZERO, BigDecimal.ZERO,
 					productValue.getUnitStValue(), productValue.getUnitValue(), productValue.getUnitGrossValue(),
-					productValue.getUnitStValue(), productValue.getUnitValue(), productValue.getUnitGrossValue());
+					productValue.getUnitStValue(), productValue.getUnitValue(), productValue.getUnitGrossValue(),
+					productValue);
 			previewItem = new ItemBudget(presentProduct, itemValue);
 
 			previewItemQuantity = presentProduct.getMultiple();

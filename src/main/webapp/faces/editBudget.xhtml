@@ -67,13 +67,14 @@
 							<div class="p-field p-col">
 								<label for="firstname">Código</label>
 								<p:inputText id="firstname" type="text" readonly="true"
-									value="#{editBudgetController.budget.customerCode}" />
+									value="#{editBudgetController.budget.customerOnOrder.code}" />
 							</div>
 							<div class="p-field p-col">
 								<label for="lastname">Loja</label>
 								<p:inputText id="lastname" type="text" readonly="true"
-									value="#{editBudgetController.budget.customerStore}" />
+									value="#{editBudgetController.budget.customerOnOrder.store}" />
 							</div>
+							<p:commandButton value="Carregar dados adicionais" />
 						</div>
 					</p:outputPanel>
 				</div>
@@ -87,13 +88,13 @@
 								editable="true">
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
-									<h:outputText value="#{item.commercialCode}" />
+									<h:outputText value="#{item.product.commercialCode}" />
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
 									<p:cellEditor>
 										<f:facet name="output">
-											<h:outputText value="#{item.quantity}" />
+											<h:outputText value="#{item.values.quantity}" />
 										</f:facet>
 										<f:facet name="input">
 											<p:spinner />
@@ -103,21 +104,58 @@
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('valor_unitario')}">
-									<h:outputText value="#{item.unitValue}">
+									<h:outputText value="#{item.product.value.unitValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('valor')}">
-									<h:outputText value="#{item.total}">
+									<h:outputText
+										value="#{item.values.getTotalValueWithoutDiscount()}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column
+									headerText="#{resourceBundleServiceImpl.getMessage('total_st')}">
+									<h:outputText
+										value="#{item.values.getTotalStValueWithoutDiscount()}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('valor_bruto')}">
-									<h:outputText value="#{item.grossValue}">
+									<h:outputText
+										value="#{item.values.getTotalGrossWithoutDiscount()}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column
+									headerText="#{resourceBundleServiceImpl.getMessage('desc_linha')}">
+									<h:outputText value="#{item.values.lineDiscount}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column
+									headerText="#{resourceBundleServiceImpl.getMessage('total_cm_desc')}">
+									<h:outputText value="#{item.values.totalValue}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="ST">
+									<h:outputText value="#{item.values.totalStValue}">
+										<f:convertNumber currencySymbol="R$" type="currency"
+											locale="pt_BR" />
+									</h:outputText>
+								</p:column>
+								<p:column
+									headerText="#{resourceBundleServiceImpl.getMessage('bruto_cm_desc')}">
+									<h:outputText value="#{item.values.totalGrossValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>

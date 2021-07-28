@@ -43,6 +43,18 @@ public class BaseBudget {
 		this.items = items;
 	}
 
+	public BaseBudget(String idCode, CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue,
+			BigDecimal stValue, BigDecimal globalDiscount, Set<? extends ItemBudget> items) {
+		super();
+		this.idCode = idCode;
+		this.customerOnOrder = customerOnOrder;
+		this.grossValue = grossValue;
+		this.liquidValue = liquidValue;
+		this.stValue = stValue;
+		this.globalDiscount = globalDiscount;
+		this.items = new HashSet<>(items);
+	}
+
 	public String getIdCode() {
 		return idCode;
 	}

@@ -65,7 +65,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public Optional<BudgetFullProjection> findByCode(String code)
+	public Optional<BaseBudget> findByCode(String code)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		try {

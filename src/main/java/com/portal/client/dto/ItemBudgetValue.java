@@ -22,7 +22,7 @@ public class ItemBudgetValue {
 
 	public ItemBudgetValue(int quantity, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, BigDecimal unitStValue,
 			BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue, BigDecimal totalValue,
-			BigDecimal totalGrossValue) {
+			BigDecimal totalGrossValue,ProductValue productValue) {
 		super();
 		this.quantity = quantity;
 		this.budgetGlobalDiscount = budgetGlobalDiscount;
@@ -34,9 +34,9 @@ public class ItemBudgetValue {
 		this.totalStValue = totalStValue;
 		this.totalValue = totalValue;
 		this.totalGrossValue = totalGrossValue;
-		values.put("unitStValue", unitStValue);
-		values.put("unitValue", unitValue);
-		values.put("unitGrossValue", unitGrossValue);
+		values.put("unitStValue", productValue.getUnitStValue());
+		values.put("unitValue", productValue.getUnitValue());
+		values.put("unitGrossValue", productValue.getUnitGrossValue());
 	}
 
 	public BigDecimal getBudgetGlobalDiscount() {

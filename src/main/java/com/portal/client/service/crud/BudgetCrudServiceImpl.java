@@ -10,10 +10,8 @@ import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.ResponseProcessingException;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
@@ -59,7 +57,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public Optional<BudgetFullProjection> findByCode(String code)
+	public Optional<BaseBudget> findByCode(String code)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		return budgetRepository.findByCode(code);
 	}

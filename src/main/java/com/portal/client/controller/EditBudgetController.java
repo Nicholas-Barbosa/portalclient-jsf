@@ -2,14 +2,13 @@ package com.portal.client.controller;
 
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.client.dto.BudgetFullProjection;
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.util.jsf.FacesUtils;
 
@@ -19,7 +18,7 @@ public class EditBudgetController {
 
 	private BudgetCrudService budgetService;
 
-	private BudgetFullProjection budget;
+	private BaseBudget budget;
 
 	private String budgetID;
 
@@ -53,7 +52,7 @@ public class EditBudgetController {
 		this.budgetID = budgetID;
 	}
 
-	public BudgetFullProjection getBudget() {
+	public BaseBudget getBudget() {
 		return budget;
 	}
 }
