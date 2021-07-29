@@ -30,19 +30,19 @@ public class Customer implements Serializable {
 			@JsonbProperty("name") String name, @JsonbProperty("fantasy_name") String fantasyName,
 			@JsonbProperty("address") String street, @JsonbProperty("limit") double limit,
 			@JsonbProperty("district") String district, @JsonbProperty("last_purchase") String lastPurchase,
-			@JsonbProperty("risk") char risk, @JsonbProperty("discount") float discount,
+			@JsonbProperty("risk") String risk, @JsonbProperty("discount") float discount,
 			@JsonbProperty("discount2") float discount2, @JsonbProperty("discount3") float discount3,
 			@JsonbProperty("state") String state, @JsonbProperty("table") String table,
 			@JsonbProperty("email") String email, @JsonbProperty("email2") String email2,
 			@JsonbProperty("payment_terms") String paymentTerms, @JsonbProperty("city") String city,
 			@JsonbProperty("zip_code") String zipCode) {
-
 		CustomerAddress address = new CustomerAddress(street, district, city, zipCode, state);
 		CustomerContact contact = new CustomerContact(email, email2);
 
 		CustomerPurchaseInfo purchaseInfo = new CustomerPurchaseInfo(discount, discount2, discount3,
-				formatLastPurschase(lastPurchase), risk, paymentTerms, table, limit);
+				formatLastPurschase(lastPurchase), risk.length() >0 ? risk.charAt(0) : '-', paymentTerms, table, limit);
 		return new Customer(code, store, cnpj, blocked, name, fantasyName, address, purchaseInfo, contact);
+
 	}
 
 	private static LocalDateTime formatLastPurschase(String text) {

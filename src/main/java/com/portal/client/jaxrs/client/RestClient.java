@@ -1,4 +1,4 @@
-package com.portal.client.client.rest;
+package com.portal.client.jaxrs.client;
 
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -15,9 +15,9 @@ import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
-import com.portal.client.client.rest.providers.filter.WebApplicationExceptionExceptionLauncherFilter;
-import com.portal.client.client.rest.providers.message.reader.JsonMessageReader;
-import com.portal.client.client.rest.providers.message.writer.JsonMessageWriter;
+import com.portal.client.jaxrs.client.providers.filter.WebApplicationExceptionExceptionLauncherFilter;
+import com.portal.client.jaxrs.client.providers.message.reader.JsonMessageReader;
+import com.portal.client.jaxrs.client.providers.message.writer.JsonMessageWriter;
 
 public interface RestClient {
 

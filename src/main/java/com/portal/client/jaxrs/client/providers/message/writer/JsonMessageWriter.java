@@ -1,4 +1,4 @@
-package com.portal.client.client.rest.providers.message.writer;
+package com.portal.client.jaxrs.client.providers.message.writer;
 
 import java.io.IOException;
 import java.io.OutputStream;

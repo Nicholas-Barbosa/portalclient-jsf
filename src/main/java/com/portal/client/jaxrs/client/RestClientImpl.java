@@ -1,4 +1,4 @@
-package com.portal.client.client.rest;
+package com.portal.client.jaxrs.client;
 
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -15,8 +15,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
-import com.portal.client.client.rest.providers.filter.TokenHeaderSupport;
 import com.portal.client.exception.IllegalResponseStatusException;
+import com.portal.client.jaxrs.client.providers.filter.TokenHeaderSupport;
 
 @ApplicationScoped
 public class RestClientImpl implements RestClient {

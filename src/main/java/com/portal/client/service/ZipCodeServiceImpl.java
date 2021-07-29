@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.client.rest.RestClient;
+import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.pojo.ZipCode;
 import com.portal.client.resources.ConfigPropertyResolver;
 

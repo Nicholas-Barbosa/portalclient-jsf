@@ -1,4 +1,4 @@
-package com.portal.client.client.rest.providers.message.reader;
+package com.portal.client.jaxrs.client.providers.message.reader;
 
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
@@ -33,7 +33,7 @@ public class JsonMessageReader implements MessageBodyReader<Object> {
 	public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) {
 		try {
-			
+			System.out.println("read from!");
 			return jsonReader.fromJson(entityStream, type);
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);

@@ -11,12 +11,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.client.rest.RestClient;
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
+import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
 

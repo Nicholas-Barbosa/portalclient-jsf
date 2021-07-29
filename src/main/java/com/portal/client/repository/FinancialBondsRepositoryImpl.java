@@ -10,8 +10,8 @@ import java.util.concurrent.TimeoutException;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.client.rest.RestClient;
 import com.portal.client.dto.FinancialBondsPage;
+import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
 

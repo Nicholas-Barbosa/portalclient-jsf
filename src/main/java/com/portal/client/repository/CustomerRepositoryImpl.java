@@ -13,11 +13,11 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.client.rest.RestClient;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.NoPageCustomerResponseDTO;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
 
