@@ -21,7 +21,7 @@
 
 	<context-param>
 		<param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
-		<param-value>0</param-value>
+		<param-value>-1</param-value>
 	</context-param>
 
 	<context-param>
@@ -52,17 +52,21 @@
 		<filter-class>org.omnifaces.filter.GzipResponseFilter</filter-class>
 		<init-param>
 			<description>The threshold size in bytes. Must be a number between 0
-				and 9999. Defaults to 150.</description>
+				and 9999. Defaults to 150.
+			</description>
 			<param-name>threshold</param-name>
 			<param-value>150</param-value>
 		</init-param>
 		<init-param>
 			<description>The mimetypes which needs to be compressed. Must be a
-				commaseparated string. Defaults to the below values.</description>
+				commaseparated string. Defaults to the below values.
+			</description>
 			<param-name>mimetypes</param-name>
 			<param-value>
-				text/plain, text/html, text/xml, text/css, text/javascript, text/csv, text/rtf,
-				application/xml, application/xhtml+xml, application/javascript,
+				text/plain, text/html, text/xml, text/css,
+				text/javascript, text/csv, text/rtf,
+				application/xml,
+				application/xhtml+xml, application/javascript,
 				application/x-javascript, application/json,
 				image/svg+xml
 			</param-value>
