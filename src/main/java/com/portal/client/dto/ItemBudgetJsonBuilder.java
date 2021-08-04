@@ -2,24 +2,20 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 
-public class ItemBudgetJsonBuilder {
+public abstract class ItemBudgetJsonBuilder {
 
-	private BigDecimal budgetGlobalDiscount;
-	private BigDecimal lineDiscount;
-	private BigDecimal unitStValue;
-	private BigDecimal unitValue;
-	private BigDecimal unitGrossValue;
-	private BigDecimal totalStValue;
-	private BigDecimal totalValue;
-	private BigDecimal totalGrossValue;
+	protected BigDecimal budgetGlobalDiscount;
+	protected BigDecimal lineDiscount;
+	protected BigDecimal unitStValue;
+	protected BigDecimal unitValue;
+	protected BigDecimal unitGrossValue;
+	protected BigDecimal totalStValue;
+	protected BigDecimal totalValue;
+	protected BigDecimal totalGrossValue;
 
-	private String productCode;
-	private String commercialCode;
-	private int quantity;
-
-	public static ItemBudgetJsonBuilder getInstance() {
-		return new ItemBudgetJsonBuilder();
-	}
+	protected String productCode;
+	protected String commercialCode;
+	protected int quantity;
 
 	public ItemBudgetJsonBuilder withGlobalDiscount(BigDecimal value) {
 		this.budgetGlobalDiscount = value;
@@ -75,14 +71,8 @@ public class ItemBudgetJsonBuilder {
 		this.unitValue = value;
 		return this;
 	}
+
 	
-	public ItemBudget build() {
-		ProductValue productValue = new ProductValue(unitStValue, unitValue, unitGrossValue);
-		Product product = new Product(productCode, commercialCode, null, null, null, null, 0, 0, false, null,
-				productValue);
-		ItemBudgetValue value = new ItemBudgetValue(quantity, budgetGlobalDiscount, lineDiscount, unitStValue,
-				unitValue, unitGrossValue, totalStValue, totalValue, totalGrossValue, productValue);
-		return new ItemBudget(product, value);
-	}
+	public abstract ItemBudget build();
 
 }

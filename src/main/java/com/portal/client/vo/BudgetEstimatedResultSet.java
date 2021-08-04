@@ -19,7 +19,7 @@ public class BudgetEstimatedResultSet {
 		return ok;
 	}
 
-	public BaseBudget getBudgetEstimatedResultBuilder() {
+	public BaseBudget getBudget() {
 		return budget;
 	}
 

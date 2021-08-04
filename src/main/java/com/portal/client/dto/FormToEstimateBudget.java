@@ -26,7 +26,7 @@ public class FormToEstimateBudget {
 		return store;
 	}
 
-	@JsonbProperty("estimate")
+	@JsonbProperty("items")
 	public Set<ItemBudgetToEstimate> getItems() {
 		return items;
 	}

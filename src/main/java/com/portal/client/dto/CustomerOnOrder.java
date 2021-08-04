@@ -24,6 +24,11 @@ public class CustomerOnOrder extends Customer {
 		this.message = message;
 	}
 
+	public CustomerOnOrder(String code, String store, String cnpj, String blocked, String name, String fantasyName,
+			CustomerAddress address, CustomerPurchaseInfo financialInfo, CustomerContact contact) {
+		super(code, store, cnpj, blocked, name, fantasyName, address, financialInfo, contact);
+	}
+
 	public CustomerType getType() {
 		return type;
 	}
