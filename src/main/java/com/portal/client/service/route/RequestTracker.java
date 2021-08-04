@@ -2,7 +2,7 @@ package com.portal.client.service.route;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface ReuqestTracker {
+public interface RequestTracker {
 
 	void addRequest(HttpServletRequest request);
 

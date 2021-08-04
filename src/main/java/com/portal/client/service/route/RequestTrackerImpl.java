@@ -1,5 +1,6 @@
 package com.portal.client.service.route;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -11,8 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import com.portal.client.service.route.Request.RequestB;
 
 @SessionScoped
-public class RequestTrackerImpl implements ReuqestTracker {
+public class RequestTrackerImpl implements RequestTracker,Serializable {
 
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8959483923993585901L;
 	private final Deque<Request> requests;
 
 	public RequestTrackerImpl() {

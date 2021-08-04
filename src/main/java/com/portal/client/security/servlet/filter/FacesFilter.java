@@ -13,32 +13,32 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.service.route.RequestTracker;
 
 @WebFilter(value = "/faces/*")
 public class FacesFilter implements Filter {
 
 	private final UserSessionAPIManager userPropertyHolder;
-
+	private final RequestTracker requestTracker;
+	
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
 	@Inject
-	public FacesFilter(UserSessionAPIManager userPropertyHolder) {
+	public FacesFilter(UserSessionAPIManager userPropertyHolder,RequestTracker requestTracker) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
+		this.requestTracker = requestTracker;
 	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		if (httpRequest.getMethod().equals("GET")) {
-			
-		}
-		System.out.println("request URL: " + httpRequest.getRequestURI());
-		httpRequest.getParameterMap().forEach((k, v) -> {
-			System.out.println(k + ":" + v[0]);
-		});
+		System.out
+				.println("----new request! " + httpRequest.getRequestURI() + " : " + httpRequest.getMethod() + "----");
+		httpRequest.getHeaderNames().asIterator()
+				.forEachRemaining(s -> System.out.println(s + ": " + httpRequest.getHeader(s)));
 		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			String loginUrl = String.format("%s/%s", httpRequest.getContextPath(), "login.xhtml");
