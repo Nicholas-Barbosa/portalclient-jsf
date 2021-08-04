@@ -1,5 +1,7 @@
 package com.portal.client.service.route;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 public interface RequestTracker {
@@ -9,4 +11,8 @@ public interface RequestTracker {
 	Request getLastRequest();
 
 	Request getFirstRequest();
+
+	List<Request> getAll();
+
+	boolean isEmpty();
 }

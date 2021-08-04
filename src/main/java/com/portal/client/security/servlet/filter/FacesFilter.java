@@ -20,12 +20,12 @@ public class FacesFilter implements Filter {
 
 	private final UserSessionAPIManager userPropertyHolder;
 	private final RequestTracker requestTracker;
-	
+
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
 	@Inject
-	public FacesFilter(UserSessionAPIManager userPropertyHolder,RequestTracker requestTracker) {
+	public FacesFilter(UserSessionAPIManager userPropertyHolder, RequestTracker requestTracker) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
 		this.requestTracker = requestTracker;
@@ -35,10 +35,7 @@ public class FacesFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		System.out
-				.println("----new request! " + httpRequest.getRequestURI() + " : " + httpRequest.getMethod() + "----");
-		httpRequest.getHeaderNames().asIterator()
-				.forEachRemaining(s -> System.out.println(s + ": " + httpRequest.getHeader(s)));
+		requestTracker.addRequest(httpRequest);
 		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			String loginUrl = String.format("%s/%s", httpRequest.getContextPath(), "login.xhtml");

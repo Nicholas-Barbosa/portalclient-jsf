@@ -5,16 +5,14 @@ import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.enterprise.context.SessionScoped;
 import javax.servlet.http.HttpServletRequest;
 
-import com.portal.client.service.route.Request.RequestB;
-
 @SessionScoped
-public class RequestTrackerImpl implements RequestTracker,Serializable {
+public class RequestTrackerImpl implements RequestTracker, Serializable {
 
-	
 	/**
 	 * 
 	 */
@@ -28,11 +26,13 @@ public class RequestTrackerImpl implements RequestTracker,Serializable {
 
 	@Override
 	public void addRequest(HttpServletRequest servletRequest) {
-		List<String> parameters = new ArrayList<>();
-		servletRequest.getParameterNames().asIterator().forEachRemaining(s -> parameters.add(s));
-		Request request = RequestB.getBuilder().withServlet(servletRequest).build();
-		requests.offer(request);
-
+		if (servletRequest.getMethod().equals("GET")) {
+			System.out.println("Add servlet request " + servletRequest);
+			List<String> parameters = new ArrayList<>();
+			servletRequest.getParameterNames().asIterator().forEachRemaining(s -> parameters.add(s));
+			Request request = new Request(servletRequest);
+			requests.offer(request);
+		}
 	}
 
 	@Override
@@ -45,6 +45,17 @@ public class RequestTrackerImpl implements RequestTracker,Serializable {
 	public Request getFirstRequest() {
 		// TODO Auto-generated method stub
 		return requests.peekFirst();
+	}
+
+	@Override
+	public List<Request> getAll() {
+		// TODO Auto-generated method stub
+		return requests.parallelStream().collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return requests.isEmpty();
 	}
 
 }
