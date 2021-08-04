@@ -3,11 +3,9 @@ package com.portal.client.repository;
 import java.net.ConnectException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,11 +29,11 @@ import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.service.jsonb.JsonbService;
-import com.portal.client.vo.BudgetEstimatedResultError;
+import com.portal.client.vo.BudgetEstimatedResult404Error;
 import com.portal.client.vo.BudgetEstimatedResultSet;
-import com.portal.client.vo.CustomerError;
+import com.portal.client.vo.Customer404Error;
 import com.portal.client.vo.Deseriaized404JsonEstimateEndpoint;
-import com.portal.client.vo.WrapperItemError;
+import com.portal.client.vo.WrapperItem404Error;
 
 @ApplicationScoped
 public class BudgetRepositoryImpl implements BudgetRepository {
@@ -110,7 +108,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 			Deseriaized404JsonEstimateEndpoint deserialized = deserializeJson404FromEstimateEndpoint(
 					e.getResponse().getEntity() + "");
 
-			BudgetEstimatedResultError error = new BudgetEstimatedResultError(404, deserialized.isOkWithItems(),
+			BudgetEstimatedResult404Error error = new BudgetEstimatedResult404Error(404, deserialized.isOkWithItems(),
 					deserialized.isOkWithCustomer(), deserialized.getItemErrors(), deserialized.getCustomerError());
 			BudgetEstimatedResultSet resultSet = new BudgetEstimatedResultSet(false, null, error);
 
@@ -123,8 +121,10 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 		ExecutorService executor = null;
 		try {
 			executor = Executors.newFixedThreadPool(2);
-			Future<WrapperItemError> f = executor.submit(() -> jsonbService.fromJson(json, WrapperItemError.class));
-			Future<CustomerError> fCustomer = executor.submit(() -> jsonbService.fromJson(json, CustomerError.class));
+			Future<WrapperItem404Error> f = executor
+					.submit(() -> jsonbService.fromJson(json, WrapperItem404Error.class));
+			Future<Customer404Error> fCustomer = executor
+					.submit(() -> jsonbService.fromJson(json, Customer404Error.class));
 			Deseriaized404JsonEstimateEndpoint deserialized = new Deseriaized404JsonEstimateEndpoint(
 					f.get().getErrors(), fCustomer.get());
 			return deserialized;

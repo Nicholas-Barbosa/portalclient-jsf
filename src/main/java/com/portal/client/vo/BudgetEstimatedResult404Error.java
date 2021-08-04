@@ -1,17 +1,17 @@
 package com.portal.client.vo;
 
-import com.portal.client.vo.WrapperItemError.ItemError;
+import com.portal.client.vo.WrapperItem404Error.Item404Error;
 
-public class BudgetEstimatedResultError {
+public class BudgetEstimatedResult404Error {
 
 	private int status;
 	private boolean okWithItems;
 	private boolean okWithCustomer;
-	private ItemError[] itemsWithErrors;
-	private CustomerError customerError;
+	private Item404Error[] itemsWithErrors;
+	private Customer404Error customerError;
 
-	public BudgetEstimatedResultError(int status, boolean okWithItems, boolean okWithCustomer,
-			ItemError[] itemsWithErrors, CustomerError customerError) {
+	public BudgetEstimatedResult404Error(int status, boolean okWithItems, boolean okWithCustomer,
+			Item404Error[] itemsWithErrors, Customer404Error customerError) {
 		super();
 		this.status = status;
 		this.okWithItems = okWithItems;
@@ -28,7 +28,7 @@ public class BudgetEstimatedResultError {
 		return okWithItems;
 	}
 
-	public ItemError[] getItemsWithErrors() {
+	public Item404Error[] getItemsWithErrors() {
 		return itemsWithErrors;
 	}
 
@@ -36,7 +36,7 @@ public class BudgetEstimatedResultError {
 		return okWithCustomer;
 	}
 
-	public CustomerError getCustomerError() {
+	public Customer404Error getCustomerError() {
 		return customerError;
 	}
 }

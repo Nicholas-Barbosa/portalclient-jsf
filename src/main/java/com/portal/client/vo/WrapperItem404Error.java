@@ -3,24 +3,24 @@ package com.portal.client.vo;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class WrapperItemError {
+public class WrapperItem404Error {
 
-	private ItemError[] errors;
+	private Item404Error[] errors;
 
 	@JsonbProperty("error")
-	public void setErrors(ItemError[] errors) {
+	public void setErrors(Item404Error[] errors) {
 		this.errors = errors.clone();
 	}
 
-	public ItemError[] getErrors() {
+	public Item404Error[] getErrors() {
 		return errors;
 	}
 
-	public static class ItemError {
+	public static class Item404Error {
 		private String cause, itemIdentity;
 
 		@JsonbCreator
-		public ItemError(@JsonbProperty("cause") String cause, @JsonbProperty("itendity") String itemIdentity) {
+		public Item404Error(@JsonbProperty("cause") String cause, @JsonbProperty("itendity") String itemIdentity) {
 			super();
 			this.cause = cause;
 			this.itemIdentity = itemIdentity;

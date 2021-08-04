@@ -6,9 +6,9 @@ public class BudgetEstimatedResultSet {
 
 	private boolean ok;
 	private BaseBudget budget;
-	private BudgetEstimatedResultError error;
+	private BudgetEstimatedResult404Error error;
 	
-	public BudgetEstimatedResultSet(boolean ok, BaseBudget budget, BudgetEstimatedResultError error) {
+	public BudgetEstimatedResultSet(boolean ok, BaseBudget budget, BudgetEstimatedResult404Error error) {
 		super();
 		this.ok = ok;
 		this.budget = budget;
@@ -23,7 +23,7 @@ public class BudgetEstimatedResultSet {
 		return budget;
 	}
 
-	public BudgetEstimatedResultError getError() {
+	public BudgetEstimatedResult404Error getError() {
 		return error;
 	}
 

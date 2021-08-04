@@ -2,7 +2,7 @@ package com.portal.client.vo;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class CustomerError {
+public class Customer404Error {
 
 	private int errorCode;
 	private String errorMessage;
