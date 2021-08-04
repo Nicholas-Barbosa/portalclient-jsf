@@ -35,11 +35,6 @@ public class WebApplicationExceptionExceptionLauncherFilter implements ClientRes
 		case 403:
 			throw new ForbiddenException();
 		case 401:
-			System.out.println("401!!");
-			requestContext.getStringHeaders().forEach((k, v) -> {
-				System.out.println(k + ":" + v);
-			});
-			System.out.println(readResponse(responseContext.getEntityStream()));
 			throw new NotAuthorizedException(Response.status(401).build());
 		case 409:
 			Response response = Response.status(409).entity(readResponse(responseContext.getEntityStream())).build();

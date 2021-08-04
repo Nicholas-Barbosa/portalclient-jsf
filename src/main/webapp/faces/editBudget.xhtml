@@ -25,8 +25,7 @@
 		<f:view locale="pt_BR">
 			<f:metadata>
 				<f:viewParam name="budgetID"
-					value="#{editBudgetController.budgetID}" required="true"
-					requiredMessage="ID do orçamento é obrigatório para esta visualização."
+					value="#{editBudgetController.budgetID}"
 					id="idParam" />
 			</f:metadata>
 
@@ -74,12 +73,19 @@
 								<p:inputText id="lastname" type="text" readonly="true"
 									value="#{editBudgetController.budget.customerOnOrder.store}" />
 							</div>
-							<p:commandButton value="Carregar dados adicionais" />
+							<h:form>
+								<p:commandButton
+									value="#{editBudgetController.isCustomerDataComplete() ? 'Visualizar todos os detalhes' : 'Carregar dados adicionais'}"
+									icon="pi pi-refresh"
+									action="#{editBudgetController.loadCustomerData}"
+									process="@this" update="@none" />
+							</h:form>
 						</div>
 					</p:outputPanel>
 				</div>
 
 				<div class="card">
+					<h5>Items</h5>
 					<p:outputPanel deferred="true" deferredMode="visible"
 						id="panelItems">
 						<h:form prependId="false">

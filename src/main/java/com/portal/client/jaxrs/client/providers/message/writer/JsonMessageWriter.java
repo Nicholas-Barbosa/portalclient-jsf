@@ -42,6 +42,7 @@ public class JsonMessageWriter implements MessageBodyWriter<Object> {
 			throws IOException, WebApplicationException {
 		// TODO Auto-generated method stub
 		try {
+			
 			jsonWriter.toJson(t, entityStream);
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);

@@ -1,4 +1,4 @@
-package com.portal.client.service;
+package com.portal.client.service.crud;
 
 import java.io.Serializable;
 import java.net.ConnectException;

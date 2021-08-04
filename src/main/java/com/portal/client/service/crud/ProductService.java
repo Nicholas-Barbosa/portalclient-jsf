@@ -1,4 +1,4 @@
-package com.portal.client.service;
+package com.portal.client.service.crud;
 
 import java.net.ConnectException;
 import java.net.SocketException;
@@ -8,6 +8,7 @@ import java.util.concurrent.TimeoutException;
 
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.service.ServiceSerializable;
 
 public interface ProductService extends ServiceSerializable {
 

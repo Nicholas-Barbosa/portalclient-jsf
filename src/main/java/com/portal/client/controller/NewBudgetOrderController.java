@@ -28,7 +28,6 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetXlsxPreviewForm;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Customer;
@@ -59,10 +58,10 @@ import com.portal.client.export.OrderExport;
 import com.portal.client.service.BudgetCommonBehaviorHelper;
 import com.portal.client.service.CustomerService;
 import com.portal.client.service.ItemService;
-import com.portal.client.service.ProductService;
 import com.portal.client.service.ResourceBundleService;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BudgetCrudService;
+import com.portal.client.service.crud.ProductService;
 import com.portal.client.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyOperations;
@@ -74,7 +73,7 @@ import com.portal.client.util.jsf.ServerEndpointErrorUtils;
 
 @Named
 @ViewScoped
-public class NewBudgetController implements Serializable {
+public class NewBudgetOrderController implements Serializable {
 
 	/**
 	 * 
@@ -158,14 +157,14 @@ public class NewBudgetController implements Serializable {
 
 	private String paramBudgetID;
 
-	private boolean paramEditBudget;
+	private boolean isOrder;
 
-	public NewBudgetController() {
+	public NewBudgetOrderController() {
 		this(null, null, null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
-	public NewBudgetController(ResourceBundleService resourceBundleService, CustomerService customerService,
+	public NewBudgetOrderController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetCrudService budgetService, OrderExport orderExporter,
 			ClientErrorExceptionController responseController,
 			ServerApiExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
@@ -185,11 +184,13 @@ public class NewBudgetController implements Serializable {
 		this.buRequestService = budgetRequestService;
 	}
 
-	public void saveBudget() {
+	public void saveBudgetOrOrder() {
 		try {
-			this.budget = budgetService.save(budget, customerRepresentativeOrderForm);
-			PrimeFaces.current().executeScript("PF('successSavedBudget').show();");
-			FacesUtils.ajaxUpdate("successSavedBudget");
+			if (!isOrder) {
+				this.budget = budgetService.save(budget, customerRepresentativeOrderForm);
+				PrimeFaces.current().executeScript("PF('successSavedBudgetOrOrder').show();");
+				FacesUtils.ajaxUpdate("successSavedBudgetOrOrder");
+			}
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -201,7 +202,7 @@ public class NewBudgetController implements Serializable {
 	public void checkBudgetRequestObj() {
 		try {
 			budgetService.checkBudgetState(budget);
-			PrimeFaces.current().executeScript("PF('saveBudget').show()");
+			PrimeFaces.current().executeScript("PF('saveBudgetOrOrder').show()");
 		} catch (IllegalArgumentException e) {
 			FacesUtils.error(null, "Não é possível efetivar o orçamento neste momento.",
 					"Objeto incompleto. Entre com os dados necessário.", "growl");
@@ -210,15 +211,19 @@ public class NewBudgetController implements Serializable {
 	}
 
 	public void showCustomerDetail(Customer customer) {
-		FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("customer_to_detail", customer);
-		Map<String, Object> options = new HashMap<>();
-		options.put("modal", true);
-		options.put("draggable", true);
-		options.put("position", "center");
-		options.put("contentWidth", "60vw");
-		options.put("contentHeight", "45vh");
-		options.put("responsive", "true");
-		PrimeFaces.current().dialog().openDynamic("customerDetail", options, null);
+		if (customer != null) {
+			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("customer_to_detail", customer);
+			Map<String, Object> options = new HashMap<>();
+			options.put("modal", true);
+			options.put("draggable", true);
+			options.put("position", "center");
+			options.put("contentWidth", "60vw");
+			options.put("contentHeight", "45vh");
+			options.put("responsive", "true");
+			PrimeFaces.current().dialog().openDynamic("customerDetail", options, null);
+			return;
+		}
+		FacesUtils.error(null, "Cliente não selecionado", "Não foi selecionado nenhum cliente neste ínterim.", "growl");
 	}
 
 	public void findCep() {
@@ -492,7 +497,6 @@ public class NewBudgetController implements Serializable {
 		this.selectedProducts = new HashSet<>();
 		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 		this.downloadStreamsForm = new DownloadStreamsForm();
-		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
 		this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
 		findProductByCodeForm = new FindProductByCodeForm();
 		this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
@@ -666,12 +670,12 @@ public class NewBudgetController implements Serializable {
 		this.paramBudgetID = paramBudgetID;
 	}
 
-	public boolean isParamEditBudget() {
-		return paramEditBudget;
+	public boolean isOrder() {
+		return isOrder;
 	}
 
-	public void setParamEditBudget(boolean paramEditBudget) {
-		this.paramEditBudget = paramEditBudget;
+	public void setOrder(boolean isOrder) {
+		this.isOrder = isOrder;
 	}
 
 }

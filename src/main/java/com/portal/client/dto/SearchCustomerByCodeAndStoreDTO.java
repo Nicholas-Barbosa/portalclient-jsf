@@ -12,6 +12,15 @@ public class SearchCustomerByCodeAndStoreDTO {
 	@NotBlank
 	private String store;
 
+	public SearchCustomerByCodeAndStoreDTO() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public SearchCustomerByCodeAndStoreDTO(String code2, String store2) {
+		this.code = code2;
+		this.store = store2;
+	}
+
 	public String getCode() {
 		return code;
 	}

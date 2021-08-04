@@ -7,8 +7,8 @@
 	<navigation-rule>
 		<from-view-id>/login.xhtml</from-view-id>
 		<navigation-case>
-			<from-outcome>NEW_BUDGET</from-outcome>
-			<to-view-id>/faces/newBudget.xhtml</to-view-id>
+			<from-outcome>NEW_ORDER</from-outcome>
+			<to-view-id>/faces/newOrder.xhtml?isOrder=false</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>

@@ -1,7 +1,6 @@
 package com.portal.client.security.servlet.filter;
 
 import java.io.IOException;
-import java.net.URI;
 
 import javax.inject.Inject;
 import javax.servlet.Filter;
@@ -23,7 +22,6 @@ public class FacesFilter implements Filter {
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
-
 	@Inject
 	public FacesFilter(UserSessionAPIManager userPropertyHolder) {
 		super();
@@ -34,7 +32,13 @@ public class FacesFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-
+		if (httpRequest.getMethod().equals("GET")) {
+			
+		}
+		System.out.println("request URL: " + httpRequest.getRequestURI());
+		httpRequest.getParameterMap().forEach((k, v) -> {
+			System.out.println(k + ":" + v[0]);
+		});
 		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			String loginUrl = String.format("%s/%s", httpRequest.getContextPath(), "login.xhtml");
@@ -55,8 +59,4 @@ public class FacesFilter implements Filter {
 		return "partial/ajax".equals(httpRequest.getHeader("Faces-Request"));
 	}
 
-	private String getPreviousPage(HttpServletRequest httpServletRequest) {
-		String refererHeader = httpServletRequest.getHeader("Referer");
-		return refererHeader == null ? null : URI.create(refererHeader).getPath();
-	}
 }
