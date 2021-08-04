@@ -58,12 +58,13 @@ body .ui-panelgrid .ui-panelgrid-cell {
 				<p:spinner
 					value="#{importItemsController.itemFileLayout.offsetRowForItems}" />
 
-				<p:outputLabel for="@next" value="Última posição para lista de itens" />
+				<p:outputLabel for="@next"
+					value="Última posição para lista de itens" />
 				<p:spinner
 					value="#{importItemsController.itemFileLayout.lastOffSetForItems}" />
 
 				<p:row style="font-weight: bold">
-            Colunas/células relevantes ao produto
+           Posições das colunas/células relevantes ao produto
         </p:row>
 
 				<p:outputLabel for="@next" value="Código" />
@@ -73,6 +74,14 @@ body .ui-panelgrid .ui-panelgrid-cell {
 				<p:outputLabel for="@next" value="Quantidade" />
 				<p:spinner
 					value="#{importItemsController.itemFileLayout.offSetCellForProductQuantity}" />
+
+				<p:row>
+					<p:column styleClass="ui-grid-col-12">
+						<p:commandButton value="Confirmar" styleClass="p-mr-2"
+							style="width: auto" />
+
+					</p:column>
+				</p:row>
 			</p:panelGrid>
 		</div>
 	</h:form>

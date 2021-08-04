@@ -10,9 +10,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
-import com.portal.client.microsoft.excel.writer.WriteRowObject;
-import com.portal.client.microsoft.excel.writer.XssfWriter;
-import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
+import com.portal.client.service.microsoft.excel.writer.WriteRowObject;
+import com.portal.client.service.microsoft.excel.writer.XssfWriter;
+import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 
 @ApplicationScoped
 public class FinancialBondsExporterImpl implements FinancialBondsExporter {

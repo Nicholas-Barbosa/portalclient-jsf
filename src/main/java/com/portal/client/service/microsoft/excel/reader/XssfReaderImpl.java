@@ -1,4 +1,4 @@
-package com.portal.client.microsoft.excel.reader;
+package com.portal.client.service.microsoft.excel.reader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -7,12 +7,15 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.stream.IntStream;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+@ApplicationScoped
 public class XssfReaderImpl implements XssfReader {
 
 	@Override
@@ -42,7 +45,7 @@ public class XssfReaderImpl implements XssfReader {
 	}
 
 	@Override
-	public Deque<RowObject> read( InputStream xlsxFile) throws IOException {
+	public Deque<RowObject> read(InputStream xlsxFile) throws IOException {
 		try (Workbook workbook = new XSSFWorkbook(xlsxFile)) {
 			Deque<RowObject> objectstToReturn = new LinkedList<>();
 			Sheet datatypeSheet = workbook.getSheetAt(0);

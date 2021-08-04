@@ -1,4 +1,4 @@
-package com.portal.client.microsoft.excel.writer;
+package com.portal.client.service.microsoft.excel.writer;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
