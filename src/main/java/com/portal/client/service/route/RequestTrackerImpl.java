@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import com.portal.client.service.route.Request.RequestB;
 
 @SessionScoped
-public class RouteTrackerImpl implements RouteTracker {
+public class RequestTrackerImpl implements ReuqestTracker {
 
 	private final Deque<Request> requests;
 
-	public RouteTrackerImpl() {
+	public RequestTrackerImpl() {
 		super();
 		this.requests = new LinkedList<>();
 	}
