@@ -7,7 +7,7 @@ public class BudgetEstimatedResult404Error {
 	private int status;
 	private boolean okWithItems;
 	private boolean okWithCustomer;
-	private Item404Error[] itemsWithErrors;
+	private Item404Error[] errorsWithItems;
 	private Customer404Error customerError;
 
 	public BudgetEstimatedResult404Error(int status, boolean okWithItems, boolean okWithCustomer,
@@ -16,7 +16,7 @@ public class BudgetEstimatedResult404Error {
 		this.status = status;
 		this.okWithItems = okWithItems;
 		this.okWithCustomer = okWithCustomer;
-		this.itemsWithErrors = itemsWithErrors;
+		this.errorsWithItems = itemsWithErrors;
 		this.customerError = customerError;
 	}
 
@@ -29,7 +29,7 @@ public class BudgetEstimatedResult404Error {
 	}
 
 	public Item404Error[] getItemsWithErrors() {
-		return itemsWithErrors;
+		return errorsWithItems;
 	}
 
 	public boolean isOkWithCustomer() {

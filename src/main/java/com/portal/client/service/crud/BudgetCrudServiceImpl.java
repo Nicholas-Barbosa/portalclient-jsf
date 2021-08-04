@@ -15,8 +15,10 @@ import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
+import com.portal.client.dto.ItemBudgetToEstimate;
 import com.portal.client.dto.ItemBudgetToSaveJsonSerializable;
 import com.portal.client.repository.BudgetRepository;
+import com.portal.client.vo.BudgetEstimatedResultSet;
 
 @ApplicationScoped
 public class BudgetCrudServiceImpl implements BudgetCrudService {
@@ -70,6 +72,12 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 			throw new IllegalArgumentException("CustomerOnOrder is null!");
 		if (budgetRequest.getItems().size() == 0)
 			throw new IllegalArgumentException("No items on budget!");
+	}
+
+	@Override
+	public BudgetEstimatedResultSet estimate(String customerCode, String customerStore,
+			Set<ItemBudgetToEstimate> itemsToEstimate) throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+		return budgetRepository.estimate(customerCode, customerStore, itemsToEstimate);
 	}
 
 }

@@ -82,10 +82,6 @@ public class ProductServiceImpl implements ProductService {
 
 	}
 
-	private String removeExtension(String path) {
-		return path.substring(0, path.lastIndexOf("."));
-	}
-
 	private byte[] getBlobStreamImageContent(Future<Blob> blob) {
 		try {
 			return blob.get(500, TimeUnit.MILLISECONDS).getContent();

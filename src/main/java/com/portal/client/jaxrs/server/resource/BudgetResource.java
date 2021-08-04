@@ -50,11 +50,9 @@ public class BudgetResource {
 											+ Arrays.toString(budgetResultSet.getError().getItemsWithErrors())))
 							.build();
 				}
-				return Response
-						.status(400).entity(
-								new GenericResponse(400, null,
-										"There is a problem with client! "
-												+ budgetResultSet.getError().getCustomerError()))
+				return Response.status(400)
+						.entity(new GenericResponse(400, null,
+								"There is a problem with client! " + budgetResultSet.getError().getCustomerError()))
 						.build();
 			}
 
