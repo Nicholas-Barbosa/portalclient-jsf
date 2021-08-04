@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" lang="en">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="icon"
+			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
+			type="image/x-icon"></link>
+	</f:facet>
+	<title>#{resourceBundleServiceImpl.getMessage('cliente_detalhes')}</title>
+	<style>
+/* reset on the showcase style*/
+body .ui-panelgrid .ui-panelgrid-cell {
+	background-color: transparent;
+}
+
+/* example use of styles for your form */
+.my-heading-row {
+	background-color: green;
+	font-weight: bold;
+}
+</style>
+</h:head>
+
+<h:body styleClass="#{userStylePreferences.inputStyleClass}">
+
+	<p:growl globalOnly="true" id="growl" showDetail="true" />
+	<h:form>
+		<div class="card">
+
+
+			<h5>Arquivo</h5>
+			<p:fileUpload mode="advanced" dragDropSupport="true"
+				allowTypes="/(\.|\/)(xlsx|json)$/" cancelLabel="Cancelar"
+				listener="#{importItemsController.handleFileUpload}" auto="true"
+				process="@this" />
+		</div>
+		<div class="card">
+			<p:panelGrid columns="4"
+				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+				layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+				style="border:0px none; background-color:transparent;">
+
+				<p:row styleClass="my-heading-row">
+            Layout
+        </p:row>
+				<p:outputLabel for="@next"
+					value="Posição de ínicio para lista de itens" />
+				<p:spinner
+					value="#{importItemsController.itemFileLayout.offsetRowForItems}" />
+
+				<p:outputLabel for="@next" value="Última posição para lista de itens" />
+				<p:spinner
+					value="#{importItemsController.itemFileLayout.lastOffSetForItems}" />
+
+				<p:row style="font-weight: bold">
+            Colunas/células relevantes ao produto
+        </p:row>
+
+				<p:outputLabel for="@next" value="Código" />
+				<p:spinner
+					value="#{importItemsController.itemFileLayout.offSetCellForProductCode}" />
+
+				<p:outputLabel for="@next" value="Quantidade" />
+				<p:spinner
+					value="#{importItemsController.itemFileLayout.offSetCellForProductQuantity}" />
+			</p:panelGrid>
+		</div>
+	</h:form>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+
+</h:body>
+
+</html>
+

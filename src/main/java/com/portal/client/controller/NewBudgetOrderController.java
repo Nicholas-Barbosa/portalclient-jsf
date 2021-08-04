@@ -28,7 +28,7 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.BudgetXlsxPreviewForm;
+import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerAddress;
@@ -127,7 +127,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	private byte[] imageToSeeOnDlg;
 
-	private BudgetXlsxPreviewForm budgetImportXlsxForm;
+	private ItemXlsxFileLayout budgetImportXlsxForm;
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
@@ -499,8 +499,6 @@ public class NewBudgetOrderController implements Serializable {
 		this.downloadStreamsForm = new DownloadStreamsForm();
 		this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
 		findProductByCodeForm = new FindProductByCodeForm();
-		this.budgetImportXlsxForm = new BudgetXlsxPreviewForm((short) 1, (short) 1, (short) 2, (short) 0, (short) 2,
-				(short) 1, (short) 2, (short) 0);
 		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
 		this.budget = new BaseBudget();
 		this.itemLines = new HashSet<>();
@@ -590,7 +588,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.imageToSeeOnDlg = imageToSeeOnDlg;
 	}
 
-	public BudgetXlsxPreviewForm getBudgetImportXlsxForm() {
+	public ItemXlsxFileLayout getBudgetImportXlsxForm() {
 		return budgetImportXlsxForm;
 	}
 
