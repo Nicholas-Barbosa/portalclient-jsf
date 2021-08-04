@@ -14,14 +14,14 @@ import com.portal.client.dto.NoRequests;
 import com.portal.client.dto.RequestJson;
 import com.portal.client.service.route.RequestTracker;
 
-@Path("userRequest")
-public class UserRequestResource {
+@Path("request")
+public class RequestResource {
 
 	private RequestTracker requestTracker;
 	private HttpSession session;
 
 	@Inject
-	public UserRequestResource(RequestTracker requestTracker, HttpSession session) {
+	public RequestResource(RequestTracker requestTracker, HttpSession session) {
 		super();
 		this.requestTracker = requestTracker;
 		this.session = session;
