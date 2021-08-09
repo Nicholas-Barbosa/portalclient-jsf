@@ -1,6 +1,6 @@
 package com.portal.client.exception;
 
-public class CustomerNotAllowed extends Exception {
+public class CustomerNotAllowed extends RuntimeException {
 
 	/**
 	 * 

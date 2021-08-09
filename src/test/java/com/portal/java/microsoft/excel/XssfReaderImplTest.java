@@ -1,5 +1,7 @@
 package com.portal.java.microsoft.excel;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
@@ -20,12 +22,7 @@ class XssfReaderImplTest {
 		XssfReader reader = XssfReaderBuilder.createReader();
 		RowObject rowObject = new RowObject(1, List.of(new CellAttribute(1)));
 		reader.read(rowObject, new FileInputStream(excelFileName));
+		assertEquals("A1", rowObject.getCellAttributes().get(0).getValue());
 	}
 
-	@Test
-	void testList() throws IOException {
-		XssfReader reader = XssfReaderBuilder.createReader();
-		System.out.println("Deque " + reader.read(new FileInputStream(excelFileName)));
-
-	}
 }

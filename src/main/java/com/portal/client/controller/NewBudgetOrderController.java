@@ -28,13 +28,10 @@ import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerAddress;
-import com.portal.client.dto.CustomerContact;
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.CustomerPurchaseInfo;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
@@ -45,6 +42,7 @@ import com.portal.client.dto.FindProductByDescriptionDTO;
 import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.dto.ItemLineDiscountForm;
+import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductValue;
@@ -187,7 +185,7 @@ public class NewBudgetOrderController implements Serializable {
 	public void saveBudgetOrOrder() {
 		try {
 			if (!isOrder) {
-				this.budget = budgetService.save(budget, customerRepresentativeOrderForm);
+				budgetService.save(budget, customerRepresentativeOrderForm);
 				PrimeFaces.current().executeScript("PF('successSavedBudgetOrOrder').show();");
 				FacesUtils.ajaxUpdate("successSavedBudgetOrOrder");
 			}
@@ -202,10 +200,13 @@ public class NewBudgetOrderController implements Serializable {
 	public void checkBudgetRequestObj() {
 		try {
 			budgetService.checkBudgetState(budget);
-			PrimeFaces.current().executeScript("PF('saveBudgetOrOrder').show()");
+			PrimeFaces.current().executeScript("PF('saveBudgetOrder').show()");
 		} catch (IllegalArgumentException e) {
 			FacesUtils.error(null, "Não é possível efetivar o orçamento neste momento.",
 					"Objeto incompleto. Entre com os dados necessário.", "growl");
+		} catch (CustomerNotAllowed e) {
+			FacesUtils.error(null, "Não é possível efetivar o orçamento.",
+					"Esta operação é destinada a clientes normais(não prospects)", "growl");
 		}
 
 	}
@@ -244,11 +245,7 @@ public class NewBudgetOrderController implements Serializable {
 	}
 
 	public void saveMessageOrder() {
-		if (budget != null && budget.getCustomerOnOrder() != null) {
-			FacesUtils.info(null, "Mensagem salva!", null);
-			return;
-		}
-		FacesUtils.warn(null, "Cliente não configurado", "Escolha um cliente antes de digitar uma mensagem");
+		FacesUtils.info(null, "Mensagem salva!", null);
 	}
 
 	public void setProspectCustomer() {
@@ -259,13 +256,10 @@ public class NewBudgetOrderController implements Serializable {
 					prospectCustomerForm.getStateAcronym());
 			CustomerPurchaseInfo purshaseInfo = new CustomerPurchaseInfo(0f, 0f, 0f, null, null,
 					prospectCustomerForm.getPaymentTerms(), null, null);
-			CustomerContact contact = new CustomerContact(null, null);
-			Customer originCustomer = new Customer(null, null, prospectCustomerForm.getCnpj(), null,
-					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo,
-					contact);
-			ProspectCustomerOnOrder prospectCustomer = new ProspectCustomerOnOrder(originCustomer,
+			CustomerOnOrder customer = new ProspectCustomerOnOrder(null, null, prospectCustomerForm.getCnpj(), null,
+					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo, null,
 					SellerType.valueOf(prospectCustomerForm.getSellerType()));
-			buRequestService.setCustomer(budget, prospectCustomer);
+			buRequestService.setCustomer(budget, customer);
 			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
 			return;
 		}
@@ -375,7 +369,7 @@ public class NewBudgetOrderController implements Serializable {
 			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		buRequestService.setCustomer(budget, new CustomerOnOrder(event.getObject(), CustomerType.NORMAL));
+		buRequestService.setCustomer(budget, new CustomerOnOrder(event.getObject()));
 		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
@@ -399,7 +393,7 @@ public class NewBudgetOrderController implements Serializable {
 						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 						return;
 					}
-					buRequestService.setCustomer(budget, new CustomerOnOrder(cDTO, CustomerType.NORMAL));
+					buRequestService.setCustomer(budget, new CustomerOnOrder(cDTO));
 					FacesUtils.ajaxUpdate(":customerForm", "budgetToolsForm:btnViewCDetail");
 					FacesUtils.addHeaderForResponse("customers-found", true);
 				}
@@ -415,17 +409,17 @@ public class NewBudgetOrderController implements Serializable {
 	public void findProductByCode() {
 		try {
 			Optional<Product> product = null;
-			switch (budget.getCustomerOnOrder().getType()) {
-			case NORMAL:
-				product = productService.findByCode(findProductByCodeForm.getCode(),
-						budget.getCustomerOnOrder().getCode(), budget.getCustomerOnOrder().getStore());
-				break;
-			default:
+			CustomerOnOrder customerOnOrder = budget.getCustomerOnOrder();
+			if (customerOnOrder instanceof ProspectCustomerOnOrder) {
 				ProspectCustomerOnOrder customer = (ProspectCustomerOnOrder) budget.getCustomerOnOrder();
+				System.out.println("customer " + customer.getSellerType());
 				product = productService.findByCodeForProspect(findProductByCodeForm.getCode(), customer.getState(),
 						customer.getSellerType().getType());
-				break;
+			} else {
+				product = productService.findByCode(findProductByCodeForm.getCode(),
+						budget.getCustomerOnOrder().getCode(), budget.getCustomerOnOrder().getStore());
 			}
+
 			this.getOptionalProduct(product);
 			findProductByCodeForm = new FindProductByCodeForm();
 		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
@@ -433,6 +427,7 @@ public class NewBudgetOrderController implements Serializable {
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			// e.printStackTrace();
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			FacesUtils.error(null, "Cliente não selecionado", "Selecione o cliente");
 		}
 

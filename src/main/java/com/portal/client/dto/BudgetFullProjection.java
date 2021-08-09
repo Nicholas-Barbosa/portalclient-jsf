@@ -6,8 +6,6 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
-
 public class BudgetFullProjection extends BaseBudget {
 
 	@JsonbCreator
@@ -20,14 +18,13 @@ public class BudgetFullProjection extends BaseBudget {
 
 		Customer customer = new Customer(customerCode, customerStore, null, null, null, null, null, null, null);
 
-		CustomerOnOrder customerOnOrder = new CustomerOnOrder(customer, CustomerType.NORMAL, message);
-		return new BudgetFullProjection(customerOnOrder, code, null, liquidValue, grossValue, items);
+		return new BudgetFullProjection(customer, code, null, liquidValue, grossValue, items);
 
 	}
 
-	public BudgetFullProjection(CustomerOnOrder customer, String code, BigDecimal stValue, BigDecimal liquidValue,
+	public BudgetFullProjection(Customer customer, String code, BigDecimal stValue, BigDecimal liquidValue,
 			BigDecimal grossValue, Set<ItemBudgetProjection> items) {
-		super(code, customer, grossValue, liquidValue, stValue, grossValue, items);
+//		super(code, customer, grossValue, liquidValue, stValue, grossValue, items);
 	}
 
 }

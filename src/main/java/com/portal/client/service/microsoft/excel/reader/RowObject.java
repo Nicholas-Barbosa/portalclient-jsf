@@ -1,37 +1,28 @@
 package com.portal.client.service.microsoft.excel.reader;
 
-import java.util.Deque;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class RowObject {
 
 	private int offset;
 
-	private Deque<CellAttribute> cellAttributes;
+	private List<CellAttribute> cellAttributes;
 
 	public RowObject() {
-		this.cellAttributes = new ConcurrentLinkedDeque<>(cellAttributes);
+		this.cellAttributes = new CopyOnWriteArrayList<>(cellAttributes);
 	}
 
 	public RowObject(int offset) {
 		super();
 		this.offset = offset;
-		this.cellAttributes = new ConcurrentLinkedDeque<>();
+		this.cellAttributes = new CopyOnWriteArrayList<>();
 	}
 
 	public RowObject(int offset, List<CellAttribute> cellAttributes) {
 		super();
 		this.offset = offset;
-		this.cellAttributes = new ConcurrentLinkedDeque<>(cellAttributes);
-	}
-
-	public Object getFirstAttribute() {
-		return cellAttributes.peekFirst().getValue();
-	}
-
-	public Object getLastAttribute() {
-		return cellAttributes.peekLast().getValue();
+		this.cellAttributes = new CopyOnWriteArrayList<>(cellAttributes);
 	}
 
 	public int getOffset() {
@@ -42,11 +33,11 @@ public class RowObject {
 		this.offset = offset;
 	}
 
-	public Deque<CellAttribute> getCellAttributes() {
+	public List<CellAttribute> getCellAttributes() {
 		return cellAttributes;
 	}
 
-	public void setCellAttributes(Deque<CellAttribute> cellAttributes) {
+	public void setCellAttributes(List<CellAttribute> cellAttributes) {
 		this.cellAttributes = cellAttributes;
 	}
 

@@ -23,7 +23,7 @@ public class Customer implements Serializable {
 	private final CustomerAddress address;
 	private final CustomerPurchaseInfo financialInfo;
 	private final CustomerContact contact;
-
+	
 	@JsonbCreator
 	public static Customer ofJsonb(@JsonbProperty("code") String code, @JsonbProperty("store") String store,
 			@JsonbProperty("cgc") String cnpj, @JsonbProperty("blocked") String blocked,

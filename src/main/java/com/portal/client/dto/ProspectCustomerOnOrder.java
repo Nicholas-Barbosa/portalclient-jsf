@@ -8,8 +8,11 @@ public class ProspectCustomerOnOrder extends CustomerOnOrder {
 	private static final long serialVersionUID = -3307367266965324272L;
 	private SellerType sellerType;
 
-	public ProspectCustomerOnOrder(Customer customer,SellerType selletType) {
-		super(customer, CustomerType.PROSPECT);
+	public ProspectCustomerOnOrder(String code, String store, String cnpj, String blocked, String name,
+			String fantasyName, CustomerAddress address, CustomerPurchaseInfo financialInfo, CustomerContact contact,
+			SellerType sellerType) {
+		super(code, store, cnpj, blocked, name, fantasyName, address, financialInfo, contact);
+		this.sellerType = sellerType;
 	}
 
 	public SellerType getSellerType() {

@@ -38,7 +38,7 @@ public class BudgetListController implements Serializable {
 	}
 
 	public void showEditBudget(BudgetSemiProjection budget) {
-		PrimeFaces.current().executeScript("alert('orçamento " + budget.getCode() + "')");
+		PrimeFaces.current().executeScript("alert('orçamento " + budget.getIdCode() + "')");
 	}
 
 	public void loadBudgets(int page) {

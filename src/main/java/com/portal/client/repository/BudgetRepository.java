@@ -10,7 +10,6 @@ import java.util.concurrent.TimeoutException;
 
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetPage;
-import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.ItemBudgetToEstimate;
 import com.portal.client.vo.BudgetEstimatedResultSet;
 
@@ -19,7 +18,7 @@ public interface BudgetRepository extends Serializable {
 	BudgetPage findAll(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
-	BaseBudget save(BudgetToSaveJsonSerializable request)
+	void save(BaseBudget request)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
 	Optional<BaseBudget> findByCode(String code)

@@ -1,8 +1,8 @@
 package com.portal.client.service.microsoft.excel.reader;
 
-public interface XssfReaderBuilder {
+public class XssfReaderBuilder {
 
-	static XssfReader createReader() {
+	public static XssfReader createReader() {
 		return new XssfReaderImpl();
 	}
 

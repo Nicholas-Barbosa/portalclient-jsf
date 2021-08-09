@@ -28,23 +28,27 @@ public class OrderJasper implements Serializable {
 
 	private Set<OrderItemJasper> items;
 
+	private String message;
+
 	public OrderJasper(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
-			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items) {
+			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items, String message) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
 		this.stTotal = stTotal;
 		this.customerReportDTO = customerReportDTO;
 		this.items = new HashSet<>(items);
+		this.message = message;
 	}
 
-	public OrderJasper(BaseBudget budgetDTO) {
-		this.liquidValue = budgetDTO.getLiquidValue();
-		this.grossValue = budgetDTO.getGrossValue();
-		this.stTotal = budgetDTO.getStValue();
-		this.customerReportDTO = new CustomerJasperReportDTO(budgetDTO.getCustomerOnOrder());
-		this.items = budgetDTO.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
+	public OrderJasper(BaseBudget budget) {
+		this.liquidValue = budget.getLiquidValue();
+		this.grossValue = budget.getGrossValue();
+		this.stTotal = budget.getStValue();
+		this.customerReportDTO = new CustomerJasperReportDTO(budget.getCustomerOnOrder());
+		this.items = budget.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
 				Set::add, Set::addAll);
+		this.message = budget.getMessage();
 	}
 
 	public static long getSerialversionuid() {
@@ -71,6 +75,10 @@ public class OrderJasper implements Serializable {
 		return items;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
 	public static class CustomerJasperReportDTO implements Serializable {
 		/**
 		 * 
@@ -82,10 +90,9 @@ public class OrderJasper implements Serializable {
 		private String state;
 		private String cgc;
 		private String paymentTerms;
-		private String message;
 
 		public CustomerJasperReportDTO(String name, String city, String address, String state, String cgc,
-				String paymentTerms, String message) {
+				String paymentTerms) {
 			super();
 			this.name = name;
 			this.city = city;
@@ -93,7 +100,6 @@ public class OrderJasper implements Serializable {
 			this.state = state;
 			this.cgc = cgc;
 			this.paymentTerms = paymentTerms;
-			this.message = message;
 		}
 
 		public CustomerJasperReportDTO(CustomerOnOrder customer) {
@@ -104,7 +110,6 @@ public class OrderJasper implements Serializable {
 			this.state = customer.getState();
 			this.cgc = customer.getCnpj();
 			this.paymentTerms = customer.getPaymentTerms();
-			this.message = customer.getMessage();
 		}
 
 		public String getName() {
@@ -133,10 +138,6 @@ public class OrderJasper implements Serializable {
 
 		public String getPaymentTerms() {
 			return paymentTerms;
-		}
-
-		public String getMessage() {
-			return message;
 		}
 
 	}

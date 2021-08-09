@@ -3,7 +3,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" lang="en">
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 	<f:facet name="first">
@@ -32,17 +32,22 @@ body .ui-panelgrid .ui-panelgrid-cell {
 </h:head>
 
 <h:body styleClass="#{userStylePreferences.inputStyleClass}">
-
+	<f:metadata>
+		<f:viewParam name="customerCode"
+			value="#{importItemsController.customerCode}" />
+		<f:viewParam name="customerStore"
+			value="#{importItemsController.customerStore}" />
+	</f:metadata>
 	<p:growl globalOnly="true" id="growl" showDetail="true" />
 	<h:form>
 		<div class="card">
 
-
 			<h5>Arquivo</h5>
 			<p:fileUpload mode="advanced" dragDropSupport="true"
-				allowTypes="/(\.|\/)(xlsx|json)$/" cancelLabel="Cancelar"
-				listener="#{importItemsController.handleFileUpload}" auto="true"
-				process="@this" />
+				allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
+				label="Escolher"
+				listener="#{importItemsController.handleFileUpload}" process="@this"
+				invalidFileMessage="Arquivo inválido" />
 		</div>
 		<div class="card">
 			<p:panelGrid columns="4"
@@ -87,8 +92,6 @@ body .ui-panelgrid .ui-panelgrid-cell {
 	</h:form>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
-
 </h:body>
-
 </html>
 

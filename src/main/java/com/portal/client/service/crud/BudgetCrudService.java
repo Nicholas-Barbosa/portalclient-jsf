@@ -19,7 +19,7 @@ public interface BudgetCrudService extends ServiceSerializable, CrudService {
 	BudgetPage findAll(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
-	BaseBudget save(BaseBudget budget, CustomerRepresentativeOrderForm ordersForm)
+	void save(BaseBudget budget, CustomerRepresentativeOrderForm ordersForm)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
 	Optional<BaseBudget> findByCode(String code)

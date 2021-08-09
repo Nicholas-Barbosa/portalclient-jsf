@@ -6,6 +6,7 @@ import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +26,7 @@ import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.FormToEstimateBudget;
 import com.portal.client.dto.ItemBudgetToEstimate;
+import com.portal.client.dto.ItemBudgetToSaveJsonSerializable;
 import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
@@ -70,14 +72,15 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public BaseBudget save(BudgetToSaveJsonSerializable budget)
+	public void save(BaseBudget budget)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
-
+		budget.replaceItems(budget.getItems().parallelStream().map(ItemBudgetToSaveJsonSerializable::new)
+				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
 		BudgetSavedResponse response = restClient.post(apiManager.buildEndpoint(api, "budgets"), api.getToken(),
-				api.getTokenPrefix(), BudgetSavedResponse.class, null, null, budget, MediaType.APPLICATION_JSON);
+				api.getTokenPrefix(), BudgetSavedResponse.class, null, null, BudgetToSaveJsonSerializable.of(budget),
+				MediaType.APPLICATION_JSON);
 		budget.setIdCode(response.getCode());
-		return budget;
 	}
 
 	@Override

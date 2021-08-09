@@ -42,7 +42,7 @@
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('orcamento')}">
-								<h:outputText value="#{budget.code}" />
+								<h:outputText value="#{budget.idCode}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
@@ -67,12 +67,12 @@
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
-								<h:outputText value="#{budget.customerCode}" />
+								<h:outputText value="#{budget.customerOnOrder.code}" />
 							</p:column>
 							<p:column>
 								<p:commandButton icon="pi pi-pencil"
 									styleClass="edit-button rounded-button ui-button-success"
-									action="#{budgetEditRedirectController.redirect(budget.code)}"
+									action="#{budgetEditRedirectController.redirect(budget.idCode)}"
 									update="@none" process="@this" />
 							</p:column>
 						</p:dataTable>

@@ -49,28 +49,6 @@ public class EditBudgetController implements Serializable {
 		this.serverApiExceptionMessageHelper = serverApiExceptionMessageHelper;
 	}
 
-	public void loadCustomerData() {
-		try {
-			System.out.println("load customer data!");
-			customerService
-					.findByCodeAndStore(new SearchCustomerByCodeAndStoreDTO(budget.getCustomerOnOrder().getCode(),
-							budget.getCustomerOnOrder().getStore()))
-					.ifPresentOrElse(this::populateCustomerData,
-							() -> FacesUtils.error(null, "Cliente não encontrado", null, "growl"));
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			serverApiExceptionMessageHelper.displayMessage(e, null, "growl");
-		}
-	}
-
-	private void populateCustomerData(Customer customer) {
-		CustomerOnOrder newCustomer = new CustomerOnOrder(customer, CustomerType.NORMAL,
-				budget.getCustomerOnOrder().getMessage());
-		budget.setCustomerOnOrder(newCustomer);
-		this.isCustomerDataComplete = true;
-		FacesUtils.info(null, "Cliente carregado", "Os dados adicionais do cliente foram carregados com sucesso!");
-		FacesUtils.ajaxUpdate("panelCustomer", "growl");
-	}
-
 	public void getById() {
 		try {
 			budgetService.findByCode(budgetID).ifPresentOrElse(b -> {
@@ -85,6 +63,26 @@ public class EditBudgetController implements Serializable {
 		} catch (Exception e) {
 			FacesUtils.fatal(null, "Error", e.getMessage(), "growl");
 		}
+	}
+
+	public void loadCustomerData() {
+		try {
+			customerService
+					.findByCodeAndStore(new SearchCustomerByCodeAndStoreDTO(budget.getCustomerOnOrder().getCode(),
+							budget.getCustomerOnOrder().getStore()))
+					.ifPresentOrElse(this::populateCustomerData,
+							() -> FacesUtils.error(null, "Cliente não encontrado", null, "growl"));
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+			serverApiExceptionMessageHelper.displayMessage(e, null, "growl");
+		}
+	}
+
+	private void populateCustomerData(Customer customer) {
+		CustomerOnOrder newCustomer = new CustomerOnOrder(customer);
+		budget.setCustomerOnOrder(newCustomer);
+		this.isCustomerDataComplete = true;
+		FacesUtils.info(null, "Cliente carregado", "Os dados adicionais do cliente foram carregados com sucesso!");
+		FacesUtils.ajaxUpdate("panelCustomer", "growl");
 	}
 
 	public String getBudgetID() {

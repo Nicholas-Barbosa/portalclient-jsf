@@ -22,6 +22,8 @@ public class ImportItemsController implements Serializable {
 
 	private UploadedFile fileToRead;
 
+	private String customerCode, customerStore;
+
 	private ItemXlsxFileLayout itemFileLayout;
 
 	public ImportItemsController() {
@@ -33,7 +35,25 @@ public class ImportItemsController implements Serializable {
 		FacesUtils.info(null, "Sucesso", "Arquivo salvo para leitura", "growl");
 	}
 
+
+	public String getCustomerCode() {
+		return customerCode;
+	}
+
+	public void setCustomerCode(String customerCode) {
+		this.customerCode = customerCode;
+	}
+
+	public String getCustomerStore() {
+		return customerStore;
+	}
+
+	public void setCustomerStore(String customerStore) {
+		this.customerStore = customerStore;
+	}
+
 	public ItemXlsxFileLayout getItemFileLayout() {
 		return itemFileLayout;
 	}
+
 }

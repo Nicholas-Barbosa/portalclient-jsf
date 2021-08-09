@@ -2,7 +2,6 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.json.bind.annotation.JsonbCreator;
@@ -20,13 +19,12 @@ public class BudgetEstimatedResultBuilder extends BaseBudgetJsonBuilder {
 
 	@Override
 	public BaseBudget build() {
-		CustomerOnOrder customerOnOrder = new CustomerOnOrder(customerCode, customerStore, null, null, null, null, null,
-				null, null);
-		System.out.println("build items " + items);
-		Set<ItemBudget> items = super.items.parallelStream().map(i -> i.build()).collect(CopyOnWriteArraySet::new,
+		CustomerOnOrder customerOnOrder = new CustomerOnOrder(super.getCustomerCode(), super.getCustomerStore(), null,
+				null, null, null, null, null, null);
+		Set<ItemBudget> items = super.getItems().parallelStream().map(i -> i.build()).collect(CopyOnWriteArraySet::new,
 				Set::add, Set::addAll);
-		BaseBudget baseBudget = new BaseBudget(customerOnOrder, grossValue, liquidValue, stValue, BigDecimal.ZERO,
-				items);
+		BaseBudget baseBudget = new BaseBudget(customerOnOrder, super.getGrossValue(), super.getLiquidValue(),
+				super.getStValue(), BigDecimal.ZERO, items, super.getMessage());
 		return baseBudget;
 	}
 }

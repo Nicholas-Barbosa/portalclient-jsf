@@ -5,7 +5,6 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,10 +12,10 @@ import javax.inject.Inject;
 
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetPage;
-import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemBudgetToEstimate;
-import com.portal.client.dto.ItemBudgetToSaveJsonSerializable;
+import com.portal.client.dto.ProspectCustomerOnOrder;
+import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.repository.BudgetRepository;
 import com.portal.client.vo.BudgetEstimatedResultSet;
 
@@ -44,18 +43,12 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public BaseBudget save(BaseBudget baseSourceToSave, CustomerRepresentativeOrderForm ordersForm)
+	public void save(BaseBudget budget, CustomerRepresentativeOrderForm ordersForm)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
-		checkBudgetState(baseSourceToSave);
-
-		BaseBudget baseToSave = new BaseBudget(baseSourceToSave.getCustomerOnOrder(), baseSourceToSave.getGrossValue(),
-				baseSourceToSave.getLiquidValue(), baseSourceToSave.getStValue(), baseSourceToSave.getGlobalDiscount(),
-				baseSourceToSave.getItems().parallelStream().map(ItemBudgetToSaveJsonSerializable::new)
-						.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
-		baseSourceToSave = null;
-
-		BudgetToSaveJsonSerializable toSave = new BudgetToSaveJsonSerializable(baseToSave, ordersForm);
-		return budgetRepository.save(toSave);
+		checkBudgetState(budget);
+		budget.setCustomerOrder(ordersForm.getCustomerOrder());
+		budget.setRepresentativeOrder(ordersForm.getRepresentativeOrder());
+		budgetRepository.save(budget);
 	}
 
 	@Override
@@ -72,11 +65,14 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 			throw new IllegalArgumentException("CustomerOnOrder is null!");
 		if (budgetRequest.getItems().size() == 0)
 			throw new IllegalArgumentException("No items on budget!");
+		if (budgetRequest.getCustomerOnOrder() instanceof ProspectCustomerOnOrder)
+			throw new CustomerNotAllowed("Save customer is only for normal customer");
 	}
 
 	@Override
 	public BudgetEstimatedResultSet estimate(String customerCode, String customerStore,
-			Set<ItemBudgetToEstimate> itemsToEstimate) throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+			Set<ItemBudgetToEstimate> itemsToEstimate)
+			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
 		return budgetRepository.estimate(customerCode, customerStore, itemsToEstimate);
 	}
 

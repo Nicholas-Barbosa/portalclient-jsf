@@ -73,7 +73,7 @@
 	<field name="customerReportDTO.city" class="java.lang.String"/>
 	<field name="customerReportDTO.state" class="java.lang.String"/>
 	<field name="customerReportDTO.paymentTerms" class="java.lang.String"/>
-	<field name="customerReportDTO.message" class="java.lang.String"/>
+	<field name="message" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -158,7 +158,7 @@
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{customerReportDTO.message}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{message}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>

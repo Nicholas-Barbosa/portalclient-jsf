@@ -135,7 +135,7 @@
 								<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 									<p:outputLabel for="mensagem" value="Mensagem" />
 									<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-										value="#{newBudgetOrderController.budget.customerOnOrder.message}"
+										value="#{newBudgetOrderController.budget.message}"
 										onchange="saveMessage();" />
 								</div>
 								<p:remoteCommand name="saveMessage"
@@ -475,123 +475,6 @@
 				<p:blockUI block="dlgGlobalDiscount" widgetVar="block" />
 			</p:dialog>
 
-
-			<p:dialog widgetVar="dlgForImport" id="dlgForImport"
-				header="Importar" modal="true" responsive="true" resizable="true"
-				width="50vw">
-				<h:form>
-					<div class="p-grid p-flex-column">
-						<div class="p-col">
-							<div class="box">
-
-								<p:fileUpload mode="advanced" dragDropSupport="true"
-									allowTypes="/(\.|\/)(xlsx|json)$/" cancelLabel="Cancelar"
-									listener="#{newBudgetOrderController.handleFileUpload}"
-									auto="true" process="@this"
-									oncomplete="PF('blockPanelXlsxLayout').hide()" />
-							</div>
-						</div>
-
-						<p:outputPanel id="panelXlsxLayout">
-							<div class="p-col-12">
-								<div class="box">
-									<h5>Layout do arquivo XLSX</h5>
-									<div class="ui-fluid p-formgrid p-grid">
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="customerRow"
-												value="Posição para linha onde se encontra as informações do cliente(numérico)" />
-											<p:spinner id="customerRow"
-												value="#{newBudgetOrderController.budgetImportXlsxForm.offsetRowForCustomerObject}"
-												required="true" label="text" />
-										</div>
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="ccodeRow"
-												value="Posição da célula para o nome do cliente(numérico,esquerda p/direita)" />
-											<p:spinner id="ccodeRow"
-												value="#{newBudgetOrderController.budgetImportXlsxForm.offsetCellForCustomerName}"
-												required="true" label="text" />
-										</div>
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="cStore"
-												value="Posição da célula para a loja do cliente(numérico,esquerda p/direita)" />
-											<p:spinner id="cStore"
-												value="#{newBudgetOrderController.budgetImportXlsxForm.offSetCellForCustomerStore}"
-												required="true" label="text" />
-										</div>
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="cInitProducts"
-												value="Posição da primeira linha da lista de produtos(numérico)" />
-											<p:spinner id="cInitProducts"
-												value="#{newBudgetOrderController.budgetImportXlsxForm.offsetRowForItems}"
-												required="true" />
-										</div>
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="cFimProducts"
-												value="Posição da última linha da lista de produtos(numérico)" />
-											<p:spinner id="cFimProducts"
-												value="#{newBudgetOrderController.budgetImportXlsxForm.lastOffSetForItems}" />
-										</div>
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="cPCode"
-												value="Posição da célula para o código do produto(numérico,esquerda p/direita)" />
-											<p:spinner id="cPCode"
-												value="#{newBudgetOrderController.budgetImportXlsxForm.offSetCellForProductCode}"
-												required="true" />
-										</div>
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="cPQuantity"
-												value="Posição da célula para a quantidade do produto(numérico,esquerda p/direita)" />
-											<p:spinner id="cPQuantity"
-												value="#{newBudgetOrderController.budgetImportXlsxForm.offSetCellForProductQuantity}"
-												required="true" />
-										</div>
-									</div>
-								</div>
-								<p:commandButton icon="pi pi-check"
-									action="#{newBudgetOrderController.previewBudgetXlsxContent}"
-									process="@this,panelXlsxLayout"
-									onstart="PF('blockPanelXlsxLayout').show()"
-									oncomplete="PF('blockPanelXlsxLayout').hide();PF('dlgBudgetXlsxPreview').show()"
-									update="dlgBudgetXlsxPreview" />
-							</div>
-							<p:blockUI blocked="true" block="panelXlsxLayout"
-								widgetVar="blockPanelXlsxLayout" />
-						</p:outputPanel>
-
-					</div>
-				</h:form>
-			</p:dialog>
-			<p:dialog widgetVar="dlgBudgetXlsxPreview" id="dlgBudgetXlsxPreview"
-				header="Pré visualização" modal="true" responsive="true"
-				resizable="true" width="50vw">
-
-				<p:outputPanel id="panelPreview">
-					<h:form>
-						<div class="p-grid p-flex-column">
-							<div class="p-col-12">
-								<div class="box">
-									<div class="ui-fluid p-formgrid p-grid">
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="customerCode" value="Cliente" />
-											<p:inputText
-												value="#{newBudgetOrderController.budgetXlsxPreview.customerName}"
-												id="customerCode" />
-										</div>
-										<div class="p-field p-col-12 p-md-6">
-											<p:outputLabel for="customerStore" value="Loja" />
-											<p:inputText
-												value="#{newBudgetOrderController.budgetXlsxPreview.customerStore}"
-												id="customerStore" />
-										</div>
-									</div>
-								</div>
-							</div>
-							<p:dataTable var="item">
-							</p:dataTable>
-						</div>
-					</h:form>
-				</p:outputPanel>
-			</p:dialog>
 
 			<div class="p-grid crud-demo">
 				<div class="p-col-12">

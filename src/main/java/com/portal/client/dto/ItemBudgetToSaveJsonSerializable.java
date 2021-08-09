@@ -44,8 +44,7 @@ public class ItemBudgetToSaveJsonSerializable extends ItemBudget
 
 	@Override
 	public int compareTo(ItemBudgetToSaveJsonSerializable o) {
-		// TODO Auto-generated method stub
-		return o.getProductCommercialCode().compareTo(o.getProductCommercialCode());
+		return Integer.valueOf(o.getQuantity()).compareTo(getQuantity());
 	}
 
 }
