@@ -13,10 +13,10 @@ import javax.inject.Inject;
 
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.ItemBudgetValue;
+import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute;
-import com.portal.client.service.microsoft.excel.writer.WriteRowObject;
-import com.portal.client.service.microsoft.excel.writer.XssfWriter;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
+import com.portal.client.service.microsoft.excel.writer.XssfWriter;
 import com.portal.client.util.MathUtils;
 
 @ApplicationScoped
@@ -32,7 +32,7 @@ public class OrderExcelCalculusConference {
 	}
 
 	public byte[] createWorkbook(BaseBudget order) {
-		List<WriteRowObject> rowObjects = new CopyOnWriteArrayList<>();
+		List<RowObject> rowObjects = new CopyOnWriteArrayList<>();
 		rowObjects.add(createRowForColumns());
 
 		final AtomicInteger rowPos = new AtomicInteger(1);
@@ -69,15 +69,14 @@ public class OrderExcelCalculusConference {
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscountValue"), lineDiscValue));
 			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValue"),
 					values.getTotalGrossValue()));
-			rowObjects.add(new WriteRowObject(rowPos.getAndIncrement(), cells));
+			rowObjects.add(new RowObject(rowPos.getAndIncrement(), cells));
 		});
 		return xssfWriter.write(rowObjects);
 	}
 
-	private WriteRowObject createRowForColumns() {
-		return new WriteRowObject(0,
-				WriteCellAttributeBuilder.of(0, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor", "ST", "Preço",
-						"Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$", "Preço Final"));
+	private RowObject createRowForColumns() {
+		return new RowObject(0, WriteCellAttributeBuilder.of(0, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor",
+				"ST", "Preço", "Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$", "Preço Final"));
 
 	}
 

@@ -10,9 +10,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
-import com.portal.client.service.microsoft.excel.writer.WriteRowObject;
-import com.portal.client.service.microsoft.excel.writer.XssfWriter;
+import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
+import com.portal.client.service.microsoft.excel.writer.XssfWriter;
 
 @ApplicationScoped
 public class FinancialBondsExporterImpl implements FinancialBondsExporter {
@@ -33,17 +33,17 @@ public class FinancialBondsExporterImpl implements FinancialBondsExporter {
 
 	@Override
 	public byte[] toExcel(Collection<? extends FinacialBondsDTO> financialBonds) {
-		List<WriteRowObject> rowObjects = new ArrayList<>();
-		rowObjects.add(new WriteRowObject(0,
+		List<RowObject> rowObjects = new ArrayList<>();
+		rowObjects.add(new RowObject(0,
 				WriteCellAttributeBuilder.of(0, "Número documento", "Cliente", "Venda", "Vencimento", "Situação")));
 
 		final AtomicInteger count = new AtomicInteger(1);
 		rowObjects.addAll(financialBonds.parallelStream().map(f -> {
-			return new WriteRowObject(count.getAndIncrement(), WriteCellAttributeBuilder.of(0, f.getDocNumber(),
+			return new RowObject(count.getAndIncrement(), WriteCellAttributeBuilder.of(0, f.getDocNumber(),
 					f.getCustomerName(), f.getSale(), f.getDueDate(), f.getSituation()));
 		}).collect(CopyOnWriteArrayList::new, List::add, List::addAll));
-		
+
 		return xssfWriter.write(rowObjects);
 	}
-
+	
 }
