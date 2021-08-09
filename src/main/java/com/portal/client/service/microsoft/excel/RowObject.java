@@ -8,6 +8,11 @@ public class RowObject {
 
 	private List<? extends CellAttribute> cellAttributes;
 
+	public RowObject(int offset) {
+		super();
+		this.offset = offset;
+	}
+
 	public RowObject(int offset, List<? extends CellAttribute> cellAttributes) {
 		super();
 		this.offset = offset;

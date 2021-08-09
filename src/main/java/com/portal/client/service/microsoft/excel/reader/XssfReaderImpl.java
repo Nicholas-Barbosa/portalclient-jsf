@@ -3,12 +3,13 @@ package com.portal.client.service.microsoft.excel.reader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.IntStream;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -20,61 +21,27 @@ import com.portal.client.service.microsoft.excel.RowObject;
 public class XssfReaderImpl implements XssfReader {
 
 	@Override
-	public void read(RowObject rowObject, InputStream xlsxFile) throws IOException {
-		try (Workbook workbook = new XSSFWorkbook(xlsxFile)) {
-			Sheet datatypeSheet = workbook.getSheetAt(0);
-			Row row = datatypeSheet.getRow(rowObject.getOffset() - 1);
-			rowObject.getCellAttributes().parallelStream().forEach(c -> {
-				Cell cell = row.getCell(c.getCellOffset() - 1);
-				if (cell != null) {
-					setCellAttributeValueAccordingToType(c, cell);
-				}
-			});
-		}
-
-	}
-
-	@Override
-	public void read(RowObject rowObject, byte[] xlsxStreams) throws IOException {
-		this.read(rowObject, new ByteArrayInputStream(xlsxStreams));
-
-	}
-
-	@Override
-	public void read(List<RowObject> rowObjects, InputStream xlsxInputStream) throws IOException {
+	public List<RowObject> read(InputStream xlsxInputStream, short initialOffset, short endOffset) throws IOException {
 		try (Workbook workbook = new XSSFWorkbook(xlsxInputStream)) {
 			Sheet datatypeSheet = workbook.getSheetAt(0);
-			rowObjects.parallelStream().forEach(r -> {
-				Row currentRow = datatypeSheet.getRow(r.getOffset());
-				r.getCellAttributes().parallelStream().forEach(cellAttribute -> {
-					Cell rawCell = currentRow.getCell(cellAttribute.getCellOffset());
-					this.setCellAttributeValueAccordingToType(cellAttribute, rawCell);
-				});
+			List<RowObject> rowObjects = new LinkedList<>();
+			datatypeSheet.forEach(r -> {
+				IntStream cells = IntStream.iterate(initialOffset,
+						i -> i <= (endOffset == 0 ? r.getLastCellNum() - 1 : endOffset), i -> i + 1);
+				List<CellAttribute> cellAttributes = cells.parallel().mapToObj(i -> r.getCell(i)).filter(c -> c != null)
+						.map(c -> {
+							return new CellAttribute(c.getColumnIndex(), c.getStringCellValue());
+						}).collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+				rowObjects.add(new RowObject(r.getRowNum(), cellAttributes));
 			});
+			return rowObjects;
 		}
 
 	}
 
 	@Override
-	public void read(List<RowObject> rowObjects, byte[] xlsxStreams) throws IOException {
-		this.read(rowObjects, new ByteArrayInputStream(xlsxStreams));
-	}
-
-	private void setCellAttributeValueAccordingToType(CellAttribute attribute, Cell cell) {
-		switch (cell.getCellType()) {
-		case STRING:
-			attribute.setValue(cell.getStringCellValue());
-			break;
-		case NUMERIC:
-			attribute.setValue(cell.getNumericCellValue());
-			break;
-		case FORMULA:
-			attribute.setValue(cell.getCellFormula());
-			break;
-		default:
-			attribute.setValue(cell.toString());
-			break;
-		}
+	public List<RowObject> read(byte[] xlsxStreams, short initialOffset, short endOffset) throws IOException {
+		return this.read(new ByteArrayInputStream(xlsxStreams), initialOffset, endOffset);
 	}
 
 }
