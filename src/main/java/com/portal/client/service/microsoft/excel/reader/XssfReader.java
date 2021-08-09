@@ -8,7 +8,7 @@ import com.portal.client.service.microsoft.excel.RowObject;
 
 public interface XssfReader {
 
-	List<RowObject> read(InputStream xlsxInputStream, short initialOffset, short endOffset) throws IOException;
+	List<RowObject> read(InputStream xlsxInputStream, int initialOffset, int endOffset) throws IOException;
 
-	List<RowObject> read(byte[] xlsxStreams, short initialOffset, short endOffset) throws IOException;
+	List<RowObject> read(byte[] xlsxStreams, int initialOffset, int endOffset) throws IOException;
 }

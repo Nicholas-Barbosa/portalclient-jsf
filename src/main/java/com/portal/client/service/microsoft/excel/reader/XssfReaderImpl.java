@@ -21,7 +21,7 @@ import com.portal.client.service.microsoft.excel.RowObject;
 public class XssfReaderImpl implements XssfReader {
 
 	@Override
-	public List<RowObject> read(InputStream xlsxInputStream, short initialOffset, short endOffset) throws IOException {
+	public List<RowObject> read(InputStream xlsxInputStream, int initialOffset, int endOffset) throws IOException {
 		try (Workbook workbook = new XSSFWorkbook(xlsxInputStream)) {
 			Sheet datatypeSheet = workbook.getSheetAt(0);
 			List<RowObject> rowObjects = new LinkedList<>();
@@ -40,7 +40,7 @@ public class XssfReaderImpl implements XssfReader {
 	}
 
 	@Override
-	public List<RowObject> read(byte[] xlsxStreams, short initialOffset, short endOffset) throws IOException {
+	public List<RowObject> read(byte[] xlsxStreams, int initialOffset, int endOffset) throws IOException {
 		return this.read(new ByteArrayInputStream(xlsxStreams), initialOffset, endOffset);
 	}
 
