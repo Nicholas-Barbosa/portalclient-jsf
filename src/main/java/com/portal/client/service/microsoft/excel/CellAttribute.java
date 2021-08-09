@@ -1,24 +1,22 @@
-package com.portal.client.service.microsoft.excel.reader;
+package com.portal.client.service.microsoft.excel;
 
 public class CellAttribute {
 
 	private int cellOffset;
 	private Object value;
 
-	public CellAttribute() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public CellAttribute(int cellOffset) {
-		super();
-		this.cellOffset = cellOffset;
-	}
-
 	public CellAttribute(int cellOffset, Object value) {
 		super();
 		this.cellOffset = cellOffset;
 		this.value = value;
 	}
+
+	
+	public CellAttribute(int cellOffset) {
+		super();
+		this.cellOffset = cellOffset;
+	}
+
 
 	public int getCellOffset() {
 		return cellOffset;

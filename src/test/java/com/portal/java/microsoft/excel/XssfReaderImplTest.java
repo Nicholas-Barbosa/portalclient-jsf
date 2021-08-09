@@ -8,8 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.portal.client.service.microsoft.excel.reader.CellAttribute;
-import com.portal.client.service.microsoft.excel.reader.RowObject;
+import com.portal.client.service.microsoft.excel.CellAttribute;
+import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.reader.XssfReader;
 import com.portal.client.service.microsoft.excel.reader.XssfReaderBuilder;
 

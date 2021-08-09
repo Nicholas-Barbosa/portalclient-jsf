@@ -12,16 +12,19 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.portal.client.service.microsoft.excel.RowObject;
+
 @ApplicationScoped
 public class XssfWriterImpl implements XssfWriter {
 
 	@Override
-	public byte[] write(List<WriteRowObject> rowObjects) {
+	public byte[] write(List<RowObject> rowObjects) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("conferência-cálculos");
 		rowObjects.forEach(rowObject -> {
-			XSSFRow row = sheet.createRow(rowObject.getRowPosition());
-			rowObject.getAttributes().parallelStream().forEach(w -> this.createCell(w, row));
+			XSSFRow row = sheet.createRow(rowObject.getOffset());
+			rowObject.getCellAttributes().parallelStream().map(c -> (WriteCellAttribute) c)
+					.forEach(w -> this.createCell(w, row));
 		});
 
 		try {
@@ -36,7 +39,7 @@ public class XssfWriterImpl implements XssfWriter {
 	}
 
 	private void createCell(WriteCellAttribute attribute, XSSFRow row) {
-		Cell cell = row.createCell(attribute.getCellPosition());
+		Cell cell = row.createCell(attribute.getCellOffset());
 		switch (attribute.getCellType()) {
 		case NUMERIC:
 			cell.setCellValue((Double) attribute.getValue());

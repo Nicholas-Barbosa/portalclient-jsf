@@ -9,36 +9,30 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.poi.ss.usermodel.CellType;
 
-public class WriteCellAttribute {
+import com.portal.client.service.microsoft.excel.CellAttribute;
 
-	private int cellPosition;
-	private Object value;
+public class WriteCellAttribute extends CellAttribute {
+
 	private CellType cellType;
 
 	public WriteCellAttribute(int postion, Object value, CellType cellType) {
-		super();
-		this.cellPosition = postion;
-		this.value = value;
+		super(postion, value);
 		this.cellType = cellType;
 	}
 
 	public WriteCellAttribute(int postion, Object value) {
-		super();
-		this.cellPosition = postion;
-		this.value = value;
+		super(postion, value);
 		this.cellType = CellType.STRING;
-	}
-
-	public int getCellPosition() {
-		return cellPosition;
-	}
-
-	public Object getValue() {
-		return value;
 	}
 
 	public CellType getCellType() {
 		return cellType;
+	}
+
+	@Override
+	public String toString() {
+		return "CellAttribute [cellOffset=" + super.getCellOffset() + ", value=" + super.getValue() + ", CellType="
+				+ cellType + "]";
 	}
 
 	public static class WriteCellAttributeBuilder {
@@ -59,12 +53,10 @@ public class WriteCellAttribute {
 
 		public static List<WriteCellAttribute> of(int startPosition, Object... value) {
 			final AtomicInteger cellPosition = new AtomicInteger(startPosition);
-			return Arrays.stream(value)
-					.map(v -> WriteCellAttributeBuilder.of(cellPosition.getAndIncrement(), v))
+			return Arrays.stream(value).map(v -> WriteCellAttributeBuilder.of(cellPosition.getAndIncrement(), v))
 					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 
 		}
-
 
 		public static List<WriteCellAttribute> ofNumber(Integer startPosition, Number... value) {
 			final AtomicInteger cellPosition = new AtomicInteger(startPosition);
