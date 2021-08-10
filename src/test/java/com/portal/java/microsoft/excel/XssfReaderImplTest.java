@@ -17,8 +17,8 @@ class XssfReaderImplTest {
 	@Test
 	void test() throws IOException {
 		XssfReader reader = XssfReaderBuilder.createReader();
-		assertEquals("A363",
-				reader.read(new FileInputStream(excelFileName), 0, 362).get(362).getCellAttributes().get(0).getValue());
+		assertEquals(363, reader.read(new FileInputStream(excelFileName), 0, 0).size());
+
 	}
 
 	@Test

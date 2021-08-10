@@ -2,10 +2,10 @@ package com.portal.client.dto;
 
 public class ItemXlsxFileLayout {
 
-	private short offsetRowForItems;
-	private short offSetCellForProductCode;
-	private short offSetCellForProductQuantity;
-	private short lastOffSetForItems;
+	private int initPosition;
+	private int offSetCellForProductCode;
+	private int offSetCellForProductQuantity;
+	private int lastPosition;
 
 	private byte[] xlsxStreams;
 
@@ -13,36 +13,36 @@ public class ItemXlsxFileLayout {
 		// TODO Auto-generated constructor stub
 	}
 
-	public short getOffsetRowForItems() {
-		return offsetRowForItems;
+	public int getInitPosition() {
+		return initPosition;
 	}
 
-	public void setOffsetRowForItems(short offsetRowForItems) {
-		this.offsetRowForItems = offsetRowForItems;
+	public void setInitPosition(int offsetRowForItems) {
+		this.initPosition = offsetRowForItems;
 	}
 
-	public short getOffSetCellForProductCode() {
+	public int getOffSetCellForProductCode() {
 		return offSetCellForProductCode;
 	}
 
-	public void setOffSetCellForProductCode(short offSetCellForProductCode) {
+	public void setOffSetCellForProductCode(int offSetCellForProductCode) {
 		this.offSetCellForProductCode = offSetCellForProductCode;
 	}
 
-	public short getOffSetCellForProductQuantity() {
+	public int getOffSetCellForProductQuantity() {
 		return offSetCellForProductQuantity;
 	}
 
-	public void setOffSetCellForProductQuantity(short offSetCellForProductQuantity) {
+	public void setOffSetCellForProductQuantity(int offSetCellForProductQuantity) {
 		this.offSetCellForProductQuantity = offSetCellForProductQuantity;
 	}
 
-	public short getLastOffSetForItems() {
-		return lastOffSetForItems;
+	public int getLastPosition() {
+		return lastPosition;
 	}
 
-	public void setLastOffSetForItems(short lastOffSetForItems) {
-		this.lastOffSetForItems = lastOffSetForItems;
+	public void setLastPositions(int lastOffSetForItems) {
+		this.lastPosition = lastOffSetForItems;
 	}
 
 	public byte[] getXlsxStreams() {

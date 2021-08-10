@@ -34,9 +34,9 @@ body .ui-panelgrid .ui-panelgrid-cell {
 <h:body styleClass="#{userStylePreferences.inputStyleClass}">
 	<f:metadata>
 		<f:viewParam name="customerCode"
-			value="#{importItemsController.customerCode}" />
+			value="#{itemImportController.customerCode}" />
 		<f:viewParam name="customerStore"
-			value="#{importItemsController.customerStore}" />
+			value="#{itemImportController.customerStore}" />
 	</f:metadata>
 	<p:growl globalOnly="true" id="growl" showDetail="true" />
 	<h:form>
@@ -45,28 +45,27 @@ body .ui-panelgrid .ui-panelgrid-cell {
 			<h5>Arquivo</h5>
 			<p:fileUpload mode="advanced" dragDropSupport="true"
 				allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
-				label="Escolher"
-				listener="#{importItemsController.handleFileUpload}" process="@this"
-				invalidFileMessage="Arquivo inválido" />
+				label="Escolher" listener="#{itemImportController.handleFileUpload}"
+				process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
 		</div>
 		<div class="card">
 			<p:panelGrid columns="4"
 				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 				layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-				style="border:0px none; background-color:transparent;">
-
+				style="border:0px none; background-color:transparent;"
+				id="pnFileLayout">
 				<p:row styleClass="my-heading-row">
             Layout
         </p:row>
 				<p:outputLabel for="@next"
 					value="Posição de ínicio para lista de itens" />
 				<p:spinner
-					value="#{importItemsController.itemFileLayout.offsetRowForItems}" />
+					value="#{itemImportController.itemFileLayout.offsetRowForItems}" />
 
 				<p:outputLabel for="@next"
 					value="Última posição para lista de itens" />
 				<p:spinner
-					value="#{importItemsController.itemFileLayout.lastOffSetForItems}" />
+					value="#{itemImportController.itemFileLayout.lastOffSetForItems}" />
 
 				<p:row style="font-weight: bold">
            Posições das colunas/células relevantes ao produto
@@ -74,16 +73,17 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 				<p:outputLabel for="@next" value="Código" />
 				<p:spinner
-					value="#{importItemsController.itemFileLayout.offSetCellForProductCode}" />
+					value="#{itemImportController.itemFileLayout.offSetCellForProductCode}" />
 
 				<p:outputLabel for="@next" value="Quantidade" />
 				<p:spinner
-					value="#{importItemsController.itemFileLayout.offSetCellForProductQuantity}" />
+					value="#{itemImportController.itemFileLayout.offSetCellForProductQuantity}" />
 
 				<p:row>
 					<p:column styleClass="ui-grid-col-12">
 						<p:commandButton value="Confirmar" styleClass="p-mr-2"
-							style="width: auto" />
+							style="width: auto" process="pnFileLayout"
+							action="#{itemImportController.readFile}" />
 
 					</p:column>
 				</p:row>

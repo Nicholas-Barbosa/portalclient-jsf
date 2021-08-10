@@ -1,19 +1,24 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
 import com.portal.client.dto.ItemXlsxFileLayout;
+import com.portal.client.dto.ItemXlsxProjection;
+import com.portal.client.service.ItemImportService;
 import com.portal.client.util.jsf.FacesUtils;
 
 @ViewScoped
 @Named
-public class ImportItemsController implements Serializable {
+public class ItemImportController implements Serializable {
 
 	/**
 	 * 
@@ -26,15 +31,28 @@ public class ImportItemsController implements Serializable {
 
 	private ItemXlsxFileLayout itemFileLayout;
 
-	public ImportItemsController() {
+	private List<ItemXlsxProjection> itemXlsxProjection;
+
+	private ItemImportService itemImporter;
+
+	@Inject
+	public ItemImportController(ItemImportService itemImporter) {
+		this.itemImporter = itemImporter;
 		this.itemFileLayout = new ItemXlsxFileLayout();
+		this.itemFileLayout.setOffSetCellForProductCode(0);
+		this.itemFileLayout.setOffSetCellForProductQuantity(1);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
 		fileToRead = event.getFile();
+		this.itemFileLayout.setXlsxStreams(fileToRead.getContent());
 		FacesUtils.info(null, "Sucesso", "Arquivo salvo para leitura", "growl");
 	}
 
+	public void readFile() {
+		itemXlsxProjection = itemImporter.read(itemFileLayout);
+		FacesUtils.info(null, "Planilha lida", null, "growl");
+	}
 
 	public String getCustomerCode() {
 		return customerCode;
@@ -56,4 +74,7 @@ public class ImportItemsController implements Serializable {
 		return itemFileLayout;
 	}
 
+	public List<ItemXlsxProjection> getItemXlsxProjection() {
+		return itemXlsxProjection;
+	}
 }
