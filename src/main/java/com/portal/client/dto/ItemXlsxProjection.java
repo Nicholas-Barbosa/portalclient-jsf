@@ -5,6 +5,10 @@ public class ItemXlsxProjection {
 	private String code;
 	private int quantity;
 
+	public ItemXlsxProjection() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public ItemXlsxProjection(String code, int quantity) {
 		super();
 		this.code = code;
@@ -15,8 +19,16 @@ public class ItemXlsxProjection {
 		return code;
 	}
 
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	public int getQuantity() {
 		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
 	}
 
 	@Override

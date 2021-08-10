@@ -53,10 +53,11 @@
 									message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
 									icon="pi pi-info-circle" />
 							</p:commandButton>
-							<p:commandButton type="button"
+							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-								onclick="PF('dlgForImport').show()" />
+								action="#{newBudgetOrderController.openItemImportView}"
+								process="@this" />
 							<p:commandButton
 								action="#{newBudgetOrderController.checkBudgetRequestObj}"
 								value="#{newBudgetOrderController.isOrder() ? resourceBundleServiceImpl.getMessage('salvar_pedido') : resourceBundleServiceImpl.getMessage('salvar_orcamento')}"

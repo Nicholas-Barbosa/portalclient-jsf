@@ -41,8 +41,8 @@ public class ItemXlsxFileLayout {
 		return lastPosition;
 	}
 
-	public void setLastPositions(int lastOffSetForItems) {
-		this.lastPosition = lastOffSetForItems;
+	public void setLastPosition(int lastPosition) {
+		this.lastPosition = lastPosition;
 	}
 
 	public byte[] getXlsxStreams() {

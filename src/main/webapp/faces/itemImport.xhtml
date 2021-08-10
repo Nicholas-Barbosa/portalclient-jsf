@@ -16,7 +16,7 @@
 			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
 			type="image/x-icon"></link>
 	</f:facet>
-	<title>#{resourceBundleServiceImpl.getMessage('cliente_detalhes')}</title>
+	<title>Importar itens</title>
 	<style>
 /* reset on the showcase style*/
 body .ui-panelgrid .ui-panelgrid-cell {
@@ -39,59 +39,106 @@ body .ui-panelgrid .ui-panelgrid-cell {
 			value="#{itemImportController.customerStore}" />
 	</f:metadata>
 	<p:growl globalOnly="true" id="growl" showDetail="true" />
-	<h:form>
-		<div class="card">
-
+	<div class="card">
+		<h:form>
 			<h5>Arquivo</h5>
 			<p:fileUpload mode="advanced" dragDropSupport="true"
 				allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
 				label="Escolher" listener="#{itemImportController.handleFileUpload}"
 				process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
-		</div>
-		<div class="card">
-			<p:panelGrid columns="4"
-				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-				layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-				style="border:0px none; background-color:transparent;"
-				id="pnFileLayout">
-				<p:row styleClass="my-heading-row">
+		</h:form>
+	</div>
+	<div class="card">
+		<p:panelGrid columns="4"
+			columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+			layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+			style="border:0px none; background-color:transparent;"
+			id="pnFileLayout">
+			<p:row styleClass="my-heading-row">
             Layout
         </p:row>
-				<p:outputLabel for="@next"
-					value="Posição de ínicio para lista de itens" />
-				<p:spinner
-					value="#{itemImportController.itemFileLayout.offsetRowForItems}" />
+			<p:outputLabel for="@next"
+				value="Posição de ínicio para lista de itens" />
+			<p:spinner
+				value="#{itemImportController.itemFileLayout.initPosition}" />
 
-				<p:outputLabel for="@next"
-					value="Última posição para lista de itens" />
-				<p:spinner
-					value="#{itemImportController.itemFileLayout.lastOffSetForItems}" />
+			<p:outputLabel for="@next" value="Última posição para lista de itens" />
+			<p:spinner
+				value="#{itemImportController.itemFileLayout.lastPosition}" />
 
-				<p:row style="font-weight: bold">
+			<p:row style="font-weight: bold">
            Posições das colunas/células relevantes ao produto
         </p:row>
 
-				<p:outputLabel for="@next" value="Código" />
-				<p:spinner
-					value="#{itemImportController.itemFileLayout.offSetCellForProductCode}" />
+			<p:outputLabel for="@next" value="Código" />
+			<p:spinner
+				value="#{itemImportController.itemFileLayout.offSetCellForProductCode}" />
 
-				<p:outputLabel for="@next" value="Quantidade" />
-				<p:spinner
-					value="#{itemImportController.itemFileLayout.offSetCellForProductQuantity}" />
+			<p:outputLabel for="@next" value="Quantidade" />
+			<p:spinner
+				value="#{itemImportController.itemFileLayout.offSetCellForProductQuantity}" />
 
-				<p:row>
-					<p:column styleClass="ui-grid-col-12">
-						<p:commandButton value="Confirmar" styleClass="p-mr-2"
-							style="width: auto" process="pnFileLayout"
-							action="#{itemImportController.readFile}" />
+			<p:row>
+				<p:column styleClass="ui-grid-col-12">
+					<p:commandButton value="Examinar" styleClass="p-mr-2"
+						style="width: auto" process="pnFileLayout"
+						action="#{itemImportController.readFile}"
+						onstart="PF('dlgImporting').show()"
+						oncomplete="PF('dlgImporting').hide()" />
+
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</div>
+
+	<p:dialog header="Resultado da leitura do arquivo"
+		footer="Verifique os valores" modal="true" widgetVar="dlgResult"
+		responsive="true" style="max-width: 20vw;max-height:80vh"
+		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh')" maximizable="true">
+
+		<p:outputPanel deferredMode="visible" deferred="true" id="readResult">
+			<h:form prependId="false">
+				<p:dataTable id="dtItemsResult" widgetVar="dtItemsResult"
+					value="#{itemImportController.itemXlsxProjection}" var="item"
+					editable="true" editMode="cell" allowUnsorting="true"
+					sortMode="single" reflow="true" scrollable="true">
+					<p:ajax event="cellEdit"
+						listener="#{itemImportController.onCellEdit}" update="growl" />
+					<p:column headerText="Produto" filterBy="#{item.code}">
+						<p:cellEditor>
+							<f:facet name="input">
+								<p:inputText value="#{item.code}" />
+							</f:facet>
+							<f:facet name="output">
+								<h:outputText value="#{item.code}" />
+							</f:facet>
+						</p:cellEditor>
 
 					</p:column>
-				</p:row>
-			</p:panelGrid>
-		</div>
-	</h:form>
+					<p:column headerText="Quantidade" sortBy="#{item.quantity}">
+						<p:cellEditor>
+							<f:facet name="input">
+								<p:spinner value="#{item.quantity}" min="1" />
+							</f:facet>
+							<f:facet name="output">
+								<h:outputText value="#{item.quantity}" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:outputPanel>
+		<f:facet name="footer">
+			<p:commandButton value="Confirmar" styleClass="ui-button-success" />
+		</f:facet>
+	</p:dialog>
+	<p:dialog header="Lendo arquivo..." modal="true" closable="false"
+		widgetVar="dlgImporting">
+		<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+	</p:dialog>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
+	<h:outputScript name="dataTable.js" library="javascript" />
 </h:body>
 </html>
 

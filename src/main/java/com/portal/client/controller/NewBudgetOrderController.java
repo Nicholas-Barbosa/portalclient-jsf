@@ -182,6 +182,12 @@ public class NewBudgetOrderController implements Serializable {
 		this.buRequestService = budgetRequestService;
 	}
 
+	public void openItemImportView() {
+		FacesUtils.openViewOnDialog(
+				Map.of("modal", true, "responsive", true, "contentWidth", "80vw", "contentHeight", "60vh"),
+				"itemImport");
+	}
+
 	public void saveBudgetOrOrder() {
 		try {
 			if (!isOrder) {
