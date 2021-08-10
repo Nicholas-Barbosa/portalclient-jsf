@@ -93,15 +93,14 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 	<p:dialog header="Resultado da leitura do arquivo"
 		footer="Verifique os valores" modal="true" widgetVar="dlgResult"
-		responsive="true" style="max-width: 20vw;max-height:80vh"
-		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh')" maximizable="true">
-
+		responsive="true" style="max-width: 30vw;max-height:80vh"
+		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh')">
 		<p:outputPanel deferredMode="visible" deferred="true" id="readResult">
 			<h:form prependId="false">
 				<p:dataTable id="dtItemsResult" widgetVar="dtItemsResult"
 					value="#{itemImportController.itemXlsxProjection}" var="item"
-					editable="true" editMode="cell" allowUnsorting="true"
-					sortMode="single" reflow="true" scrollable="true">
+					editable="true" editMode="cell" reflow="true" scrollable="true"
+					filteredValue="#{itemImportController.filteredItemsXlsxProjection}">
 					<p:ajax event="cellEdit"
 						listener="#{itemImportController.onCellEdit}" update="growl" />
 					<p:column headerText="Produto" filterBy="#{item.code}">
@@ -115,7 +114,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 						</p:cellEditor>
 
 					</p:column>
-					<p:column headerText="Quantidade" sortBy="#{item.quantity}">
+					<p:column headerText="Quantidade">
 						<p:cellEditor>
 							<f:facet name="input">
 								<p:spinner value="#{item.quantity}" min="1" />
@@ -129,7 +128,8 @@ body .ui-panelgrid .ui-panelgrid-cell {
 			</h:form>
 		</p:outputPanel>
 		<f:facet name="footer">
-			<p:commandButton value="Confirmar" styleClass="ui-button-success" />
+			<p:commandButton value="Próximo" icon="pi pi-arrow-right"
+				iconPos="right" />
 		</f:facet>
 	</p:dialog>
 	<p:dialog header="Lendo arquivo..." modal="true" closable="false"

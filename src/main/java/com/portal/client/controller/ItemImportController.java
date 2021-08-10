@@ -31,14 +31,17 @@ public class ItemImportController implements Serializable {
 
 	private List<ItemXlsxProjection> itemXlsxProjection;
 
+	private List<ItemXlsxProjection> filteredItemsXlsxProjection;
+
 	private ItemImportService itemImporter;
 
 	@Inject
 	public ItemImportController(ItemImportService itemImporter) {
 		this.itemImporter = itemImporter;
 		this.itemFileLayout = new ItemXlsxFileLayout();
-		this.itemFileLayout.setOffSetCellForProductCode(0);
-		this.itemFileLayout.setOffSetCellForProductQuantity(1);
+		this.itemFileLayout.setInitPosition(1);
+		this.itemFileLayout.setOffSetCellForProductCode(1);
+		this.itemFileLayout.setOffSetCellForProductQuantity(2);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -47,6 +50,11 @@ public class ItemImportController implements Serializable {
 	}
 
 	public void readFile() {
+		this.itemFileLayout.setInitPosition(itemFileLayout.getInitPosition() - 1);
+		this.itemFileLayout.setLastPosition(itemFileLayout.getLastPosition() == 0 ? 0
+				: itemFileLayout.getLastPosition() == 1 ? 1 : itemFileLayout.getLastPosition() - 1);
+		this.itemFileLayout.setOffSetCellForProductCode(itemFileLayout.getOffSetCellForProductCode() - 1);
+		this.itemFileLayout.setOffSetCellForProductQuantity(itemFileLayout.getOffSetCellForProductQuantity() - 1);
 		if (itemFileLayout.getXlsxStreams() != null) {
 			itemXlsxProjection = itemImporter.read(itemFileLayout);
 			FacesUtils.ajaxUpdate("readResult");
@@ -59,7 +67,7 @@ public class ItemImportController implements Serializable {
 	public void onCellEdit(CellEditEvent<Object> event) {
 
 		FacesUtils.info(null, event.getColumn().getHeaderText() + " modificado", event.getColumn().getHeaderText()
-				+ " da linha " + (event.getRowIndex()+1) + " foi modificado para " + event.getNewValue() + ".");
+				+ " da linha " + (event.getRowIndex() + 1) + " foi modificado para " + event.getNewValue() + ".");
 	}
 
 	public String getCustomerCode() {
@@ -84,5 +92,13 @@ public class ItemImportController implements Serializable {
 
 	public List<ItemXlsxProjection> getItemXlsxProjection() {
 		return itemXlsxProjection;
+	}
+
+	public void setFilteredItemsXlsxProjection(List<ItemXlsxProjection> filteredItemsXlsxProjection) {
+		this.filteredItemsXlsxProjection = filteredItemsXlsxProjection;
+	}
+
+	public List<ItemXlsxProjection> getFilteredItemsXlsxProjection() {
+		return filteredItemsXlsxProjection;
 	}
 }

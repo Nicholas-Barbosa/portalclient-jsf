@@ -184,7 +184,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void openItemImportView() {
 		FacesUtils.openViewOnDialog(
-				Map.of("modal", true, "responsive", true, "contentWidth", "80vw", "contentHeight", "60vh"),
+				Map.of("modal", true, "responsive", true, "contentWidth", "90vw", "contentHeight", "90vh"),
 				"itemImport");
 	}
 

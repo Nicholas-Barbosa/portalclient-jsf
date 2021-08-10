@@ -3,7 +3,6 @@ package com.portal.client.service.microsoft.excel.reader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
@@ -25,18 +24,16 @@ public class XssfReaderImpl implements XssfReader {
 	public List<RowObject> read(InputStream xlsxInputStream, int initialOffset, int endOffset) throws IOException {
 		try (Workbook workbook = new XSSFWorkbook(xlsxInputStream)) {
 			Sheet datatypeSheet = workbook.getSheetAt(0);
-			List<RowObject> rowObjects = new LinkedList<>();
-			datatypeSheet.forEach(r -> {
-				if (r.getRowNum() >= initialOffset
-						&& r.getRowNum() <= (endOffset == 0 ? datatypeSheet.getLastRowNum() : endOffset)) {
-					IntStream cells = IntStream.iterate(0, i -> i < r.getLastCellNum(), i -> i + 1);
-					List<CellAttribute> cellAttributes = cells.parallel().mapToObj(i -> r.getCell(i))
-							.filter(c -> c != null).map(c -> {
-								return new CellAttribute(c.getColumnIndex(), this.getCellValue(c));
-							}).collect(CopyOnWriteArrayList::new, List::add, List::addAll);
-					rowObjects.add(new RowObject(r.getRowNum(), cellAttributes));
-				}
-			});
+			endOffset = endOffset == 0 ? datatypeSheet.getLastRowNum() : endOffset;
+			List<RowObject> rowObjects = IntStream.rangeClosed(initialOffset, endOffset).parallel()
+					.mapToObj(datatypeSheet::getRow).filter(r -> r != null).map(row -> {
+						IntStream cells = IntStream.range(0, row.getLastCellNum());
+						List<CellAttribute> cellAttributes = cells.mapToObj(c -> row.getCell(c))
+								.filter(x -> x != null).map(x -> {
+									return new CellAttribute(x.getColumnIndex(), this.getCellValue(x));
+								}).collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+						return new RowObject(row.getRowNum(), cellAttributes);
+					}).collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 			return rowObjects;
 		}
 
