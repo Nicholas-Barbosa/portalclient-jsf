@@ -10,20 +10,21 @@ import java.util.concurrent.TimeoutException;
 
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetPage;
-import com.portal.client.dto.ItemBudgetToEstimate;
-import com.portal.client.vo.BudgetEstimatedResultSet;
+import com.portal.client.dto.ItemToFindPrice;
+import com.portal.client.exception.CustomerNotFoundException;
+import com.portal.client.exception.ItemsNotFoundException;
 
 public interface BudgetRepository extends Serializable {
 
 	BudgetPage findAll(int page, int pageSize)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
-	void save(BaseBudget request)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
+	void save(BaseBudget request) throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
 	Optional<BaseBudget> findByCode(String code)
 			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
 
-	BudgetEstimatedResultSet estimate(String customerCode, String customerStore, Set<ItemBudgetToEstimate> items)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
+	BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
+			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException,
+			CustomerNotFoundException, ItemsNotFoundException;
 }

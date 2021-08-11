@@ -21,6 +21,6 @@ public interface ProductService extends ServiceSerializable {
 	Optional<Product> findByCodeForProspect(String code, String state, String sellerType)
 			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException;
 
-	void loadImage(Product productDTO);
+	void loadImage(Product product);
 
 }

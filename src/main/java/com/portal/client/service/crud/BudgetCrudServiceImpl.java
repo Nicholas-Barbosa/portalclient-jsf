@@ -13,11 +13,12 @@ import javax.inject.Inject;
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
-import com.portal.client.dto.ItemBudgetToEstimate;
+import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
+import com.portal.client.exception.CustomerNotFoundException;
+import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.repository.BudgetRepository;
-import com.portal.client.vo.BudgetEstimatedResultSet;
 
 @ApplicationScoped
 public class BudgetCrudServiceImpl implements BudgetCrudService {
@@ -70,9 +71,9 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public BudgetEstimatedResultSet estimate(String customerCode, String customerStore,
-			Set<ItemBudgetToEstimate> itemsToEstimate)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> itemsToEstimate)
+			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException,
+			CustomerNotFoundException, ItemsNotFoundException {
 		return budgetRepository.estimate(customerCode, customerStore, itemsToEstimate);
 	}
 

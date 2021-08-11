@@ -57,7 +57,10 @@
 								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
 								action="#{newBudgetOrderController.openItemImportView}"
-								process="@this" />
+								process="@this">
+								<p:ajax event="dialogReturn"
+									listener="#{newBudgetOrderController.handleItemImportReturn}" />
+							</p:commandButton>
 							<p:commandButton
 								action="#{newBudgetOrderController.checkBudgetRequestObj}"
 								value="#{newBudgetOrderController.isOrder() ? resourceBundleServiceImpl.getMessage('salvar_pedido') : resourceBundleServiceImpl.getMessage('salvar_orcamento')}"

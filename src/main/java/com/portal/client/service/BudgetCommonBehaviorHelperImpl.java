@@ -47,8 +47,7 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 
 	@Override
 	public void addItem(BaseBudget budget, ItemBudget produc) {
-		if (produc != null) {
-			budget.addItem(produc);
+		if (produc != null && budget.addItem(produc)) {
 			this.calculateTotals(budget);
 		}
 	}
@@ -60,6 +59,17 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 		this.calculateTotals(budget);
 		return;
 
+	}
+
+	@Override
+	public void merge(BaseBudget mixedBudget, BaseBudget budgetToMix) {
+		if (mixedBudget.getIdCode() == null & budgetToMix.getIdCode() != null)
+			mixedBudget.setIdCode(budgetToMix.getIdCode());
+		mixedBudget.setCreatedAt(budgetToMix.getCreatedAt());
+		mixedBudget.setGlobalDiscount(mixedBudget.getGlobalDiscount().add(budgetToMix.getGlobalDiscount()));
+		budgetToMix.getItems().stream().forEach(i -> {
+			this.addItem(mixedBudget, i);
+		});
 	}
 
 }

@@ -3,6 +3,7 @@ package com.portal.client.util.jsf;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
 import javax.faces.application.FacesMessage;
@@ -21,6 +22,11 @@ public class FacesUtils {
 
 	public static void openViewOnDialog(Map<String, Object> options, String viewName) {
 		PrimeFaces.current().dialog().openDynamic(viewName, options, null);
+	}
+
+	public static void openViewOnDialog(Map<String, Object> options, String viewName,
+			Map<String, List<String>> params) {
+		PrimeFaces.current().dialog().openDynamic(viewName, options, params);
 	}
 
 	/**
@@ -98,6 +104,10 @@ public class FacesUtils {
 
 	public static void ajaxUpdate(String... id) {
 		PrimeFaces.current().ajax().update(id);
+	}
+
+	public static void executeScript(String script) {
+		PrimeFaces.current().executeScript(script);
 	}
 
 	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, OrderExportType contentType)

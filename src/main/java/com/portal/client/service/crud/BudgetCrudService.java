@@ -10,7 +10,9 @@ import java.util.concurrent.TimeoutException;
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
-import com.portal.client.dto.ItemBudgetToEstimate;
+import com.portal.client.dto.ItemToFindPrice;
+import com.portal.client.exception.CustomerNotFoundException;
+import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.ServiceSerializable;
 import com.portal.client.vo.BudgetEstimatedResultSet;
 
@@ -27,7 +29,7 @@ public interface BudgetCrudService extends ServiceSerializable, CrudService {
 
 	void checkBudgetState(BaseBudget toCheck);
 
-	BudgetEstimatedResultSet estimate(String customerCode, String customerStore,
-			Set<ItemBudgetToEstimate> itemsToEstimate)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException;
+	BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> itemsToEstimate)
+			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException,
+			CustomerNotFoundException, ItemsNotFoundException;
 }

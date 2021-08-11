@@ -91,19 +91,20 @@ body .ui-panelgrid .ui-panelgrid-cell {
 		</p:panelGrid>
 	</div>
 
-	<p:dialog header="Resultado da leitura do arquivo"
+	<p:dialog header="Valores obtidos a partir da examinação da planilha"
 		footer="Verifique os valores" modal="true" widgetVar="dlgResult"
 		responsive="true" style="max-width: 30vw;max-height:80vh"
-		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh')">
+		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();">
 		<p:outputPanel deferredMode="visible" deferred="true" id="readResult">
 			<h:form prependId="false">
 				<p:dataTable id="dtItemsResult" widgetVar="dtItemsResult"
 					value="#{itemImportController.itemXlsxProjection}" var="item"
 					editable="true" editMode="cell" reflow="true" scrollable="true"
-					filteredValue="#{itemImportController.filteredItemsXlsxProjection}">
+					filterDelay="75">
 					<p:ajax event="cellEdit"
 						listener="#{itemImportController.onCellEdit}" update="growl" />
-					<p:column headerText="Produto" filterBy="#{item.code}">
+					<p:column headerText="Produto" filterBy="#{item.code}"
+						id="columnCode">
 						<p:cellEditor>
 							<f:facet name="input">
 								<p:inputText value="#{item.code}" />
@@ -114,7 +115,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 						</p:cellEditor>
 
 					</p:column>
-					<p:column headerText="Quantidade">
+					<p:column headerText="Quantidade" id="columnQuantity">
 						<p:cellEditor>
 							<f:facet name="input">
 								<p:spinner value="#{item.quantity}" min="1" />
@@ -124,14 +125,58 @@ body .ui-panelgrid .ui-panelgrid-cell {
 							</f:facet>
 						</p:cellEditor>
 					</p:column>
+					<p:column>
+						<p:commandButton icon="pi pi-times"
+							styleClass="rounded-button ui-button-danger"
+							action="#{itemImportController.removeItemXlsxProjection(item)}"
+							process="@this" update="dtItemsResult"
+							oncomplete="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();" />
+					</p:column>
 				</p:dataTable>
 			</h:form>
 		</p:outputPanel>
 		<f:facet name="footer">
-			<p:commandButton value="Próximo" icon="pi pi-arrow-right"
-				iconPos="right" />
+			<p:commandButton value="Cancelar" icon="pi pi-arrow-left"
+				iconPos="left" styleClass="ui-button-danger"
+				onclick="PF('dlgResult').hide()"
+				action="#{itemImportController.cancelExa}" process="@this" />
+			<p:button value="Próximo" icon="pi pi-arrow-right" iconPos="right"
+				onclick="discoverItems()" />
 		</f:facet>
 	</p:dialog>
+
+	<p:dialog header="Itens não encontrados" modal="true"
+		widgetVar="dlgItemsNotFound" responsive="true"
+		style="max-width: 20vw;max-height:80vh"
+		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsNotFound').clearFilters();">
+		<p:outputPanel deferredMode="visible" deferred="true">
+			<h:form prependId="false">
+				<p:dataTable id="dtItemsNotFound" widgetVar="dtItemsNotFound"
+					value="#{itemImportController.itemsNotFound}" var="item"
+					reflow="true" scrollable="true" filterDelay="75">
+					<p:column headerText="Item" id="columnCode">
+						<h:outputText value="#{item.itemIdentity}" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:outputPanel>
+		<f:facet name="footer">
+			<p:commandButton value="Cancelar" icon="pi pi-arrow-left"
+				iconPos="left" styleClass="ui-button-danger"
+				onclick="PF('dlgItemsNotFound').hide()"
+				action="#{itemImportController.cancelExa}" process="@this" />
+			<p:button value="Prosseguir e ignorar estes itens"
+				icon="pi pi-arrow-right" iconPos="right" onclick="discoverItems()" />
+		</f:facet>
+	</p:dialog>
+
+	<h:form>
+		<p:remoteCommand name="discoverItems"
+			action="#{itemImportController.discoverItems}" process="@this"
+			onstart="PF('dlgImporting').show()"
+			oncomplete="PF('dlgImporting').hide()" />
+	</h:form>
+
 	<p:dialog header="Lendo arquivo..." modal="true" closable="false"
 		widgetVar="dlgImporting">
 		<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>

@@ -2,12 +2,12 @@ package com.portal.client.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ItemBudgetToEstimate {
+public class ItemToFindPrice {
 
 	private String productCode;
 	private int quantity;
 
-	public ItemBudgetToEstimate(String productCode, int quantity) {
+	public ItemToFindPrice(String productCode, int quantity) {
 		super();
 		this.productCode = productCode;
 		this.quantity = quantity;
@@ -39,8 +39,8 @@ public class ItemBudgetToEstimate {
 			this.quantity = quantity;
 		}
 
-		public ItemBudgetToEstimate build() {
-			return new ItemBudgetToEstimate(productCode, quantity);
+		public ItemToFindPrice build() {
+			return new ItemToFindPrice(productCode, quantity);
 		}
 	}
 
@@ -60,7 +60,7 @@ public class ItemBudgetToEstimate {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ItemBudgetToEstimate other = (ItemBudgetToEstimate) obj;
+		ItemToFindPrice other = (ItemToFindPrice) obj;
 		if (productCode == null) {
 			if (other.productCode != null)
 				return false;

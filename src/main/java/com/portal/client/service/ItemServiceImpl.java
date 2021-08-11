@@ -48,7 +48,8 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public void applyLineDiscount(@NotNull Collection<? extends ItemBudget> items, ItemLineDiscountForm itemLineDiscount) {
+	public void applyLineDiscount(@NotNull Collection<? extends ItemBudget> items,
+			ItemLineDiscountForm itemLineDiscount) {
 		BigDecimal discount = itemLineDiscount.getDiscount();
 		String line = itemLineDiscount.getLine();
 		items.parallelStream().filter(i -> i.line().equals(line)).forEach(i -> {
@@ -97,6 +98,8 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public boolean checkQuantityPolicies(ItemBudget item, int quantity) {
 		// TODO Auto-generated method stub
+		if (item.getProduct().getMultiple() == 0)
+			return true;
 		return quantity % item.getProduct().getMultiple() == 0 ? true : false;
 	}
 

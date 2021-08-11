@@ -118,8 +118,8 @@ public class BaseBudget {
 		return new HashSet<>(items);
 	}
 
-	public void addItem(ItemBudget item) {
-		this.items.add(item);
+	public boolean addItem(ItemBudget item) {
+		return this.items.add(item);
 	}
 
 	public boolean removeItem(ItemBudget item) {

@@ -7,9 +7,9 @@ import javax.json.bind.annotation.JsonbProperty;
 public class FormToEstimateBudget {
 
 	private String customerCode, store;
-	private Set<ItemBudgetToEstimate> items;
+	private Set<ItemToFindPrice> items;
 
-	public FormToEstimateBudget(String customerCode, String store, Set<ItemBudgetToEstimate> items) {
+	public FormToEstimateBudget(String customerCode, String store, Set<ItemToFindPrice> items) {
 		super();
 		this.customerCode = customerCode;
 		this.store = store;
@@ -27,7 +27,7 @@ public class FormToEstimateBudget {
 	}
 
 	@JsonbProperty("items")
-	public Set<ItemBudgetToEstimate> getItems() {
+	public Set<ItemToFindPrice> getItems() {
 		return items;
 	}
 }

@@ -1,7 +1,11 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -11,10 +15,14 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 
+import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.ItemXlsxProjection;
+import com.portal.client.exception.CustomerNotFoundException;
+import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.ItemImportService;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.WrapperItem404Error.Item404Error;
 
 @ViewScoped
 @Named
@@ -31,9 +39,9 @@ public class ItemImportController implements Serializable {
 
 	private List<ItemXlsxProjection> itemXlsxProjection;
 
-	private List<ItemXlsxProjection> filteredItemsXlsxProjection;
-
 	private ItemImportService itemImporter;
+
+	private Item404Error[] itemsNotFound;
 
 	@Inject
 	public ItemImportController(ItemImportService itemImporter) {
@@ -42,6 +50,25 @@ public class ItemImportController implements Serializable {
 		this.itemFileLayout.setInitPosition(1);
 		this.itemFileLayout.setOffSetCellForProductCode(1);
 		this.itemFileLayout.setOffSetCellForProductQuantity(2);
+	}
+
+	public void discoverItems() {
+		try {
+			BaseBudget findPrice = itemImporter.findPrice(itemXlsxProjection, customerCode, customerStore);
+			PrimeFaces.current().dialog().closeDynamic(findPrice);
+		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+			// TODO Auto-generated catch block
+			FacesUtils.fatal(null, "Problema de rede", "Problema de rede no servidor da Faraway", "growl ");
+		} catch (CustomerNotFoundException e) {
+			FacesUtils.error(null, "Cliente não encontrado", null, "growl");
+		} catch (ItemsNotFoundException e) {
+			FacesUtils.error(null, "Itens não econtrados", null, "growl");
+			this.itemsNotFound = e.getErrors();
+			this.itemXlsxProjection.removeIf(i -> Arrays.stream(itemsNotFound)
+					.anyMatch(i404 -> i404.getItemIdentity().equalsIgnoreCase(i.getCode())));
+			FacesUtils.executeScript("PF('dlgItemsNotFound').show();PF('dlgResult').hide();");
+			FacesUtils.ajaxUpdate("dtItemsNotFound");
+		}
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -64,10 +91,24 @@ public class ItemImportController implements Serializable {
 		FacesUtils.error(null, "Arquivo não transferido", "Transfira o arquivo que será lido", "growl");
 	}
 
-	public void onCellEdit(CellEditEvent<Object> event) {
+	public void cancelExa() {
+		this.itemXlsxProjection = null;
+	}
 
-		FacesUtils.info(null, event.getColumn().getHeaderText() + " modificado", event.getColumn().getHeaderText()
-				+ " da linha " + (event.getRowIndex() + 1) + " foi modificado para " + event.getNewValue() + ".");
+	public void onCellEdit(CellEditEvent<Object> event) {
+		FacesUtils.info(null, event.getColumn().getHeaderText() + " alterado", event.getColumn().getHeaderText()
+				+ " da linha " + (event.getRowIndex() + 1) + " foi alterado para " + event.getNewValue() + ".");
+
+	}
+
+	public void removeItemXlsxProjection(ItemXlsxProjection item) {
+		if (this.itemXlsxProjection.remove(item)) {
+			if (itemXlsxProjection.size() == 0) {
+				PrimeFaces.current().executeScript("PF('dlgResult').hide()");
+				this.cancelExa();
+			}
+
+		}
 	}
 
 	public String getCustomerCode() {
@@ -94,11 +135,7 @@ public class ItemImportController implements Serializable {
 		return itemXlsxProjection;
 	}
 
-	public void setFilteredItemsXlsxProjection(List<ItemXlsxProjection> filteredItemsXlsxProjection) {
-		this.filteredItemsXlsxProjection = filteredItemsXlsxProjection;
-	}
-
-	public List<ItemXlsxProjection> getFilteredItemsXlsxProjection() {
-		return filteredItemsXlsxProjection;
+	public Item404Error[] getItemsNotFound() {
+		return itemsNotFound;
 	}
 }

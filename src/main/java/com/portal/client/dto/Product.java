@@ -91,25 +91,29 @@ public class Product {
 	}
 
 	public byte[] getImageStreams() {
-		return image.getImageStreams();
+		return image == null ? new byte[0] : image.getImageStreams();
 	}
+
 	public ProductValue getPrice() {
 		return value;
 	}
+
 	public ProductValue getValue() {
 		return value;
 	}
+
 	public void setImage(ProductImage productImage) {
 		this.image = productImage;
 	}
-	
-	public void setImage(byte[]streams) {
-		if(image==null) {
-			image= new ProductImage(streams);
+
+	public void setImage(byte[] streams) {
+		if (image == null) {
+			image = new ProductImage(streams);
 			return;
 		}
 		image.setImageStreams(streams);
 	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -135,5 +139,4 @@ public class Product {
 		return true;
 	}
 
-	
 }

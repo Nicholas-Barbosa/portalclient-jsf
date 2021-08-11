@@ -7,6 +7,7 @@ import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -43,6 +44,7 @@ import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ItemXlsxFileLayout;
+import com.portal.client.dto.ItemXlsxProjection;
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductValue;
@@ -96,7 +98,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	private final ZipCodeService cepCervice;
 
-	private final BudgetCommonBehaviorHelper buRequestService;
+	private final BudgetCommonBehaviorHelper budgetBehaviorHelper;
 
 	private LazyDataModelBase<Product> lazyProducts;
 
@@ -179,13 +181,23 @@ public class NewBudgetOrderController implements Serializable {
 		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
 		this.cepCervice = cep;
-		this.buRequestService = budgetRequestService;
+		this.budgetBehaviorHelper = budgetRequestService;
 	}
 
 	public void openItemImportView() {
-		FacesUtils.openViewOnDialog(
-				Map.of("modal", true, "responsive", true, "contentWidth", "90vw", "contentHeight", "90vh"),
-				"itemImport");
+		if (budget.getCustomerOnOrder() != null) {
+			FacesUtils.openViewOnDialog(
+					Map.of("modal", true, "responsive", true, "contentWidth", "98vw", "contentHeight", "80vh"),
+					"itemImport", Map.of("customerCode", List.of(budget.getCustomerOnOrder().getCode()),
+							"customerStore", List.of(budget.getCustomerOnOrder().getStore())));
+			return;
+		}
+		FacesUtils.error(null, "Cliente não selecionado", null, "growl");
+	}
+
+	public void handleItemImportReturn(SelectEvent<BaseBudget> event) {
+		this.budgetBehaviorHelper.merge(budget, event.getObject());
+		FacesUtils.ajaxUpdate("formItems:dtItems", "budgetTotals");
 	}
 
 	public void saveBudgetOrOrder() {
@@ -265,7 +277,7 @@ public class NewBudgetOrderController implements Serializable {
 			CustomerOnOrder customer = new ProspectCustomerOnOrder(null, null, prospectCustomerForm.getCnpj(), null,
 					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo, null,
 					SellerType.valueOf(prospectCustomerForm.getSellerType()));
-			buRequestService.setCustomer(budget, customer);
+			budgetBehaviorHelper.setCustomer(budget, customer);
 			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
 			return;
 		}
@@ -275,7 +287,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void applyGlobalDiscount() {
 		try {
-			buRequestService.setDiscount(budget, globalDiscount);
+			budgetBehaviorHelper.setDiscount(budget, globalDiscount);
 		} catch (CustomerNotAllowed e) {
 			FacesUtils.fatal(null, "Cliente não autorizado", null);
 			PrimeFaces.current().ajax().update("growl");
@@ -284,7 +296,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void applyLineDiscount() {
 		itemService.applyLineDiscount(budget.getItems(), itemLineDiscount);
-		buRequestService.calculateTotals(budget);
+		budgetBehaviorHelper.calculateTotals(budget);
 	}
 
 	public void loadCurrentItemLines() {
@@ -292,7 +304,7 @@ public class NewBudgetOrderController implements Serializable {
 	}
 
 	public void addPreviewItemToBudget() {
-		buRequestService.addItem(budget, previewItem);
+		budgetBehaviorHelper.addItem(budget, previewItem);
 		previewItem = null;
 	}
 
@@ -306,7 +318,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void onRowItemEdit(RowEditEvent<ItemBudget> event) {
 		calculateItemQuantity(event.getObject(), onRowItemQuantity);
-		buRequestService.calculateTotals(budget);
+		budgetBehaviorHelper.calculateTotals(budget);
 		onRowItemQuantity = 1;
 	}
 
@@ -328,7 +340,7 @@ public class NewBudgetOrderController implements Serializable {
 	}
 
 	public void removeItem(ItemBudget item) {
-		buRequestService.removeItem(budget, item);
+		budgetBehaviorHelper.removeItem(budget, item);
 	}
 
 	public void showOpenedTitlesPageOnDialog() {
@@ -375,7 +387,7 @@ public class NewBudgetOrderController implements Serializable {
 			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
 			return;
 		}
-		buRequestService.setCustomer(budget, new CustomerOnOrder(event.getObject()));
+		budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(event.getObject()));
 		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
@@ -399,7 +411,7 @@ public class NewBudgetOrderController implements Serializable {
 						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
 						return;
 					}
-					buRequestService.setCustomer(budget, new CustomerOnOrder(cDTO));
+					budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(cDTO));
 					FacesUtils.ajaxUpdate(":customerForm", "budgetToolsForm:btnViewCDetail");
 					FacesUtils.addHeaderForResponse("customers-found", true);
 				}

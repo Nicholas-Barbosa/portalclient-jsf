@@ -19,6 +19,10 @@ public class WrapperItem404Error {
 	public static class Item404Error {
 		private String cause, itemIdentity;
 
+		public Item404Error() {
+			// TODO Auto-generated constructor stub
+		}
+
 		@JsonbCreator
 		public Item404Error(@JsonbProperty("cause") String cause, @JsonbProperty("itendity") String itemIdentity) {
 			super();

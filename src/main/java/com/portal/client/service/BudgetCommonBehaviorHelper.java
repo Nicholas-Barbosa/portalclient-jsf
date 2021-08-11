@@ -35,4 +35,5 @@ public interface BudgetCommonBehaviorHelper {
 	 */
 	void setDiscount(BaseBudget budget, BigDecimal discount) throws CustomerNotAllowed;
 
+	void merge(BaseBudget mixedBudget, BaseBudget budgetToMix);
 }

@@ -25,7 +25,9 @@ import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.FormToEstimateBudget;
-import com.portal.client.dto.ItemBudgetToEstimate;
+import com.portal.client.dto.ItemToFindPrice;
+import com.portal.client.exception.CustomerNotFoundException;
+import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.dto.ItemBudgetToSaveJsonSerializable;
 import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
@@ -96,9 +98,11 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 		}
 	}
 
+
 	@Override
-	public BudgetEstimatedResultSet estimate(String customerCode, String customerStore, Set<ItemBudgetToEstimate> items)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
+			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException,
+			CustomerNotFoundException, ItemsNotFoundException {
 		ServerAPI server = apiManager.getAPI(orcamentoKey);
 
 		FormToEstimateBudget toEstimate = new FormToEstimateBudget(customerCode, customerStore, items);
@@ -106,18 +110,15 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(apiManager.buildEndpoint(server, "estimate"),
 					server.getToken(), server.getTokenPrefix(), BudgetEstimatedResultBuilder.class, null, null,
 					toEstimate, "application/json");
-			return new BudgetEstimatedResultSet(true, budgetBuilder.build(), null);
+			return budgetBuilder.build();
 		} catch (NotFoundException e) {
-			Deseriaized404JsonEstimateEndpoint deserialized = deserializeJson404FromEstimateEndpoint(
+			Deseriaized404JsonEstimateEndpoint notFoundCause = deserializeJson404FromEstimateEndpoint(
 					e.getResponse().getEntity() + "");
+			if (notFoundCause.isOkWithCustomer())
+				throw new CustomerNotFoundException(notFoundCause.getCustomerError());
+			throw new ItemsNotFoundException(notFoundCause.getItemErrors());
 
-			BudgetEstimatedResult404Error error = new BudgetEstimatedResult404Error(404, deserialized.isOkWithItems(),
-					deserialized.isOkWithCustomer(), deserialized.getItemErrors(), deserialized.getCustomerError());
-			BudgetEstimatedResultSet resultSet = new BudgetEstimatedResultSet(false, null, error);
-
-			return resultSet;
 		}
-
 	}
 
 	private Deseriaized404JsonEstimateEndpoint deserializeJson404FromEstimateEndpoint(String json) {
