@@ -173,12 +173,17 @@ body .ui-panelgrid .ui-panelgrid-cell {
 	<h:form>
 		<p:remoteCommand name="discoverItems"
 			action="#{itemImportController.discoverItems}" process="@this"
-			onstart="PF('dlgImporting').show()"
-			oncomplete="PF('dlgImporting').hide()" />
+			onstart="PF('dlgDiscoveringItems').show()"
+			oncomplete="PF('dlgDiscoveringItems').hide()" />
 	</h:form>
 
 	<p:dialog header="Lendo arquivo..." modal="true" closable="false"
 		widgetVar="dlgImporting">
+		<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+	</p:dialog>
+
+	<p:dialog header="Obtendo itens..." modal="true" closable="false"
+		widgetVar="dlgDiscoveringItems">
 		<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
 	</p:dialog>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
