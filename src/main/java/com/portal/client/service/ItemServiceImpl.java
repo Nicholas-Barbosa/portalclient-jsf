@@ -40,8 +40,7 @@ public class ItemServiceImpl implements ItemService {
 			price.setUnitGrossValueFromGBDiscount(unitValues[0]);
 			price.setUnitStValueFromGBDiscount(unitValues[1]);
 			price.setUnitValueFromGBDiscount(unitValues[2]);
-
-			if (price.getLineDiscount() != null || !price.getLineDiscount().equals(BigDecimal.ZERO))
+			if (price.getLineDiscount() != null && !price.getLineDiscount().equals(BigDecimal.ZERO))
 				this.applyLineDiscount(items,
 						new ItemLineDiscountForm(i.getProduct().getLine(), price.getLineDiscount()));
 		});

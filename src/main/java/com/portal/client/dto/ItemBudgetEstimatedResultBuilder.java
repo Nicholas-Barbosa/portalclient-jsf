@@ -37,7 +37,7 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBudgetJsonBuilder {
 	@Override
 	public ItemBudget build() {
 		ProductValue productValue = new ProductValue(unitStValue, unitValue, unitGrossValue);
-		Product product = new Product(productCode, commercialCode, null, null, null, null, 0, 0, false, null,
+		Product product = new Product(productCode, commercialCode, null, null, null, null, stock, 0, false, null,
 				productValue);
 		ItemBudgetValue value = new ItemBudgetValue(quantity, budgetGlobalDiscount, lineDiscount, unitStValue,
 				unitValue, unitGrossValue, totalStValue, totalValue, totalGrossValue, productValue);

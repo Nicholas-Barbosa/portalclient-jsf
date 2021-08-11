@@ -11,7 +11,7 @@ import com.portal.client.service.microsoft.excel.reader.XssfReaderImpl;
 
 class ItemImportServiceImplTest {
 
-	private final ItemImportService importer = new ItemImportServiceImpl(new XssfReaderImpl());
+	private final ItemImportService importer = new ItemImportServiceImpl(new XssfReaderImpl(),null);
 
 	@Test
 	void test() {

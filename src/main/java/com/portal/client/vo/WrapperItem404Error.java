@@ -9,7 +9,7 @@ public class WrapperItem404Error {
 
 	@JsonbProperty("error")
 	public void setErrors(Item404Error[] errors) {
-		this.errors = errors.clone();
+		this.errors = errors == null ? errors : errors.clone();
 	}
 
 	public Item404Error[] getErrors() {
