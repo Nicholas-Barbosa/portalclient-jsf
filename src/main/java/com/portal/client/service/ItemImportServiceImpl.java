@@ -66,7 +66,7 @@ public class ItemImportServiceImpl implements ItemImportService, Serializable {
 				.collect(Collectors.toMap(k -> k.getCellOffset(), v -> v.getValue()));
 		String code = (String) attributes.get(offsetForCode);
 		Double quantity = (Double) attributes.get(offSetForQuantity);
-		return new ItemXlsxProjection(code, quantity.intValue());
+		return new ItemXlsxProjection(code, quantity == null ? 0 : quantity.intValue());
 	}
 
 	@Override

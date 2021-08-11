@@ -16,7 +16,7 @@ public interface ItemService {
 	 * 
 	 * @param item
 	 */
-	void calculateDueQuantity(ItemBudget item, int quantity)throws ItemQuantityNotAllowed;
+	void calculateDueQuantity(ItemBudget item, int quantity) throws ItemQuantityNotAllowed;
 
 	/**
 	 * Calculate unit values based on new discount.
@@ -24,6 +24,8 @@ public interface ItemService {
 	 * @param item
 	 */
 	void applyGlobalDiscount(@NotNull Collection<? extends ItemBudget> items, BigDecimal discount);
+
+	void applyGlobalDiscount(ItemBudget items, BigDecimal discount);
 
 	void applyLineDiscount(@NotNull Collection<? extends ItemBudget> items, ItemLineDiscountForm itemLineDiscount);
 

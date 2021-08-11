@@ -27,7 +27,7 @@ public class ItemBudget {
 		return product;
 	}
 
-	public ItemBudgetValue getValues() {
+	public ItemBudgetValue getValue() {
 		return values;
 	}
 	@JsonbTransient

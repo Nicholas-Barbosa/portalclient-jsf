@@ -27,11 +27,11 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 
 	@Override
 	public void calculateTotals(BaseBudget budget) {
-		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalGrossValue())
+		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalGrossValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalValue())
+		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getValues().getTotalStValue())
+		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalStValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		budget.setGrossValue(newGrossValue);
 		budget.setLiquidValue(newLiquidValue);
@@ -46,8 +46,11 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	}
 
 	@Override
-	public void addItem(BaseBudget budget, ItemBudget produc) {
-		if (produc != null && budget.addItem(produc)) {
+	public void addItem(BaseBudget budget, ItemBudget item) {
+		if (item != null && budget.addItem(item)) {
+			if (budget.getGlobalDiscount() != null && !budget.getGlobalDiscount().equals(BigDecimal.ZERO)) {
+				itemService.applyGlobalDiscount(item, budget.getGlobalDiscount());
+			}
 			this.calculateTotals(budget);
 		}
 	}
@@ -55,9 +58,10 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	@Override
 	public void setDiscount(BaseBudget budget, BigDecimal discount) throws CustomerNotAllowed {
 		budget.setGlobalDiscount(discount);
-		itemService.applyGlobalDiscount(budget.getItems(), discount);
-		this.calculateTotals(budget);
-		return;
+		if (budget.getItems().size() > 0) {
+			itemService.applyGlobalDiscount(budget.getItems(), discount);
+			this.calculateTotals(budget);
+		}
 
 	}
 

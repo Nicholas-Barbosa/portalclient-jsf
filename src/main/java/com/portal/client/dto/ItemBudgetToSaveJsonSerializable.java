@@ -13,7 +13,7 @@ public class ItemBudgetToSaveJsonSerializable extends ItemBudget
 
 	@JsonbProperty("line_discount")
 	public BigDecimal getLineDiscount() {
-		return super.getValues().getLineDiscount();
+		return super.getValue().getLineDiscount();
 
 	}
 
@@ -29,17 +29,17 @@ public class ItemBudgetToSaveJsonSerializable extends ItemBudget
 
 	@JsonbProperty("unit_price")
 	public BigDecimal getProductUnitValue() {
-		return super.getValues().getUnitValue();
+		return super.getValue().getUnitValue();
 	}
 
 	@JsonbProperty("st_value")
 	public BigDecimal getProductStValue() {
-		return super.getValues().getTotalStValue();
+		return super.getValue().getTotalStValue();
 	}
 
 	@JsonbProperty("quantity")
 	private int getQuantity() {
-		return super.getValues().getQuantity();
+		return super.getValue().getQuantity();
 	}
 
 	@Override

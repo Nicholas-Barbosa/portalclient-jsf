@@ -39,7 +39,7 @@ public class OrderExcelCalculusConference {
 
 		order.getItems().parallelStream().forEach(i -> {
 			List<WriteCellAttribute> cells = new LinkedList<>();
-			ItemBudgetValue values = i.getValues();
+			ItemBudgetValue values = i.getValue();
 
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("productCode"),
 					i.getProduct().getCommercialCode()));

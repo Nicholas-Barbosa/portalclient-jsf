@@ -230,7 +230,7 @@
 									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
 									<p:cellEditor>
 										<f:facet name="output">
-											<h:outputText value="#{item.values.quantity}" />
+											<h:outputText value="#{item.value.quantity}" />
 										</f:facet>
 										<f:facet name="input">
 											<p:spinner
@@ -241,21 +241,21 @@
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
-									<h:outputText value="#{item.values.unitValue}">
+									<h:outputText value="#{item.value.unitValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('total')}">
-									<h:outputText value="#{item.values.totalValue}">
+									<h:outputText value="#{item.value.totalValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
-									<h:outputText value="#{item.values.totalStValue}">
+									<h:outputText value="#{item.value.totalStValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -264,7 +264,7 @@
 									headerText="#{resourceBundleServiceImpl.getMessage('desconto')}%">
 									<p:commandLink id="viewItemDiscounts"
 										oncomplete="PF('itemDiscOP').show()" update="itemDiscOP">
-										<h:outputText value="#{item.values.totalDiscount}">
+										<h:outputText value="#{item.value.totalDiscount}">
 											<f:convertNumber locale="pt_BR" />
 										</h:outputText>
 										<f:setPropertyActionListener value="#{item}"
@@ -288,7 +288,7 @@
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
-									<h:outputText value="#{item.values.totalGrossValue}">
+									<h:outputText value="#{item.value.totalGrossValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -566,21 +566,21 @@
 											<div class="p-field p-col">
 												<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
 												<p:inputNumber id="vLiquid"
-													value="#{newBudgetOrderController.previewItem.values.totalValue}"
+													value="#{newBudgetOrderController.previewItem.value.totalValue}"
 													symbol="R$ " symbolPosition="p" decimalSeparator=","
 													thousandSeparator="." readonly="true" />
 											</div>
 											<div class="p-field p-col">
 												<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
 												<p:inputNumber id="vGross"
-													value="#{newBudgetOrderController.previewItem.values.totalGrossValue}"
+													value="#{newBudgetOrderController.previewItem.value.totalGrossValue}"
 													symbol="R$ " symbolPosition="p" decimalSeparator=","
 													thousandSeparator="." readonly="true" />
 											</div>
 											<div class="p-field p-col">
 												<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
 												<p:inputNumber id="vSt"
-													value="#{newBudgetOrderController.previewItem.values.totalStValue}"
+													value="#{newBudgetOrderController.previewItem.value.totalStValue}"
 													symbol="R$ " symbolPosition="p" decimalSeparator=","
 													thousandSeparator="." readonly="true" />
 											</div>

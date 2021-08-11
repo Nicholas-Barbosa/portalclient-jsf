@@ -2,6 +2,7 @@ package com.portal.client.service;
 
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ public class ItemServiceImpl implements ItemService {
 	public void calculateDueQuantity(ItemBudget item, int quantity) throws ItemQuantityNotAllowed {
 		if (checkQuantityPolicies(item, quantity)) {
 			calculateTotals(item, quantity);
-			item.getValues().setQuantity(quantity);
+			item.getValue().setQuantity(quantity);
 			return;
 		}
 		throw new ItemQuantityNotAllowed(
@@ -29,7 +30,7 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public void applyGlobalDiscount(@NotNull Collection<? extends ItemBudget> items, BigDecimal discount) {
 		items.parallelStream().forEach(i -> {
-			ItemBudgetValue price = i.getValues();
+			ItemBudgetValue price = i.getValue();
 
 			BigDecimal[] unitValues = this.applyDiscount(i, discount);
 			price.setUnitGrossValue(unitValues[0]);
@@ -47,12 +48,18 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
+	public void applyGlobalDiscount(ItemBudget items, BigDecimal discount) {
+		this.applyGlobalDiscount(List.of(items), discount);
+
+	}
+
+	@Override
 	public void applyLineDiscount(@NotNull Collection<? extends ItemBudget> items,
 			ItemLineDiscountForm itemLineDiscount) {
 		BigDecimal discount = itemLineDiscount.getDiscount();
 		String line = itemLineDiscount.getLine();
 		items.parallelStream().filter(i -> i.line().equals(line)).forEach(i -> {
-			ItemBudgetValue price = i.getValues();
+			ItemBudgetValue price = i.getValue();
 
 			price.setUnitGrossValue(
 					MathUtils.subtractValueByPercentage(discount, price.getUnitGrossValueFromGBDiscount()));
@@ -66,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	private void calculateTotals(ItemBudget item) {
-		ItemBudgetValue values = item.getValues();
+		ItemBudgetValue values = item.getValue();
 		values.setTotalGrossValue(
 				MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitGrossValue()));
 		values.setTotalStValue(
@@ -75,14 +82,14 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	private void calculateTotals(ItemBudget item, int quantity) {
-		ItemBudgetValue prices = item.getValues();
+		ItemBudgetValue prices = item.getValue();
 		prices.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitGrossValue()));
 		prices.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitStValue()));
 		prices.setTotalValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitValue()));
 	}
 
 	private BigDecimal[] applyDiscount(ItemBudget item, BigDecimal discount) {
-		ItemBudgetValue price = item.getValues();
+		ItemBudgetValue price = item.getValue();
 		BigDecimal values[] = new BigDecimal[3];
 		BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(discount,
 				price.getUnitGrossValueWithoutDiscount());

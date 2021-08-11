@@ -177,7 +177,7 @@ public class OrderJasper implements Serializable {
 			this.commercialCode = item.getProduct().getCommercialCode();
 			this.line = item.line();
 
-			ItemBudgetValue values = item.getValues();
+			ItemBudgetValue values = item.getValue();
 			this.quantity = values.getQuantity();
 			this.unitValue = values.getUnitValueWithoutDiscount();
 			this.totalValue = this.unitValue.multiply(new BigDecimal(this.quantity));
