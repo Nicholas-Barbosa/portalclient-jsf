@@ -423,31 +423,21 @@ public class NewBudgetOrderController implements Serializable {
 		}
 	}
 
-	public void findProductByCode() {
-		try {
-			Optional<Product> product = null;
-			CustomerOnOrder customerOnOrder = budget.getCustomerOnOrder();
-			if (customerOnOrder instanceof ProspectCustomerOnOrder) {
-				ProspectCustomerOnOrder customer = (ProspectCustomerOnOrder) budget.getCustomerOnOrder();
-				System.out.println("customer " + customer.getSellerType());
-				product = productService.findByCodeForProspect(findProductByCodeForm.getCode(), customer.getState(),
-						customer.getSellerType().getType());
-			} else {
-				product = productService.findByCode(findProductByCodeForm.getCode(),
-						budget.getCustomerOnOrder().getCode(), budget.getCustomerOnOrder().getStore());
-			}
-
-			this.getOptionalProduct(product);
-			findProductByCodeForm = new FindProductByCodeForm();
-		} catch (SocketTimeoutException | TimeoutException | SocketException p) {
-			serverExceptionFacesMessageHelper.displayMessage(p, null);
-			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
-			// e.printStackTrace();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			FacesUtils.error(null, "Cliente não selecionado", "Selecione o cliente");
+	public void openSearchProduct() {
+		CustomerOnOrder customer = budget.getCustomerOnOrder();
+		Map<String, List<String>>queryParams = new HashMap<>();
+		queryParams.put("customerCode",  List.of(customer.getCode()));
+		queryParams.put("customerStore", List.of(customer.getStore()));
+		queryParams.put("customerType", List.of(customer.getType().name()));
+		if(customer instanceof ProspectCustomerOnOrder) {
+			ProspectCustomerOnOrder prospCustomer = (ProspectCustomerOnOrder)customer;
+			queryParams.put("customerPropState", List.of(prospCustomer.getState()));
+			queryParams.put("customerPropSelType", List.of(prospCustomer.getSellerType().getType()));
 		}
-
+		
+		FacesUtils.openViewOnDialog(
+				Map.of("modal", true, "responsive", true, "contentWidth", "30vw", "contentHeight", "65vh"),
+				"searchProduct", queryParams);
 	}
 
 	private void getOptionalProduct(Optional<Product> product) {
@@ -491,15 +481,8 @@ public class NewBudgetOrderController implements Serializable {
 		findProductByDescription(pageEvent.getPage() + 1);
 	}
 
-//	public void removeSelectedProduct(Product product) {
-//		new Thread(() -> itemsOnCartToPost.removeIf(i -> i.getCommercialCode().equals(product.getCommercialCode())))
-//				.start();
-//		this.selectedProducts.remove(product);
-//	}
-
 	public void onProductSelected(Product productDTO) {
 		selectedProducts.add(productDTO);
-		// itemsOnCartToPost.add(new ProductBudgetFormDTO(productDTO));
 
 	}
 

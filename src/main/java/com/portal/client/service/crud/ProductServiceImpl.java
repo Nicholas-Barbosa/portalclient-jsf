@@ -14,9 +14,11 @@ import javax.inject.Inject;
 
 import com.google.cloud.storage.Blob;
 import com.portal.client.cdi.qualifier.ProductBucket;
+import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.google.cloud.storage.BucketClient;
 import com.portal.client.repository.ProductRepository;
 
@@ -45,11 +47,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Optional<Product> findByCode(String code, String customerCode, String store)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<Product> findByCode(String code, String customerCode, String customerStore, String state,
+			SellerType sellerType, CustomerType customerType) {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
+
 		try {
-			Future<ProductPage> ftProduct = productRepository.findByCodeAsync(code, customerCode, store);
+			Future<ProductPage> ftProduct = customerType == CustomerType.NORMAL
+					? productRepository.findByCodeAsync(code, customerCode, customerStore)
+					: productRepository.findByCodeForProspectAsync(code, state, sellerType.getType());
 			ProductPage response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
@@ -59,18 +64,8 @@ public class ProductServiceImpl implements ProductService {
 			}
 			ftBlob.cancel(true);
 		} catch (ExecutionException | InterruptedException e) {
-			Throwable cause = e.getCause();
-			if (cause instanceof SocketTimeoutException)
-				throw (SocketTimeoutException) cause;
-			else if (cause instanceof ConnectException)
-				throw (ConnectException) cause;
-			else if (cause instanceof TimeoutException)
-				throw (TimeoutException) cause;
-			else if (cause instanceof SocketException)
-				throw (SocketException) cause;
 			e.printStackTrace();
 		}
-
 		return Optional.empty();
 	}
 
@@ -93,28 +88,6 @@ public class ProductServiceImpl implements ProductService {
 			e.printStackTrace();
 		}
 		return new byte[0];
-	}
-
-	@Override
-	public Optional<Product> findByCodeForProspect(String code, String state, String sellerType)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
-		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
-
-		try {
-			Future<ProductPage> ftProduct = productRepository.findByCodeForProspectAsync(code, state, sellerType);
-			ProductPage response = ftProduct.get();
-			if (response != null) {
-				byte[] image = getBlobStreamImageContent(ftBlob);
-				Product product = response.getProducts().get(0);
-				product.setImage(image);
-				return Optional.of(product);
-			}
-			ftBlob.cancel(true);
-		} catch (ExecutionException | InterruptedException e) {
-			if (e instanceof InterruptedException)
-				e.printStackTrace();
-		}
-		return Optional.empty();
 	}
 
 }

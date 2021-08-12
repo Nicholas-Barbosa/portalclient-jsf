@@ -26,5 +26,7 @@ public class ProductValue {
 	public BigDecimal getUnitGrossValue() {
 		return unitGrossValue;
 	}
+	
+	
 
 }

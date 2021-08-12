@@ -27,4 +27,12 @@ public class FindProductByCodeForm {
 		return customerStore;
 	}
 
+	public void setCustomerCode(String customerCode2) {
+		this.customerCode = customerCode2;
+	}
+
+	public void setCustomerStore(String customerStore) {
+		this.customerStore = customerStore;
+	}
+
 }

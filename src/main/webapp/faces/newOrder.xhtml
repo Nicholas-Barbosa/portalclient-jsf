@@ -173,13 +173,11 @@
 								<f:facet name="header">
 									<div class="p-d-flex p-jc-between p-ai-center">
 										<div>
-											<p:splitButton type="button"
-												onclick="PF('serachProductDialog').show()" icon="pi pi-plus"
-												styleClass="ui-button-raised ui-button-success p-mr-2">
-												<!--  	<p:menuitem
-													value="#{resourceBundleServiceImpl.getMessage('descricao')}"
-													onclick="PF('searchProductDialog').show()" />-->
-											</p:splitButton>
+
+											<p:commandButton
+												action="#{newBudgetOrderController.openSearchProduct}"
+												process="@this" icon="pi pi-plus"
+												styleClass="ui-button-raised ui-button-success p-mr-2" />
 											<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 												disabled="#{empty newBudgetOrderController.budget.items}">
@@ -478,154 +476,6 @@
 				</h:form>
 				<p:blockUI block="dlgGlobalDiscount" widgetVar="block" />
 			</p:dialog>
-
-
-			<div class="p-grid crud-demo">
-				<div class="p-col-12">
-					<p:dialog
-						header="#{resourceBundleServiceImpl.getMessage('pesquisar_produto')}"
-						showEffect="fade" modal="true" widgetVar="serachProductDialog"
-						responsive="true" onShow="PF('blockProductContent').show()">
-
-						<h:form id="formProductDetails">
-							<div style="max-height: 65vh; overflow: auto">
-								<p:outputPanel id="mainPanel" class="ui-fluid">
-									<div class="p-field">
-										<p:outputLabel for="code">#{resourceBundleServiceImpl.getMessage('codigo_comercial')}</p:outputLabel>
-										<div class="ui-inputgroup">
-											<p:inputText id="code"
-												value="#{newBudgetOrderController.findProductByCodeForm.code}" />
-
-											<p:commandButton icon="pi pi-search"
-												styleClass="ui-button-warning" process="@this,code"
-												action="#{newBudgetOrderController.findProductByCode}"
-												onstart="PF('blockPanelAll').show()"
-												oncomplete="PF('blockPanelAll').hide();"
-												update="btnConfirm  growl manage-product-content" />
-										</div>
-									</div>
-									<p:outputPanel id="manage-product-content">
-										<p:blockUI block="manage-product-content"
-											widgetVar="blockProductContent" id="blockProductContent"
-											blocked="#{newBudgetOrderController.previewItem == null}" />
-
-										<p:remoteCommand name="loadImage"
-											action="#{newBudgetOrderController.loadImageFromPreviewProduct}"
-											async="true" update="@form"
-											onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
-											oncomplete="$('#spinnerLoadingImage').hide();
-				$('#divProductImg').show();" />
-										<i class="pi pi-spin pi-spinner"
-											style="font-size: 5rem; display: none"
-											id="spinnerLoadingImage"></i>
-										<div id="divProductImg">
-											<p:graphicImage
-												value="#{newBudgetOrderController.previewItem.product.imageStreams}"
-												styleClass="product-image" stream="false" id="productImg"
-												alt="Image not uploaded for #{newBudgetOrderController.previewItem.product.commercialCode}"
-												rendered="#{newBudgetOrderController.previewItem.product.image.currentState eq 'FOUND' || 'NOT_FOUND'}" />
-											<p:button
-												value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
-												rendered="#{newBudgetOrderController.previewItem.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
-												onclick="loadImage()" id="btnReloadImage" />
-										</div>
-										<br />
-
-										<div class="p-field">
-											<p:outputLabel for="name">#{resourceBundleServiceImpl.getMessage('descricao')}</p:outputLabel>
-											<p:inputTextarea id="name"
-												value="#{newBudgetOrderController.previewItem.product.description}"
-												required="true" readonly="true" />
-										</div>
-										<div class="p-field">
-											<p:outputLabel for="line">#{resourceBundleServiceImpl.getMessage('linha')}</p:outputLabel>
-											<p:inputText id="line"
-												value="#{newBudgetOrderController.previewItem.product.line}"
-												readonly="true" />
-										</div>
-										<ui:fragment
-											rendered="#{!newBudgetOrderController.previewItem.product.applicability.blank}">
-											<div class="p-field">
-												<p:outputLabel for="aplicability">#{resourceBundleServiceImpl.getMessage('aplicacao')}</p:outputLabel>
-												<p:inputText id="aplicability"
-													value="#{newBudgetOrderController.previewItem.product.applicability}"
-													readonly="true" />
-
-											</div>
-										</ui:fragment>
-										<div class="p-field">
-											<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
-											<p:spinner id="quantity"
-												value="#{newBudgetOrderController.previewItemQuantity}"
-												onblur="changeQuantity();"
-												stepFactor="#{newBudgetOrderController.previewItem.product.multiple}"
-												min="#{newBudgetOrderController.previewItem.product.multiple}" />
-										</div>
-
-										<div class="p-formgrid p-grid">
-											<div class="p-field p-col">
-												<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
-												<p:inputNumber id="vLiquid"
-													value="#{newBudgetOrderController.previewItem.value.totalValue}"
-													symbol="R$ " symbolPosition="p" decimalSeparator=","
-													thousandSeparator="." readonly="true" />
-											</div>
-											<div class="p-field p-col">
-												<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
-												<p:inputNumber id="vGross"
-													value="#{newBudgetOrderController.previewItem.value.totalGrossValue}"
-													symbol="R$ " symbolPosition="p" decimalSeparator=","
-													thousandSeparator="." readonly="true" />
-											</div>
-											<div class="p-field p-col">
-												<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
-												<p:inputNumber id="vSt"
-													value="#{newBudgetOrderController.previewItem.value.totalStValue}"
-													symbol="R$ " symbolPosition="p" decimalSeparator=","
-													thousandSeparator="." readonly="true" />
-											</div>
-										</div>
-										<p:remoteCommand name="changeQuantity"
-											process="@this,quantity"
-											action="#{newBudgetOrderController.changItemQuantity}"
-											update="vLiquid,vGross,vSt"
-											onstart="PF('blockProductContent').show()"
-											oncomplete="PF('blockProductContent').hide()" />
-
-										<p:remoteCommand name="confirmProduct"
-											action="#{newBudgetOrderController.addPreviewItemToBudget}"
-											onstart="$('body').css('cursor', 'progress');PF('blockPanelAll').show()"
-											oncomplete="PF('serachProductDialog').hide(); $('body').css('cursor', 'default');PF('blockPanelAll').hide();$('#footer').hide();turnDtScrollBodyResponsive('dtItems','45vh');"
-											process="@this manage-product-content"
-											update="@form,@obs(eventAddItem)" />
-									</p:outputPanel>
-								</p:outputPanel>
-								<p:blockUI block="mainPanel" widgetVar="blockPanelAll">
-									<i class="pi pi-spin pi-spinner" style="font-size: 3.5rem"></i>
-								</p:blockUI>
-							</div>
-						</h:form>
-
-						<f:facet name="footer">
-							<div id="footer" style="display: none">
-								<p:commandButton type="button"
-									value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
-									icon="pi pi-check"
-									styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-									onclick="confirmProduct()"
-									disabled="#{newBudgetOrderController.previewItem == null}"
-									id="btnConfirm" />
-								<p:commandButton
-									value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
-									icon="pi pi-times"
-									onclick="PF('serachProductDialog').hide();$('#footer').hide()"
-									styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
-							</div>
-						</f:facet>
-
-					</p:dialog>
-				</div>
-			</div>
 
 			<p:dialog header="Download" widgetVar="downloadDialog" modal="true"
 				responsive="true">
