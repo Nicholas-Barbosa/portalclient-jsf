@@ -17,11 +17,12 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBudgetJsonBuilder {
 			@JsonbProperty("quantity") int quantity, @JsonbProperty("total_price") BigDecimal totalValue,
 			@JsonbProperty("available_stock") int stock, @JsonbProperty("st_value") BigDecimal totalStValue,
 			@JsonbProperty("description") String description, @JsonbProperty("multiple") int multiple,
-			@JsonbProperty("product_type") String acronymLine) {
+			@JsonbProperty("product_type") String acronymLine, @JsonbProperty("description_product_type") String line) {
 		Product product = ProductBuilder.getInstance().withCode(productCode).withCommercialCode(commercialCode)
 				.withUnitGrossValue(unitGross).withUnitValue(unitValue)
 				.withUnitStValue(totalStValue.divide(new BigDecimal(quantity), RoundingMode.HALF_UP))
-				.withDescription(description).withAcronymLine(acronymLine).withMultiple(multiple).build();
+				.withDescription(description).withAcronymLine(acronymLine).withMultiple(multiple).withLine(line)
+				.build();
 		super.withGlobalDiscount(BigDecimal.ZERO).withTotalGrossValue(totalGross).withLineDiscount(lineDiscount)
 				.withQuantity(quantity).withTotalValue(totalValue).withTotalStValue(totalStValue).withProduct(product);
 	}

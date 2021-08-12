@@ -35,6 +35,8 @@ public class ItemImportController implements Serializable {
 
 	private String customerCode, customerStore;
 
+	private boolean onDialog;
+
 	private ItemXlsxFileLayout itemFileLayout;
 
 	private List<ItemXlsxProjection> itemXlsxProjection;
@@ -55,7 +57,10 @@ public class ItemImportController implements Serializable {
 	public void discoverItems() {
 		try {
 			BaseBudget findPrice = itemImporter.findPrice(itemXlsxProjection, customerCode, customerStore);
-			PrimeFaces.current().dialog().closeDynamic(findPrice);
+			if (onDialog) {
+				PrimeFaces.current().dialog().closeDynamic(findPrice);
+				FacesUtils.warn(null, "Dados obtidos", null, "growl");
+			}
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			// TODO Auto-generated catch block
 			FacesUtils.fatal(null, "Problema de rede", "Problema de rede no servidor da Faraway", "growl ");
@@ -138,4 +143,13 @@ public class ItemImportController implements Serializable {
 	public Item404Error[] getItemsNotFound() {
 		return itemsNotFound;
 	}
+
+	public boolean isOnDialog() {
+		return onDialog;
+	}
+
+	public void setOnDialog(boolean onDialog) {
+		this.onDialog = onDialog;
+	}
+
 }

@@ -42,6 +42,11 @@ public class FacesUtils {
 				new FacesMessage(FacesMessage.SEVERITY_WARN, summary, detail));
 	}
 
+	public static void warn(String clientId, String summary, String detail, String messageComponentToUpdate) {
+		warn(clientId, summary, detail);
+		PrimeFaces.current().ajax().update(messageComponentToUpdate);
+	}
+
 	/**
 	 * Add a info message to the current request object(FacesContext)
 	 * 
