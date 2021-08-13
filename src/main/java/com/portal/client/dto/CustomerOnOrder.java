@@ -7,7 +7,7 @@ public class CustomerOnOrder extends Customer {
 	 */
 	private static final long serialVersionUID = -4894289566624375884L;
 
-	private final CustomerType type;
+	protected CustomerType type;
 
 	public CustomerOnOrder(String code, String store, String cnpj, String blocked, String name, String fantasyName,
 			CustomerAddress address, CustomerPurchaseInfo financialInfo, CustomerContact contact) {
@@ -17,7 +17,7 @@ public class CustomerOnOrder extends Customer {
 
 	public CustomerOnOrder(Customer customer) {
 		super(customer);
-		type = CustomerType.NORMAL;
+
 	}
 
 	public CustomerType getType() {

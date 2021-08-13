@@ -10,7 +10,6 @@ import org.primefaces.PrimeFaces;
 
 import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.Product;
-import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.util.jsf.FacesUtils;
 
@@ -23,12 +22,9 @@ public class SearchProductController implements Serializable {
 	 */
 	private static final long serialVersionUID = 3733963320781310655L;
 
-	private String state, productCodeToSearch, customerCode, customerStore;
-
-	private SellerType customerSellerType;
+	private String state, productCodeToSearch, customerCode, customerStore, customerSellerType;
 
 	private CustomerType customerType;
-
 	private ProductService productService;
 
 	private Product product;
@@ -44,7 +40,7 @@ public class SearchProductController implements Serializable {
 				.findByCode(productCodeToSearch, customerCode, customerStore, state, customerSellerType, customerType)
 				.ifPresentOrElse(product -> {
 					this.product = product;
-					FacesUtils.ajaxUpdate("formProductDetails");
+					FacesUtils.ajaxUpdate("manage-product-content");
 					FacesUtils.executeScript("$('#footer').show()");
 				}, () -> FacesUtils.error(null, "Produto não localizado", null, "growl"));
 	}
@@ -53,10 +49,12 @@ public class SearchProductController implements Serializable {
 		PrimeFaces.current().dialog().closeDynamic(product);
 		product = null;
 	}
+
 	public void cancel() {
 		product = null;
 		PrimeFaces.current().dialog().closeDynamic(product);
 	}
+
 	public String getCustomerCode() {
 		return customerCode;
 	}
@@ -81,11 +79,11 @@ public class SearchProductController implements Serializable {
 		this.state = state;
 	}
 
-	public SellerType getCustomerSellerType() {
+	public String getCustomerSellerType() {
 		return customerSellerType;
 	}
 
-	public void setCustomerSellerType(SellerType customerSellerType) {
+	public void setCustomerSellerType(String customerSellerType) {
 		this.customerSellerType = customerSellerType;
 	}
 

@@ -14,7 +14,6 @@ import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.ServiceSerializable;
-import com.portal.client.vo.BudgetEstimatedResultSet;
 
 public interface BudgetCrudService extends ServiceSerializable, CrudService {
 

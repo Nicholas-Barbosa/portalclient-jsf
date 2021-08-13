@@ -102,7 +102,8 @@ body .ui-panelgrid .ui-panelgrid-cell {
 				<p:dataTable id="dtItemsResult" widgetVar="dtItemsResult"
 					value="#{itemImportController.itemXlsxProjection}" var="item"
 					editable="true" editMode="cell" reflow="true" scrollable="true"
-					filterDelay="75">
+					filterDelay="75" paginator="true" paginatorPosition="bottom"
+					paginatorAlwaysVisible="false" rows="10">
 					<p:ajax event="cellEdit"
 						listener="#{itemImportController.onCellEdit}" update="growl" />
 					<p:column headerText="Produto" filterBy="#{item.code}"

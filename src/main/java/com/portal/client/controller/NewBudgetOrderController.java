@@ -425,16 +425,17 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void openSearchProduct() {
 		CustomerOnOrder customer = budget.getCustomerOnOrder();
-		Map<String, List<String>>queryParams = new HashMap<>();
-		queryParams.put("customerCode",  List.of(customer.getCode()));
-		queryParams.put("customerStore", List.of(customer.getStore()));
+		Map<String, List<String>> queryParams = new HashMap<>();
 		queryParams.put("customerType", List.of(customer.getType().name()));
-		if(customer instanceof ProspectCustomerOnOrder) {
-			ProspectCustomerOnOrder prospCustomer = (ProspectCustomerOnOrder)customer;
+		if (customer instanceof ProspectCustomerOnOrder) {
+			ProspectCustomerOnOrder prospCustomer = (ProspectCustomerOnOrder) customer;
 			queryParams.put("customerPropState", List.of(prospCustomer.getState()));
 			queryParams.put("customerPropSelType", List.of(prospCustomer.getSellerType().getType()));
+		} else {
+			queryParams.put("customerCode", List.of(customer.getCode()));
+			queryParams.put("customerStore", List.of(customer.getStore()));
 		}
-		
+
 		FacesUtils.openViewOnDialog(
 				Map.of("modal", true, "responsive", true, "contentWidth", "30vw", "contentHeight", "65vh"),
 				"searchProduct", queryParams);

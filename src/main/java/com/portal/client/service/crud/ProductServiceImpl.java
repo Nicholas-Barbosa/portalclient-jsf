@@ -18,7 +18,6 @@ import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
-import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.google.cloud.storage.BucketClient;
 import com.portal.client.repository.ProductRepository;
 
@@ -48,13 +47,13 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Optional<Product> findByCode(String code, String customerCode, String customerStore, String state,
-			SellerType sellerType, CustomerType customerType) {
+			String sellerType, CustomerType customerType) {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
 
 		try {
-			Future<ProductPage> ftProduct = customerType == CustomerType.NORMAL
+			Future<ProductPage> ftProduct = customerType.equals(CustomerType.NORMAL)
 					? productRepository.findByCodeAsync(code, customerCode, customerStore)
-					: productRepository.findByCodeForProspectAsync(code, state, sellerType.getType());
+					: productRepository.findByCodeForProspectAsync(code, state, sellerType);
 			ProductPage response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);

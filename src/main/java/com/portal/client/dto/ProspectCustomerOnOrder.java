@@ -13,6 +13,7 @@ public class ProspectCustomerOnOrder extends CustomerOnOrder {
 			SellerType sellerType) {
 		super(code, store, cnpj, blocked, name, fantasyName, address, financialInfo, contact);
 		this.sellerType = sellerType;
+		super.type = CustomerType.PROSPECT;
 	}
 
 	public SellerType getSellerType() {
