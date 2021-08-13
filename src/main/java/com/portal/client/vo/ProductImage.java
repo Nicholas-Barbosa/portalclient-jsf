@@ -1,4 +1,4 @@
-package com.portal.client.dto;
+package com.portal.client.vo;
 
 public class ProductImage {
 	private byte[] imageStreams;
@@ -6,14 +6,13 @@ public class ProductImage {
 
 	public ProductImage(byte[] image, ImageInfoState currentState) {
 		super();
-		this.imageStreams = image.clone();
-		setStateDueImageStreams();
+		this.imageStreams = image != null ? image.clone() : new byte[0];
+		this.currentState = currentState;
 	}
 
 	public ProductImage(byte[] image) {
 		super();
 		this.imageStreams = image.clone();
-		setStateDueImageStreams();
 	}
 
 	public ProductImage() {
@@ -21,12 +20,11 @@ public class ProductImage {
 	}
 
 	public byte[] getImageStreams() {
-		return imageStreams.clone();
+		return  imageStreams.clone();
 	}
 
 	public void setImageStreams(byte[] image) {
 		this.imageStreams = image.clone();
-		setStateDueImageStreams();
 	}
 
 	public ImageInfoState getCurrentState() {
@@ -36,25 +34,9 @@ public class ProductImage {
 	public void setCurrentState(ImageInfoState currentState) {
 		this.currentState = currentState;
 	}
-
-	private final void setStateDueImageStreams() {
-		switch (imageStreams.length) {
-		case 0:
-			this.currentState = ImageInfoState.NOT_FOUND;
-			break;
-
-		case 1:
-			currentState = ImageInfoState.TIMEOUT_EXCPTION;
-			break;
-		default:
-			this.currentState = ImageInfoState.FOUND;
-			break;
-		}
-
-	}
-
+	
 	public static enum ImageInfoState {
-		FOUND, NOT_FOUND, TIMEOUT_EXCPTION
+		FOUND, NOT_FOUND, TIMEOUT_EXCPTION, NOT_LOADED
 	}
 
 }

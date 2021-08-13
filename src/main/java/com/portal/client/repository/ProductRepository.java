@@ -8,9 +8,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 
-import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.vo.Product;
 
 public interface ProductRepository {
 

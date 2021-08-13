@@ -1,10 +1,14 @@
-package com.portal.client.dto;
+package com.portal.client.dto.builder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
+
+import com.portal.client.dto.ItemBudget;
+import com.portal.client.dto.ItemBudgetValue;
+import com.portal.client.vo.Product;
 
 public class ItemBudgetEstimatedResultBuilder extends ItemBudgetBuilder {
 

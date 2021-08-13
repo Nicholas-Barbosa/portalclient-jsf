@@ -1,6 +1,10 @@
-package com.portal.client.dto;
+package com.portal.client.dto.builder;
 
 import java.math.BigDecimal;
+
+import com.portal.client.dto.ProductValue;
+import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductImage;
 
 public class ProductBuilder {
 

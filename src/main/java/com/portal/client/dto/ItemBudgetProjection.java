@@ -7,6 +7,7 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.util.MathUtils;
+import com.portal.client.vo.Product;
 
 public class ItemBudgetProjection extends ItemBudget {
 

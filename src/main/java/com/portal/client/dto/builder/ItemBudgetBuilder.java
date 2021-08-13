@@ -1,8 +1,12 @@
-package com.portal.client.dto;
+package com.portal.client.dto.builder;
 
 import java.math.BigDecimal;
 
+import com.portal.client.dto.ItemBudget;
+import com.portal.client.dto.ItemBudgetValue;
+import com.portal.client.dto.ProductValue;
 import com.portal.client.util.MathUtils;
+import com.portal.client.vo.Product;
 
 public class ItemBudgetBuilder {
 

@@ -17,6 +17,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BaseBudget;
+import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.ItemXlsxProjection;
@@ -25,6 +26,8 @@ import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.reader.XssfReader;
+import com.portal.client.vo.ProductImage;
+import com.portal.client.vo.ProductImage.ImageInfoState;
 
 @ApplicationScoped
 public class ItemImportServiceImpl implements ItemImportService, Serializable {
@@ -73,9 +76,13 @@ public class ItemImportServiceImpl implements ItemImportService, Serializable {
 	public BaseBudget findPrice(List<ItemXlsxProjection> items, String customerCode, String customerStore)
 			throws ConnectException, SocketException, TimeoutException, SocketTimeoutException,
 			CustomerNotFoundException, ItemsNotFoundException {
-		return budgetCrudService.estimate(customerCode, customerStore,
+		BaseBudget budget = budgetCrudService.estimate(customerCode, customerStore,
 				items.parallelStream().filter(i -> i.getQuantity() > 0).map(this::toItem)
 						.collect(CopyOnWriteArraySet::new, Set::add, Set::addAll));
+		budget.getItems().parallelStream().map(ItemBudget::getProduct).forEach(p->{
+			p.setImage(new ProductImage(null, ImageInfoState.NOT_LOADED));
+		});
+		return budget;
 
 	}
 

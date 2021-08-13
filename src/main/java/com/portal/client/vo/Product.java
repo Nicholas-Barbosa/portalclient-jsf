@@ -1,9 +1,12 @@
-package com.portal.client.dto;
+package com.portal.client.vo;
 
 import java.math.BigDecimal;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
+
+import com.portal.client.dto.ProductValue;
+import com.portal.client.vo.ProductImage.ImageInfoState;
 
 public class Product {
 
@@ -106,12 +109,13 @@ public class Product {
 		this.image = productImage;
 	}
 
-	public void setImage(byte[] streams) {
+	public void setImage(byte[] streams, ImageInfoState state) {
 		if (image == null) {
-			image = new ProductImage(streams);
+			image = new ProductImage(streams, state);
 			return;
 		}
 		image.setImageStreams(streams);
+		image.setCurrentState(state);
 	}
 
 	@Override

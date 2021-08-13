@@ -8,7 +8,7 @@ import java.util.Map;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 
-import com.portal.client.dto.Product;
+import com.portal.client.vo.Product;
 
 public class ProductLazyDataModel extends LazyDataModelBase<Product> {
 

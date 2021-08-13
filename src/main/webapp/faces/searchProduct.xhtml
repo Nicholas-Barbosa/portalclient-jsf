@@ -77,27 +77,29 @@ div.container {
 		</div>
 		<div class="card">
 			<p:outputPanel id="manage-product-content" class="ui-fluid">
-				<p:remoteCommand name="loadImage"
-					action="#{newBudgetOrderController.loadImageFromPreviewProduct}"
-					async="true" update="productImg"
-					onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();"
-					oncomplete="$('#spinnerLoadingImage').hide();
-				$('#divProductImg').show();" />
+
 				<i class="pi pi-spin pi-spinner"
 					style="font-size: 5rem; display: none" id="spinnerLoadingImage"></i>
-				<div id="divProductImg" class="p-d-flex p-jc-center">
-					<p:graphicImage
-						value="#{searchProductController.product.imageStreams}"
-						styleClass="w3-round-xlarge" style="width:100%;max-width:300px;"
-						stream="false" id="productImg"
-						alt="Image not uploaded for #{searchProductController.product.commercialCode}"
-						rendered="#{searchProductController.product.image.currentState eq 'FOUND' || 'NOT_FOUND'}" />
-					<p:button
-						value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
-						rendered="#{searchProductController.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
-						onclick="loadImage()" id="btnReloadImage" />
-				</div>
-
+				<p:outputPanel id="imagePanel">
+					<div id="divProductImg" class="p-d-flex p-jc-center">
+						<p:graphicImage
+							value="#{searchProductController.product.imageStreams}"
+							styleClass="w3-round-xlarge" style="width:100%;max-width:300px;"
+							stream="false" id="productImg"
+							alt="Image not uploaded for #{searchProductController.product.commercialCode}"
+							rendered="#{searchProductController.product.image.currentState eq 'FOUND' || 'NOT_FOUND'}" />
+						<p:commandButton
+							value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
+							rendered="#{searchProductController.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
+							process="@this"
+							action="#{productImageLoaderController.loadImage(searchProductController.product)}"
+							update="imagePanel"
+							onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();$('#btnLoadImage').hide()"
+							oncomplete="$('#spinnerLoadingImage').hide();
+				$('#divProductImg').show();"
+							id="btnLoadImage" />
+					</div>
+				</p:outputPanel>
 
 				<div class="p-field">
 					<p:outputLabel for="name">#{resourceBundleServiceImpl.getMessage('descricao')}</p:outputLabel>

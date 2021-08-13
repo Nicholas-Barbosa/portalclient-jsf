@@ -40,14 +40,13 @@ import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
 import com.portal.client.dto.ItemBudget;
-import com.portal.client.dto.ItemBudgetBuilder;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ItemXlsxFileLayout;
-import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
+import com.portal.client.dto.builder.ItemBudgetBuilder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
@@ -67,6 +66,7 @@ import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.ServerEndpointErrorUtils;
+import com.portal.client.vo.Product;
 
 @Named
 @ViewScoped
@@ -183,11 +183,15 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void openItemImportView() {
 		if (budget.getCustomerOnOrder() != null) {
+			if (budget.getCustomerOnOrder() instanceof ProspectCustomerOnOrder) {
+				FacesUtils.warn(null, "Operação indisponível",
+						"Esta operação não está disponivel para clientes de tipo prospect.", "growl");
+			}
 			FacesUtils.openViewOnDialog(
 					Map.of("modal", true, "responsive", true, "contentWidth", "98vw", "contentHeight", "80vh"),
-					"itemImport", Map.of("customerCode", List.of(budget.getCustomerOnOrder().getCode()),
-							"customerStore", List.of(budget.getCustomerOnOrder().getStore()), "onDialog",
-							List.of("true")));
+					"itemImport",
+					Map.of("customerCode", List.of(budget.getCustomerOnOrder().getCode()), "customerStore",
+							List.of(budget.getCustomerOnOrder().getStore()), "onDialog", List.of("true")));
 			return;
 		}
 		FacesUtils.error(null, "Cliente não selecionado", null, "growl");
@@ -441,7 +445,6 @@ public class NewBudgetOrderController implements Serializable {
 				"searchProduct", queryParams);
 	}
 
-	
 	public void findProductByDescription(int page) {
 		try {
 			Optional<ProductPageDTO> maybeProduct = productService

@@ -7,6 +7,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.dto.builder.ItemBudgetEstimatedResultBuilder;
+
 public class BudgetEstimatedResultBuilder extends BaseBudgetJsonBuilder {
 
 	@JsonbCreator

@@ -64,7 +64,7 @@ public class ItemImportController implements Serializable {
 			PrimeFaces.current().dialog().closeDynamic(findPrice);
 		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
 			// TODO Auto-generated catch block
-			FacesUtils.fatal(null, "Problema de rede", "Problema de rede no servidor da Faraway", "growl ");
+			FacesUtils.fatal(null, "Problema de rede", "Problema com o servidor Faraway", "growl ");
 		} catch (CustomerNotFoundException e) {
 			FacesUtils.error(null, "Cliente não encontrado", null, "growl");
 		} catch (ItemsNotFoundException e) {
