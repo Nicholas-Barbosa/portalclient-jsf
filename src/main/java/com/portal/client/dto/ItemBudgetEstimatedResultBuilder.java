@@ -6,7 +6,7 @@ import java.math.RoundingMode;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ItemBudgetEstimatedResultBuilder extends ItemBudgetJsonBuilder {
+public class ItemBudgetEstimatedResultBuilder extends ItemBudgetBuilder {
 
 	@JsonbCreator
 	public ItemBudgetEstimatedResultBuilder(@JsonbProperty("product_code") String productCode,

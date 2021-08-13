@@ -146,16 +146,18 @@ div.container {
 				</div>
 
 			</p:outputPanel>
-			<div id="footer" >
-				<p:commandButton type="button"
-					value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
-					icon="pi pi-check"
-					styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-					action="#{searchProductController.confirm}" id="btnConfirm" />
-				<p:commandButton
-					value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
-					icon="pi pi-times" action="#{searchProductController.cancel}"
-					styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
+			<div id="footer">
+				<h:form>
+					<p:commandButton
+						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
+						icon="pi pi-check"
+						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+						action="#{searchProductController.confirm}" id="btnConfirm" />
+					<p:commandButton
+						value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
+						icon="pi pi-times" action="#{searchProductController.cancel}"
+						styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
+				</h:form>
 			</div>
 		</div>
 	</div>

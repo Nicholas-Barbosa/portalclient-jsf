@@ -23,7 +23,6 @@ import javax.validation.constraints.Size;
 import javax.ws.rs.ClientErrorException;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
@@ -41,12 +40,11 @@ import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
 import com.portal.client.dto.ItemBudget;
-import com.portal.client.dto.ItemBudgetValue;
+import com.portal.client.dto.ItemBudgetBuilder;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.Product;
 import com.portal.client.dto.ProductPageDTO;
-import com.portal.client.dto.ProductValue;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
@@ -188,7 +186,8 @@ public class NewBudgetOrderController implements Serializable {
 			FacesUtils.openViewOnDialog(
 					Map.of("modal", true, "responsive", true, "contentWidth", "98vw", "contentHeight", "80vh"),
 					"itemImport", Map.of("customerCode", List.of(budget.getCustomerOnOrder().getCode()),
-							"customerStore", List.of(budget.getCustomerOnOrder().getStore())));
+							"customerStore", List.of(budget.getCustomerOnOrder().getStore()), "onDialog",
+							List.of("true")));
 			return;
 		}
 		FacesUtils.error(null, "Cliente não selecionado", null, "growl");
@@ -331,13 +330,6 @@ public class NewBudgetOrderController implements Serializable {
 		}
 	}
 
-	public void previewBudgetXlsxContent() {
-	}
-
-	public void handleFileUpload(FileUploadEvent event) {
-		budgetImportXlsxForm.setXlsxStreams(event.getFile().getContent());
-	}
-
 	public void removeItem(ItemBudget item) {
 		budgetBehaviorHelper.removeItem(budget, item);
 	}
@@ -423,6 +415,14 @@ public class NewBudgetOrderController implements Serializable {
 		}
 	}
 
+	public void handleProductResult(SelectEvent<Optional<Product>> event) {
+		event.getObject().ifPresent(p -> {
+			budgetBehaviorHelper.addItem(budget, ItemBudgetBuilder.product(p));
+			FacesUtils.ajaxUpdate("formItems:dtItems", "budgetTotals");
+		});
+
+	}
+
 	public void openSearchProduct() {
 		CustomerOnOrder customer = budget.getCustomerOnOrder();
 		Map<String, List<String>> queryParams = new HashMap<>();
@@ -441,25 +441,7 @@ public class NewBudgetOrderController implements Serializable {
 				"searchProduct", queryParams);
 	}
 
-	private void getOptionalProduct(Optional<Product> product) {
-		product.ifPresentOrElse(presentProduct -> {
-			FacesUtils.addHeaderForResponse("product-found", true);
-			ProductValue productValue = presentProduct.getPrice();
-			ItemBudgetValue itemValue = new ItemBudgetValue(1, BigDecimal.ZERO, BigDecimal.ZERO,
-					productValue.getUnitStValue(), productValue.getUnitValue(), productValue.getUnitGrossValue(),
-					productValue.getUnitStValue(), productValue.getUnitValue(), productValue.getUnitGrossValue(),
-					productValue);
-			previewItem = new ItemBudget(presentProduct, itemValue);
-
-			previewItemQuantity = presentProduct.getMultiple();
-			PrimeFaces.current().executeScript("$('#footer').show();");
-		}, () -> {
-			FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-			previewItem = null;
-		});
-
-	}
-
+	
 	public void findProductByDescription(int page) {
 		try {
 			Optional<ProductPageDTO> maybeProduct = productService

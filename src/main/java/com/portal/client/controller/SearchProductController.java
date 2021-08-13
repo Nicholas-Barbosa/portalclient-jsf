@@ -46,13 +46,13 @@ public class SearchProductController implements Serializable {
 	}
 
 	public void confirm() {
-		PrimeFaces.current().dialog().closeDynamic(product);
+		PrimeFaces.current().dialog().closeDynamic(java.util.Optional.ofNullable(product));
 		product = null;
 	}
 
 	public void cancel() {
 		product = null;
-		PrimeFaces.current().dialog().closeDynamic(product);
+		PrimeFaces.current().dialog().closeDynamic(java.util.Optional.empty());
 	}
 
 	public String getCustomerCode() {

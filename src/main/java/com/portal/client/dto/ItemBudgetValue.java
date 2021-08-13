@@ -20,14 +20,15 @@ public class ItemBudgetValue {
 	private BigDecimal totalGrossValue;
 	private final Map<String, BigDecimal> values = new ConcurrentHashMap<>();
 
-	public ItemBudgetValue(int quantity, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, BigDecimal unitStValue,
-			BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue, BigDecimal totalValue,
-			BigDecimal totalGrossValue,ProductValue productValue) {
+	public ItemBudgetValue(int quantity, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount,
+			BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue,
+			BigDecimal totalValue, BigDecimal totalGrossValue, ProductValue productValue) {
 		super();
 		this.quantity = quantity;
 		this.budgetGlobalDiscount = budgetGlobalDiscount;
 		this.lineDiscount = lineDiscount;
-		this.totalDiscount = this.budgetGlobalDiscount.add(this.lineDiscount);
+		this.totalDiscount = lineDiscount == null ? this.budgetGlobalDiscount
+				: this.budgetGlobalDiscount.add(this.lineDiscount);
 		this.unitStValue = unitStValue;
 		this.unitValue = unitValue;
 		this.unitGrossValue = unitGrossValue;
@@ -39,6 +40,7 @@ public class ItemBudgetValue {
 		values.put("unitGrossValue", productValue.getUnitGrossValue());
 	}
 
+	
 	public BigDecimal getBudgetGlobalDiscount() {
 		return budgetGlobalDiscount;
 	}

@@ -177,7 +177,10 @@
 											<p:commandButton
 												action="#{newBudgetOrderController.openSearchProduct}"
 												process="@this" icon="pi pi-plus"
-												styleClass="ui-button-raised ui-button-success p-mr-2" />
+												styleClass="ui-button-raised ui-button-success p-mr-2">
+												<p:ajax event="dialogReturn"
+													listener="#{newBudgetOrderController.handleProductResult}" />
+											</p:commandButton>
 											<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 												disabled="#{empty newBudgetOrderController.budget.items}">

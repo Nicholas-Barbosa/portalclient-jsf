@@ -17,7 +17,7 @@ public class CustomerOnOrder extends Customer {
 
 	public CustomerOnOrder(Customer customer) {
 		super(customer);
-
+		type = CustomerType.NORMAL;
 	}
 
 	public CustomerType getType() {

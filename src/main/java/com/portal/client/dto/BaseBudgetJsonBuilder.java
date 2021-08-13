@@ -13,7 +13,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
 	private BigDecimal stValue;
-	private Set<ItemBudgetJsonBuilder> items;
+	private Set<ItemBudgetBuilder> items;
 	private String message;
 	private LocalDate createdAt;
 
@@ -47,7 +47,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 		return this;
 	}
 
-	public BaseBudgetJsonBuilder withItems(Set<? extends ItemBudgetJsonBuilder> items) {
+	public BaseBudgetJsonBuilder withItems(Set<? extends ItemBudgetBuilder> items) {
 		this.items = new HashSet<>(items);
 		return this;
 	}
@@ -86,7 +86,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 		return stValue;
 	}
 
-	public Set<ItemBudgetJsonBuilder> getItems() {
+	public Set<ItemBudgetBuilder> getItems() {
 		return items;
 	}
 
