@@ -79,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
 
 	private byte[] getBlobStreamImageContent(Future<Blob> blob) {
 		try {
-			return blob.get(100, TimeUnit.MILLISECONDS).getContent();
+			return blob.get(500, TimeUnit.MILLISECONDS).getContent();
 		} catch (TimeoutException e) {
 			return new byte[0];
 		} catch (NullPointerException e) {
