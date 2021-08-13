@@ -15,6 +15,11 @@
 		<link rel="icon"
 			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
 			type="image/x-icon"></link>
+
+		<link rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+			crossorigin="anonymous"></link>
 	</f:facet>
 	<title>Importar itens</title>
 	<style>
@@ -37,18 +42,31 @@ body .ui-panelgrid .ui-panelgrid-cell {
 			value="#{itemImportController.customerCode}" />
 		<f:viewParam name="customerStore"
 			value="#{itemImportController.customerStore}" />
-		<f:viewParam name="onDialog"
-			value="#{itemImportController.onDialog}" />
+		<f:viewParam name="onDialog" value="#{itemImportController.onDialog}" />
 	</f:metadata>
 	<p:growl globalOnly="true" id="growl" showDetail="true" />
 	<div class="card">
-		<h:form>
+		<h:form prependId="false">
 			<h5>Arquivo</h5>
 			<p:fileUpload mode="advanced" dragDropSupport="true"
 				allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
 				label="Escolher" listener="#{itemImportController.handleFileUpload}"
-				process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
+				process="@this" invalidFileMessage="Arquivo inválido" auto="true"
+				update="lblUploadedFile"
+				oncomplete="$('#divUploaded').show();$('#divNotUploaded').hide()"
+				onerror="$('#divUploaded').hide()" />
+
+
+
 		</h:form>
+		<div class="alert alert-danger" role="alert" id="divNotUploaded">
+			Arquivo não transferido. Faça o upload antes de personalizar o layout.</div>
+
+		<div class="alert alert-success" role="alert" style="display: none"
+			id="divUploaded">
+			<p:outputLabel id="lblUploadedFile"
+				value="Arquivo transferido - #{itemImportController.fileName}" />
+		</div>
 	</div>
 	<div class="card">
 		<p:panelGrid columns="4"

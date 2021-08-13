@@ -14,6 +14,7 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.file.UploadedFile;
 
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.ItemXlsxFileLayout;
@@ -44,6 +45,8 @@ public class ItemImportController implements Serializable {
 	private ItemImportService itemImporter;
 
 	private Item404Error[] itemsNotFound;
+
+	private UploadedFile uploadedFile;
 
 	@Inject
 	public ItemImportController(ItemImportService itemImporter) {
@@ -79,6 +82,7 @@ public class ItemImportController implements Serializable {
 
 	public void handleFileUpload(FileUploadEvent event) {
 		this.itemFileLayout.setXlsxStreams(event.getFile().getContent());
+		uploadedFile = event.getFile();
 		FacesUtils.info(null, "Sucesso", "Arquivo salvo para leitura", "growl");
 	}
 
@@ -115,6 +119,10 @@ public class ItemImportController implements Serializable {
 			}
 
 		}
+	}
+
+	public String getFileName() {
+		return this.uploadedFile == null ? null : this.uploadedFile.getFileName();
 	}
 
 	public String getCustomerCode() {
