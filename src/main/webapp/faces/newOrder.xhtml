@@ -234,7 +234,7 @@
 									<p:graphicImage />
 
 									<p:commandButton value="Carregar imagem"
-										rendered="#{item.product.image.currentState eq NOT_LOADED || TIMEOUT_EXCPTION}"
+										rendered="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
 										icon="pi pi-refresh"
 										action="#{productImageLoaderController.loadImage(item.product)}"
 										update="@form:dtItems:@row(#{crrIndex})" id="btnLoadImage"
