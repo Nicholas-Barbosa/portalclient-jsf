@@ -1,15 +1,13 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.CellEditEvent;
@@ -23,6 +21,7 @@ import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.ItemImportService;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.vo.WrapperItem404Error.Item404Error;
 
 @ViewScoped
@@ -48,13 +47,17 @@ public class ItemImportController implements Serializable {
 
 	private UploadedFile uploadedFile;
 
+	private ProcessingExceptionFacesMessageHelper prossExceptionMessageShower;
+
 	@Inject
-	public ItemImportController(ItemImportService itemImporter) {
+	public ItemImportController(ItemImportService itemImporter,
+			ProcessingExceptionFacesMessageHelper prossExceptionMessageShower) {
 		this.itemImporter = itemImporter;
 		this.itemFileLayout = new ItemXlsxFileLayout();
 		this.itemFileLayout.setInitPosition(1);
 		this.itemFileLayout.setOffSetCellForProductCode(1);
 		this.itemFileLayout.setOffSetCellForProductQuantity(2);
+		this.prossExceptionMessageShower = prossExceptionMessageShower;
 	}
 
 	public void discoverItems() {
@@ -65,9 +68,9 @@ public class ItemImportController implements Serializable {
 				return;
 			}
 			PrimeFaces.current().dialog().closeDynamic(findPrice);
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+		} catch (ProcessingException e) {
 			// TODO Auto-generated catch block
-			FacesUtils.fatal(null, "Problema de rede", "Problema com o servidor Faraway", "growl ");
+			prossExceptionMessageShower.displayMessage(e, null, "growl");
 		} catch (CustomerNotFoundException e) {
 			FacesUtils.error(null, "Cliente não encontrado", null, "growl");
 		} catch (ItemsNotFoundException e) {

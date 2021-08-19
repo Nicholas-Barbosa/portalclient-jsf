@@ -2,15 +2,11 @@ package com.portal.client.service;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -74,12 +70,11 @@ public class ItemImportServiceImpl implements ItemImportService, Serializable {
 
 	@Override
 	public BaseBudget findPrice(List<ItemXlsxProjection> items, String customerCode, String customerStore)
-			throws ConnectException, SocketException, TimeoutException, SocketTimeoutException,
-			CustomerNotFoundException, ItemsNotFoundException {
+			throws CustomerNotFoundException, ItemsNotFoundException {
 		BaseBudget budget = budgetCrudService.estimate(customerCode, customerStore,
 				items.parallelStream().filter(i -> i.getQuantity() > 0).map(this::toItem)
 						.collect(CopyOnWriteArraySet::new, Set::add, Set::addAll));
-		budget.getItems().parallelStream().map(ItemBudget::getProduct).forEach(p->{
+		budget.getItems().parallelStream().map(ItemBudget::getProduct).forEach(p -> {
 			p.setImage(new ProductImage(null, ImageInfoState.NOT_LOADED));
 		});
 		return budget;

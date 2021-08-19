@@ -1,9 +1,6 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -44,12 +41,8 @@ public class BudgetListController implements Serializable {
 	public void loadBudgets(int page) {
 		if (budgets == null)
 			this.budgets = new BudgetLazyDataModel();
-		try {
-			LazyPopulateUtils.populate(budgets, buService.findAll(page, 15));
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		LazyPopulateUtils.populate(budgets, buService.findAll(page, 15));
+
 	}
 
 	public void onPage(PageEvent page) {

@@ -1,8 +1,5 @@
 package com.portal.client.service.crud;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -21,6 +18,7 @@ import com.portal.client.google.cloud.storage.BucketClient;
 import com.portal.client.repository.ProductRepository;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductImage.ImageInfoState;
+import com.portal.client.vo.ProductTechDetail;
 
 @ApplicationScoped
 public class ProductServiceImpl implements ProductService {
@@ -40,8 +38,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize) {
 		// TODO Auto-generated method stub
 		return productRepository.findByDescription(page, pageSize, descriptio);
 	}
@@ -88,6 +85,14 @@ public class ProductServiceImpl implements ProductService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public void findTechDetails(String commercialCode, Product product) {
+		if (product.getProductTechDetail() == null) {
+			ProductTechDetail detail = productRepository.findTechDetails(commercialCode).toDetail();
+			product.setProductTechDetail(detail);
+		}
 	}
 
 }

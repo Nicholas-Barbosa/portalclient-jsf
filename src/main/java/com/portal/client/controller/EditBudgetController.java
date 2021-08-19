@@ -1,23 +1,20 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.ProcessingException;
 
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.service.CustomerService;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
+import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
 @Named
 @ViewScoped
@@ -32,7 +29,7 @@ public class EditBudgetController implements Serializable {
 
 	private CustomerService customerService;
 
-	private ServerApiExceptionFacesMessageHelper serverApiExceptionMessageHelper;
+	private ProcessingExceptionFacesMessageHelper exceptionShowMessage;
 
 	private BaseBudget budget;
 
@@ -42,11 +39,11 @@ public class EditBudgetController implements Serializable {
 
 	@Inject
 	public EditBudgetController(BudgetCrudService budgetService, CustomerService customerService,
-			ServerApiExceptionFacesMessageHelper serverApiExceptionMessageHelper) {
+			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
-		this.serverApiExceptionMessageHelper = serverApiExceptionMessageHelper;
+		this.exceptionShowMessage = serverApiExceptionMessageHelper;
 	}
 
 	public void getById() {
@@ -57,9 +54,6 @@ public class EditBudgetController implements Serializable {
 			}, () -> {
 				FacesUtils.error(null, "Orçamento não encontrado", "Código inexistente!", "growl");
 			});
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (Exception e) {
 			FacesUtils.fatal(null, "Error", e.getMessage(), "growl");
 		}
@@ -72,8 +66,8 @@ public class EditBudgetController implements Serializable {
 							budget.getCustomerOnOrder().getStore()))
 					.ifPresentOrElse(this::populateCustomerData,
 							() -> FacesUtils.error(null, "Cliente não encontrado", null, "growl"));
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			serverApiExceptionMessageHelper.displayMessage(e, null, "growl");
+		} catch (ProcessingException e) {
+			exceptionShowMessage.displayMessage(e, null, "growl");
 		}
 	}
 

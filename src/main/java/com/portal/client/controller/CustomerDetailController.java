@@ -1,14 +1,12 @@
 package com.portal.client.controller;
 
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.data.PageEvent;
@@ -26,8 +24,8 @@ import com.portal.client.service.crud.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
 @RequestScoped
 @Named
@@ -45,11 +43,11 @@ public class CustomerDetailController {
 
 	private LazyDataModelBase<FinacialBondsDTO> titles;
 
-	private ServerApiExceptionFacesMessageHelper externalExcpetionHelper;
+	private ProcessingExceptionFacesMessageHelper externalExcpetionHelper;
 
 	@Inject
 	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,
-			FinancialBondsService bondsService, ServerApiExceptionFacesMessageHelper externalExcpetionHelper) {
+			FinancialBondsService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper) {
 		super();
 		this.zipCodeService = zipCodeService;
 		this.bondsService = bondsService;
@@ -61,7 +59,6 @@ public class CustomerDetailController {
 	public void loadGMap() {
 		if (gMap == null) {
 			gMap = new DefaultMapModel();
-			try {
 				zipCodeService.find(customer.getZipCode()).ifPresentOrElse(c -> {
 					Marker marker = new Marker(new LatLng(c.getLat(), c.getLng()), customer.getName());
 					gMap.addOverlay(marker);
@@ -71,10 +68,6 @@ public class CustomerDetailController {
 							+ " não encontrado. O mapa será centralizado usando parâmetros de lat e lng padrões.");
 					PrimeFaces.current().ajax().update("growl");
 				});
-			} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 	}
 
@@ -96,7 +89,7 @@ public class CustomerDetailController {
 					PrimeFaces.current().ajax().update("growl");
 				});
 
-			} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+			} catch (ProcessingException e) {
 				externalExcpetionHelper.displayMessage(e, null, "growl");
 			}
 

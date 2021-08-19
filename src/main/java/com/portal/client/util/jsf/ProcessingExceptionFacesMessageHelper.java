@@ -5,46 +5,47 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.TimeoutException;
 
-import javax.ejb.Singleton;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
 
 import com.portal.client.service.ResourceBundleService;
 
-@Singleton
-public class ServerApiExceptionFacesMessageHelper {
+@ApplicationScoped
+public class ProcessingExceptionFacesMessageHelper {
 
 	private ResourceBundleService resourceBundleService;
 
-	public ServerApiExceptionFacesMessageHelper() {
+	public ProcessingExceptionFacesMessageHelper() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
-	public ServerApiExceptionFacesMessageHelper(ResourceBundleService resourceBundleService) {
+	public ProcessingExceptionFacesMessageHelper(ResourceBundleService resourceBundleService) {
 		super();
 		this.resourceBundleService = resourceBundleService;
 	}
 
-	public void displayMessage(Exception exception, String clientId) {
-		if (exception instanceof SocketException) {
+	public void displayMessage(ProcessingException exception, String clientId) {
+		Throwable cause = exception.getCause();
+		if (cause instanceof SocketException) {
 			FacesUtils.error(clientId, resourceBundleService.getMessage("socket_exception"),
 					resourceBundleService.getMessage("socket_exception_detalhes"));
-		} else if (exception instanceof ConnectException) {
+		} else if (cause instanceof ConnectException) {
 			FacesUtils.error(clientId, resourceBundleService.getMessage("connect_exception"),
 					resourceBundleService.getMessage("connect_exception_detales"));
-		} else if (exception instanceof TimeoutException || exception instanceof SocketTimeoutException) {
-			System.out.println("timeout exception ou  socket timeout exception!");
+		} else if (cause instanceof TimeoutException || cause instanceof SocketTimeoutException) {
 			FacesUtils.error(clientId, resourceBundleService.getMessage("timeout_ler_response"),
 					resourceBundleService.getMessage("timeout_ler_response_detalhes"));
-		} else if (exception instanceof InternalServerErrorException) {
+		} else if (cause instanceof InternalServerErrorException) {
 			FacesUtils.error(clientId, resourceBundleService.getMessage("erro_servidor_destino"), null);
 		}
 	}
 
-	public void displayMessage(Exception exception, String clientId, String messageIdToUpdate) {
+	public void displayMessage(ProcessingException exception, String clientId, String messageIdToUpdate) {
 		this.displayMessage(exception, clientId);
 		PrimeFaces.current().ajax().update(messageIdToUpdate);
 	}

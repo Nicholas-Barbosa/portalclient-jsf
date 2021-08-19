@@ -1,14 +1,12 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.ProcessingException;
 
 import org.primefaces.event.data.PageEvent;
 
@@ -19,8 +17,8 @@ import com.portal.client.service.crud.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
-import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
 @Named
 @RequestScoped
@@ -32,16 +30,16 @@ public class FinancialBondsController implements Serializable {
 	private static final long serialVersionUID = -3811638445093267666L;
 	private FinancialBondsService bondsService;
 	private LazyDataModelBase<FinacialBondsDTO> titles;
-	private ServerApiExceptionFacesMessageHelper externalExceptionHelper;
+	private ProcessingExceptionFacesMessageHelper prossExcpetionShowMsg;
 	private FinancialBondsExporter exporter;
 	private int pagesToExport = 1;
 
 	@Inject
 	public FinancialBondsController(FinancialBondsService fiTitleService,
-			ServerApiExceptionFacesMessageHelper externalExceptionHelper, FinancialBondsExporter exporter) {
+			ProcessingExceptionFacesMessageHelper externalExceptionHelper, FinancialBondsExporter exporter) {
 		super();
 		this.bondsService = fiTitleService;
-		this.externalExceptionHelper = externalExceptionHelper;
+		this.prossExcpetionShowMsg = externalExceptionHelper;
 	}
 
 	public void export() {
@@ -68,8 +66,8 @@ public class FinancialBondsController implements Serializable {
 				FacesUtils.error(null, "Nenhum título encontrado", null, "growl");
 			});
 
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			externalExceptionHelper.displayMessage(e, null);
+		} catch (ProcessingException e) {
+			prossExcpetionShowMsg.displayMessage(e, null);
 		}
 	}
 

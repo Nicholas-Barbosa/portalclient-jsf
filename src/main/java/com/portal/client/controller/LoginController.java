@@ -1,20 +1,16 @@
 package com.portal.client.controller;
 
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.concurrent.TimeoutException;
-
-import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.ProcessingException;
 
 import com.portal.client.dto.LoginForm;
 import com.portal.client.repository.AuthenticationRepository;
 import com.portal.client.service.ResourceBundleService;
-import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
 @RequestScoped
 @Named
@@ -29,17 +25,17 @@ public class LoginController {
 	private LoginForm loginForm;
 	private String headerDlgMessage;
 	private String previousPage;
-	@EJB
-	private ServerApiExceptionFacesMessageHelper processingExceptionMessageHelper;
+	private ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper;
 
 	@Inject
 	public LoginController(AuthenticationRepository authenticationRepository,
-			ResourceBundleService resourceBundleService) {
+			ResourceBundleService resourceBundleService,
+			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper) {
 		this.authenticationRepository = authenticationRepository;
 		this.resourceBundleService = resourceBundleService;
 		this.headerDlgMessage = this.resourceBundleService.getMessage("auteticando_usuario");
 		this.loginForm = new LoginForm();
-
+		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 	}
 
 	public String authenticate() {
@@ -48,10 +44,9 @@ public class LoginController {
 			FacesUtils.addHeaderForResponse("ok", true);
 			return "NEW_ORDER";
 		} catch (NotAuthorizedException e) {
-			FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"),
-					resourceBundleService.getMessage("usuario_nao_encontrado"));
+			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null);
 
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
+		} catch (ProcessingException e) {
 			processingExceptionMessageHelper.displayMessage(e, null);
 		}
 		return null;

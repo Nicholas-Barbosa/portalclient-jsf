@@ -1,11 +1,7 @@
 package com.portal.client.service.crud;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -37,15 +33,13 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public BudgetPage findAll(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public BudgetPage findAll(int page, int pageSize) {
 		return budgetRepository.findAll(page, pageSize);
 
 	}
 
 	@Override
-	public void save(BaseBudget budget, CustomerRepresentativeOrderForm ordersForm)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public void save(BaseBudget budget, CustomerRepresentativeOrderForm ordersForm) {
 		checkBudgetState(budget);
 		budget.setCustomerOrder(ordersForm.getCustomerOrder());
 		budget.setRepresentativeOrder(ordersForm.getRepresentativeOrder());
@@ -53,8 +47,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public Optional<BaseBudget> findByCode(String code)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public Optional<BaseBudget> findByCode(String code) {
 		return budgetRepository.findByCode(code);
 	}
 
@@ -72,8 +65,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	@Override
 	public BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> itemsToEstimate)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException,
-			CustomerNotFoundException, ItemsNotFoundException {
+			throws CustomerNotFoundException, ItemsNotFoundException {
 		return budgetRepository.estimate(customerCode, customerStore, itemsToEstimate);
 	}
 

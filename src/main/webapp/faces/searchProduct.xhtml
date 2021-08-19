@@ -159,6 +159,10 @@ div.container {
 						value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
 						icon="pi pi-times" action="#{searchProductController.cancel}"
 						styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
+					<p:commandButton value="Dados técnicos" process="@this"
+						action="#{searchProductController.openTechDetails}"
+						icon="pi pi-info-circle" />
+
 				</h:form>
 			</div>
 		</div>
@@ -169,6 +173,7 @@ div.container {
 		<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
 
 	</p:dialog>
+
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
 	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />

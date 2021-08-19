@@ -1,11 +1,7 @@
 package com.portal.client.service.crud;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,8 +27,7 @@ public class FinancialBondsServiceImpl implements FinancialBondsService, Seriali
 	}
 
 	@Override
-	public Optional<FinancialBondsPage> find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<FinancialBondsPage> find(int page, int pageSize) {
 		try {
 			return Optional.of(repository.find(page, pageSize));
 		} catch (NotFoundException e) {
@@ -41,8 +36,7 @@ public class FinancialBondsServiceImpl implements FinancialBondsService, Seriali
 	}
 
 	@Override
-	public Optional<FinancialBondsPage> findByCustomerCodeStore(int page, int pageSize, String code, String store)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<FinancialBondsPage> findByCustomerCodeStore(int page, int pageSize, String code, String store) {
 		try {
 			return Optional.of(repository.findByCustomerCodeStore(page, pageSize, code, store));
 		} catch (NotFoundException e) {

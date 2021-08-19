@@ -1,12 +1,8 @@
 package com.portal.client.jaxrs.client;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.ProcessingException;
@@ -22,14 +18,13 @@ import com.portal.client.jaxrs.client.providers.filter.TokenHeaderSupport;
 public class RestClientImpl implements RestClient {
 
 	public <T> T get(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
-			String media) throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+			String media) {
 		return this.get(uri, null, null, responseType, queryParams, pathParams, media);
 
 	}
 
 	public <T> T get(String uri, String token, String tokenPrefix, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, String media)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) {
 		Client client = null;
 		try {
 			client = getClient(token, tokenPrefix, media);
@@ -42,7 +37,6 @@ public class RestClientImpl implements RestClient {
 			if (e.getCause() instanceof IllegalResponseStatusException) {
 				return this.get(uri, token, tokenPrefix, responseType, queryParams, pathParams, media);
 			}
-			checkProcessingException(e);
 			throw e;
 		} finally {
 			if (client != null)
@@ -52,15 +46,13 @@ public class RestClientImpl implements RestClient {
 	}
 
 	public <T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, E requestBody, String mediaType)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+			Map<String, Object> pathParams, E requestBody, String mediaType) {
 		return this.post(uri, null, null, responseType, queryParams, pathParams, requestBody, mediaType);
 
 	}
 
 	public <T, E> T post(String uri, String token, String tokenPrefix, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, E requestBody, String mediaType)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+			Map<String, Object> queryParams, Map<String, Object> pathParams, E requestBody, String mediaType) {
 		Client client = null;
 		try {
 			client = getClient(token, tokenPrefix, mediaType);
@@ -74,9 +66,9 @@ public class RestClientImpl implements RestClient {
 
 		} catch (ProcessingException p) {
 			if (p.getCause() instanceof IllegalResponseStatusException) {
-				return this.post(uri,token,tokenPrefix, responseType, queryParams, pathParams, requestBody, mediaType);
+				return this.post(uri, token, tokenPrefix, responseType, queryParams, pathParams, requestBody,
+						mediaType);
 			}
-			checkProcessingException(p);
 			throw p;
 		} finally {
 			client.close();

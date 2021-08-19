@@ -21,6 +21,7 @@ public class Product {
 	private final boolean commercialBlock;
 	private ProductImage image;
 	private final ProductValue value;
+	private ProductTechDetail productTechDetail;
 
 	@JsonbCreator
 	public static Product ofJsonb(@JsonbProperty("application") String application,
@@ -33,12 +34,12 @@ public class Product {
 			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
 		ProductValue price = new ProductValue(stValue, unitValue, unitGrossValue);
 		return new Product(code, cCode, application, description, line, acronymLine, stock, multiple,
-				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price);
+				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price, null);
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
 			String acronymLine, int stock, int multiple, boolean commercialBlock, ProductImage image,
-			ProductValue price) {
+			ProductValue price, ProductTechDetail productTechDetail) {
 		super();
 		this.code = code;
 		this.commercialCode = commercialCode;
@@ -51,6 +52,7 @@ public class Product {
 		this.commercialBlock = commercialBlock;
 		this.image = image;
 		this.value = price;
+		this.productTechDetail = productTechDetail;
 	}
 
 	public String getCode() {
@@ -116,6 +118,14 @@ public class Product {
 		}
 		image.setImageStreams(streams);
 		image.setCurrentState(state);
+	}
+
+	public ProductTechDetail getProductTechDetail() {
+		return productTechDetail;
+	}
+
+	public void setProductTechDetail(ProductTechDetail productTechDetail) {
+		this.productTechDetail = productTechDetail;
 	}
 
 	@Override

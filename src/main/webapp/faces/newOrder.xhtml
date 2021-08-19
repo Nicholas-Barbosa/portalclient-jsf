@@ -228,6 +228,7 @@
 
 									<i class="pi pi-image" style="font-size: 2rem; display: none"
 										id="dtItemsIconImgNotFound#{crrIndex}" />
+
 									<p:graphicImage value="#{item.product.imageStreams}"
 										stream="false" alt="Image not found" id="productImage"
 										style="height: 6rem; width: 6rem" />
@@ -243,11 +244,10 @@
 										if(xhr.getResponseHeader('Image-State')=='NOT_FOUND'){
 											show('dtItemsIconImgNotFound'+#{crrIndex});
 											hide('formItems:dtItems:'+#{crrIndex}+':productImage');
-											
 										}
-										
 										" />
 								</p:column>
+
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
 									<p:cellEditor>
@@ -320,6 +320,11 @@
 										saveTitle="Save Row" />
 								</p:column>
 								<p:column>
+									<p:commandButton
+										action="#{productTechDataShowController.show(item.product)}"
+										process="@this" icon="pi pi-exclamation-circle"
+										styleClass="rounded-button ui-button-flat p-mr-2 p-mb-2"
+										title="Dados técnicos" />
 									<p:commandButton
 										action="#{productStockView.setMsgAvaliableStock(item.product)}"
 										update="labelItemStock" icon="pi pi-th-large" title="Estoque"

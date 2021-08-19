@@ -46,7 +46,8 @@ public class ItemBudgetProjection extends ItemBudget {
 
 		ProductValue productValue = new ProductValue(unitStValue, unitValue, unitGrossValue);
 
-		Product product = new Product(code, commercialCode, null, null, null, null, 0, 0, false, null, productValue);
+		Product product = new Product(code, commercialCode, null, null, null, null, 0, 0, false, null, productValue,
+				null);
 		return product;
 	}
 

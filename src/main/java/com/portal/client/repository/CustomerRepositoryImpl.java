@@ -1,12 +1,8 @@
 package com.portal.client.repository;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -43,8 +39,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public CustomerPageDTO find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public CustomerPageDTO find(int page, int pageSize) {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
@@ -58,8 +53,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public Optional<Customer> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<Customer> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO) {
 		try {
 			Map<String, Object> pathParams = getMapInstance();
 			pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
@@ -74,8 +68,7 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	}
 
 	@Override
-	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize) {
 		try {
 			Map<String, Object> queryParams = getMapInstance();
 			queryParams.put("page", page);

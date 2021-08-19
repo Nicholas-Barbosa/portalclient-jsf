@@ -1,15 +1,11 @@
 package com.portal.client.repository;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
@@ -41,8 +38,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Optional<Product> findByCode(String code, String customerCode, String store)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<Product> findByCode(String code, String customerCode, String store) {
 		Map<String, Object> pathParmas = new HashMap<>();
 		pathParmas.put("code", code);
 		pathParmas.put("customerCode", customerCode);
@@ -75,8 +71,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public ProductPageDTO find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public ProductPageDTO find(int page, int pageSize) {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
 		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
@@ -89,8 +84,7 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 	}
 
 	@Override
-	public Optional<ProductPageDTO> findByDescription(int page, int pageSize, String description)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public Optional<ProductPageDTO> findByDescription(int page, int pageSize, String description) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
@@ -120,6 +114,13 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		return restClient.getAsync(apiManager.buildEndpoint(server, "products/{code}"), server.getToken(),
 				server.getTokenPrefix(), ProductPage.class, queryParams, pathParmas, MediaType.APPLICATION_JSON);
 
+	}
+
+	@Override
+	public ProductTechDetailJson findTechDetails(String commercialCode) {
+		return restClient.get("https://gauss.com.br/produtos/wp-json/wp/v2/gauss_products",
+				System.getProperty("site.api.token"), "Bearer", ProductTechDetailJson[].class,
+				Map.of("slug", commercialCode, "lang", "pt"), null, "application/json")[0];
 	}
 
 }

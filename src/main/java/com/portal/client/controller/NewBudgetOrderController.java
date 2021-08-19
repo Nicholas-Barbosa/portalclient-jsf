@@ -2,8 +2,6 @@ package com.portal.client.controller;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import javax.faces.context.FacesContext;
@@ -21,6 +18,7 @@ import javax.inject.Named;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import javax.ws.rs.ClientErrorException;
+import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
@@ -46,8 +44,8 @@ import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
-import com.portal.client.dto.builder.ItemBudgetBuilder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.dto.builder.ItemBudgetBuilder;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.export.OrderExport;
@@ -64,7 +62,7 @@ import com.portal.client.ui.lazy.datamodel.LazyOperations;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.util.jsf.ServerApiExceptionFacesMessageHelper;
+import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.ServerEndpointErrorUtils;
 import com.portal.client.vo.Product;
 
@@ -87,7 +85,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	private final ClientErrorExceptionController responseController;
 
-	private final ServerApiExceptionFacesMessageHelper serverExceptionFacesMessageHelper;
+	private final ProcessingExceptionFacesMessageHelper prossExceptionMessageShower;
 
 	private final ProductService productService;
 
@@ -164,7 +162,7 @@ public class NewBudgetOrderController implements Serializable {
 	public NewBudgetOrderController(ResourceBundleService resourceBundleService, CustomerService customerService,
 			BudgetCrudService budgetService, OrderExport orderExporter,
 			ClientErrorExceptionController responseController,
-			ServerApiExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
+			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService, ZipCodeService cep, BudgetCommonBehaviorHelper budgetRequestService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
@@ -173,7 +171,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.budgetService = budgetService;
 		this.orderExporter = orderExporter;
 		this.responseController = responseController;
-		this.serverExceptionFacesMessageHelper = processingExceptionMessageHelper;
+		this.prossExceptionMessageShower = processingExceptionMessageHelper;
 		this.productService = productService;
 		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
@@ -209,9 +207,8 @@ public class NewBudgetOrderController implements Serializable {
 				PrimeFaces.current().executeScript("PF('successSavedBudgetOrOrder').show();");
 				FacesUtils.ajaxUpdate("successSavedBudgetOrOrder");
 			}
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (ProcessingException e) {
+			prossExceptionMessageShower.displayMessage(e, null, "growl");
 		} catch (ClientErrorException e) {
 			ServerEndpointErrorUtils.openEndpointErrorOnDialog(e.getResponse());
 		}
@@ -259,8 +256,8 @@ public class NewBudgetOrderController implements Serializable {
 			}, () -> {
 				FacesUtils.error(null, "CEP não encontrado", "Digite o endereço manualmente");
 			});
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			FacesUtils.fatal(null, "Não foi possível consultar o cep no IBGE", "Serviço fora do ar.");
+		} catch (ProcessingException e) {
+			prossExceptionMessageShower.displayMessage(e, null);
 		}
 	}
 
@@ -414,8 +411,8 @@ public class NewBudgetOrderController implements Serializable {
 				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
 				FacesUtils.addHeaderForResponse("customers-found", false);
 			});
-		} catch (SocketTimeoutException | SocketException | TimeoutException p) {
-			serverExceptionFacesMessageHelper.displayMessage(p, null);
+		} catch (ProcessingException p) {
+			prossExceptionMessageShower.displayMessage(p, null);
 		}
 	}
 
@@ -456,8 +453,8 @@ public class NewBudgetOrderController implements Serializable {
 				FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			});
 
-		} catch (SocketTimeoutException | SocketException | TimeoutException e) {
-			serverExceptionFacesMessageHelper.displayMessage(e, null);
+		} catch (ProcessingException e) {
+			prossExceptionMessageShower.displayMessage(e, null);
 			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
 			e.printStackTrace();
 		}

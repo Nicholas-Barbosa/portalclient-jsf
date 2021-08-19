@@ -1,8 +1,5 @@
 package com.portal.client.repository;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -11,7 +8,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -62,8 +58,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public BudgetPage findAll(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public BudgetPage findAll(int page, int pageSize) {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		StringBuilder endpointURL = new StringBuilder(api.getBasePath());
 		endpointURL.append("/budgets");
@@ -72,8 +67,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public void save(BaseBudget budget)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public void save(BaseBudget budget) {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		budget.replaceItems(budget.getItems().parallelStream().map(ItemBudgetToSaveJsonSerializable::new)
 				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
@@ -84,8 +78,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public Optional<BaseBudget> findByCode(String code)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public Optional<BaseBudget> findByCode(String code) {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		try {
 			return Optional.of(restClient.get(apiManager.buildEndpoint(api, "budgets/{code}"), api.getToken(),
@@ -96,11 +89,9 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 		}
 	}
 
-
 	@Override
 	public BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException,
-			CustomerNotFoundException, ItemsNotFoundException {
+			throws CustomerNotFoundException, ItemsNotFoundException {
 		ServerAPI server = apiManager.getAPI(orcamentoKey);
 
 		FormToEstimateBudget toEstimate = new FormToEstimateBudget(customerCode, customerStore, items);

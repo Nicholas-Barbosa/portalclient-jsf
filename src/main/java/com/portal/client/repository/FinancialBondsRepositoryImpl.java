@@ -1,11 +1,7 @@
 package com.portal.client.repository;
 
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -28,8 +24,7 @@ public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 	}
 
 	@Override
-	public FinancialBondsPage find(int page, int pageSize)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public FinancialBondsPage find(int page, int pageSize) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
@@ -41,8 +36,7 @@ public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 	}
 
 	@Override
-	public FinancialBondsPage findByCustomerCodeStore(int page, int pageSize, String code, String store)
-			throws SocketTimeoutException, ConnectException, TimeoutException, SocketException {
+	public FinancialBondsPage findByCustomerCodeStore(int page, int pageSize, String code, String store) {
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);

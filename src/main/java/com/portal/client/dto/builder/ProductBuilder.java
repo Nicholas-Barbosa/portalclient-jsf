@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.portal.client.dto.ProductValue;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductImage;
+import com.portal.client.vo.ProductTechDetail;
 
 public class ProductBuilder {
 
@@ -12,6 +13,7 @@ public class ProductBuilder {
 	private int multiple;
 	private boolean commercialBlock;
 	private ProductImage productImage;
+	private ProductTechDetail techDetail;
 
 	private BigDecimal unitStValue, unitValue, unitGrossValue;
 
@@ -79,9 +81,14 @@ public class ProductBuilder {
 		return this;
 	}
 
+	public ProductBuilder withTechDetail(ProductTechDetail t) {
+		this.techDetail = t;
+		return this;
+	}
+
 	public Product build() {
 		return new Product(code, commercialCode, applicability, description, line, acronymLine, multiple, multiple,
-				commercialBlock, productImage, this.buildValue());
+				commercialBlock, productImage, this.buildValue(), techDetail);
 	}
 
 	public ProductValue buildValue() {

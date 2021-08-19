@@ -1,12 +1,8 @@
 package com.portal.client.service;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -37,8 +33,7 @@ public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 	}
 
 	@Override
-	public Optional<ZipCode> find(String cep)
-			throws SocketTimeoutException, ConnectException, SocketException, TimeoutException {
+	public Optional<ZipCode> find(String cep) {
 		// TODO Auto-generated method stub
 		try {
 			return Optional.of(restClient.get(configPropertiesResolver.getProperty("cep_api_url"), ZipCode.class, null,
