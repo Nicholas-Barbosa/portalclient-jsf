@@ -14,6 +14,7 @@ import com.portal.client.cdi.qualifier.ProductBucket;
 import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.google.cloud.storage.BucketClient;
 import com.portal.client.repository.ProductRepository;
 import com.portal.client.vo.Product;
@@ -90,8 +91,10 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void findTechDetails(String commercialCode, Product product) {
 		if (product.getProductTechDetail() == null) {
-			ProductTechDetail detail = productRepository.findTechDetails(commercialCode).toDetail();
+			ProductTechDetailJson json = productRepository.findTechDetails(commercialCode);
+			ProductTechDetail detail = json.toDetail();
 			product.setProductTechDetail(detail);
+			product.setLink(json.getLink());
 		}
 	}
 

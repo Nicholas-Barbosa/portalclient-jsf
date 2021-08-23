@@ -22,6 +22,7 @@ public class Product {
 	private ProductImage image;
 	private final ProductValue value;
 	private ProductTechDetail productTechDetail;
+	private String link;
 
 	@JsonbCreator
 	public static Product ofJsonb(@JsonbProperty("application") String application,
@@ -53,6 +54,26 @@ public class Product {
 		this.image = image;
 		this.value = price;
 		this.productTechDetail = productTechDetail;
+	}
+
+	public Product(String code, String commercialCode, String applicability, String description, String line,
+			String acronymLine, int stock, int multiple, boolean commercialBlock, ProductImage image,
+			ProductValue price, ProductTechDetail productTechDetail, String link) {
+		super();
+		this.code = code;
+		this.commercialCode = commercialCode;
+		this.applicability = applicability;
+		this.description = description;
+		this.line = line;
+		this.acronymLine = acronymLine;
+		this.stock = stock;
+		this.multiple = multiple;
+		this.commercialBlock = commercialBlock;
+		this.image = image;
+		this.value = price;
+		this.productTechDetail = productTechDetail;
+		this.link = link;
+
 	}
 
 	public String getCode() {
@@ -126,6 +147,14 @@ public class Product {
 
 	public void setProductTechDetail(ProductTechDetail productTechDetail) {
 		this.productTechDetail = productTechDetail;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
+	}
+
+	public String getLink() {
+		return link;
 	}
 
 	@Override

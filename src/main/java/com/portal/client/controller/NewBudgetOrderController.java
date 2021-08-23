@@ -424,7 +424,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	}
 
-	public void openSearchProduct() {
+	public void openProductSearch() {
 		CustomerOnOrder customer = budget.getCustomerOnOrder();
 		Map<String, List<String>> queryParams = new HashMap<>();
 		queryParams.put("customerType", List.of(customer.getType().name()));
@@ -439,7 +439,7 @@ public class NewBudgetOrderController implements Serializable {
 
 		FacesUtils.openViewOnDialog(
 				Map.of("modal", true, "responsive", true, "contentWidth", "30vw", "contentHeight", "65vh"),
-				"searchProduct", queryParams);
+				"productSearch", queryParams);
 	}
 
 	public void findProductByDescription(int page) {

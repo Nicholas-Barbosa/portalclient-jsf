@@ -7,24 +7,21 @@ import com.portal.client.vo.ProductTechDetail;
 
 public class ProductTechDetailJson {
 
-	private String productsReplaces;
-	private String application;
-	private String alternatorCode;
-	private String chain;
+	private String productsReplaces, application, alternatorCode, chain, link, packageDimension;
 	private float grossWeight;
-	private String packageDimension;
 
 	@JsonbCreator
 	public ProductTechDetailJson(@JsonbProperty("products_replaces") String productsReplaces,
 			@JsonbProperty("products_application") String application,
 			@JsonbProperty("products_codigo_alternador") String alternatorCode,
 			@JsonbProperty("products_peso_bruto") String grossWeight,
-			@JsonbProperty("products_dimensao_embalagem") String packageDimension) {
+			@JsonbProperty("products_dimensao_embalagem") String packageDimension, @JsonbProperty("link") String link) {
 		this.productsReplaces = productsReplaces;
 		this.application = application;
 		this.alternatorCode = alternatorCode;
 		this.packageDimension = packageDimension;
 		this.getGrossWeight(grossWeight);
+		this.link = link;
 	}
 
 	private final void getGrossWeight(String grossWeight) {
@@ -53,6 +50,10 @@ public class ProductTechDetailJson {
 
 	public String getPackageDimension() {
 		return packageDimension;
+	}
+
+	public String getLink() {
+		return link;
 	}
 
 	public ProductTechDetail toDetail() {
