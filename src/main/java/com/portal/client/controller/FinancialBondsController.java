@@ -15,7 +15,7 @@ import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 import com.portal.client.export.FinancialBondsExporter;
 import com.portal.client.service.crud.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
+import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
@@ -29,7 +29,7 @@ public class FinancialBondsController implements Serializable {
 	 */
 	private static final long serialVersionUID = -3811638445093267666L;
 	private FinancialBondsService bondsService;
-	private LazyDataModelBase<FinacialBondsDTO> titles;
+	private LazyBehaviorDataModel<FinacialBondsDTO> titles;
 	private ProcessingExceptionFacesMessageHelper prossExcpetionShowMsg;
 	private FinancialBondsExporter exporter;
 	private int pagesToExport = 1;
@@ -71,7 +71,7 @@ public class FinancialBondsController implements Serializable {
 		}
 	}
 
-	public LazyDataModelBase<FinacialBondsDTO> getTitles() {
+	public LazyBehaviorDataModel<FinacialBondsDTO> getTitles() {
 		return titles;
 	}
 

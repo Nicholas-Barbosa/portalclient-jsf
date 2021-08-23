@@ -2,7 +2,7 @@ package com.portal.client.ui.lazy.datamodel;
 
 import java.util.Collection;
 
-public interface LazyOperations<T> {
+public interface LazyBehavior<T> {
 
 	void addCollection(Collection<T> list);
 

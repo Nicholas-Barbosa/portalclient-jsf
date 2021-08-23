@@ -8,17 +8,17 @@ import com.portal.client.dto.Page;
 public class LazyPopulateUtils {
 
 	@SuppressWarnings("unchecked")
-	public static <T extends LazyDataModelBase<?>, U extends Page<?>> void populate(T lazy, U wrapperPage) {
+	public static <T extends LazyBehaviorDataModel<?>, U extends Page<?>> void populate(T lazy, U wrapperPage) {
 		lazy.setPageSize(wrapperPage.getPageSize());
 		lazy.setRowCount(wrapperPage.totalItems());
 		Collection<?> content = wrapperPage.getContent();
-		((LazyOperations<T>) lazy).addCollection((Collection<T>) content);
+		((LazyBehavior<T>) lazy).addCollection((Collection<T>) content);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends LazyDataModelBase<?>, U> void populateSingleRow(T lazy, U wrappedObject) {
+	public static <T extends LazyBehaviorDataModel<?>, U> void populateSingleRow(T lazy, U wrappedObject) {
 		lazy.setPageSize(1);
 		lazy.setRowCount(1);
-		((LazyOperations<T>) lazy).addCollection((List<T>) List.of(wrappedObject));
+		((LazyBehavior<T>) lazy).addCollection((List<T>) List.of(wrappedObject));
 	}
 }

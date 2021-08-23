@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.dto.Customer;
@@ -80,9 +81,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 					MediaType.APPLICATION_JSON));
 
 			return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();
-		} catch (NotFoundException e) {
-			System.out.println("Not found!");
-			return Optional.empty();
+		} catch (ProcessingException e) {
+			if (e.getCause() instanceof NotFoundException)
+				return Optional.empty();
+			throw e;
 		}
 
 	}

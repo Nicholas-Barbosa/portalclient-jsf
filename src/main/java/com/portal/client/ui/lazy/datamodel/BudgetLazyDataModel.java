@@ -10,7 +10,7 @@ import org.primefaces.model.SortMeta;
 
 import com.portal.client.dto.BudgetSemiProjection;
 
-public class BudgetLazyDataModel extends LazyDataModelBase<BudgetSemiProjection> {
+public class BudgetLazyDataModel extends LazyBehaviorDataModel<BudgetSemiProjection> {
 
 	/**
 	 * 

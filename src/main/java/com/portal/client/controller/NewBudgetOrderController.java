@@ -57,8 +57,8 @@ import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.ui.lazy.datamodel.CustomerLazyDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
-import com.portal.client.ui.lazy.datamodel.LazyOperations;
+import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
+import com.portal.client.ui.lazy.datamodel.LazyBehavior;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
@@ -95,9 +95,9 @@ public class NewBudgetOrderController implements Serializable {
 
 	private final BudgetCommonBehaviorHelper budgetBehaviorHelper;
 
-	private LazyDataModelBase<Product> lazyProducts;
+	private LazyBehaviorDataModel<Product> lazyProducts;
 
-	private LazyDataModelBase<Customer> lazyCustomers;
+	private LazyBehaviorDataModel<Customer> lazyCustomers;
 
 	private String h5DivLoadCustomers, h5DivLoadProducts;
 
@@ -380,7 +380,7 @@ public class NewBudgetOrderController implements Serializable {
 			return;
 		}
 		budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(event.getObject()));
-		LazyOperations<?> lazy = (LazyOperations<?>) lazyCustomers;
+		LazyBehavior<?> lazy = (LazyBehavior<?>) lazyCustomers;
 		lazy.turnCollectionElegibleToGB();
 	}
 
@@ -486,7 +486,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.customerRepresentativeOrderForm = new CustomerRepresentativeOrderForm();
 	}
 
-	public LazyDataModelBase<Product> getLazyProducts() {
+	public LazyBehaviorDataModel<Product> getLazyProducts() {
 		return lazyProducts;
 	}
 
@@ -534,7 +534,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.nameCustomerToFind = nameCustomerToFind;
 	}
 
-	public LazyDataModelBase<Customer> getLazyCustomers() {
+	public LazyBehaviorDataModel<Customer> getLazyCustomers() {
 		return lazyCustomers;
 	}
 

@@ -22,7 +22,7 @@ import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyDataModelBase;
+import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
@@ -41,7 +41,7 @@ public class CustomerDetailController {
 
 	private String currentLatLng;
 
-	private LazyDataModelBase<FinacialBondsDTO> titles;
+	private LazyBehaviorDataModel<FinacialBondsDTO> titles;
 
 	private ProcessingExceptionFacesMessageHelper externalExcpetionHelper;
 

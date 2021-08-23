@@ -10,7 +10,7 @@ import org.primefaces.model.SortMeta;
 
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 
-public class FinancialTitleLazyDataModel extends LazyDataModelBase<FinacialBondsDTO> {
+public class FinancialTitleLazyDataModel extends LazyBehaviorDataModel<FinacialBondsDTO> {
 
 	/**
 	 * 

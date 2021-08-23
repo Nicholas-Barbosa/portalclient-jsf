@@ -26,56 +26,23 @@
 </h:head>
 
 <h:body styleClass="#{userStylePreferences.inputStyleClass}">
-
+	<f:metadata>
+		<f:viewParam name="name"
+			value="#{customerSearchController.nameToSearch}" />
+	</f:metadata>
 	<p:growl globalOnly="true" id="growl" showDetail="true" />
 
 	<div class="card ">
 		<h:form>
-			<p:remoteCommand name="load"
-				action="#{productTechDataController.loadDetails}" process="@this"
-				autoRun="true"
-				onstart="$('#skeletonForLoad').show();$('#content').hide()"
-				oncomplete="$('#skeletonForLoad').hide();$('#content').show()"
-				update=":pnData" />
-
+			<p:remoteCommand name="search" autoRun="true"
+				action="#{customerSearchController.search}" process="@this"
+				oncomplete="$('#skeletonForLoad').hide()" />
 		</h:form>
 
-		<div id="content">
-			<h5>Detalhes técnicos -
-				#{productTechDataController.code.toUpperCase()}</h5>
-			<p:panelGrid columns="4"
-				columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-				layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-				style="border:0px none; background-color:transparent;" id="pnData">
-
-				<p:outputLabel for="@next" value="Aplicação:" />
-				<p:outputLabel
-					value="#{productTechDataController.techDetail.application}"
-					styleClass="label-r" />
-
-				<p:outputLabel for="@next" value="Substituições:" />
-				<p:outputLabel
-					value="#{productTechDataController.techDetail.productsReplaces}"
-					styleClass="label-r" />
-
-				<p:outputLabel for="@next" value="Peso bruto:" />
-				<p:outputLabel
-					value="#{productTechDataController.techDetail.grossWeight}"
-					styleClass="label-r" />
-
-				<p:outputLabel for="@next" value="Dimensões da caixa:" />
-				<p:outputLabel
-					value="#{productTechDataController.techDetail.packageDimension}"
-					styleClass="label-r" />
-
-				<p:commandButton icon="pi pi-external-link"
-					action="#{productTechDataController.closeDialog}" value="Site"/>
-				<p:commandButton icon="pi pi-window-minimize"
-					action="#{productTechDataController.closeDialog}" />
-			</p:panelGrid>
-		</div>
+		<div id="content"></div>
 		<div id="skeletonForLoad">
-			<h5>Se comunicando com o site...</h5>
+			<h5>Buscando por clientes pela palavra chave
+				#{customerSearchController.nameToSearch}...</h5>
 			<p:skeleton class="p-mb-2" />
 			<p:skeleton width="10rem" class="p-mb-2" />
 			<p:skeleton width="5rem" class="p-mb-2" />

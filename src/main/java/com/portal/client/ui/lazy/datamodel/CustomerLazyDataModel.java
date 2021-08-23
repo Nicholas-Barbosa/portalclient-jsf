@@ -10,7 +10,7 @@ import org.primefaces.model.SortMeta;
 
 import com.portal.client.dto.Customer;
 
-public class CustomerLazyDataModel extends LazyDataModelBase<Customer>  {
+public class CustomerLazyDataModel extends LazyBehaviorDataModel<Customer>  {
 
 	/**
 	 * 
