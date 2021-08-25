@@ -16,7 +16,7 @@ import com.portal.client.export.FinancialBondsExporter;
 import com.portal.client.service.crud.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
+import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
@@ -61,7 +61,7 @@ public class FinancialBondsController implements Serializable {
 		try {
 			Optional<FinancialBondsPage> optional = bondsService.find(page, 15);
 			optional.ifPresentOrElse(f -> {
-				LazyPopulateUtils.populate(titles, f);
+				LazyPopulatorUtils.populate(titles, f);
 			}, () -> {
 				FacesUtils.error(null, "Nenhum título encontrado", null, "growl");
 			});

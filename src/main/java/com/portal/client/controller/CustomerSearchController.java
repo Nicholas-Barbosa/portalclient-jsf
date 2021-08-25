@@ -1,45 +1,76 @@
 package com.portal.client.controller;
 
-import javax.enterprise.context.RequestScoped;
+import java.io.Serializable;
+
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
+import org.primefaces.event.SelectEvent;
+import org.primefaces.event.data.PageEvent;
+
 import com.portal.client.dto.Customer;
 import com.portal.client.service.CustomerService;
+import com.portal.client.ui.lazy.datamodel.CustomerLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
+import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.util.jsf.FacesUtils;
 
 @Named
-@RequestScoped
-public class CustomerSearchController {
+@ViewScoped
+public class CustomerSearchController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -813848448863455212L;
 	private CustomerService customerService;
-	private LazyBehaviorDataModel<Customer>customers;
-	private String nameToSearch;
+	private LazyBehaviorDataModel<Customer> customers;
+	private String keyword;
+	private int numberOfRows;
 
 	@Inject
 	public CustomerSearchController(CustomerService customerService) {
 		super();
 		this.customerService = customerService;
+		this.customers = new CustomerLazyDataModel();
+		this.numberOfRows = 6;
 	}
 
-	public void search() {
-		customerService.findByName(nameToSearch, 1, 10).ifPresentOrElse(c -> {
-			FacesUtils.info(null, "Clientes encontrados", c.totalItems() + " resultados correspondentes", "growl");
+	public void search(int page) {
+		customerService.findByName(keyword, page, numberOfRows).ifPresentOrElse(c -> {
+			LazyPopulatorUtils.populate(customers, c);
+			FacesUtils.ajaxUpdate("dtCustomerResult");
+			FacesUtils.executeScript("$('#noCustomersFound').hide();$('#content').show();");
+
 		}, () -> {
-			FacesUtils.error(null, "Nenhum cliente encontrado!", "Tente por outro nome", "growl");
+			FacesUtils.executeScript("$('#noCustomersFound').show();$('#content').hide();");
 		});
 	}
 
-	public String getNameToSearch() {
-		return nameToSearch;
+	public void onPage(PageEvent pageEvent) {
+		this.search(pageEvent.getPage() + 1);
 	}
 
-	public void setNameToSearch(String nameToSearch) {
-		this.nameToSearch = nameToSearch;
+	public void onCustomerSelect(SelectEvent<Customer> event) {
+		PrimeFaces.current().dialog().closeDynamic(event.getObject());
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 
 	public LazyBehaviorDataModel<Customer> getCustomers() {
 		return customers;
 	}
+
+	public int getNumberOfRows() {
+		return numberOfRows;
+	}
+
 }

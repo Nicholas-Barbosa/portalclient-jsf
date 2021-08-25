@@ -13,7 +13,7 @@ import com.portal.client.dto.BudgetSemiProjection;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.ui.lazy.datamodel.BudgetLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
+import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 
 @ViewScoped
 @Named
@@ -41,7 +41,7 @@ public class BudgetListController implements Serializable {
 	public void loadBudgets(int page) {
 		if (budgets == null)
 			this.budgets = new BudgetLazyDataModel();
-		LazyPopulateUtils.populate(budgets, buService.findAll(page, 15));
+		LazyPopulatorUtils.populate(budgets, buService.findAll(page, 15));
 
 	}
 

@@ -734,7 +734,7 @@
 						<p:column style="width:2rem">
 							<p:commandButton icon="pi pi-eye"
 								rendered="#{customer.blocked != 'Sim'}"
-								action="#{newBudgetOrderController.showCustomerDetail(customer)}" />
+								action="#{showCustomerDetailController.show(customer)}" />
 						</p:column>
 					</p:dataTable>
 					<p:blockUI block="dtSelectCustomers" widgetVar="blockDt">

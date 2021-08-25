@@ -5,8 +5,16 @@ import java.util.List;
 
 import com.portal.client.dto.Page;
 
-public class LazyPopulateUtils {
+public class LazyPopulatorUtils {
 
+	/**
+	 * 
+	 * @param <T>         LazyBehaviorDataModel covariante. Type that will be used as
+	 *                    list in p:dataTable.
+	 * @param <U>         Page covariante.
+	 * @param lazy
+	 * @param wrapperPage
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends LazyBehaviorDataModel<?>, U extends Page<?>> void populate(T lazy, U wrapperPage) {
 		lazy.setPageSize(wrapperPage.getPageSize());

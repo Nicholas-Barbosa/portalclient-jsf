@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,9 +56,9 @@ import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.ui.lazy.datamodel.CustomerLazyDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehavior;
-import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
+import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
+import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
@@ -228,21 +227,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	}
 
-	public void showCustomerDetail(Customer customer) {
-		if (customer != null) {
-			FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("customer_to_detail", customer);
-			Map<String, Object> options = new HashMap<>();
-			options.put("modal", true);
-			options.put("draggable", true);
-			options.put("position", "center");
-			options.put("contentWidth", "60vw");
-			options.put("contentHeight", "45vh");
-			options.put("responsive", "true");
-			PrimeFaces.current().dialog().openDynamic("customerDetail", options, null);
-			return;
-		}
-		FacesUtils.error(null, "Cliente não selecionado", "Não foi selecionado nenhum cliente neste ínterim.", "growl");
-	}
+	
 
 	public void findCep() {
 		try {
@@ -394,7 +379,7 @@ public class NewBudgetOrderController implements Serializable {
 			maybeCustomer.ifPresentOrElse(c -> {
 				if (c.totalItems() > 1) {
 					FacesUtils.addHeaderForResponse("customers", c.totalItems());
-					LazyPopulateUtils.populate(lazyCustomers, c);
+					LazyPopulatorUtils.populate(lazyCustomers, c);
 					if (updateFormSelectCustomer)
 						FacesUtils.ajaxUpdate("fomrSelectCustomer");
 				} else {
@@ -447,7 +432,7 @@ public class NewBudgetOrderController implements Serializable {
 			Optional<ProductPageDTO> maybeProduct = productService
 					.findByDescription(findProductByDescriptionDTO.getDescription(), page, pageSizeForProducts);
 			maybeProduct.ifPresentOrElse(p -> {
-				LazyPopulateUtils.populate(lazyProducts, p);
+				LazyPopulatorUtils.populate(lazyProducts, p);
 			}, () -> {
 				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
 				FacesUtils.addHeaderForResponse("Backbone-Status", "Error");

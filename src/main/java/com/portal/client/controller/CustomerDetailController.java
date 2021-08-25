@@ -23,7 +23,7 @@ import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.FinancialBondsService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyPopulateUtils;
+import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
@@ -83,7 +83,7 @@ public class CustomerDetailController {
 				Optional<FinancialBondsPage> optional = bondsService.findByCustomerCodeStore(page, 10,
 						customer.getCode(), customer.getStore());
 				optional.ifPresentOrElse(f -> {
-					LazyPopulateUtils.populate(titles, f);
+					LazyPopulatorUtils.populate(titles, f);
 				}, () -> {
 					FacesUtils.error(null, "Nenhum título encontrado", null);
 					PrimeFaces.current().ajax().update("growl");
