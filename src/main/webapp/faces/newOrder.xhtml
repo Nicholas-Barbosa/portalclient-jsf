@@ -75,7 +75,7 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
 								icon="pi pi-eye"
-								action="#{newBudgetOrderController.showCustomerDetail(newBudgetOrderController.budget.customerOnOrder)}" />
+								action="#{showCustomerDetailController.show(newBudgetOrderController.budget.customerOnOrder)}" />
 
 						</p:toolbarGroup>
 					</p:toolbar>
@@ -562,18 +562,10 @@
 												required="true" id="cName" />
 
 											<p:commandButton icon="pi pi-search"
-												action="#{newBudgetOrderController.findCustomerByName(0,true)}"
-												onstart="PF('dlgSearchCustomer').hide();
-								PF('globalLoadDlg').show()"
-												oncomplete="PF('globalLoadDlg').hide();
-								let customers = xhr.getResponseHeader('customers');
-								if(customers > 1){
-									PF('dlgSelectCustomer').show();
-									return;
-								}
-								if(xhr.getResponseHeader('customers-found')=='true')
-									PF('blockItems').hide();"
-												update="growl" />
+												action="#{showCustomerSearchController.show(newBudgetOrderController.nameCustomerToFind)}">
+												<p:ajax event="dialogReturn"
+													listener="#{newBudgetOrderController.handleCustomerResult}" />
+											</p:commandButton>
 										</div>
 
 										<p:message for="cName" />
@@ -680,73 +672,7 @@
 				</div>
 			</p:dialog>
 
-			<p:dialog widgetVar="dlgSelectCustomer" modal="true" width="70vw"
-				responsive="true"
-				header="#{resourceBundleServiceImpl.getMessage('escolha_cliente')}">
-				<h:form id="fomrSelectCustomer">
-					<p:dataTable var="customer"
-						value="#{newBudgetOrderController.lazyCustomers}" paginator="true"
-						rows="5" size="small" selectionMode="single"
-						id="dtSelectCustomers"
-						rowStyleClass="#{customer.blocked eq 'Sim' ? 'cheap' : null}"
-						style="max-height:40vh" reflow="true">
-						<p:ajax event="rowSelect"
-							oncomplete="
-						PF('blockDt').hide();
-						if(xhr.getResponseHeader('customer-isBlocked') != 'true'){
-							PF('dlgSelectCustomer').hide();
-							PF('blockItems').hide();
-							return;
-							}
-							PF('blockItems').show();"
-							update="growl :customerForm budgetToolsForm"
-							onstart="PF('blockDt').show()"
-							listener="#{newBudgetOrderController.selectCustomer}" />
-						<p:ajax event="page"
-							listener="#{newBudgetOrderController.onPageCustomers}"
-							async="true" onstart="detectLongProcess()"
-							oncomplete="onCompletePageProducts()" process="@this" />
-
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
-							<h:outputText value="#{customer.code}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('nome')}">
-							<h:outputText value="#{customer.name}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}">
-							<h:outputText value="#{customer.fantasyName}" />
-						</p:column>
-						<p:column headerText="CNPJ">
-							<h:outputText value="#{customer.cnpj}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
-							<h:outputText value="#{customer.street}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}"
-							style="width:6rem">
-							<h:outputText value="#{customer.blocked}" />
-						</p:column>
-						<p:column style="width:2rem">
-							<p:commandButton icon="pi pi-eye"
-								rendered="#{customer.blocked != 'Sim'}"
-								action="#{showCustomerDetailController.show(customer)}" />
-						</p:column>
-					</p:dataTable>
-					<p:blockUI block="dtSelectCustomers" widgetVar="blockDt">
-						<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
-					</p:blockUI>
-				</h:form>
-
-			</p:dialog>
-
-
-
-
+		
 			<p:dialog header="Loading" modal="true" closable="false"
 				widgetVar="globalLoadDlg" responsive="true">
 				<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>

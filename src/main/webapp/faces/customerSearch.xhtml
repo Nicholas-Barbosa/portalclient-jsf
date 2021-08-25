@@ -15,7 +15,7 @@
 		<link rel="icon"
 			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
 			type="image/x-icon"></link>
-
+		<title>Busca de cliente</title>
 	</f:facet>
 	<style>
 .label-r {
@@ -69,7 +69,7 @@
 						selectionMode="single" id="dtCustomerResult"
 						widgetVar="dtCustomerResult"
 						rowStyleClass="#{customer.blocked eq 'Sim' ? 'blocked-customer-row' : null}"
-						style="max-height:40vh">
+						>
 						<p:ajax event="rowSelect"
 							listener="#{customerSearchController.onCustomerSelect}"
 							update="growl" />

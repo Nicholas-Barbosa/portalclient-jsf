@@ -1,6 +1,7 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -54,7 +55,11 @@ public class CustomerSearchController implements Serializable {
 	}
 
 	public void onCustomerSelect(SelectEvent<Customer> event) {
-		PrimeFaces.current().dialog().closeDynamic(event.getObject());
+		if (!event.getObject().getBlocked().equals("Sim")) {
+			PrimeFaces.current().dialog().closeDynamic(Optional.ofNullable(event.getObject()));
+			return;
+		}
+		FacesUtils.error(null, "Cliente bloqueado", "Este cliente não pode ser selecionado.", "growl");
 	}
 
 	public String getKeyword() {

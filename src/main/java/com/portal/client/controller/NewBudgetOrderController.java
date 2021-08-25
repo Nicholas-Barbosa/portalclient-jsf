@@ -227,8 +227,6 @@ public class NewBudgetOrderController implements Serializable {
 
 	}
 
-	
-
 	public void findCep() {
 		try {
 			cepCervice.find(cepToSearch).ifPresentOrElse(cep -> {
@@ -292,10 +290,6 @@ public class NewBudgetOrderController implements Serializable {
 		previewItem = null;
 	}
 
-	public void changeItemDiscount() {
-
-	}
-
 	public void changItemQuantity() {
 		calculateItemQuantity(previewItem, previewItemQuantity);
 	}
@@ -331,14 +325,6 @@ public class NewBudgetOrderController implements Serializable {
 		PrimeFaces.current().dialog().openDynamic("openedTitles", options, null);
 	}
 
-	public void loadImageFromPreviewProduct() {
-		this.productService.loadImage(previewItem.getProduct());
-	}
-
-	public void loadImageForProduct(Product product) {
-		this.productService.loadImage(product);
-	}
-
 	public void newBudgetObject() {
 		this.budget = new BaseBudget();
 	}
@@ -358,47 +344,14 @@ public class NewBudgetOrderController implements Serializable {
 		}
 	}
 
-	public void selectCustomer(SelectEvent<Customer> event) {
-		if (event.getObject().getBlocked().equals("Sim")) {
-			FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
-			FacesUtils.addHeaderForResponse("customer-isBlocked", true);
-			return;
-		}
-		budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(event.getObject()));
-		LazyBehavior<?> lazy = (LazyBehavior<?>) lazyCustomers;
-		lazy.turnCollectionElegibleToGB();
-	}
+	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
+		event.getObject().ifPresentOrElse(c -> {
+			budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(c));
+			FacesUtils.info(null, "Cliente selecionado", null, "growl");
+			FacesUtils.ajaxUpdate("customerForm");
+			FacesUtils.executeScript("PF('dlgSearchCustomer').hide();PF('blockItems').hide();");
+		}, () -> FacesUtils.warn(null, "Nenhum cliente selecionado", null, "growl"));
 
-	public void onPageCustomers(PageEvent pageEvent) {
-		findCustomerByName(pageEvent.getPage() + 1, false);
-	}
-
-	public void findCustomerByName(int page, boolean updateFormSelectCustomer) {
-		try {
-			Optional<CustomerPageDTO> maybeCustomer = this.customerService.findByName(nameCustomerToFind, page, 5);
-			maybeCustomer.ifPresentOrElse(c -> {
-				if (c.totalItems() > 1) {
-					FacesUtils.addHeaderForResponse("customers", c.totalItems());
-					LazyPopulatorUtils.populate(lazyCustomers, c);
-					if (updateFormSelectCustomer)
-						FacesUtils.ajaxUpdate("fomrSelectCustomer");
-				} else {
-					Customer cDTO = c.getClients().get(0);
-					if (cDTO.getBlocked().equals("Sim")) {
-						FacesUtils.error(null, resourceBundleService.getMessage("cliente_bloqueado"), null);
-						return;
-					}
-					budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(cDTO));
-					FacesUtils.ajaxUpdate(":customerForm", "budgetToolsForm:btnViewCDetail");
-					FacesUtils.addHeaderForResponse("customers-found", true);
-				}
-			}, () -> {
-				FacesUtils.error(null, resourceBundleService.getMessage("cliente_nao_encontrado"), null);
-				FacesUtils.addHeaderForResponse("customers-found", false);
-			});
-		} catch (ProcessingException p) {
-			prossExceptionMessageShower.displayMessage(p, null);
-		}
 	}
 
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {

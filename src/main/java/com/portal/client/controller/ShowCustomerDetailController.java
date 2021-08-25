@@ -25,15 +25,11 @@ public class ShowCustomerDetailController implements ShowController<Customer> {
 			options.put("position", "center");
 			options.put("contentWidth", "60vw");
 			options.put("contentHeight", "45vh");
-			options.put("responsive", "true");
+			options.put("responsive", true);
 			PrimeFaces.current().dialog().openDynamic("customerDetail", options, null);
 			return;
 		}
 		FacesUtils.error(null, "Cliente não selecionado", "Não foi selecionado nenhum cliente neste ínterim.", "growl");
 	}
 
-	public void show(String customer) {
-
-		FacesUtils.error(null, "Cliente não selecionado", "Não foi selecionado nenhum cliente neste ínterim.", "growl");
-	}
 }
