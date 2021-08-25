@@ -50,7 +50,7 @@
 			<div class="ui-inputgroup">
 				<h:form>
 					<p:inputText value="#{customerSearchController.keyword}"
-						id="inName" placeholder="keyword"/>
+						id="inName" placeholder="keyword" />
 					<p:commandButton icon="pi pi-search" styleClass="ui-button-success"
 						onstart="onStartSearchCustomer()"
 						oncomplete="onCompleteSearchCustomer()"
@@ -68,8 +68,7 @@
 						rows="#{customerSearchController.numberOfRows}" size="small"
 						selectionMode="single" id="dtCustomerResult"
 						widgetVar="dtCustomerResult"
-						rowStyleClass="#{customer.blocked eq 'Sim' ? 'blocked-customer-row' : null}"
-						>
+						rowStyleClass="#{customer.blocked eq 'Sim' ? 'blocked-customer-row' : null}">
 						<p:ajax event="rowSelect"
 							listener="#{customerSearchController.onCustomerSelect}"
 							update="growl" />
@@ -103,7 +102,7 @@
 						<p:column style="width:2rem">
 							<p:commandButton icon="pi pi-eye"
 								rendered="#{customer.blocked != 'Sim'}"
-								action="#{showCustomerDetailController.show(customer)}"
+								action="#{customerDetailShowController.show(customer)}"
 								process="@this" />
 						</p:column>
 					</p:dataTable>

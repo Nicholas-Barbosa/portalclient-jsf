@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.show;
 
 import java.util.Map;
 
@@ -26,7 +26,7 @@ public class ProductTechDataShowController {
 		if (product != null) {
 			httpSession.setAttribute("product-techDetails", product);
 			Map<String, Object> dialogOptions = Map.of("modal", true, "responsive", true, "onHide", "alert('close')",
-					"contentWidth", "50vw", "contentHeight", "25vh", "closable", false, "showEffect", "fold",
+					"contentWidth", "50vw", "contentHeight", "45vh", "closable", false, "showEffect", "fold",
 					"hideEffect", "blind");
 			FacesUtils.openViewOnDialog(dialogOptions, "productTechData");
 			return;

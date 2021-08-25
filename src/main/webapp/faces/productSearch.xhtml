@@ -160,7 +160,7 @@ div.container {
 						icon="pi pi-times" action="#{searchProductController.cancel}"
 						styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
 					<p:commandButton value="Dados técnicos" process="@this"
-						action="#{searchProductController.openTechDetails}"
+						action="#{productTechDataShowController.show(searchProductController.product)}"
 						icon="pi pi-info-circle" />
 
 				</h:form>

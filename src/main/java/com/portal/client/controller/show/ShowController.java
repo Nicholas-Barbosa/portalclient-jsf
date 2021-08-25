@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.show;
 
 public interface ShowController<P> {
 

@@ -69,7 +69,8 @@
 					styleClass="label-r" />
 
 				<p:commandButton icon="pi pi-external-link"
-					action="#{productTechDataController.closeDialog}" value="Site"/>
+					action="#{productSiteIframeShowController.show(productTechDataController.product.link)}"
+					value="Site" />
 				<p:commandButton icon="pi pi-window-minimize"
 					action="#{productTechDataController.closeDialog}" />
 			</p:panelGrid>

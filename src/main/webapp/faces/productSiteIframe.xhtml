@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="icon"
+			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
+			type="image/x-icon"></link>
+		<title>#{productSiteIframeController.url}</title>
+	</f:facet>
+
+
+</h:head>
+
+<h:body styleClass="#{userStylePreferences.inputStyleClass}">
+	<f:metadata>
+		<f:viewParam name="url" value="#{productSiteIframeController.url}" />
+	</f:metadata>
+	<p:growl globalOnly="true" id="growl" showDetail="true" />
+
+	<div class="card p-grid p-flex-column">
+		<div class="p-col">
+			<p:linkButton value="Abrir em nova aba"
+				href="#{productSiteIframeController.url}" target="_blank"
+				icon="pi pi-star" />
+		</div>
+		<div class="p-col">
+			<p:outputPanel deferred="true" deferredMode="visible">
+
+				<iframe src="#{productTechDataController.product.link}"
+					style="width: 90vw; height: 90vh; border: none"></iframe>
+			</p:outputPanel>
+		</div>
+	</div>
+
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:body>
+</html>

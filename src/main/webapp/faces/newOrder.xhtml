@@ -175,7 +175,7 @@
 									<div class="p-d-flex p-jc-between p-ai-center">
 										<div>
 											<p:commandButton
-												action="#{newBudgetOrderController.openProductSearch}"
+												action="#{productSearchShowController.show(newBudgetOrderController.budget.customerOnOrder)}"
 												process="@this" icon="pi pi-plus"
 												styleClass="ui-button-raised ui-button-success p-mr-2">
 												<p:ajax event="dialogReturn"
@@ -562,7 +562,7 @@
 												required="true" id="cName" />
 
 											<p:commandButton icon="pi pi-search"
-												action="#{showCustomerSearchController.show(newBudgetOrderController.nameCustomerToFind)}">
+												action="#{customerSearchShowController.show(newBudgetOrderController.nameCustomerToFind)}">
 												<p:ajax event="dialogReturn"
 													listener="#{newBudgetOrderController.handleCustomerResult}" />
 											</p:commandButton>
@@ -672,7 +672,7 @@
 				</div>
 			</p:dialog>
 
-		
+
 			<p:dialog header="Loading" modal="true" closable="false"
 				widgetVar="globalLoadDlg" responsive="true">
 				<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>

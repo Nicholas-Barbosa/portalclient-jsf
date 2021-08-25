@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.show;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +14,7 @@ import com.portal.client.util.jsf.FacesUtils;
 
 @Named
 @RequestScoped
-public class ShowCustomerDetailController implements ShowController<Customer> {
+public class CustomerDetailShowController implements ShowController<Customer> {
 
 	public void show(Customer customer) {
 		if (customer != null) {

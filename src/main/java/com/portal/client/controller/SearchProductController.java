@@ -1,12 +1,10 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
-import java.util.Map;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
 
 import org.primefaces.PrimeFaces;
 
@@ -28,28 +26,16 @@ public class SearchProductController implements Serializable {
 
 	private CustomerType customerType;
 	private ProductService productService;
-	private HttpSession httpSession;
 
 	private Product product;
 
 	@Inject
-	public SearchProductController(ProductService productService, HttpSession httpSession) {
+	public SearchProductController(ProductService productService) {
 		super();
 		this.productService = productService;
-		this.httpSession = httpSession;
 	}
 
-	public void openTechDetails() {
-		if (product != null) {
-			httpSession.setAttribute("product-techDetails", product);
-			Map<String, Object> dialogOptions = Map.of("modal", true, "responsive", true, "onHide", "alert('close')",
-					"contentWidth", "50vw", "contentHeight", "25vh","closable",false,"showEffect","fold","hideEffect","blind");
-			FacesUtils.openViewOnDialog(dialogOptions, "productTechData");
-			return;
-		}
-		FacesUtils.error(null, "Produto desconhecido", "Certifique-se de ter um produto existente", "growl");
-	}
-
+	
 	public void search() {
 		productService
 				.findByCode(productCodeToSearch, customerCode, customerStore, state, customerSellerType, customerType)

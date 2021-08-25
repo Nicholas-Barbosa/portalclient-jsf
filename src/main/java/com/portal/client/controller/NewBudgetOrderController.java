@@ -29,7 +29,6 @@ import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerAddress;
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.CustomerPurchaseInfo;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.DiscountView;
@@ -49,14 +48,12 @@ import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.export.OrderExport;
 import com.portal.client.service.BudgetCommonBehaviorHelper;
-import com.portal.client.service.CustomerService;
 import com.portal.client.service.ItemService;
 import com.portal.client.service.ResourceBundleService;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.ui.lazy.datamodel.CustomerLazyDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyBehavior;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
@@ -75,8 +72,6 @@ public class NewBudgetOrderController implements Serializable {
 	private static final long serialVersionUID = -2537974193888491899L;
 
 	private final ResourceBundleService resourceBundleService;
-
-	private final CustomerService customerService;
 
 	private final BudgetCrudService budgetService;
 
@@ -154,19 +149,17 @@ public class NewBudgetOrderController implements Serializable {
 	private boolean isOrder;
 
 	public NewBudgetOrderController() {
-		this(null, null, null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
-	public NewBudgetOrderController(ResourceBundleService resourceBundleService, CustomerService customerService,
-			BudgetCrudService budgetService, OrderExport orderExporter,
-			ClientErrorExceptionController responseController,
+	public NewBudgetOrderController(ResourceBundleService resourceBundleService, BudgetCrudService budgetService,
+			OrderExport orderExporter, ClientErrorExceptionController responseController,
 			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService, ZipCodeService cep, BudgetCommonBehaviorHelper budgetRequestService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
-		this.customerService = customerService;
 		this.budgetService = budgetService;
 		this.orderExporter = orderExporter;
 		this.responseController = responseController;
@@ -360,24 +353,6 @@ public class NewBudgetOrderController implements Serializable {
 			FacesUtils.ajaxUpdate("formItems:dtItems", "budgetTotals");
 		});
 
-	}
-
-	public void openProductSearch() {
-		CustomerOnOrder customer = budget.getCustomerOnOrder();
-		Map<String, List<String>> queryParams = new HashMap<>();
-		queryParams.put("customerType", List.of(customer.getType().name()));
-		if (customer instanceof ProspectCustomerOnOrder) {
-			ProspectCustomerOnOrder prospCustomer = (ProspectCustomerOnOrder) customer;
-			queryParams.put("customerPropState", List.of(prospCustomer.getState()));
-			queryParams.put("customerPropSelType", List.of(prospCustomer.getSellerType().getType()));
-		} else {
-			queryParams.put("customerCode", List.of(customer.getCode()));
-			queryParams.put("customerStore", List.of(customer.getStore()));
-		}
-
-		FacesUtils.openViewOnDialog(
-				Map.of("modal", true, "responsive", true, "contentWidth", "30vw", "contentHeight", "65vh"),
-				"productSearch", queryParams);
 	}
 
 	public void findProductByDescription(int page) {

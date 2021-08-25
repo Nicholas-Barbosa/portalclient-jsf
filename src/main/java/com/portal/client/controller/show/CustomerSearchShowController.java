@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.show;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +10,7 @@ import com.portal.client.util.jsf.FacesUtils;
 
 @Named
 @RequestScoped
-public class ShowCustomerSearchController implements ShowController<String> {
+public class CustomerSearchShowController implements ShowController<String> {
 
 	public void show(String keyword) {
 		Map<String, Object> options = Map.of("modal", true, "responsive", true,"contentWidth", "50vw","contentHeight", "55vh");
