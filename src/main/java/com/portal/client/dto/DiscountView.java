@@ -29,9 +29,4 @@ public class DiscountView {
 		this.globalDiscount = globalDiscount;
 	}
 
-	
-	public void setItem(ItemBudget item) {
-		lineDiscount = item.getValue().getLineDiscount();
-		globalDiscount = item.getValue().getBudgetGlobalDiscount();
-	}
 }

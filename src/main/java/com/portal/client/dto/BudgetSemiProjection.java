@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.vo.Budget;
+
 public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
 
 	@JsonbCreator
@@ -25,10 +27,10 @@ public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
 	}
 
 	@Override
-	public BaseBudget build() {
+	public Budget build() {
 		CustomerOnOrder customer = new CustomerOnOrder(super.getCustomerCode(), super.getCustomerStore(), null, null,
 				null, null, null, null, null);
-		BaseBudget budget = new BaseBudget(super.getIdCode(), customer, null, super.getLiquidValue(),
+		Budget budget = new Budget(super.getIdCode(), customer, null, super.getLiquidValue(),
 				super.getStValue(), null, null, null);
 		return budget;
 	}

@@ -4,44 +4,51 @@ import java.math.BigDecimal;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.Item;
 
-public class ItemBudgetToSaveJsonSerializable extends ItemBudget
-		implements Comparable<ItemBudgetToSaveJsonSerializable> {
+public class ItemBudgetToSaveJsonSerializable implements Comparable<ItemBudgetToSaveJsonSerializable> {
 
-	public ItemBudgetToSaveJsonSerializable(ItemBudget item) {
-		super(item);
+	private Item item;
+
+	public static ItemBudgetToSaveJsonSerializable of(Item item) {
+		return new ItemBudgetToSaveJsonSerializable(item);
+	}
+
+	public ItemBudgetToSaveJsonSerializable(Item item) {
+		super();
+		this.item = item;
 	}
 
 	@JsonbProperty("line_discount")
 	public BigDecimal getLineDiscount() {
-		return super.getValue().getLineDiscount();
+		BigDecimal lineDiscount = item.getValue().getLineDiscount();
+		return lineDiscount == null ? BigDecimal.ZERO : lineDiscount;
 
 	}
 
 	@JsonbProperty("product_code")
 	public String getProductCode() {
-		return super.getProduct().getCode();
+		return item.getProduct().getCode();
 	}
 
 	@JsonbProperty("commercial_code")
 	public String getProductCommercialCode() {
-		return super.getProduct().getCommercialCode();
+		return item.getProduct().getCommercialCode();
 	}
 
 	@JsonbProperty("unit_price")
 	public BigDecimal getProductUnitValue() {
-		return super.getValue().getUnitValue();
+		return item.getValue().getUnitValue();
 	}
 
 	@JsonbProperty("st_value")
 	public BigDecimal getProductStValue() {
-		return super.getValue().getTotalStValue();
+		return item.getValue().getTotalStValue();
 	}
 
 	@JsonbProperty("quantity")
 	private int getQuantity() {
-		return super.getValue().getQuantity();
+		return item.getValue().getQuantity();
 	}
 
 	@Override

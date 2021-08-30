@@ -7,24 +7,33 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.portal.client.dto.ProductValue;
 import com.portal.client.util.MathUtils;
 
-public class ItemBudgetValue extends ProductValue {
+public class ItemValue extends ProductValue {
 
 	private BigDecimal budgetGlobalDiscount;
 	private BigDecimal lineDiscount;
 	private BigDecimal totalDiscount;
 
-
 	private final Map<String, BigDecimal> valuesWithNoDisc = new ConcurrentHashMap<>();
 
-	public ItemBudgetValue(int quantity,Integer multiple, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount,
+	public ItemValue(ProductValue pValue) {
+		super(pValue);
+		valuesWithNoDisc.put("unitStValue", pValue.getUnitStValue());
+		valuesWithNoDisc.put("unitValue", pValue.getUnitValue());
+		valuesWithNoDisc.put("unitGrossValue", pValue.getUnitGrossValue());
+		this.totalDiscount = BigDecimal.ZERO;
+		this.budgetGlobalDiscount = BigDecimal.ZERO;
+		this.lineDiscount = BigDecimal.ZERO;
+	}
+
+	public ItemValue(int quantity, Integer multiple, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount,
 			BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue,
 			BigDecimal totalValue, BigDecimal totalGrossValue) {
-		super(unitStValue, unitValue, unitGrossValue, quantity,multiple);
+		super(unitStValue, unitValue, unitGrossValue, quantity, multiple);
 		this.budgetGlobalDiscount = budgetGlobalDiscount;
 		this.lineDiscount = lineDiscount;
 		this.totalDiscount = lineDiscount == null ? this.budgetGlobalDiscount
 				: this.budgetGlobalDiscount.add(this.lineDiscount);
-		
+
 		this.getValuesWithoutDiscount();
 
 	}
@@ -47,7 +56,8 @@ public class ItemBudgetValue extends ProductValue {
 				valuesWithNoDisc.put("unitGrossValue", unitGrossValue);
 			}
 			if (!lineDiscount.equals(BigDecimal.ZERO)) {
-				BigDecimal unitValue = MathUtils.subtractValueByPercentage(lineDiscount, valuesWithNoDisc.get("unitValue"));
+				BigDecimal unitValue = MathUtils.subtractValueByPercentage(lineDiscount,
+						valuesWithNoDisc.get("unitValue"));
 				BigDecimal unitStValue = MathUtils.subtractValueByPercentage(lineDiscount,
 						valuesWithNoDisc.get("unitStValue"));
 				BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(lineDiscount,
@@ -87,8 +97,6 @@ public class ItemBudgetValue extends ProductValue {
 	public void setTotalDiscount(BigDecimal totalDiscount) {
 		this.totalDiscount = totalDiscount;
 	}
-
-
 
 	public BigDecimal getUnitStValueWithoutDiscount() {
 		return valuesWithNoDisc.get("unitStValue");

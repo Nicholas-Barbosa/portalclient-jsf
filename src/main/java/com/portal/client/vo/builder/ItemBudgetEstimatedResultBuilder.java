@@ -1,16 +1,18 @@
-package com.portal.client.dto.builder;
+package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.vo.ItemBudget;
-import com.portal.client.vo.ItemBudgetValue;
+import com.portal.client.vo.Item;
+import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Product;
 
-public class ItemBudgetEstimatedResultBuilder extends ItemBudgetBuilder {
+public class ItemBudgetEstimatedResultBuilder extends ItemBuilder {
 
 	@JsonbCreator
 	public ItemBudgetEstimatedResultBuilder(@JsonbProperty("product_code") String productCode,
@@ -37,16 +39,19 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBudgetBuilder {
 	}
 
 	@Override
-	public ItemBudget build() {
-
-		ItemBudgetValue value = new ItemBudgetValue(super.getQuantity(), super.getProduct().getValue().getMultiple(),
+	public Item build() {
+		ItemValue value = new ItemValue(super.getQuantity(), super.getProduct().getValue().getMultiple(),
 				super.getBudgetGlobalDiscount(), super.getLineDiscount(),
 				super.getProduct().getValue().getUnitStValue(), super.getProduct().getValue().getUnitValue(),
 				super.getProduct().getValue().getUnitGrossValue(), super.getTotalStValue(), super.getTotalValue(),
 				super.getTotalGrossValue()
 
 		);
-		return new ItemBudget(super.getProduct(), value);
+		return new Item(super.getProduct(), value);
 	}
 
+	public static Set<Item> build(Set<ItemBudgetEstimatedResultBuilder> items) {
+		return items.stream().map(ItemBudgetEstimatedResultBuilder::build).collect(Collectors.toSet());
+
+	}
 }

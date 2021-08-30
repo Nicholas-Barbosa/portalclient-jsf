@@ -1,5 +1,6 @@
 package com.portal.client.jaxrs.client.providers.message.writer;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
@@ -43,6 +44,7 @@ public class JsonMessageWriter implements MessageBodyWriter<Object> {
 		// TODO Auto-generated method stub
 		try {
 			jsonWriter.toJson(t, entityStream);
+			jsonWriter.toJson(t, new FileOutputStream("C:\\Users\\nicho\\OneDrive\\Documentos\\json\\request.json"));
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);
 		}

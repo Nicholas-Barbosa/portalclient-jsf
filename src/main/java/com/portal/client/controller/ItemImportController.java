@@ -14,7 +14,6 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.ItemXlsxProjection;
 import com.portal.client.exception.CustomerNotFoundException;
@@ -22,6 +21,7 @@ import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.ItemImportService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
+import com.portal.client.vo.Budget;
 import com.portal.client.vo.WrapperItem404Error.Item404Error;
 
 @ViewScoped
@@ -62,7 +62,7 @@ public class ItemImportController implements Serializable {
 
 	public void discoverItems() {
 		try {
-			BaseBudget findPrice = itemImporter.findPrice(itemXlsxProjection, customerCode, customerStore);
+			Budget findPrice = itemImporter.findPrice(itemXlsxProjection, customerCode, customerStore);
 			if (!onDialog) {
 				FacesUtils.warn(null, "Dados obtidos", null, "growl");
 				return;

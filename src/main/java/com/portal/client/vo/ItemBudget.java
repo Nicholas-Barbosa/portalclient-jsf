@@ -7,9 +7,9 @@ public class ItemBudget {
 	@JsonbTransient
 	private final Product product;
 	@JsonbTransient
-	private ItemBudgetValue values;
+	private ItemValue values;
 
-	public ItemBudget(Product product, ItemBudgetValue itemPrice) {
+	public ItemBudget(Product product, ItemValue itemPrice) {
 		super();
 		this.product = product;
 		this.values = itemPrice;
@@ -27,7 +27,7 @@ public class ItemBudget {
 		return product;
 	}
 
-	public ItemBudgetValue getValue() {
+	public ItemValue getValue() {
 		return values;
 	}
 	@JsonbTransient

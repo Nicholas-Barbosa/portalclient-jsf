@@ -6,7 +6,6 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemToFindPrice;
@@ -15,6 +14,7 @@ import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.repository.BudgetRepository;
+import com.portal.client.vo.Budget;
 
 @ApplicationScoped
 public class BudgetCrudServiceImpl implements BudgetCrudService {
@@ -39,7 +39,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public void save(BaseBudget budget, CustomerRepresentativeOrderForm ordersForm) {
+	public void save(Budget budget, CustomerRepresentativeOrderForm ordersForm) {
 		checkBudgetState(budget);
 		budget.setCustomerOrder(ordersForm.getCustomerOrder());
 		budget.setRepresentativeOrder(ordersForm.getRepresentativeOrder());
@@ -47,12 +47,12 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public Optional<BaseBudget> findByCode(String code) {
+	public Optional<Budget> findByCode(String code) {
 		return budgetRepository.findByCode(code);
 	}
 
 	@Override
-	public void checkBudgetState(BaseBudget budgetRequest) {
+	public void checkBudgetState(Budget budgetRequest) {
 		if (budgetRequest == null)
 			throw new IllegalArgumentException("parameter is null!");
 		if (budgetRequest.getCustomerOnOrder() == null)
@@ -64,7 +64,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> itemsToEstimate)
+	public Budget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> itemsToEstimate)
 			throws CustomerNotFoundException, ItemsNotFoundException {
 		return budgetRepository.estimate(customerCode, customerStore, itemsToEstimate);
 	}

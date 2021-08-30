@@ -15,155 +15,57 @@
 		<link rel="icon"
 			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
 			type="image/x-icon"></link>
-		<title>Busca de cliente</title>
+		<title>Exportar #{orderExportController.order ? 'pedido' :
+			'orçamento'}</title>
 	</f:facet>
-	<style>
-.label-r {
-	font-weight: bold;
-}
 
-.blocked-customer-row {
-	background-color: #ff9999 !important;
-	background-image: none !important;
-	color: #000000 !important;
-}
-</style>
 
 </h:head>
 
 <h:body styleClass="#{userStylePreferences.inputStyleClass}">
 	<f:metadata>
-		<f:viewParam name="keyword"
-			value="#{customerSearchController.keyword}" />
+		<f:viewParam name="order" value="#{orderExportController.order}" />
 	</f:metadata>
 	<p:growl globalOnly="true" id="growl" showDetail="true"
 		skipDetailIfEqualsSummary="true" />
 
 	<div class="card">
 		<h:form>
-			<p:remoteCommand name="search" autoRun="true"
-				action="#{customerSearchController.search(1)}" process="@this"
-				onstart="onStartSearchCustomer()"
-				oncomplete="onCompleteSearchCustomer()" />
+			<div class="ui-fluid p-formgrid p-grid">
+				<div class="p-field p-col-12 p-md-6">
+					<p:outputLabel for="fileName"
+						value="#{resourceBundleServiceImpl.getMessage('nome_arquivo')}" />
+					<p:inputText id="fileName"
+						value="#{newBudgetOrderController.downloadStreamsForm.name}" />
+				</div>
+
+				<div class="p-field p-col-12 p-md-6">
+					<p:outputLabel for="fileType"
+						value="#{resourceBundleServiceImpl.getMessage('tipo')}" />
+					<p:selectOneMenu id="fileType"
+						value="#{newBudgetOrderController.downloadStreamsForm.contentType}">
+						<f:selectItem itemLabel="Select One" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItem itemLabel="PDF" itemValue="PDF" />
+						<f:selectItem itemLabel="Excel-xlsx(relatório)" itemValue="EXCEL" />
+						<f:selectItem itemLabel="Excel-xlsx(conferência de cálculos)"
+							itemValue="EXCEL_CALC_CONFERENCE" />
+					</p:selectOneMenu>
+				</div>
+
+				<div class="demo-container p-p-4">
+					<p:commandButton icon="pi pi-download"
+						action="#{newBudgetOrderController.exportOrder}" process="@form"
+						ajax="false" />
+				</div>
+			</div>
 		</h:form>
-		<div>
-			<div class="ui-inputgroup">
-				<h:form>
-					<p:inputText value="#{customerSearchController.keyword}"
-						id="inName" placeholder="keyword" />
-					<p:commandButton icon="pi pi-search" styleClass="ui-button-success"
-						onstart="onStartSearchCustomer()"
-						oncomplete="onCompleteSearchCustomer()"
-						action="#{customerSearchController.search(1)}"
-						process="@this,inName">
-					</p:commandButton>
-				</h:form>
-			</div>
-		</div>
-		<div id="content">
-			<p:outputPanel id="pnCustomersResult">
-				<h:form prependId="false">
-					<p:dataTable var="customer"
-						value="#{customerSearchController.customers}" paginator="true"
-						rows="#{customerSearchController.numberOfRows}" size="small"
-						selectionMode="single" id="dtCustomerResult"
-						widgetVar="dtCustomerResult"
-						rowStyleClass="#{customer.blocked eq 'Sim' ? 'blocked-customer-row' : null}">
-						<p:ajax event="rowSelect"
-							listener="#{customerSearchController.onCustomerSelect}"
-							update="growl" />
-						<p:ajax event="page" listener="#{customerSearchController.onPage}"
-							process="@this" onstart="PF('dtCustomersBlocker').show();"
-							oncomplete="PF('dtCustomersBlocker').hide()" />
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
-							<h:outputText value="#{customer.code}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('nome')}">
-							<h:outputText value="#{customer.name}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}">
-							<h:outputText value="#{customer.fantasyName}" />
-						</p:column>
-						<p:column headerText="CNPJ">
-							<h:outputText value="#{customer.cnpj}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
-							<h:outputText value="#{customer.street}" />
-						</p:column>
-						<p:column
-							headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}"
-							style="width:6rem">
-							<h:outputText value="#{customer.blocked}" />
-						</p:column>
-						<p:column style="width:2rem">
-							<p:commandButton icon="pi pi-eye"
-								rendered="#{customer.blocked != 'Sim'}"
-								action="#{customerDetailShowController.show(customer)}"
-								process="@this" />
-						</p:column>
-					</p:dataTable>
-
-				</h:form>
-			</p:outputPanel>
-
-
-			<p:blockUI block="pnCustomersResult" widgetVar="dtCustomersBlocker" />
-		</div>
-		<div id="skeletonForLoad">
-			<h5>Buscando por clientes pela palavra-chave
-				#{customerSearchController.keyword}...</h5>
-			<p:dataTable var="product"
-				value="#{dataTableSkeletonObjects.getSkeleton(6)}">
-				<p:column
-					headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
-					<p:skeleton />
-				</p:column>
-				<p:column
-					headerText="#{resourceBundleServiceImpl.getMessage('nome')}">
-					<p:skeleton />
-				</p:column>
-				<p:column
-					headerText="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}">
-					<p:skeleton />
-				</p:column>
-				<p:column
-					headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
-					<p:skeleton />
-				</p:column>
-				<p:column
-					headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}">
-					<p:skeleton />
-				</p:column>
-			</p:dataTable>
-		</div>
-		<div id="noCustomersFound" class="exception-body notfound"
-			style="display: none">
-			<div class="exception-card">
-				<h1>
-					<span>NENHUM</span> REGISTRO ENCONTRADO
-				</h1>
-				<p:graphicImage name="images/pages/asset-404.svg"
-					library="rain-layout" />
-				<span>Tente novamente com outra palavra-chave</span>
-			</div>
-		</div>
 	</div>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
 	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
 	<script>
-		function onStartSearchCustomer() {
-			$('#skeletonForLoad').show();
-			$('#content').hide();
-		}
-
-		function onCompleteSearchCustomer() {
-			$('#skeletonForLoad').hide();
-		}
+		
 	</script>
 </h:body>
 </html>

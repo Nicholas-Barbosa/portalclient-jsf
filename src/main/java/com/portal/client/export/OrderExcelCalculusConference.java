@@ -11,13 +11,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.service.microsoft.excel.writer.XssfWriter;
 import com.portal.client.util.MathUtils;
-import com.portal.client.vo.ItemBudgetValue;
+import com.portal.client.vo.Budget;
+import com.portal.client.vo.ItemValue;
 
 @ApplicationScoped
 public class OrderExcelCalculusConference {
@@ -31,7 +31,7 @@ public class OrderExcelCalculusConference {
 		this.intiColumnsPositions();
 	}
 
-	public byte[] createWorkbook(BaseBudget order) {
+	public byte[] createWorkbook(Budget order) {
 		List<RowObject> rowObjects = new CopyOnWriteArrayList<>();
 		rowObjects.add(createRowForColumns());
 
@@ -39,7 +39,7 @@ public class OrderExcelCalculusConference {
 
 		order.getItems().parallelStream().forEach(i -> {
 			List<WriteCellAttribute> cells = new LinkedList<>();
-			ItemBudgetValue values = i.getValue();
+			ItemValue values = i.getValue();
 
 			cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("productCode"),
 					i.getProduct().getCommercialCode()));

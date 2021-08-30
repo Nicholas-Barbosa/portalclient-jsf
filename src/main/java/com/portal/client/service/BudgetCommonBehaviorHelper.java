@@ -2,10 +2,10 @@ package com.portal.client.service;
 
 import java.math.BigDecimal;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.Budget;
+import com.portal.client.vo.Item;
 
 public interface BudgetCommonBehaviorHelper {
 
@@ -14,14 +14,14 @@ public interface BudgetCommonBehaviorHelper {
 	 * 
 	 * @param budget
 	 */
-	void calculateTotals(BaseBudget budget);
+	void calculateTotals(Budget budget);
 
-	void removeItem(BaseBudget budget, ItemBudget itemToRemove);
+	void removeItem(Budget budget, Item itemToRemove);
 
-	void addItem(BaseBudget budgetDTO, ItemBudget produc);
+	void addItem(Budget budgetDTO, Item produc);
 
-	default void setCustomer(BaseBudget budget, CustomerOnOrder customer) {
-		if (budget.getItems().size() >= 1)
+	default void setCustomer(Budget budget, CustomerOnOrder customer) {
+		if (budget.getItems() != null && budget.getItems().size() >= 1)
 			throw new UnsupportedOperationException(
 					"You can't set a client at this moment. Because this budget has many items.");
 		budget.setCustomerOnOrder(customer);
@@ -33,7 +33,7 @@ public interface BudgetCommonBehaviorHelper {
 	 * @param budget
 	 * @param discount
 	 */
-	void setDiscount(BaseBudget budget, BigDecimal discount) throws CustomerNotAllowed;
+	void setDiscount(Budget budget, BigDecimal discount) throws CustomerNotAllowed;
 
-	void merge(BaseBudget mixedBudget, BaseBudget budgetToMix);
+	void merge(Budget mixedBudget, Budget budgetToMix);
 }

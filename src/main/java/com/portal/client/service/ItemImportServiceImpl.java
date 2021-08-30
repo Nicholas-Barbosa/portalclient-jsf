@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.ItemXlsxProjection;
@@ -21,7 +20,8 @@ import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.reader.XssfReader;
-import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.Budget;
+import com.portal.client.vo.Item;
 import com.portal.client.vo.ProductImage;
 import com.portal.client.vo.ProductImage.ImageInfoState;
 
@@ -69,12 +69,12 @@ public class ItemImportServiceImpl implements ItemImportService, Serializable {
 	}
 
 	@Override
-	public BaseBudget findPrice(List<ItemXlsxProjection> items, String customerCode, String customerStore)
+	public Budget findPrice(List<ItemXlsxProjection> items, String customerCode, String customerStore)
 			throws CustomerNotFoundException, ItemsNotFoundException {
-		BaseBudget budget = budgetCrudService.estimate(customerCode, customerStore,
+		Budget budget = budgetCrudService.estimate(customerCode, customerStore,
 				items.parallelStream().filter(i -> i.getQuantity() > 0).map(this::toItem)
 						.collect(CopyOnWriteArraySet::new, Set::add, Set::addAll));
-		budget.getItems().parallelStream().map(ItemBudget::getProduct).forEach(p -> {
+		budget.getItems().parallelStream().map(Item::getProduct).forEach(p -> {
 			p.setImage(new ProductImage(null, ImageInfoState.NOT_LOADED));
 		});
 		return budget;

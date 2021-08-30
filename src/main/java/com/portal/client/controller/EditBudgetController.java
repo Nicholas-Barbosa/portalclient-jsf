@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ProcessingException;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
@@ -15,6 +14,7 @@ import com.portal.client.service.CustomerService;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
+import com.portal.client.vo.Budget;
 
 @Named
 @ViewScoped
@@ -31,7 +31,7 @@ public class EditBudgetController implements Serializable {
 
 	private ProcessingExceptionFacesMessageHelper exceptionShowMessage;
 
-	private BaseBudget budget;
+	private Budget budget;
 
 	private String budgetID;
 
@@ -87,7 +87,7 @@ public class EditBudgetController implements Serializable {
 		this.budgetID = budgetID;
 	}
 
-	public BaseBudget getBudget() {
+	public Budget getBudget() {
 		return budget;
 	}
 

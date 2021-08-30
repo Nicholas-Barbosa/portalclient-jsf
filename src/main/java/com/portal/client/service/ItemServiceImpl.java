@@ -10,14 +10,14 @@ import javax.validation.constraints.NotNull;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.util.MathUtils;
-import com.portal.client.vo.ItemBudget;
-import com.portal.client.vo.ItemBudgetValue;
+import com.portal.client.vo.Item;
+import com.portal.client.vo.ItemValue;
 
 @ApplicationScoped
 public class ItemServiceImpl implements ItemService {
 
 	@Override
-	public void calculateDueQuantity(ItemBudget item, int quantity) throws ItemQuantityNotAllowed {
+	public void calculateDueQuantity(Item item, int quantity) throws ItemQuantityNotAllowed {
 		if (checkQuantityPolicies(item, quantity)) {
 			calculateTotals(item, quantity);
 			item.getValue().setQuantity(quantity);
@@ -28,9 +28,9 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public void applyGlobalDiscount(@NotNull Collection<? extends ItemBudget> items, BigDecimal discount) {
+	public void applyGlobalDiscount(@NotNull Collection<? extends Item> items, BigDecimal discount) {
 		items.parallelStream().forEach(i -> {
-			ItemBudgetValue value = i.getValue();
+			ItemValue value = i.getValue();
 
 			BigDecimal[] unitValues = this.applyDiscount(i, discount);
 			value.setUnitGrossValue(unitValues[0]);
@@ -48,18 +48,17 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public void applyGlobalDiscount(ItemBudget items, BigDecimal discount) {
+	public void applyGlobalDiscount(Item items, BigDecimal discount) {
 		this.applyGlobalDiscount(List.of(items), discount);
 
 	}
 
 	@Override
-	public void applyLineDiscount(@NotNull Collection<? extends ItemBudget> items,
-			ItemLineDiscountForm itemLineDiscount) {
+	public void applyLineDiscount(@NotNull Collection<? extends Item> items, ItemLineDiscountForm itemLineDiscount) {
 		BigDecimal discount = itemLineDiscount.getDiscount();
 		String line = itemLineDiscount.getLine();
-		items.parallelStream().filter(i -> i.line().equals(line)).forEach(i -> {
-			ItemBudgetValue price = i.getValue();
+		items.parallelStream().filter(i -> i.getLine().equals(line)).forEach(i -> {
+			ItemValue price = i.getValue();
 
 			price.setUnitGrossValue(
 					MathUtils.subtractValueByPercentage(discount, price.getUnitGrossValueFromGBDiscount()));
@@ -72,8 +71,8 @@ public class ItemServiceImpl implements ItemService {
 
 	}
 
-	private void calculateTotals(ItemBudget item) {
-		ItemBudgetValue values = item.getValue();
+	private void calculateTotals(Item item) {
+		ItemValue values = item.getValue();
 		values.setTotalGrossValue(
 				MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitGrossValue()));
 		values.setTotalStValue(
@@ -81,15 +80,15 @@ public class ItemServiceImpl implements ItemService {
 		values.setTotalValue(MathUtils.calculateTotalValueOverQuantity(values.getQuantity(), values.getUnitValue()));
 	}
 
-	private void calculateTotals(ItemBudget item, int quantity) {
-		ItemBudgetValue prices = item.getValue();
+	private void calculateTotals(Item item, int quantity) {
+		ItemValue prices = item.getValue();
 		prices.setTotalGrossValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitGrossValue()));
 		prices.setTotalStValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitStValue()));
 		prices.setTotalValue(MathUtils.calculateTotalValueOverQuantity(quantity, prices.getUnitValue()));
 	}
 
-	private BigDecimal[] applyDiscount(ItemBudget item, BigDecimal discount) {
-		ItemBudgetValue price = item.getValue();
+	private BigDecimal[] applyDiscount(Item item, BigDecimal discount) {
+		ItemValue price = item.getValue();
 		BigDecimal values[] = new BigDecimal[3];
 		BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(discount,
 				price.getUnitGrossValueWithoutDiscount());
@@ -102,7 +101,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
-	public boolean checkQuantityPolicies(ItemBudget item, int quantity) {
+	public boolean checkQuantityPolicies(Item item, int quantity) {
 		// TODO Auto-generated method stub
 		if (item.getProduct().getValue().getMultiple() == 0)
 			return true;

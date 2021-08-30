@@ -1,14 +1,12 @@
 package com.portal.client.vo;
 
-import com.portal.client.dto.BaseBudget;
-
 public class BudgetEstimatedResultSet {
 
 	private boolean ok;
-	private BaseBudget budget;
+	private Budget budget;
 	private BudgetEstimatedResult404Error error;
 	
-	public BudgetEstimatedResultSet(boolean ok, BaseBudget budget, BudgetEstimatedResult404Error error) {
+	public BudgetEstimatedResultSet(boolean ok, Budget budget, BudgetEstimatedResult404Error error) {
 		super();
 		this.ok = ok;
 		this.budget = budget;
@@ -19,7 +17,7 @@ public class BudgetEstimatedResultSet {
 		return ok;
 	}
 
-	public BaseBudget getBudget() {
+	public Budget getBudget() {
 		return budget;
 	}
 

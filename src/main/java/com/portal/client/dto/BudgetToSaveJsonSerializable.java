@@ -1,20 +1,23 @@
 package com.portal.client.dto;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 
+import com.portal.client.vo.Budget;
+
 public class BudgetToSaveJsonSerializable {
 
 	@JsonbTransient
-	private BaseBudget budget;
+	private Budget budget;
 
-	public BudgetToSaveJsonSerializable(BaseBudget budget) {
+	public BudgetToSaveJsonSerializable(Budget budget) {
 		this.budget = budget;
 	}
 
-	public static BudgetToSaveJsonSerializable of(BaseBudget baseBudget) {
+	public static BudgetToSaveJsonSerializable of(Budget baseBudget) {
 		return new BudgetToSaveJsonSerializable(baseBudget);
 	}
 
@@ -43,9 +46,8 @@ public class BudgetToSaveJsonSerializable {
 		return budget.getMessage();
 	}
 
-	@SuppressWarnings("unchecked")
 	@JsonbProperty("items")
 	public Set<ItemBudgetToSaveJsonSerializable> getItems() {
-		return (Set<ItemBudgetToSaveJsonSerializable>) budget.getItems();
+		return budget.getItems().stream().map(ItemBudgetToSaveJsonSerializable::of).collect(Collectors.toSet());
 	}
 }

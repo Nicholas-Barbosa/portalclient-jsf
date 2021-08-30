@@ -6,7 +6,9 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class BudgetFullProjection extends BaseBudget {
+import com.portal.client.vo.Budget;
+
+public class BudgetFullProjection extends Budget {
 
 	@JsonbCreator
 	public static BudgetFullProjection ofJsonb(@JsonbProperty("client_code") String customerCode,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf16186046119701" configfile="/PortalAppClient/src/main/webapp/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" id="pf16279222998800" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf16279222998811" path="/login.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="faces/newOrder.xhtml" id="pf16279222998812" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf16279222998811" path="/faces/newOrder.xhtml?isOrder=false"/>
-  <links id="pf16279222998811" target="pf16279222998812" source="pf16279222998800" outcome="NEW_ORDER" redirect="true"/>
+  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" id="pf16303453655800" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf16303453655811" path="/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="faces/newBudget" id="pf16303453655812" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf16303453655811" path="/faces/newBudget"/>
+  <links id="pf16303453655811" target="pf16303453655812" source="pf16303453655800" outcome="NEW_ORDER" redirect="true"/>
 </pageflow:Pageflow>

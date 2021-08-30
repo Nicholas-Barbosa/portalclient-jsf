@@ -3,7 +3,6 @@ package com.portal.client.repository;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -14,14 +13,12 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetEstimatedResultBuilder;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.FormToEstimateBudget;
-import com.portal.client.dto.ItemBudgetToSaveJsonSerializable;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
@@ -29,6 +26,7 @@ import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.service.jsonb.JsonbService;
+import com.portal.client.vo.Budget;
 import com.portal.client.vo.Customer404Error;
 import com.portal.client.vo.Deseriaized404JsonEstimateEndpoint;
 import com.portal.client.vo.WrapperItem404Error;
@@ -67,18 +65,18 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public void save(BaseBudget budget) {
+	public void save(Budget budget) {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
-		budget.replaceItems(budget.getItems().parallelStream().map(ItemBudgetToSaveJsonSerializable::new)
-				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
+//		budget.replaceItems(budget.getItems().parallelStream().map(ItemBudgetToSaveJsonSerializable::new)
+//				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
 		BudgetSavedResponse response = restClient.post(apiManager.buildEndpoint(api, "budgets"), api.getToken(),
 				api.getTokenPrefix(), BudgetSavedResponse.class, null, null, BudgetToSaveJsonSerializable.of(budget),
 				MediaType.APPLICATION_JSON);
-		budget.setIdCode(response.getCode());
+		budget.setCode(response.getCode());
 	}
 
 	@Override
-	public Optional<BaseBudget> findByCode(String code) {
+	public Optional<Budget> findByCode(String code) {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		try {
 			return Optional.of(restClient.get(apiManager.buildEndpoint(api, "budgets/{code}"), api.getToken(),
@@ -90,7 +88,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	}
 
 	@Override
-	public BaseBudget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
+	public Budget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
 			throws CustomerNotFoundException, ItemsNotFoundException {
 		ServerAPI server = apiManager.getAPI(orcamentoKey);
 

@@ -17,6 +17,15 @@ public class ProductValue {
 		// TODO Auto-generated constructor stub
 	}
 
+	public ProductValue(ProductValue pValue) {
+		this.unitStValue = pValue.getUnitStValue();
+		this.unitValue = pValue.getUnitValue();
+		this.unitGrossValue = pValue.getUnitGrossValue();
+		this.quantity = pValue.getQuantity();
+		this.multiple = pValue.getMultiple();
+		checkQuantity();
+	}
+
 	public ProductValue(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue, int quantity,
 			Integer multiple) {
 		super();
@@ -25,7 +34,10 @@ public class ProductValue {
 		this.unitGrossValue = unitGrossValue;
 		this.quantity = quantity;
 		this.multiple = multiple;
+		checkQuantity();
+	}
 
+	private final void checkQuantity() {
 		if (quantity == 1) {
 			this.totalGrossValue = unitGrossValue;
 			this.totalStValue = unitStValue;

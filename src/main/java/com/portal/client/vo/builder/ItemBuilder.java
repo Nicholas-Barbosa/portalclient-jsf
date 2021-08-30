@@ -1,13 +1,13 @@
-package com.portal.client.dto.builder;
+package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
 
 import com.portal.client.dto.ProductValue;
-import com.portal.client.vo.ItemBudget;
-import com.portal.client.vo.ItemBudgetValue;
+import com.portal.client.vo.Item;
+import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Product;
 
-public class ItemBudgetBuilder implements ContractItemBudgetBuilder {
+public class ItemBuilder implements ContractItemBuilder {
 
 	private BigDecimal budgetGlobalDiscount;
 	private BigDecimal lineDiscount;
@@ -21,12 +21,12 @@ public class ItemBudgetBuilder implements ContractItemBudgetBuilder {
 	private Integer multiple;
 	private Product product;
 
-	public static ItemBudgetBuilder getInstance() {
-		return new ItemBudgetBuilder();
+	public static ItemBuilder getInstance() {
+		return new ItemBuilder();
 	}
 
-	public static ItemBudget product(Product product) {
-		ItemBudgetBuilder builder = new ItemBudgetBuilder();
+	public static Item product(Product product) {
+		ItemBuilder builder = new ItemBuilder();
 		ProductValue productValue = product.getValue();
 		return builder.withProduct(product).withQuantity(productValue.getQuantity())
 				.withUnitGrossValue(productValue.getUnitGrossValue()).withUnitStValue(productValue.getUnitStValue())
@@ -36,67 +36,67 @@ public class ItemBudgetBuilder implements ContractItemBudgetBuilder {
 	}
 
 	@Override
-	public ItemBudgetBuilder withGlobalDiscount(BigDecimal value) {
+	public ItemBuilder withGlobalDiscount(BigDecimal value) {
 		this.budgetGlobalDiscount = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withLineDiscount(BigDecimal value) {
+	public ItemBuilder withLineDiscount(BigDecimal value) {
 		this.lineDiscount = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withUnitStValue(BigDecimal value) {
+	public ItemBuilder withUnitStValue(BigDecimal value) {
 		this.unitStValue = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withUnitGrossValue(BigDecimal value) {
+	public ItemBuilder withUnitGrossValue(BigDecimal value) {
 		this.unitGrossValue = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withTotalStValue(BigDecimal value) {
+	public ItemBuilder withTotalStValue(BigDecimal value) {
 		this.totalStValue = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withTotalValue(BigDecimal value) {
+	public ItemBuilder withTotalValue(BigDecimal value) {
 		this.totalValue = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withTotalGrossValue(BigDecimal value) {
+	public ItemBuilder withTotalGrossValue(BigDecimal value) {
 		this.totalGrossValue = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withQuantity(int value) {
+	public ItemBuilder withQuantity(int value) {
 		this.quantity = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withUnitValue(BigDecimal value) {
+	public ItemBuilder withUnitValue(BigDecimal value) {
 		this.unitValue = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withProduct(Product value) {
+	public ItemBuilder withProduct(Product value) {
 		this.product = value;
 		return this;
 	}
 
 	@Override
-	public ItemBudgetBuilder withMultiple(Product value) {
+	public ItemBuilder withMultiple(Product value) {
 		this.product = value;
 		return this;
 	}
@@ -155,9 +155,9 @@ public class ItemBudgetBuilder implements ContractItemBudgetBuilder {
 		return product;
 	}
 
-	public ItemBudget build() {
-		return new ItemBudget(product, new ItemBudgetValue(quantity, multiple, budgetGlobalDiscount, lineDiscount,
-				unitStValue, unitValue, unitGrossValue, totalStValue, totalValue, totalGrossValue));
+	public Item build() {
+		return new Item(product, new ItemValue(quantity, multiple, budgetGlobalDiscount, lineDiscount, unitStValue,
+				unitValue, unitGrossValue, totalStValue, totalValue, totalGrossValue));
 	}
 
 }

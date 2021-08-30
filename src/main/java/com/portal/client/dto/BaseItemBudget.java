@@ -2,16 +2,16 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 
-import com.portal.client.vo.ItemBudgetValue;
+import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Product;
 
 public class BaseItemBudget {
 
 	private final Product product;
-	private ItemBudgetValue value;
+	private ItemValue value;
 
 	public BaseItemBudget(BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount, Product product,
-			ItemBudgetValue value) {
+			ItemValue value) {
 		super();
 		this.product = product;
 		this.value = value;
@@ -25,7 +25,7 @@ public class BaseItemBudget {
 		return product;
 	}
 
-	public ItemBudgetValue getValues() {
+	public ItemValue getValues() {
 		return value;
 	}
 

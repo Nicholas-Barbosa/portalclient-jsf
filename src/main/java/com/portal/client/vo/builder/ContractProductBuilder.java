@@ -1,4 +1,4 @@
-package com.portal.client.dto.builder;
+package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
 

@@ -24,7 +24,6 @@ import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.data.PageEvent;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerAddress;
@@ -42,7 +41,6 @@ import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.client.dto.builder.ItemBudgetBuilder;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.export.OrderExport;
@@ -59,7 +57,8 @@ import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.ServerEndpointErrorUtils;
-import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.Budget;
+import com.portal.client.vo.Item;
 import com.portal.client.vo.Product;
 
 @Named
@@ -112,15 +111,13 @@ public class NewBudgetOrderController implements Serializable {
 
 	private FindProductByCodeForm findProductByCodeForm;
 
-	private ItemBudget previewItem;
-
 	private byte[] imageToSeeOnDlg;
 
 	private ItemXlsxFileLayout budgetImportXlsxForm;
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
-	private BaseBudget budget;
+	private Budget budget;
 
 	private BigDecimal itemDiscountToView;
 
@@ -133,8 +130,6 @@ public class NewBudgetOrderController implements Serializable {
 	private BigDecimal globalDiscount;
 
 	private DiscountView discView;
-
-	private int previewItemQuantity;
 
 	private int onRowItemQuantity;
 
@@ -187,7 +182,7 @@ public class NewBudgetOrderController implements Serializable {
 		FacesUtils.error(null, "Cliente não selecionado", null, "growl");
 	}
 
-	public void handleItemImportReturn(SelectEvent<BaseBudget> event) {
+	public void handleItemImportReturn(SelectEvent<Budget> event) {
 		this.budgetBehaviorHelper.merge(budget, event.getObject());
 		FacesUtils.ajaxUpdate("formItems:dtItems", "budgetTotals");
 	}
@@ -262,6 +257,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void applyGlobalDiscount() {
 		try {
+			System.out.println("Global discount " + globalDiscount);
 			budgetBehaviorHelper.setDiscount(budget, globalDiscount);
 		} catch (CustomerNotAllowed e) {
 			FacesUtils.fatal(null, "Cliente não autorizado", null);
@@ -275,25 +271,16 @@ public class NewBudgetOrderController implements Serializable {
 	}
 
 	public void loadCurrentItemLines() {
-		this.itemLines = budget.getItems().parallelStream().map(ItemBudget::line).collect(Collectors.toSet());
+		this.itemLines = budget.getItems().parallelStream().map(Item::getLine).collect(Collectors.toSet());
 	}
 
-	public void addPreviewItemToBudget() {
-		budgetBehaviorHelper.addItem(budget, previewItem);
-		previewItem = null;
-	}
-
-	public void changItemQuantity() {
-		calculateItemQuantity(previewItem, previewItemQuantity);
-	}
-
-	public void onRowItemEdit(RowEditEvent<ItemBudget> event) {
+	public void onRowItemEdit(RowEditEvent<Item> event) {
 		calculateItemQuantity(event.getObject(), onRowItemQuantity);
 		budgetBehaviorHelper.calculateTotals(budget);
 		onRowItemQuantity = 1;
 	}
 
-	private void calculateItemQuantity(ItemBudget item, int quantity) {
+	private void calculateItemQuantity(Item item, int quantity) {
 		try {
 			itemService.calculateDueQuantity(item, quantity);
 		} catch (ItemQuantityNotAllowed e) {
@@ -303,7 +290,7 @@ public class NewBudgetOrderController implements Serializable {
 		}
 	}
 
-	public void removeItem(ItemBudget item) {
+	public void removeItem(Item item) {
 		budgetBehaviorHelper.removeItem(budget, item);
 	}
 
@@ -319,7 +306,7 @@ public class NewBudgetOrderController implements Serializable {
 	}
 
 	public void newBudgetObject() {
-		this.budget = new BaseBudget();
+		this.budget = new Budget();
 	}
 
 	public void exportOrder() {
@@ -349,7 +336,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresent(p -> {
-			budgetBehaviorHelper.addItem(budget, ItemBudgetBuilder.product(p));
+			budgetBehaviorHelper.addItem(budget, Item.product(p));
 			FacesUtils.ajaxUpdate("formItems:dtItems", "budgetTotals");
 		});
 
@@ -391,7 +378,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
 		findProductByCodeForm = new FindProductByCodeForm();
 		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
-		this.budget = new BaseBudget();
+		this.budget = new Budget();
 		this.itemLines = new HashSet<>();
 		this.itemLineDiscount = new ItemLineDiscountForm();
 		this.prospectCustomerForm = new ProspectCustomerForm();
@@ -463,14 +450,6 @@ public class NewBudgetOrderController implements Serializable {
 		return findProductByCodeForm;
 	}
 
-	public ItemBudget getPreviewItem() {
-		return previewItem;
-	}
-
-	public void changePreviewItem(ItemBudget previewItem) {
-		this.previewItem = previewItem;
-	}
-
 	public byte[] getImageToSeeOnDlg() {
 		return imageToSeeOnDlg;
 	}
@@ -487,7 +466,7 @@ public class NewBudgetOrderController implements Serializable {
 		return budgetXlsxPreview;
 	}
 
-	public BaseBudget getBudget() {
+	public Budget getBudget() {
 		return budget;
 	}
 
@@ -521,14 +500,6 @@ public class NewBudgetOrderController implements Serializable {
 
 	public DiscountView getDiscView() {
 		return discView;
-	}
-
-	public int getPreviewItemQuantity() {
-		return previewItemQuantity;
-	}
-
-	public void setPreviewItemQuantity(int previewItemQuantity) {
-		this.previewItemQuantity = previewItemQuantity;
 	}
 
 	public int getOnRowItemQuantity() {

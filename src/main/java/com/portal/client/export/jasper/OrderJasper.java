@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.CustomerOnOrder;
+import com.portal.client.vo.Budget;
 import com.portal.client.vo.ItemBudget;
-import com.portal.client.vo.ItemBudgetValue;
+import com.portal.client.vo.ItemValue;
 
 public class OrderJasper implements Serializable {
 
@@ -41,7 +41,7 @@ public class OrderJasper implements Serializable {
 		this.message = message;
 	}
 
-	public OrderJasper(BaseBudget budget) {
+	public OrderJasper(Budget budget) {
 		this.liquidValue = budget.getLiquidValue();
 		this.grossValue = budget.getGrossValue();
 		this.stTotal = budget.getStValue();
@@ -177,7 +177,7 @@ public class OrderJasper implements Serializable {
 			this.commercialCode = item.getProduct().getCommercialCode();
 			this.line = item.line();
 
-			ItemBudgetValue values = item.getValue();
+			ItemValue values = item.getValue();
 			this.quantity = values.getQuantity();
 			this.unitValue = values.getUnitValueWithoutDiscount();
 			this.totalValue = this.unitValue.multiply(new BigDecimal(this.quantity));

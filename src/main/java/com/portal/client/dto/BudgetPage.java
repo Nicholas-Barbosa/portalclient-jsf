@@ -8,7 +8,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class BudgetPage implements Page<BaseBudget> {
+import com.portal.client.vo.Budget;
+
+public class BudgetPage implements Page<Budget> {
 
 	/**
 	 * 
@@ -19,7 +21,7 @@ public class BudgetPage implements Page<BaseBudget> {
 	private final int totalPage;
 	private final int pageSize;
 	private final int page;
-	private final List<BaseBudget> budgets;
+	private final List<Budget> budgets;
 
 	@JsonbCreator
 	public BudgetPage(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPage,
@@ -59,7 +61,7 @@ public class BudgetPage implements Page<BaseBudget> {
 	}
 
 	@Override
-	public Collection<BaseBudget> getContent() {
+	public Collection<Budget> getContent() {
 		// TODO Auto-generated method stub
 		return new ArrayList<>(budgets);
 	}

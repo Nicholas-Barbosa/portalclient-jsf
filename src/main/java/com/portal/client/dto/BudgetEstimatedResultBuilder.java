@@ -2,13 +2,12 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.builder.ItemBudgetEstimatedResultBuilder;
-import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.Budget;
+import com.portal.client.vo.builder.ItemBudgetEstimatedResultBuilder;
 
 public class BudgetEstimatedResultBuilder extends BaseBudgetJsonBuilder {
 
@@ -17,17 +16,17 @@ public class BudgetEstimatedResultBuilder extends BaseBudgetJsonBuilder {
 			@JsonbProperty("gross_order_value") BigDecimal grossValue,
 			@JsonbProperty("client_code") String customerCode,
 			@JsonbProperty("estimate") Set<ItemBudgetEstimatedResultBuilder> items) {
-		super.withCustomerCode(customerCode).withGrossValue(grossValue).withLiquidValue(liquidValue).withItems(items);
+		super.withCustomerCode(customerCode).withGrossValue(grossValue).withLiquidValue(liquidValue)
+				.withItems(ItemBudgetEstimatedResultBuilder.build(items));
 	}
 
 	@Override
-	public BaseBudget build() {
+	public Budget build() {
 		CustomerOnOrder customerOnOrder = new CustomerOnOrder(super.getCustomerCode(), super.getCustomerStore(), null,
 				null, null, null, null, null, null);
-		Set<ItemBudget> items = super.getItems().parallelStream().map(i -> i.build()).collect(CopyOnWriteArraySet::new,
-				Set::add, Set::addAll);
-		BaseBudget baseBudget = new BaseBudget(customerOnOrder, super.getGrossValue(), super.getLiquidValue(),
-				super.getStValue(), BigDecimal.ZERO, items, super.getMessage());
+		Budget baseBudget = new Budget(customerOnOrder, super.getGrossValue(), super.getLiquidValue(),
+				super.getStValue(), BigDecimal.ZERO, super.getItems(), super.getMessage());
 		return baseBudget;
 	}
+
 }

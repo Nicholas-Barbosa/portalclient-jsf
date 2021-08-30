@@ -7,7 +7,7 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.vo.ItemBudget;
-import com.portal.client.vo.ItemBudgetValue;
+import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Product;
 
 public class ItemBudgetProjection extends ItemBudget {
@@ -23,7 +23,7 @@ public class ItemBudgetProjection extends ItemBudget {
 		Product product = createProduct(stValue, unitValue, grossValue, lineDiscount, quantityBgDecimal, productCode,
 				commercialCode);
 
-		ItemBudgetValue value = new ItemBudgetValue(quantity, null, BigDecimal.ZERO, lineDiscount,
+		ItemValue value = new ItemValue(quantity, null, BigDecimal.ZERO, lineDiscount,
 				stValue.divide(quantityBgDecimal, RoundingMode.HALF_UP), unitValue,
 				grossValue.divide(quantityBgDecimal, RoundingMode.HALF_UP), stValue, totalValue, grossValue);
 
@@ -31,7 +31,7 @@ public class ItemBudgetProjection extends ItemBudget {
 
 	}
 
-	public ItemBudgetProjection(Product product, ItemBudgetValue value) {
+	public ItemBudgetProjection(Product product, ItemValue value) {
 		super(product, value);
 
 	}

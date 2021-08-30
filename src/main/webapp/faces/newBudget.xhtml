@@ -396,11 +396,11 @@
 				update="customerForm, formItems:dtItems, budgetTotals" />
 			<p:dialog widgetVar="successSavedBudgetOrOrder" modal="true"
 				responsive="true" id="successSavedBudgetOrOrder"
-				header="#{newBudgetOrderController.budget.idCode}"
+				header="#{newBudgetOrderController.budget.code}"
 				onHide="cleanBudgetObj()">
 				<p:staticMessage severity="info"
 					summary="Orçamento salvo com sucesso."
-					detail="Orçamento salvo com identificador: #{newBudgetOrderController.budget.idCode}"
+					detail="Orçamento salvo com identificador: #{newBudgetOrderController.budget.code}"
 					style="width: 100%" />
 			</p:dialog>
 			<p:dialog widgetVar="saveBudgetOrder" modal="true"

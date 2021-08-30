@@ -5,7 +5,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.portal.client.dto.builder.ItemBudgetBuilder;
+import com.portal.client.vo.Item;
+import com.portal.client.vo.builder.ItemBuilder;
 
 public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 
@@ -15,7 +16,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
 	private BigDecimal stValue;
-	private Set<ItemBudgetBuilder> items;
+	private Set<Item> items;
 	private String message;
 	private LocalDate createdAt;
 
@@ -49,7 +50,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 		return this;
 	}
 
-	public BaseBudgetJsonBuilder withItems(Set<? extends ItemBudgetBuilder> items) {
+	public BaseBudgetJsonBuilder withItems(Set<Item> items) {
 		this.items = new HashSet<>(items);
 		return this;
 	}
@@ -88,7 +89,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 		return stValue;
 	}
 
-	public Set<ItemBudgetBuilder> getItems() {
+	public Set<Item> getItems() {
 		return items;
 	}
 
