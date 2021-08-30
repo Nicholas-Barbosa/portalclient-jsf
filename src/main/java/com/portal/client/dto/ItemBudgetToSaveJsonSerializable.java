@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.vo.ItemBudget;
+
 public class ItemBudgetToSaveJsonSerializable extends ItemBudget
 		implements Comparable<ItemBudgetToSaveJsonSerializable> {
 

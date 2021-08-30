@@ -35,7 +35,6 @@ import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.DownloadStreamsForm;
 import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
-import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.ProductPageDTO;
@@ -60,6 +59,7 @@ import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.ServerEndpointErrorUtils;
+import com.portal.client.vo.ItemBudget;
 import com.portal.client.vo.Product;
 
 @Named

@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 
 import com.portal.client.dto.BaseBudget;
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ItemBudget;
 import com.portal.client.exception.CustomerNotAllowed;
+import com.portal.client.vo.ItemBudget;
 
 public interface BudgetCommonBehaviorHelper {
 

@@ -6,7 +6,8 @@ import java.math.RoundingMode;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.util.MathUtils;
+import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.ItemBudgetValue;
 import com.portal.client.vo.Product;
 
 public class ItemBudgetProjection extends ItemBudget {
@@ -22,10 +23,9 @@ public class ItemBudgetProjection extends ItemBudget {
 		Product product = createProduct(stValue, unitValue, grossValue, lineDiscount, quantityBgDecimal, productCode,
 				commercialCode);
 
-		ItemBudgetValue value = new ItemBudgetValue(quantity, BigDecimal.ZERO, lineDiscount,
+		ItemBudgetValue value = new ItemBudgetValue(quantity, null, BigDecimal.ZERO, lineDiscount,
 				stValue.divide(quantityBgDecimal, RoundingMode.HALF_UP), unitValue,
-				grossValue.divide(quantityBgDecimal, RoundingMode.HALF_UP), stValue, totalValue, grossValue,
-				product.getValue());
+				grossValue.divide(quantityBgDecimal, RoundingMode.HALF_UP), stValue, totalValue, grossValue);
 
 		return new ItemBudgetProjection(product, value);
 
@@ -38,17 +38,17 @@ public class ItemBudgetProjection extends ItemBudget {
 
 	private static Product createProduct(BigDecimal rawStValue, BigDecimal rawUnitValue, BigDecimal rawGrossValue,
 			BigDecimal lineDiscount, BigDecimal quantity, String code, String commercialCode) {
-		BigDecimal unitStValue = MathUtils.addValueByPercentage(lineDiscount,
-				rawStValue.divide(quantity, RoundingMode.HALF_UP));
-		BigDecimal unitValue = MathUtils.addValueByPercentage(lineDiscount, rawUnitValue);
-		BigDecimal unitGrossValue = MathUtils.addValueByPercentage(lineDiscount,
-				rawGrossValue.divide(quantity, RoundingMode.HALF_UP));
-
-		ProductValue productValue = new ProductValue(unitStValue, unitValue, unitGrossValue);
-
-		Product product = new Product(code, commercialCode, null, null, null, null, 0, 0, false, null, productValue,
-				null);
-		return product;
+//		BigDecimal unitStValue = MathUtils.addValueByPercentage(lineDiscount,
+//				rawStValue.divide(quantity, RoundingMode.HALF_UP));
+//		BigDecimal unitValue = MathUtils.addValueByPercentage(lineDiscount, rawUnitValue);
+//		BigDecimal unitGrossValue = MathUtils.addValueByPercentage(lineDiscount,
+//				rawGrossValue.divide(quantity, RoundingMode.HALF_UP));
+//
+//		ProductValue productValue = new ProductValue(unitStValue, unitValue, unitGrossValue);
+//
+//		Product product = new Product(code, commercialCode, null, null, null, null, 0, 0, false, null, productValue,
+//				null);
+		return null;
 	}
 
 }

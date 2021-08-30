@@ -13,7 +13,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.dto.ItemXlsxFileLayout;
 import com.portal.client.dto.ItemXlsxProjection;
@@ -22,6 +21,7 @@ import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.reader.XssfReader;
+import com.portal.client.vo.ItemBudget;
 import com.portal.client.vo.ProductImage;
 import com.portal.client.vo.ProductImage.ImageInfoState;
 

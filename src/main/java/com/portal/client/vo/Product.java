@@ -17,7 +17,6 @@ public class Product {
 	private final String line;
 	private final String acronymLine;
 	private int stock;
-	private final int multiple;
 	private final boolean commercialBlock;
 	private ProductImage image;
 	private final ProductValue value;
@@ -33,13 +32,13 @@ public class Product {
 			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("stock") int stock,
 			@JsonbProperty("description") String description,
 			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
-		ProductValue price = new ProductValue(stValue, unitValue, unitGrossValue);
-		return new Product(code, cCode, application, description, line, acronymLine, stock, multiple,
+		ProductValue price = new ProductValue(stValue, unitValue, unitGrossValue,1,multiple);
+		return new Product(code, cCode, application, description, line, acronymLine, stock,
 				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price, null);
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, int stock, int multiple, boolean commercialBlock, ProductImage image,
+			String acronymLine, int stock, boolean commercialBlock, ProductImage image,
 			ProductValue price, ProductTechDetail productTechDetail) {
 		super();
 		this.code = code;
@@ -49,7 +48,6 @@ public class Product {
 		this.line = line;
 		this.acronymLine = acronymLine;
 		this.stock = stock;
-		this.multiple = multiple;
 		this.commercialBlock = commercialBlock;
 		this.image = image;
 		this.value = price;
@@ -57,7 +55,7 @@ public class Product {
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, int stock, int multiple, boolean commercialBlock, ProductImage image,
+			String acronymLine, int stock,  boolean commercialBlock, ProductImage image,
 			ProductValue price, ProductTechDetail productTechDetail, String link) {
 		super();
 		this.code = code;
@@ -67,7 +65,6 @@ public class Product {
 		this.line = line;
 		this.acronymLine = acronymLine;
 		this.stock = stock;
-		this.multiple = multiple;
 		this.commercialBlock = commercialBlock;
 		this.image = image;
 		this.value = price;
@@ -104,9 +101,7 @@ public class Product {
 		return stock;
 	}
 
-	public int getMultiple() {
-		return multiple;
-	}
+	
 
 	public boolean isCommercialBlock() {
 		return commercialBlock;

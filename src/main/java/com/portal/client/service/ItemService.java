@@ -5,9 +5,9 @@ import java.util.Collection;
 
 import javax.validation.constraints.NotNull;
 
-import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.exception.ItemQuantityNotAllowed;
+import com.portal.client.vo.ItemBudget;
 
 public interface ItemService {
 

@@ -8,6 +8,7 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.dto.builder.ItemBudgetEstimatedResultBuilder;
+import com.portal.client.vo.ItemBudget;
 
 public class BudgetEstimatedResultBuilder extends BaseBudgetJsonBuilder {
 

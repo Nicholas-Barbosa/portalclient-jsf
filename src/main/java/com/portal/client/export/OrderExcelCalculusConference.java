@@ -12,12 +12,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.service.microsoft.excel.RowObject;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.service.microsoft.excel.writer.XssfWriter;
 import com.portal.client.util.MathUtils;
+import com.portal.client.vo.ItemBudgetValue;
 
 @ApplicationScoped
 public class OrderExcelCalculusConference {

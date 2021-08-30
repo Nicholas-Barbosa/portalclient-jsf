@@ -1,8 +1,6 @@
-package com.portal.client.dto;
+package com.portal.client.vo;
 
 import javax.json.bind.annotation.JsonbTransient;
-
-import com.portal.client.vo.Product;
 
 public class ItemBudget {
 

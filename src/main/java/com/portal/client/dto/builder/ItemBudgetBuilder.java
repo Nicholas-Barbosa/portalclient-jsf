@@ -2,13 +2,12 @@ package com.portal.client.dto.builder;
 
 import java.math.BigDecimal;
 
-import com.portal.client.dto.ItemBudget;
-import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.dto.ProductValue;
-import com.portal.client.util.MathUtils;
+import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.ItemBudgetValue;
 import com.portal.client.vo.Product;
 
-public class ItemBudgetBuilder {
+public class ItemBudgetBuilder implements ContractItemBudgetBuilder {
 
 	private BigDecimal budgetGlobalDiscount;
 	private BigDecimal lineDiscount;
@@ -19,6 +18,7 @@ public class ItemBudgetBuilder {
 	private BigDecimal totalValue;
 	private BigDecimal totalGrossValue;
 	private int quantity;
+	private Integer multiple;
 	private Product product;
 
 	public static ItemBudgetBuilder getInstance() {
@@ -28,101 +28,127 @@ public class ItemBudgetBuilder {
 	public static ItemBudget product(Product product) {
 		ItemBudgetBuilder builder = new ItemBudgetBuilder();
 		ProductValue productValue = product.getValue();
-		return builder.withProduct(product).withQuantity(1).withUnitGrossValue(productValue.getUnitGrossValue())
-				.withUnitStValue(productValue.getUnitStValue()).withUnitValue(productValue.getUnitValue())
-				.withTotalGrossValue(
-						MathUtils.calculateTotalValueOverQuantity(builder.getQuantity(), builder.getUnitGrossValue()))
-				.withTotalStValue(
-						MathUtils.calculateTotalValueOverQuantity(builder.getQuantity(), builder.getUnitStValue()))
-				.withTotalValue(
-						MathUtils.calculateTotalValueOverQuantity(builder.getQuantity(), builder.getUnitValue()))
+		return builder.withProduct(product).withQuantity(productValue.getQuantity())
+				.withUnitGrossValue(productValue.getUnitGrossValue()).withUnitStValue(productValue.getUnitStValue())
+				.withUnitValue(productValue.getUnitValue()).withTotalGrossValue(productValue.getTotalGrossValue())
+				.withTotalStValue(productValue.getTotalStValue()).withTotalValue(productValue.getTotalValue())
 				.withLineDiscount(BigDecimal.ZERO).withGlobalDiscount(BigDecimal.ZERO).build();
 	}
 
+	@Override
 	public ItemBudgetBuilder withGlobalDiscount(BigDecimal value) {
 		this.budgetGlobalDiscount = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withLineDiscount(BigDecimal value) {
 		this.lineDiscount = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withUnitStValue(BigDecimal value) {
 		this.unitStValue = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withUnitGrossValue(BigDecimal value) {
 		this.unitGrossValue = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withTotalStValue(BigDecimal value) {
 		this.totalStValue = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withTotalValue(BigDecimal value) {
 		this.totalValue = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withTotalGrossValue(BigDecimal value) {
 		this.totalGrossValue = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withQuantity(int value) {
 		this.quantity = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withUnitValue(BigDecimal value) {
 		this.unitValue = value;
 		return this;
 	}
 
+	@Override
 	public ItemBudgetBuilder withProduct(Product value) {
 		this.product = value;
 		return this;
 	}
 
+	@Override
+	public ItemBudgetBuilder withMultiple(Product value) {
+		this.product = value;
+		return this;
+	}
+
+	@Override
 	public BigDecimal getBudgetGlobalDiscount() {
 		return budgetGlobalDiscount;
 	}
 
+	@Override
 	public BigDecimal getLineDiscount() {
 		return lineDiscount;
 	}
 
+	@Override
 	public BigDecimal getUnitStValue() {
 		return unitStValue;
 	}
 
+	@Override
 	public BigDecimal getUnitValue() {
 		return unitValue;
 	}
 
+	@Override
 	public BigDecimal getUnitGrossValue() {
 		return unitGrossValue;
 	}
 
+	@Override
 	public BigDecimal getTotalStValue() {
 		return totalStValue;
 	}
 
+	@Override
 	public BigDecimal getTotalValue() {
 		return totalValue;
 	}
 
+	@Override
 	public BigDecimal getTotalGrossValue() {
 		return totalGrossValue;
 	}
 
+	@Override
 	public int getQuantity() {
 		return quantity;
+	}
+
+	@Override
+	public Integer getMultiple() {
+		return multiple;
 	}
 
 	public Product getProduct() {
@@ -130,8 +156,8 @@ public class ItemBudgetBuilder {
 	}
 
 	public ItemBudget build() {
-		return new ItemBudget(product, new ItemBudgetValue(quantity, budgetGlobalDiscount, lineDiscount, unitStValue,
-				unitValue, unitGrossValue, totalStValue, totalValue, totalGrossValue, product.getValue()));
+		return new ItemBudget(product, new ItemBudgetValue(quantity, multiple, budgetGlobalDiscount, lineDiscount,
+				unitStValue, unitValue, unitGrossValue, totalStValue, totalValue, totalGrossValue));
 	}
 
 }

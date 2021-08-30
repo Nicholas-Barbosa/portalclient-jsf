@@ -7,8 +7,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BaseBudget;
-import com.portal.client.dto.ItemBudget;
 import com.portal.client.exception.CustomerNotAllowed;
+import com.portal.client.vo.ItemBudget;
 
 @ApplicationScoped
 public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelper, Serializable {

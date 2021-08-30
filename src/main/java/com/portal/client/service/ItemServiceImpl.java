@@ -7,11 +7,11 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.validation.constraints.NotNull;
 
-import com.portal.client.dto.ItemBudget;
 import com.portal.client.dto.ItemLineDiscountForm;
-import com.portal.client.dto.ItemBudgetValue;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.util.MathUtils;
+import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.ItemBudgetValue;
 
 @ApplicationScoped
 public class ItemServiceImpl implements ItemService {
@@ -24,26 +24,26 @@ public class ItemServiceImpl implements ItemService {
 			return;
 		}
 		throw new ItemQuantityNotAllowed(
-				"quantity " + quantity + " must be multiple of " + item.getProduct().getMultiple());
+				"quantity " + quantity + " must be multiple of " + item.getProduct().getValue().getMultiple());
 	}
 
 	@Override
 	public void applyGlobalDiscount(@NotNull Collection<? extends ItemBudget> items, BigDecimal discount) {
 		items.parallelStream().forEach(i -> {
-			ItemBudgetValue price = i.getValue();
+			ItemBudgetValue value = i.getValue();
 
 			BigDecimal[] unitValues = this.applyDiscount(i, discount);
-			price.setUnitGrossValue(unitValues[0]);
-			price.setUnitStValue(unitValues[1]);
-			price.setUnitValue(unitValues[2]);
-			price.setBudgetGlobalDiscount(discount);
+			value.setUnitGrossValue(unitValues[0]);
+			value.setUnitStValue(unitValues[1]);
+			value.setUnitValue(unitValues[2]);
+			value.setBudgetGlobalDiscount(discount);
 			calculateTotals(i);
-			price.setUnitGrossValueFromGBDiscount(unitValues[0]);
-			price.setUnitStValueFromGBDiscount(unitValues[1]);
-			price.setUnitValueFromGBDiscount(unitValues[2]);
-			if (price.getLineDiscount() != null && !price.getLineDiscount().equals(BigDecimal.ZERO))
+			value.setUnitGrossValueFromGBDiscount(unitValues[0]);
+			value.setUnitStValueFromGBDiscount(unitValues[1]);
+			value.setUnitValueFromGBDiscount(unitValues[2]);
+			if (value.getLineDiscount() != null && !value.getLineDiscount().equals(BigDecimal.ZERO))
 				this.applyLineDiscount(items,
-						new ItemLineDiscountForm(i.getProduct().getLine(), price.getLineDiscount()));
+						new ItemLineDiscountForm(i.getProduct().getLine(), value.getLineDiscount()));
 		});
 	}
 
@@ -104,9 +104,9 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public boolean checkQuantityPolicies(ItemBudget item, int quantity) {
 		// TODO Auto-generated method stub
-		if (item.getProduct().getMultiple() == 0)
+		if (item.getProduct().getValue().getMultiple() == 0)
 			return true;
-		return quantity % item.getProduct().getMultiple() == 0 ? true : false;
+		return quantity % item.getProduct().getValue().getMultiple() == 0 ? true : false;
 	}
 
 }

@@ -2,6 +2,7 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 
+import com.portal.client.vo.ItemBudgetValue;
 import com.portal.client.vo.Product;
 
 public class BaseItemBudget {

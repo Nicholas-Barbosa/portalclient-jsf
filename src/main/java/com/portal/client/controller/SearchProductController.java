@@ -9,6 +9,7 @@ import javax.inject.Named;
 import org.primefaces.PrimeFaces;
 
 import com.portal.client.dto.CustomerOnOrder.CustomerType;
+import com.portal.client.service.ProductCalculator;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Product;
@@ -26,16 +27,18 @@ public class SearchProductController implements Serializable {
 
 	private CustomerType customerType;
 	private ProductService productService;
+	private ProductCalculator productCalculator;
 
 	private Product product;
+	private int newQuantity;
 
 	@Inject
-	public SearchProductController(ProductService productService) {
+	public SearchProductController(ProductService productService, ProductCalculator productCalculator) {
 		super();
 		this.productService = productService;
+		this.productCalculator = productCalculator;
 	}
 
-	
 	public void search() {
 		productService
 				.findByCode(productCodeToSearch, customerCode, customerStore, state, customerSellerType, customerType)
@@ -43,7 +46,16 @@ public class SearchProductController implements Serializable {
 					this.product = product;
 					FacesUtils.ajaxUpdate("manage-product-content");
 					FacesUtils.executeScript("$('#footer').show()");
-				}, () -> FacesUtils.error(null, "Produto não localizado", null, "growl"));
+					this.newQuantity = product.getValue().getQuantity();
+				}, () -> {
+					FacesUtils.error(null, "Produto não localizado", null, "growl");
+					product = null;
+				});
+	}
+
+	public void onQuantityChange() {
+		if (product != null)
+			productCalculator.quantity(newQuantity, product.getValue());
 	}
 
 	public void confirm() {
@@ -106,5 +118,13 @@ public class SearchProductController implements Serializable {
 
 	public Product getProduct() {
 		return product;
+	}
+
+	public int getNewQuantity() {
+		return newQuantity;
+	}
+
+	public void setNewQuantity(int newQuantity) {
+		this.newQuantity = newQuantity;
 	}
 }

@@ -123,25 +123,38 @@ div.container {
 					</div>
 				</ui:fragment>
 
+				<div class="p-field">
+					<h:form>
+						<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
+						<p:spinner id="quantity"
+							value="#{searchProductController.newQuantity}"
+							stepFactor="#{searchProductController.product.value.multiple}"
+							onblur="calcQuantity()" />
+						<p:remoteCommand name="calcQuantity" process="@this,quantity"
+							action="#{searchProductController.onQuantityChange}"
+							update="vLiquid,vGross,vSt" />
+					</h:form>
+				</div>
+
 				<div class="p-formgrid p-grid">
 					<div class="p-field p-col">
 						<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
 						<p:inputNumber id="vLiquid"
-							value="#{searchProductController.product.value.unitValue}"
+							value="#{searchProductController.product.value.totalValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
 							thousandSeparator="." readonly="true" />
 					</div>
 					<div class="p-field p-col">
 						<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
 						<p:inputNumber id="vGross"
-							value="#{searchProductController.product.value.unitGrossValue}"
+							value="#{searchProductController.product.value.totalGrossValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
 							thousandSeparator="." readonly="true" />
 					</div>
 					<div class="p-field p-col">
 						<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
 						<p:inputNumber id="vSt"
-							value="#{searchProductController.product.value.unitStValue}"
+							value="#{searchProductController.product.value.totalStValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
 							thousandSeparator="." readonly="true" />
 					</div>

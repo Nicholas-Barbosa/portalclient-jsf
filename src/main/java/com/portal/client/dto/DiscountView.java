@@ -2,6 +2,8 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 
+import com.portal.client.vo.ItemBudget;
+
 public class DiscountView {
 
 	private BigDecimal lineDiscount;
