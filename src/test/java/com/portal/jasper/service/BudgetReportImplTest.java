@@ -10,7 +10,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import com.portal.client.export.OrderExportType;
-import com.portal.client.export.jasper.JasperHelper;
+import com.portal.client.export.jasper.JasperService;
 import com.portal.client.export.jasper.OrderJasper;
 import com.portal.client.export.jasper.OrderReport;
 import com.portal.client.export.jasper.OrderReportImpl;
@@ -28,7 +28,7 @@ class BudgetReportImplTest {
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373", "ddd"),
 				Set.of(item), "Mensagem");
-		OrderReport budgetReport = new OrderReportImpl(new JasperHelper());
+		OrderReport budgetReport = new OrderReportImpl(new JasperService());
 		byte[] bytes = budgetReport.export(budgetDTO, OrderExportType.PDF);
 		System.out.println("lenght " + bytes.length);
 		try (OutputStream out = new BufferedOutputStream(
@@ -45,7 +45,7 @@ class BudgetReportImplTest {
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich", "ddd"), Set.of(item),
 				"Message");
-		OrderReport budgetReport = new OrderReportImpl(new JasperHelper());
+		OrderReport budgetReport = new OrderReportImpl(new JasperService());
 		byte[] bytes = budgetReport.export(budgetDTO, OrderExportType.EXCEL);
 
 	}

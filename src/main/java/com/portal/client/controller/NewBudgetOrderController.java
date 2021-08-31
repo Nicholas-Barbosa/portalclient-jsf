@@ -31,8 +31,6 @@ import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.CustomerPurchaseInfo;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.DiscountView;
-import com.portal.client.dto.DownloadStreamsForm;
-import com.portal.client.dto.FindProductByCodeForm;
 import com.portal.client.dto.FindProductByDescriptionDTO;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ItemXlsxFileLayout;
@@ -43,7 +41,6 @@ import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
-import com.portal.client.export.OrderExport;
 import com.portal.client.service.BudgetCommonBehaviorHelper;
 import com.portal.client.service.ItemService;
 import com.portal.client.service.ResourceBundleService;
@@ -73,8 +70,6 @@ public class NewBudgetOrderController implements Serializable {
 	private final ResourceBundleService resourceBundleService;
 
 	private final BudgetCrudService budgetService;
-
-	private final OrderExport orderExporter;
 
 	private final ClientErrorExceptionController responseController;
 
@@ -107,12 +102,6 @@ public class NewBudgetOrderController implements Serializable {
 
 	private String nameCustomerToFind;
 
-	private DownloadStreamsForm downloadStreamsForm;
-
-	private FindProductByCodeForm findProductByCodeForm;
-
-	private byte[] imageToSeeOnDlg;
-
 	private ItemXlsxFileLayout budgetImportXlsxForm;
 
 	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
@@ -144,23 +133,21 @@ public class NewBudgetOrderController implements Serializable {
 	private boolean isOrder;
 
 	public NewBudgetOrderController() {
-		this(null, null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public NewBudgetOrderController(ResourceBundleService resourceBundleService, BudgetCrudService budgetService,
-			OrderExport orderExporter, ClientErrorExceptionController responseController,
+			ClientErrorExceptionController responseController,
 			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
 			ItemService itemService, ZipCodeService cep, BudgetCommonBehaviorHelper budgetRequestService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
 		this.resourceBundleService = resourceBundleService;
 		this.budgetService = budgetService;
-		this.orderExporter = orderExporter;
 		this.responseController = responseController;
 		this.prossExceptionMessageShower = processingExceptionMessageHelper;
 		this.productService = productService;
-		this.imageToSeeOnDlg = new byte[0];
 		this.itemService = itemService;
 		this.cepCervice = cep;
 		this.budgetBehaviorHelper = budgetRequestService;
@@ -309,21 +296,6 @@ public class NewBudgetOrderController implements Serializable {
 		this.budget = new Budget();
 	}
 
-	public void exportOrder() {
-		if (budget == null || budget.getItems().size() == 0) {
-			FacesUtils.error(null, "Objeto de pedido não está pronto",
-					"Entre com as informações necessárias para criar um pedido/orçamento.");
-			return;
-		}
-		try {
-			byte[] btes = orderExporter.export(budget, downloadStreamsForm.getContentType());
-			FacesUtils.prepareResponseForDownloadOfStreams(downloadStreamsForm.getName(), btes,
-					downloadStreamsForm.getContentType());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
 		event.getObject().ifPresentOrElse(c -> {
 			budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(c));
@@ -374,9 +346,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.lazyCustomers = new CustomerLazyDataModel();
 		this.selectedProducts = new HashSet<>();
 		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-		this.downloadStreamsForm = new DownloadStreamsForm();
 		this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
-		findProductByCodeForm = new FindProductByCodeForm();
 		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
 		this.budget = new Budget();
 		this.itemLines = new HashSet<>();
@@ -438,24 +408,8 @@ public class NewBudgetOrderController implements Serializable {
 		return lazyCustomers;
 	}
 
-	public DownloadStreamsForm getDownloadStreamsForm() {
-		return downloadStreamsForm;
-	}
-
 	public ClientErrorExceptionController getResponseController() {
 		return responseController;
-	}
-
-	public FindProductByCodeForm getFindProductByCodeForm() {
-		return findProductByCodeForm;
-	}
-
-	public byte[] getImageToSeeOnDlg() {
-		return imageToSeeOnDlg;
-	}
-
-	public void setImageToSeeOnDlg(byte[] imageToSeeOnDlg) {
-		this.imageToSeeOnDlg = imageToSeeOnDlg;
 	}
 
 	public ItemXlsxFileLayout getBudgetImportXlsxForm() {

@@ -115,24 +115,19 @@ public class FacesUtils {
 		PrimeFaces.current().executeScript(script);
 	}
 
-	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, OrderExportType contentType)
-			throws IOException {
+	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, String contentType) {
 
 		switch (contentType) {
-		case EXCEL:
-			downloadExcel(fileName, streams);
-			break;
-
-		case PDF:
+		case "application/pdf":
 			downloadPdf(fileName, streams);
 			break;
-		case EXCEL_CALC_CONFERENCE:
+		case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
 			downloadExcel(fileName, streams);
 			break;
 		}
 	}
 
-	private static void downloadPdf(String fileName, byte[] streams) throws IOException {
+	private static void downloadPdf(String fileName, byte[] streams) {
 		FacesContext currentInstance = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = currentInstance.getExternalContext();
 
@@ -142,13 +137,15 @@ public class FacesUtils {
 				String.format("%s;%s=%s", "attachment", "filename", fileName));
 		try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
 			outputStream.write(streams);
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			currentInstance.responseComplete();
 		}
 
 	}
 
-	private static void downloadExcel(String fileName, byte[] streams) throws IOException {
+	private static void downloadExcel(String fileName, byte[] streams) {
 		FacesContext currentInstance = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = currentInstance.getExternalContext();
 
@@ -158,6 +155,8 @@ public class FacesUtils {
 				String.format("%s;%s=%s", "attachment", "filename", fileName));
 		try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
 			outputStream.write(streams);
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			currentInstance.responseComplete();
 		}

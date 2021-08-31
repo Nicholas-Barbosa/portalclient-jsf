@@ -20,7 +20,7 @@ import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
 
 @Singleton
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class JasperHelper {
+public class JasperService {
 
 	/**
 	 * Export to pdf in bytes. This method will close input stream inside

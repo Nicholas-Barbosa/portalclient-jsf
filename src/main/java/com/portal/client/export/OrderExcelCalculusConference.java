@@ -16,8 +16,8 @@ import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.service.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.service.microsoft.excel.writer.XssfWriter;
 import com.portal.client.util.MathUtils;
-import com.portal.client.vo.Budget;
 import com.portal.client.vo.ItemValue;
+import com.portal.client.vo.Order;
 
 @ApplicationScoped
 public class OrderExcelCalculusConference {
@@ -31,7 +31,7 @@ public class OrderExcelCalculusConference {
 		this.intiColumnsPositions();
 	}
 
-	public byte[] createWorkbook(Budget order) {
+	public byte[] createWorkbook(Order order) {
 		List<RowObject> rowObjects = new CopyOnWriteArrayList<>();
 		rowObjects.add(createRowForColumns());
 

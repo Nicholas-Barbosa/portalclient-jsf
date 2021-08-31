@@ -19,7 +19,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 public class OrderReportImpl implements OrderReport {
 
 	@EJB
-	private JasperHelper reportService;
+	private JasperService reportService;
 
 	private final String GAUSS_LOGO = getLogos("GAUSS");
 	private final String CDG_LOGO = getLogos("CDG");
@@ -28,7 +28,7 @@ public class OrderReportImpl implements OrderReport {
 		// TODO Auto-generated constructor stub
 	}
 
-	public OrderReportImpl(JasperHelper reportService) {
+	public OrderReportImpl(JasperService reportService) {
 		super();
 		this.reportService = reportService;
 	}

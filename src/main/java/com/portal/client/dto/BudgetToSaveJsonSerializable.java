@@ -33,12 +33,12 @@ public class BudgetToSaveJsonSerializable {
 
 	@JsonbProperty("representative_order")
 	public String getRepresentativeOrder() {
-		return budget.getRepresentativeOrder();
+		return budget.getRepNumOrder();
 	}
 
 	@JsonbProperty("client_order")
 	public String getCustomerOrder() {
-		return budget.getCustomerOrder();
+		return budget.getCustomerNumOrder();
 	}
 
 	@JsonbProperty("message")

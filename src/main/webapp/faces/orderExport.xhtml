@@ -36,14 +36,14 @@
 					<p:outputLabel for="fileName"
 						value="#{resourceBundleServiceImpl.getMessage('nome_arquivo')}" />
 					<p:inputText id="fileName"
-						value="#{newBudgetOrderController.downloadStreamsForm.name}" />
+						value="#{orderExportController.fileName}" />
 				</div>
 
 				<div class="p-field p-col-12 p-md-6">
 					<p:outputLabel for="fileType"
 						value="#{resourceBundleServiceImpl.getMessage('tipo')}" />
 					<p:selectOneMenu id="fileType"
-						value="#{newBudgetOrderController.downloadStreamsForm.contentType}">
+						value="#{orderExportController.fileType}">
 						<f:selectItem itemLabel="Select One" itemValue=""
 							noSelectionOption="true" />
 						<f:selectItem itemLabel="PDF" itemValue="PDF" />
@@ -55,7 +55,7 @@
 
 				<div class="demo-container p-p-4">
 					<p:commandButton icon="pi pi-download"
-						action="#{newBudgetOrderController.exportOrder}" process="@form"
+						action="#{orderExportController.export}" process="@form"
 						ajax="false" />
 				</div>
 			</div>

@@ -6,9 +6,9 @@ import javax.inject.Inject;
 
 import com.portal.client.export.jasper.OrderJasper;
 import com.portal.client.export.jasper.OrderReport;
-import com.portal.client.vo.Budget;
+import com.portal.client.vo.Order;
 
-public class OrderExportImpl implements OrderExport,Serializable {
+public class OrderExportImpl implements OrderExporter,Serializable {
 
 	/**
 	 * 
@@ -22,7 +22,7 @@ public class OrderExportImpl implements OrderExport,Serializable {
 	private OrderExcelCalculusConference orderExcelCalculusConference;
 
 	@Override
-	public byte[] export(Budget order, OrderExportType type) {
+	public byte[] export(Order order, OrderExportType type) {
 		switch (type) {
 		case PDF:
 			return orderReport.export(new OrderJasper(order), type);

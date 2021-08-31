@@ -9,7 +9,7 @@ import com.portal.client.dto.CustomerOnOrder;
 
 public class Order {
 
-	private String code;
+	private String code,customerNumOrder,repNumOrder;
 	private CustomerOnOrder customerOnOrder;
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
@@ -23,7 +23,7 @@ public class Order {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Order(String code, CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue,
+	public Order(String code,String customerNumOrder,String repNumOrder, CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue,
 			BigDecimal stValue, BigDecimal globalDiscount, String message, Set<Item> items, LocalDate createdAt) {
 		super();
 		this.code = code;
@@ -44,6 +44,23 @@ public class Order {
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	
+	public String getCustomerNumOrder() {
+		return customerNumOrder;
+	}
+
+	public void setCustomerNumOrder(String customerNumOrder) {
+		this.customerNumOrder = customerNumOrder;
+	}
+
+	public String getRepNumOrder() {
+		return repNumOrder;
+	}
+
+	public void setRepNumOrder(String repNumOrder) {
+		this.repNumOrder = repNumOrder;
 	}
 
 	public CustomerOnOrder getCustomerOnOrder() {

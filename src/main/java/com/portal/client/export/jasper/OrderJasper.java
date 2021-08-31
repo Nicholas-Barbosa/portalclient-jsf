@@ -7,9 +7,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.vo.Budget;
-import com.portal.client.vo.ItemBudget;
+import com.portal.client.vo.Item;
 import com.portal.client.vo.ItemValue;
+import com.portal.client.vo.Order;
 
 public class OrderJasper implements Serializable {
 
@@ -41,14 +41,14 @@ public class OrderJasper implements Serializable {
 		this.message = message;
 	}
 
-	public OrderJasper(Budget budget) {
-		this.liquidValue = budget.getLiquidValue();
-		this.grossValue = budget.getGrossValue();
-		this.stTotal = budget.getStValue();
-		this.customerReportDTO = new CustomerJasperReportDTO(budget.getCustomerOnOrder());
-		this.items = budget.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
+	public OrderJasper(Order order) {
+		this.liquidValue = order.getLiquidValue();
+		this.grossValue = order.getGrossValue();
+		this.stTotal = order.getStValue();
+		this.customerReportDTO = new CustomerJasperReportDTO(order.getCustomerOnOrder());
+		this.items = order.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
 				Set::add, Set::addAll);
-		this.message = budget.getMessage();
+		this.message = order.getMessage();
 	}
 
 	public static long getSerialversionuid() {
@@ -172,20 +172,20 @@ public class OrderJasper implements Serializable {
 
 		}
 
-		public OrderItemJasper(ItemBudget item) {
+		public OrderItemJasper(Item item) {
 			super();
 			this.commercialCode = item.getProduct().getCommercialCode();
-			this.line = item.line();
+			this.line = item.getLine();
 
 			ItemValue values = item.getValue();
 			this.quantity = values.getQuantity();
 			this.unitValue = values.getUnitValueWithoutDiscount();
-			this.totalValue = this.unitValue.multiply(new BigDecimal(this.quantity));
+			this.totalValue = item.getValue().getTotalValueWithoutDiscount();
 			this.totalStValue = values.getUnitStValueWithoutDiscount().multiply(new BigDecimal(this.quantity));
 			this.discGlobal = values.getBudgetGlobalDiscount();
 			this.totalGrossValue = values.getTotalGrossValue();
 			this.lineDisc = values.getLineDiscount();
-			this.totalGrossValueWithoutDiscount = this.totalValue.add(this.totalStValue);
+			this.totalGrossValueWithoutDiscount = values.getTotalGrossWithoutDiscount();
 
 		}
 
