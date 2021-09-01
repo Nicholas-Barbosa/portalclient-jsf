@@ -8,6 +8,7 @@ public class ProspectCustomerOnOrder extends CustomerOnOrder {
 	private static final long serialVersionUID = -3307367266965324272L;
 	private SellerType sellerType;
 
+	
 	public ProspectCustomerOnOrder(String code, String store, String cnpj, String blocked, String name,
 			String fantasyName, CustomerAddress address, CustomerPurchaseInfo financialInfo, CustomerContact contact,
 			SellerType sellerType) {

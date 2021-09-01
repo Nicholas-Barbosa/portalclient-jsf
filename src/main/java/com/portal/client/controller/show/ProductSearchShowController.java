@@ -17,21 +17,24 @@ public class ProductSearchShowController implements ShowController<CustomerOnOrd
 
 	@Override
 	public void show(CustomerOnOrder customer) {
-		Map<String, List<String>> queryParams = new HashMap<>();
-		queryParams.put("customerType", List.of(customer.getType().name()));
-		if (customer instanceof ProspectCustomerOnOrder) {
-			ProspectCustomerOnOrder prospCustomer = (ProspectCustomerOnOrder) customer;
-			queryParams.put("customerPropState", List.of(prospCustomer.getState()));
-			queryParams.put("customerPropSelType", List.of(prospCustomer.getSellerType().getType()));
-		} else {
-			queryParams.put("customerCode", List.of(customer.getCode()));
-			queryParams.put("customerStore", List.of(customer.getStore()));
+		if (customer != null) {
+			Map<String, List<String>> queryParams = new HashMap<>();
+			queryParams.put("customerType", List.of(customer.getType().name()));
+			if (customer instanceof ProspectCustomerOnOrder) {
+				ProspectCustomerOnOrder prospCustomer = (ProspectCustomerOnOrder) customer;
+				queryParams.put("customerPropState", List.of(prospCustomer.getState()));
+				queryParams.put("customerPropSelType", List.of(prospCustomer.getSellerType().getType()));
+			} else {
+				queryParams.put("customerCode", List.of(customer.getCode()));
+				queryParams.put("customerStore", List.of(customer.getStore()));
+			}
+
+			FacesUtils.openViewOnDialog(
+					Map.of("modal", true, "responsive", true, "contentWidth", "50vw", "contentHeight", "65vh"),
+					"productSearch", queryParams);
+			return;
 		}
-
-		FacesUtils.openViewOnDialog(
-				Map.of("modal", true, "responsive", true, "contentWidth", "50vw", "contentHeight", "65vh"),
-				"productSearch", queryParams);
-
+		FacesUtils.error(null, "Cliente nullo", "Selecione um cliente para escolher um produto", "growl");
 	}
 
 }

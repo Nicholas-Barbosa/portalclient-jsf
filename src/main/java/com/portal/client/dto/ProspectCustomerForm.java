@@ -3,16 +3,16 @@ package com.portal.client.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
+
 public class ProspectCustomerForm {
 
 	@NotEmpty
 	private String name;
-	@NotEmpty
-	private String sellerType;
-	@NotEmpty
+	private SellerType sellerType;
 	private String stateAcronym;
 	@NotEmpty
-	private String address;
+	private String street;
 	@NotEmpty
 	private String city;
 	@NotEmpty
@@ -23,6 +23,14 @@ public class ProspectCustomerForm {
 	private String message;
 	@NotEmpty
 	private String cnpj;
+	@NotEmpty
+	private String zipCode;
+
+	public ProspectCustomerOnOrder toProsp() {
+		CustomerAddress address = new CustomerAddress(street, district, city, zipCode, stateAcronym);
+		CustomerPurchaseInfo purschase = new CustomerPurchaseInfo(0, 0, 0, null, null, paymentTerms, null, null);
+		return new ProspectCustomerOnOrder(null, null, cnpj, "Nao", name, name, address, purschase, null, sellerType);
+	}
 
 	public String getName() {
 		return name;
@@ -32,11 +40,11 @@ public class ProspectCustomerForm {
 		this.name = name;
 	}
 
-	public String getSellerType() {
+	public SellerType getSellerType() {
 		return sellerType;
 	}
 
-	public void setSellerType(String sellerType) {
+	public void setSellerType(SellerType sellerType) {
 		this.sellerType = sellerType;
 	}
 
@@ -48,12 +56,12 @@ public class ProspectCustomerForm {
 		this.stateAcronym = stateAcronym;
 	}
 
-	public String getAddress() {
-		return address;
+	public String getStreet() {
+		return street;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setStreet(String address) {
+		this.street = address;
 	}
 
 	public String getCity() {
@@ -95,7 +103,20 @@ public class ProspectCustomerForm {
 	public void setCnpj(String cnpj) {
 		this.cnpj = cnpj;
 	}
-	
-	
+
+	public String getZipCode() {
+		return zipCode;
+	}
+
+	public void setZipCode(String zipCode) {
+		this.zipCode = zipCode;
+	}
+
+	@Override
+	public String toString() {
+		return "ProspectCustomerForm [name=" + name + ", sellerType=" + sellerType + ", stateAcronym=" + stateAcronym
+				+ ", street=" + street + ", city=" + city + ", district=" + district + ", paymentTerms=" + paymentTerms
+				+ ", message=" + message + ", cnpj=" + cnpj + "]";
+	}
 
 }

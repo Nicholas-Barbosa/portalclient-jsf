@@ -22,35 +22,24 @@ import javax.ws.rs.ProcessingException;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
-import org.primefaces.event.data.PageEvent;
 
-import com.portal.client.dto.BudgetXlsxPreviewedDTO;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerAddress;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.CustomerPurchaseInfo;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.DiscountView;
-import com.portal.client.dto.FindProductByDescriptionDTO;
 import com.portal.client.dto.ItemLineDiscountForm;
-import com.portal.client.dto.ItemXlsxFileLayout;
-import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProspectCustomerForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
-import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.ItemQuantityNotAllowed;
-import com.portal.client.service.BudgetCommonBehaviorHelper;
+import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.ItemService;
-import com.portal.client.service.ResourceBundleService;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.ProductService;
-import com.portal.client.ui.lazy.datamodel.CustomerLazyDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
-import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
-import com.portal.client.ui.lazy.datamodel.ProductLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.ServerEndpointErrorUtils;
@@ -67,44 +56,19 @@ public class NewBudgetOrderController implements Serializable {
 	 */
 	private static final long serialVersionUID = -2537974193888491899L;
 
-	private final ResourceBundleService resourceBundleService;
-
 	private final BudgetCrudService budgetService;
 
 	private final ClientErrorExceptionController responseController;
 
 	private final ProcessingExceptionFacesMessageHelper prossExceptionMessageShower;
 
-	private final ProductService productService;
-
 	private final ItemService itemService;
 
 	private final ZipCodeService cepCervice;
 
-	private final BudgetCommonBehaviorHelper budgetBehaviorHelper;
-
-	private LazyBehaviorDataModel<Product> lazyProducts;
-
-	private LazyBehaviorDataModel<Customer> lazyCustomers;
-
-	private String h5DivLoadCustomers, h5DivLoadProducts;
-
-	private Integer pageSizeForCustomers = 10, pageSizeForProducts = 20;
-
-	private Set<Product> selectedProducts;
-
-	private FindProductByDescriptionDTO findProductByDescriptionDTO;
-
-	private String headerExceptionDialog;
-	private String processingEntity;
-
-	private SearchCustomerByCodeAndStoreDTO searchCustomerDTO;
+	private final OrderCommonBehaviorHelper budgetBehaviorHelper;
 
 	private String nameCustomerToFind;
-
-	private ItemXlsxFileLayout budgetImportXlsxForm;
-
-	private BudgetXlsxPreviewedDTO budgetXlsxPreview;
 
 	private Budget budget;
 
@@ -133,21 +97,18 @@ public class NewBudgetOrderController implements Serializable {
 	private boolean isOrder;
 
 	public NewBudgetOrderController() {
-		this(null, null, null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null);
 	}
 
 	@Inject
-	public NewBudgetOrderController(ResourceBundleService resourceBundleService, BudgetCrudService budgetService,
-			ClientErrorExceptionController responseController,
+	public NewBudgetOrderController(BudgetCrudService budgetService, ClientErrorExceptionController responseController,
 			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
-			ItemService itemService, ZipCodeService cep, BudgetCommonBehaviorHelper budgetRequestService) {
+			ItemService itemService, ZipCodeService cep, OrderCommonBehaviorHelper budgetRequestService) {
 		super();
 		bulkInstantiationObjectsInBackGround();
-		this.resourceBundleService = resourceBundleService;
 		this.budgetService = budgetService;
 		this.responseController = responseController;
 		this.prossExceptionMessageShower = processingExceptionMessageHelper;
-		this.productService = productService;
 		this.itemService = itemService;
 		this.cepCervice = cep;
 		this.budgetBehaviorHelper = budgetRequestService;
@@ -205,11 +166,11 @@ public class NewBudgetOrderController implements Serializable {
 	public void findCep() {
 		try {
 			cepCervice.find(cepToSearch).ifPresentOrElse(cep -> {
-				this.prospectCustomerForm.setAddress(cep.getAddress());
+				this.prospectCustomerForm.setStreet(cep.getStreet());
 				this.prospectCustomerForm.setStateAcronym(cep.getState());
 				this.prospectCustomerForm.setDistrict(cep.getDistrict());
 				this.prospectCustomerForm.setCity(cep.getCity());
-				FacesUtils.info(null, "CEP encontrado!", cep.getAddress() + ", " + cep.getDistrict() + " - "
+				FacesUtils.info(null, "CEP encontrado!", cep.getStreet() + ", " + cep.getDistrict() + " - "
 						+ cep.getCity() + " lat: " + cep.getLat() + " lng: " + cep.getLng());
 			}, () -> {
 				FacesUtils.error(null, "CEP não encontrado", "Digite o endereço manualmente");
@@ -226,14 +187,14 @@ public class NewBudgetOrderController implements Serializable {
 	public void setProspectCustomer() {
 		if (prospectCustomerForm.getCity() != null && !prospectCustomerForm.getCity().isEmpty()) {
 
-			CustomerAddress customerAddress = new CustomerAddress(prospectCustomerForm.getAddress(),
+			CustomerAddress customerAddress = new CustomerAddress(prospectCustomerForm.getStreet(),
 					prospectCustomerForm.getDistrict(), prospectCustomerForm.getCity(), cepToSearch,
 					prospectCustomerForm.getStateAcronym());
 			CustomerPurchaseInfo purshaseInfo = new CustomerPurchaseInfo(0f, 0f, 0f, null, null,
 					prospectCustomerForm.getPaymentTerms(), null, null);
 			CustomerOnOrder customer = new ProspectCustomerOnOrder(null, null, prospectCustomerForm.getCnpj(), null,
 					prospectCustomerForm.getName(), prospectCustomerForm.getName(), customerAddress, purshaseInfo, null,
-					SellerType.valueOf(prospectCustomerForm.getSellerType()));
+					prospectCustomerForm.getSellerType());
 			budgetBehaviorHelper.setCustomer(budget, customer);
 			PrimeFaces.current().executeScript("PF('dlgSearchCustomer').hide();");
 			return;
@@ -314,86 +275,13 @@ public class NewBudgetOrderController implements Serializable {
 
 	}
 
-	public void findProductByDescription(int page) {
-		try {
-			Optional<ProductPageDTO> maybeProduct = productService
-					.findByDescription(findProductByDescriptionDTO.getDescription(), page, pageSizeForProducts);
-			maybeProduct.ifPresentOrElse(p -> {
-				LazyPopulatorUtils.populate(lazyProducts, p);
-			}, () -> {
-				FacesUtils.error(null, resourceBundleService.getMessage("nao_encontrado"), null);
-				FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
-			});
-
-		} catch (ProcessingException e) {
-			prossExceptionMessageShower.displayMessage(e, null);
-			FacesUtils.addHeaderForResponse("Backbone-Status", "Error");
-			e.printStackTrace();
-		}
-	}
-
-	public void onPageProducts(PageEvent pageEvent) {
-		findProductByDescription(pageEvent.getPage() + 1);
-	}
-
-	public void onProductSelected(Product productDTO) {
-		selectedProducts.add(productDTO);
-
-	}
-
 	private final void bulkInstantiationObjectsInBackGround() {
-		this.lazyProducts = new ProductLazyDataModel();
-		this.lazyCustomers = new CustomerLazyDataModel();
-		this.selectedProducts = new HashSet<>();
-		this.searchCustomerDTO = new SearchCustomerByCodeAndStoreDTO();
-		this.findProductByDescriptionDTO = new FindProductByDescriptionDTO();
-		this.budgetXlsxPreview = new BudgetXlsxPreviewedDTO();
 		this.budget = new Budget();
 		this.itemLines = new HashSet<>();
 		this.itemLineDiscount = new ItemLineDiscountForm();
 		this.prospectCustomerForm = new ProspectCustomerForm();
 		this.discView = new DiscountView();
 		this.customerRepresentativeOrderForm = new CustomerRepresentativeOrderForm();
-	}
-
-	public LazyBehaviorDataModel<Product> getLazyProducts() {
-		return lazyProducts;
-	}
-
-	public Integer getPageSizeForCustomers() {
-		return pageSizeForCustomers;
-	}
-
-	public Integer getPageSizeForProducts() {
-		return pageSizeForProducts;
-	}
-
-	public String getH5DivLoadCustomers() {
-		return h5DivLoadCustomers;
-	}
-
-	public String getH5DivLoadProducts() {
-		return h5DivLoadProducts;
-	}
-
-	public Set<Product> getSelectedProducts() {
-		return selectedProducts;
-	}
-
-	public FindProductByDescriptionDTO getFindProductByDescriptionDTO() {
-		return findProductByDescriptionDTO;
-	}
-
-	public String getProcessingEntity() {
-		return processingEntity;
-	}
-
-	public String getHeaderExceptionDialog() {
-		return headerExceptionDialog;
-	}
-
-	public SearchCustomerByCodeAndStoreDTO getSearchCustomerDTO() {
-		return searchCustomerDTO;
 	}
 
 	public String getNameCustomerToFind() {
@@ -404,20 +292,8 @@ public class NewBudgetOrderController implements Serializable {
 		this.nameCustomerToFind = nameCustomerToFind;
 	}
 
-	public LazyBehaviorDataModel<Customer> getLazyCustomers() {
-		return lazyCustomers;
-	}
-
 	public ClientErrorExceptionController getResponseController() {
 		return responseController;
-	}
-
-	public ItemXlsxFileLayout getBudgetImportXlsxForm() {
-		return budgetImportXlsxForm;
-	}
-
-	public BudgetXlsxPreviewedDTO getBudgetXlsxPreview() {
-		return budgetXlsxPreview;
 	}
 
 	public Budget getBudget() {

@@ -11,30 +11,24 @@
 	</ui:define>
 
 	<ui:define name="title">
-		FarAway | #{resourceBundleServiceImpl.getMessage('orcamento_message')}
+		FarAway | #{resourceBundleServiceImpl.getMessage('novo_pedido')}
 	</ui:define>
 
 	<ui:define name="viewname">
 		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}
-		</li>
+		<li>#{resourceBundleServiceImpl.getMessage('pedido')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/newBudget">
-					#{resourceBundleServiceImpl.getMessage('novo_orcamento')}
+		<li><p:link outcome="/faces/newOrder">
+					#{resourceBundleServiceImpl.getMessage('novo')}
 			</p:link></li>
 	</ui:define>
 
 	<ui:define name="content">
 		<f:view locale="pt_BR">
-			<f:metadata>
-				<f:viewParam name="isOrder"
-					value="#{newBudgetOrderController.order}" />
-			</f:metadata>
 			<p:growl id="growl" showDetail="true" globalOnly="true"
 				widgetVar="growl" />
 			<div class="card">
-
 				<h:form id="budgetToolsForm">
 					<p:toolbar id="tb">
 						<p:toolbarGroup>
@@ -42,7 +36,7 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
-								action="#{newBudgetOrderController.newBudgetObject}"
+								action="#{newOrderController.newOrder}"
 								update="customerForm formItems:dtItems budgetTotals"
 								onclick="PF('blockItems').show()">
 								<p:confirm type="popup"
@@ -53,26 +47,25 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-								action="#{newBudgetOrderController.openItemImportView}"
+								action="#{itemImportShowController.show(newOrdeController.order,newOrderController.order.customerOnOrder)}"
 								process="@this">
 								<p:ajax event="dialogReturn"
 									listener="#{newBudgetOrderController.handleItemImportReturn}" />
 							</p:commandButton>
 							<p:commandButton
 								action="#{newBudgetOrderController.checkBudgetRequestObj}"
-								value="#{newBudgetOrderController.isOrder() ? resourceBundleServiceImpl.getMessage('salvar_pedido') : resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
+								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
 								icon="pi pi-check" styleClass="ui-button-success " />
 							<i class="pi pi-bars p-px-2" />
 							<p:commandButton title="Print" icon="pi pi-print"
 								styleClass="ui-button-success p-mr-2"
-								action="#{orderExportShowController.show(newBudgetOrderController.budget)}"
+								action="#{orderExportShowController.show(newOrderController.order)}"
 								process="@this" />
-
 
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
 								icon="pi pi-eye"
-								action="#{showCustomerDetailController.show(newBudgetOrderController.budget.customerOnOrder)}" />
+								action="#{showCustomerDetailController.show(newOrderController.order.customerOnOrder)}" />
 
 						</p:toolbarGroup>
 					</p:toolbar>
@@ -90,13 +83,11 @@
 										value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 									<div class="ui-inputgroup">
 										<p:inputText
-											value="#{newBudgetOrderController.budget.customerOnOrder.name}-#{newBudgetOrderController.budget.customerOnOrder.store}"
+											value="#{newOrderController.order.customerOnOrder.name}-#{newOrderController.order.customerOnOrder.store}"
 											readonly="true" />
 										<p:button icon="pi pi-search" styleClass="ui-button-warning"
 											onclick="PF('dlgSearchCustomer').show()"
-											disabled="#{not empty newBudgetOrderController.budget.items}"
 											id="btnShowSearchCustomer">
-											<p:autoUpdate on="eventAddItem" />
 										</p:button>
 									</div>
 								</div>
@@ -104,14 +95,14 @@
 								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 									<p:outputLabel value="CNPJ" for="cnpj" />
 									<p:inputMask
-										value="#{newBudgetOrderController.budget.customerOnOrder.cnpj}"
+										value="#{newOrderController.order.customerOnOrder.cnpj}"
 										readonly="true" id="cnpj" mask="99.999.999/9999-99" />
 								</div>
 								<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
 									<p:outputLabel for="endereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 									<p:inputText id="endereco"
-										value="#{newBudgetOrderController.budget.customerOnOrder.street}, #{newBudgetOrderController.budget.customerOnOrder.city} - #{newBudgetOrderController.budget.customerOnOrder.state}"
+										value="#{newOrderController.order.customerOnOrder.street}, #{newBudgetOrderController.budget.customerOnOrder.city} - #{newBudgetOrderController.budget.customerOnOrder.state}"
 										readonly="true" />
 								</div>
 								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
@@ -119,7 +110,7 @@
 										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 										for="pTerms" />
 									<p:inputText
-										value="#{newBudgetOrderController.budget.customerOnOrder.paymentTerms}"
+										value="#{newOrderController.order.customerOnOrder.paymentTerms}"
 										readonly="true" id="pTerms" />
 								</div>
 
@@ -129,7 +120,7 @@
 									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 										<p:outputLabel value="Vendedor" for="sellerType" />
 										<p:inputText
-											value="#{newBudgetOrderController.budget.customerOnOrder.sellerType}"
+											value="#{newOrderController.order.customerOnOrder.sellerType}"
 											readonly="true" id="sellerType" />
 									</div>
 
@@ -172,7 +163,7 @@
 									<div class="p-d-flex p-jc-between p-ai-center">
 										<div>
 											<p:commandButton
-												action="#{productSearchShowController.show(newBudgetOrderController.budget.customerOnOrder)}"
+												action="#{productSearchShowController.show(newOrderController.order.customerOnOrder)}"
 												process="@this" icon="pi pi-plus"
 												styleClass="ui-button-raised ui-button-success p-mr-2">
 												<p:ajax event="dialogReturn"
@@ -505,7 +496,7 @@
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
-				header="#{holdMessageView.label('busca_de_cliente')}"
+				header="#{resourceBundleServiceImpl.getMessage('busca_de_cliente')}"
 				positionType="absolute" responsive="true" blockScroll="true">
 				<div style="max-height: 65vh; overflow: auto">
 					<p:tabView>
@@ -516,18 +507,18 @@
 									value="#{resourceBundleServiceImpl.getMessage('busca_por_nome_cliente')}" />
 							</h5>
 							<h:form>
-
 								<div class="p-formgroup-inline">
 									<div class="p-field">
 										<div class="ui-inputgroup">
 											<p:inputText type="text" placeholder="keyword"
-												value="#{newBudgetOrderController.nameCustomerToFind}"
-												required="true" id="cName" />
+												value="#{newOrderController.cNameToSearch}" required="true"
+												id="cName" />
 
 											<p:commandButton icon="pi pi-search"
-												action="#{customerSearchShowController.show(newBudgetOrderController.nameCustomerToFind)}">
+												action="#{customerSearchShowController.show(newOrderController.cNameToSearch)}">
 												<p:ajax event="dialogReturn"
-													listener="#{newBudgetOrderController.handleCustomerResult}" />
+													listener="#{newOrderController.handleCustomerResult}"
+													oncomplete="console.log('complete!')" />
 											</p:commandButton>
 										</div>
 
@@ -543,23 +534,23 @@
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-									style="border:0px none; background-color:transparent;">
+									style="border:0px none; background-color:transparent;" id="pn">
 
 									<p:outputLabel
 										value="#{resourceBundleServiceImpl.getMessage('nome')}"
 										for="prospName" />
 									<p:inputText
-										value="#{newBudgetOrderController.prospectCustomerForm.name}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.name}"
 										id="prospName" />
 
 									<p:outputLabel for="prospCnpj" value="CNPJ" />
 									<p:inputMask id="prospCnpj"
-										value="#{newBudgetOrderController.prospectCustomerForm.cnpj}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.cnpj}"
 										mask="99.999.999/9999-99" validateMask="true" />
 
 									<p:outputLabel for="@next" value="Vendedor" />
 									<p:selectOneMenu
-										value="#{newBudgetOrderController.prospectCustomerForm.sellerType}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.sellerType}"
 										id="prospVendor">
 										<f:selectItem itemLabel="Agrícola" itemValue="AGRICOLA" />
 										<f:selectItem itemLabel="Carros" itemValue="CARROS" />
@@ -571,7 +562,7 @@
 										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 										for="prospTerms" />
 									<p:inputText
-										value="#{newBudgetOrderController.prospectCustomerForm.paymentTerms}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.paymentTerms}"
 										id="prospTerms" />
 
 									<p:row styleClass="my-heading-row">
@@ -580,33 +571,33 @@
 
 									<p:outputLabel for="cep" value="CEP" />
 									<p:inputText id="cep"
-										value="#{newBudgetOrderController.cepToSearch}" maxlength="8"
-										oninput="if(this.value.length == 8)findCep()" />
+										value="#{prospectCustomerFormController.cepToSearch}"
+										maxlength="8" oninput="if(this.value.length == 8)findCep()" />
 
 									<p:outputLabel for="prospEndereco"
-										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+										value="#{resourceBundleServiceImpl.getMessage('rua')}" />
 									<p:inputText id="prospEndereco"
-										value="#{newBudgetOrderController.prospectCustomerForm.address}" />
+										value="#{prospectCustomerFormController.prospectCustomerForm.street}" />
 
 									<p:outputLabel for="prospBairro"
 										value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
 									<p:inputText id="prospBairro"
-										value="#{newBudgetOrderController.prospectCustomerForm.district}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.district}"
 										readonly="true" />
 
 									<p:outputLabel for="prospCidade"
 										value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
 									<p:inputText id="prospCidade"
-										value="#{newBudgetOrderController.prospectCustomerForm.city}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.city}"
 										readonly="true" />
 
 									<p:outputLabel for="@next" value="Estado" />
 									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
-										value="#{newBudgetOrderController.prospectCustomerForm.stateAcronym}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.stateAcronym}"
 										editable="false">
 										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
 											var="state" itemLabel="#{state.name}"
-											itemValue="#{state.acronym}" itemDisabled="true" />
+											itemValue="#{state.acronym}" />
 									</p:selectOneMenu>
 
 
@@ -614,19 +605,22 @@
 										<p:column styleClass="ui-grid-col-12">
 											<p:commandButton icon="pi pi-check"
 												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-												action="#{newBudgetOrderController.setProspectCustomer}"
-												process="@this,prospName,prospCnpj,prospVendor,prospTerms,prospEndereco"
-												update=":customerForm,@form,budgetToolsForm"
-												oncomplete="PF('blockItems').hide();" />
+												action="#{prospectCustomerFormController.create}"
+												process="@this,@form:pn" oncomplete="getProspect()"/>
 										</p:column>
 										<p:growl for="prospCnpj" id="growlForCnpj" />
 									</p:row>
 								</p:panelGrid>
-								<p:remoteCommand action="#{newBudgetOrderController.findCep}"
+								<p:remoteCommand
+									action="#{prospectCustomerFormController.findCep}"
 									name="findCep" process="@this,@form:cep"
 									onstart="PF('blockForCepSearch').show()"
 									oncomplete="PF('blockForCepSearch').hide()"
 									update="growl,@form:prospEndereco,@form:es,@form:cep,@form:prospCidade,@form:prospBairro" />
+								<p:remoteCommand name="getProspect"
+									action="#{newOrderController.getProspectFromSession}"
+									process="@this" update=":customerForm,@form,budgetToolsForm"
+									oncomplete="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 								<p:blockUI widgetVar="blockForCepSearch" block="@form" />
 							</h:form>
 

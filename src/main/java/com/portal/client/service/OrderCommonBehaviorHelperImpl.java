@@ -9,9 +9,10 @@ import javax.inject.Inject;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
+import com.portal.client.vo.Order;
 
 @ApplicationScoped
-public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelper, Serializable {
+public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper, Serializable {
 
 	/**
 	 * 
@@ -20,13 +21,13 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	private ItemService itemService;
 
 	@Inject
-	public BudgetCommonBehaviorHelperImpl(ItemService itemService) {
+	public OrderCommonBehaviorHelperImpl(ItemService itemService) {
 		super();
 		this.itemService = itemService;
 	}
 
 	@Override
-	public void calculateTotals(Budget budget) {
+	public void calculateTotals(Order budget) {
 		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalGrossValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalValue())
@@ -39,14 +40,14 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	}
 
 	@Override
-	public void removeItem(Budget budget, Item item) {
+	public void removeItem(Order budget, Item item) {
 		if (budget.removeItem(item)) {
 			calculateTotals(budget);
 		}
 	}
 
 	@Override
-	public void addItem(Budget budget, Item item) {
+	public void addItem(Order budget, Item item) {
 		if (item != null && budget.addItem(item)) {
 			if (budget.getGlobalDiscount() != null && !budget.getGlobalDiscount().equals(BigDecimal.ZERO)) {
 				itemService.applyGlobalDiscount(item, budget.getGlobalDiscount());
@@ -56,7 +57,7 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	}
 
 	@Override
-	public void setDiscount(Budget budget, BigDecimal discount) throws CustomerNotAllowed {
+	public void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed {
 		budget.setGlobalDiscount(discount);
 		if (budget.getItems().size() > 0) {
 			itemService.applyGlobalDiscount(budget.getItems(), discount);
@@ -66,7 +67,7 @@ public class BudgetCommonBehaviorHelperImpl implements BudgetCommonBehaviorHelpe
 	}
 
 	@Override
-	public void merge(Budget mixedBudget, Budget budgetToMix) {
+	public void merge(Order mixedBudget, Budget budgetToMix) {
 		if (mixedBudget.getCode() == null & budgetToMix.getCode() != null)
 			mixedBudget.setCode(budgetToMix.getCode());
 		mixedBudget.setCreatedAt(budgetToMix.getCreatedAt());

@@ -50,6 +50,13 @@
 								icon="pi pi-pencil" action="@none" update="@none"
 								onclick="PF('budgetEditRedirect').show()" />
 						</p:submenu>
+						<p:submenu
+							label="#{resourceBundleServiceImpl.getMessage('pedido')}"
+							icon="pi pi-shopping-cart">
+							<p:menuitem
+								value="#{resourceBundleServiceImpl.getMessage('novo')}"
+								icon="pi pi-plus" outcome="newOrder" />
+						</p:submenu>
 					</p:submenu>
 					<p:submenu
 						label="#{resourceBundleServiceImpl.getMessage('financeiro')}"

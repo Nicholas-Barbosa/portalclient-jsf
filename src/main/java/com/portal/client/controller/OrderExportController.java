@@ -29,6 +29,9 @@ public class OrderExportController {
 		this.exportForm = new OrderExporterForm();
 	}
 
+	public void checkOrderToExport() {
+		
+	}
 	public void export() {
 		orderToExport = (Order) httpSession.getAttribute("order-toexport");
 		byte[] streams = orderExporter.export(orderToExport, exportForm.getType());

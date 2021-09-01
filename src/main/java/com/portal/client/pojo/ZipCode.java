@@ -6,7 +6,7 @@ import javax.json.bind.annotation.JsonbProperty;
 public class ZipCode {
 
 	private final String cep;
-	private final String address;
+	private final String street;
 	private final String city;
 	private final String state;
 	private final String district;
@@ -14,12 +14,12 @@ public class ZipCode {
 	private final Double lng;
 
 	@JsonbCreator
-	public ZipCode(@JsonbProperty("cep") String cep, @JsonbProperty("address") String address,
+	public ZipCode(@JsonbProperty("cep") String cep, @JsonbProperty("address") String street,
 			@JsonbProperty("city") String city, @JsonbProperty("state") String state, @JsonbProperty("lat") Double lat,
 			@JsonbProperty("lng") Double lng, @JsonbProperty("district") final String district) {
 		super();
 		this.cep = cep;
-		this.address = address;
+		this.street = street;
 		this.city = city;
 		this.state = state;
 		this.lat = lat;
@@ -31,8 +31,8 @@ public class ZipCode {
 		return cep;
 	}
 
-	public String getAddress() {
-		return address;
+	public String getStreet() {
+		return street;
 	}
 
 	public String getCity() {
