@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 
@@ -36,5 +35,5 @@ public interface OrderCommonBehaviorHelper {
 	 */
 	void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed;
 
-	void merge(Order mixedBudget, Budget budgetToMix);
+	void merge(Order mixedBudget, Order budgetToMix);
 }

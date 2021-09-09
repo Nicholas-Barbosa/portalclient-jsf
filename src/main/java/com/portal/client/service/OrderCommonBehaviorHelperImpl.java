@@ -69,7 +69,7 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	}
 
 	@Override
-	public void merge(Order mixedBudget, Budget budgetToMix) {
+	public void merge(Order mixedBudget, Order budgetToMix) {
 		if (mixedBudget.getCode() == null & budgetToMix.getCode() != null)
 			mixedBudget.setCode(budgetToMix.getCode());
 		mixedBudget.setCreatedAt(budgetToMix.getCreatedAt());

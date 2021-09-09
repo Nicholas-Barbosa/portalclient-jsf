@@ -15,6 +15,7 @@ import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;
@@ -44,6 +45,10 @@ public class NewOrderController implements Serializable {
 		this.order = new Order();
 	}
 
+	public void handleItemImportReturn(SelectEvent<Budget> event) {
+		this.orderHelper.merge(order, event.getObject());
+		FacesUtils.ajaxUpdate("formItems:dtItems", "frmTotals");
+	}
 	public void getProspectFromSession() {
 		ProspectCustomerOnOrder prosp = (ProspectCustomerOnOrder) session.getAttribute("prospect");
 		orderHelper.setCustomer(order, prosp);

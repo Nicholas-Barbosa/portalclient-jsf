@@ -9,7 +9,7 @@ import com.portal.client.dto.CustomerOnOrder;
 
 public class Order {
 
-	private String code,customerNumOrder,repNumOrder;
+	private String code, customerNumOrder, repNumOrder;
 	private CustomerOnOrder customerOnOrder;
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
@@ -20,11 +20,11 @@ public class Order {
 	private LocalDate createdAt;
 
 	public Order() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public Order(String code,String customerNumOrder,String repNumOrder, CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue,
-			BigDecimal stValue, BigDecimal globalDiscount, String message, Set<Item> items, LocalDate createdAt) {
+	public Order(String code, String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder,
+			BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount,
+			String message, Set<Item> items, LocalDate createdAt) {
 		super();
 		this.code = code;
 		this.customerOnOrder = customerOnOrder;
@@ -46,7 +46,6 @@ public class Order {
 		this.code = code;
 	}
 
-	
 	public String getCustomerNumOrder() {
 		return customerNumOrder;
 	}
@@ -96,7 +95,7 @@ public class Order {
 	}
 
 	public BigDecimal getGlobalDiscount() {
-		return globalDiscount;
+		return globalDiscount == null ? BigDecimal.ZERO : globalDiscount;
 	}
 
 	public void setGlobalDiscount(BigDecimal globalDiscount) {
