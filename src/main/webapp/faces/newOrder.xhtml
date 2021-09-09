@@ -37,7 +37,7 @@
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
 								action="#{newOrderController.newOrder}"
-								update="customerForm formItems:dtItems budgetTotals"
+								update="customerForm formItems:dtItems frmTotals"
 								onclick="PF('blockItems').show()">
 								<p:confirm type="popup"
 									header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
@@ -150,7 +150,7 @@
 						<h:form id="formItems">
 							<p:remoteCommand name="updateDtItems" action="#" process="@none"
 								update="dtItems" />
-							<p:dataTable value="#{newBudgetOrderController.budget.items}"
+							<p:dataTable value="#{newOrderController.order.items}"
 								var="item" editable="true" rowKey="#{item.commercialCode}"
 								id="dtItems" reflow="true" size="small" scrollable="true"
 								widgetVar="dtItems" rowIndexVar="crrIndex">
@@ -158,7 +158,7 @@
 								<p:autoUpdate on="eventAddLineDiscount" />
 								<p:ajax event="rowEdit"
 									listener="#{newBudgetOrderController.onRowItemEdit}"
-									update="budgetTotals" />
+									update="frmTotals" />
 								<f:facet name="header">
 									<div class="p-d-flex p-jc-between p-ai-center">
 										<div>
@@ -167,7 +167,7 @@
 												process="@this" icon="pi pi-plus"
 												styleClass="ui-button-raised ui-button-success p-mr-2">
 												<p:ajax event="dialogReturn"
-													listener="#{newBudgetOrderController.handleProductResult}" />
+													listener="#{newOrderController.handleProductResult}" />
 											</p:commandButton>
 											<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
@@ -328,8 +328,8 @@
 									<p:commandButton icon="pi pi-times"
 										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 										title="Remover"
-										action="#{newBudgetOrderController.removeItem(item)}"
-										update="formItems:dtItems,budgetTotals,customerForm:btnShowSearchCustomer"
+										action="#{orderCommonBehaviorHelperImpl.removeItem(newOrderController.order,item)}"
+										update="formItems:dtItems,frmTotals,customerForm:btnShowSearchCustomer"
 										process="@this"
 										oncomplete="turnDtScrollBodyResponsive('dtItems','32vh')" />
 
@@ -347,13 +347,13 @@
 
 				<div class="p-col-12 p-shadow-24" id="totals">
 					<div class="card ">
-						<h:form id="budgetTotals">
+						<h:form id="frmTotals">
 							<div class="ui-fluid p-formgrid p-grid">
 								<div class="p-field p-col-12 p-md-3">
 									<p:outputLabel for="liquidV"
 										value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
 									<p:inputNumber id="liquidV"
-										value="#{newBudgetOrderController.budget.liquidValue}"
+										value="#{newOrderController.order.liquidValue}"
 										symbol="R$ " symbolPosition="p" readonly="true"
 										decimalSeparator="," thousandSeparator="." />
 								</div>
@@ -361,7 +361,7 @@
 									<p:outputLabel for="stT"
 										value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
 									<p:inputNumber id="stT"
-										value="#{newBudgetOrderController.budget.stValue}"
+										value="#{newOrderController.order.stValue}"
 										symbol="R$ " symbolPosition="p" readonly="true"
 										decimalSeparator="," thousandSeparator="." />
 								</div>
@@ -369,7 +369,7 @@
 									<p:outputLabel for="grossV"
 										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
 									<p:inputNumber id="grossV"
-										value="#{newBudgetOrderController.budget.grossValue}"
+										value="#{newOrderController.order.grossValue}"
 										symbol="R$ " symbolPosition="p" readonly="true"
 										decimalSeparator="," thousandSeparator="." />
 								</div>
@@ -385,7 +385,7 @@
 			</div>
 			<p:remoteCommand name="cleanBudgetObj"
 				action="#{newBudgetOrderController.newBudgetObject}" process="@this"
-				update="customerForm, formItems:dtItems, budgetTotals" />
+				update="customerForm, formItems:dtItems, frmTotals" />
 			<p:dialog widgetVar="successSavedBudgetOrOrder" modal="true"
 				responsive="true" id="successSavedBudgetOrOrder"
 				header="#{newBudgetOrderController.budget.code}"
@@ -461,7 +461,7 @@
 						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
 						icon="pi pi-check"
 						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-						process="@form" update="formItems:dtItems,budgetTotals"
+						process="@form" update="formItems:dtItems,frmTotals"
 						action="#{newBudgetOrderController.applyLineDiscount}"
 						onstart="PF('block').show()"
 						oncomplete="PF('dlgLineDiscount').hide();PF('block').hide()" />
@@ -487,7 +487,7 @@
 						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
 						icon="pi pi-check"
 						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-						process="@form" update="formItems:dtItems,budgetTotals"
+						process="@form" update="formItems:dtItems,frmTotals"
 						action="#{newBudgetOrderController.applyGlobalDiscount}"
 						onstart="PF('block').show()"
 						oncomplete="PF('dlgGlobalDiscount').hide();PF('block').hide()" />
@@ -663,87 +663,11 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 			<script type="text/javascript">
 			//<![CDATA[
-			$("#error").hide();
-			$("#tryAgain").hide();
-			$("#divSearchProducts").hide();
-			$("#ItemContainarLoader").hide();
-			$("#loaderProducts").hide();
-			$("#divMsgProducts").hide();
-			$("#estimateContent").hide();
-			$("#estimateLoad").hide();
-			$("#selectProducts").hide();
-			$("#btnPrintBudget").hide();
-			$("#divSearchProductByCode").hide();
-			var processFinished = false;
-			
-			
 			function turnDtScrollBodyResponsive(clientId, maxHeight) {
 				PF(clientId).scrollBody[0].style.setProperty('max-height',
 						maxHeight);
 			}
 
-			function onCompleteEstimate(xhr) {
-				if (getResponseHeader(xhr)) {
-					$('#divSearchProductByCode').hide();
-					$('#divCart').show();
-					$('#totals').show();
-					$("#selectProducts").hide();
-					updateDtItems().then(e=>{
-						turnDtScrollBodyResponsive('dtItems','32vh')
-					});
-				}
-				PF('globalLoadDlg').hide();
-			}
-			function onCompleteSearchProductByDescription(xhr) {
-				PF('globalLoadDlg').hide();
-				PF('searchProductDialog').hide();
-				if (getResponseHeader(xhr)) {
-					$("#selectProducts").show();
-					$("#divCart").hide();
-					$("#totals").hide();
-					updateDtProducts().then(e=>{
-						turnDtScrollBodyResponsive('dtSelectProducts', '40vh');
-						
-						console.log(PF('dtSelectProducts'))
-					});
-					
-					
-
-				}
-			}
-
-			function startDownloadStreams() {
-				PF('globalLoadDlg').show();
-			}
-			function completeDownloadStreams() {
-				console.log('complete!')
-				PF('globalLoadDlg').hide();
-			}
-			function detectLongProcess() {
-				processFinished = false;
-				setTimeout(function() {
-					if (processFinished == false) {
-						PF('globalLoadDlg').show();
-						let interval = setInterval(function() {
-							if (processFinished == true) {
-								PF('globalLoadDlg').hide();
-								clearInterval(interval);
-							}
-						}, 1);
-					}
-
-				}, 450);
-			}
-			function concludeLongProcess() {
-				processFinished = true;
-			}
-
-			function onCompletePageProducts() {
-				processFinished = true;
-
-			
-
-			}
 
 			function getResponseHeader(xhr) {
 				return xhr.getResponseHeader("Backbone-Status") != "Error";

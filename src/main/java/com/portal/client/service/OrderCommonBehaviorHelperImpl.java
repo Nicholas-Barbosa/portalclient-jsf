@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.vo.Budget;
@@ -12,6 +13,7 @@ import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
+@Named
 public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper, Serializable {
 
 	/**

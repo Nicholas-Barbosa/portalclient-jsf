@@ -15,7 +15,9 @@ import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.Product;
 
 @Named
 @ViewScoped
@@ -45,6 +47,14 @@ public class NewOrderController implements Serializable {
 	public void getProspectFromSession() {
 		ProspectCustomerOnOrder prosp = (ProspectCustomerOnOrder) session.getAttribute("prospect");
 		orderHelper.setCustomer(order, prosp);
+	}
+
+	public void handleProductResult(SelectEvent<Optional<Product>> event) {
+		event.getObject().ifPresentOrElse(p -> {
+			orderHelper.addItem(order, Item.product(p));
+			FacesUtils.ajaxUpdate("formItems:dtItems", "frmTotals");
+		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
+
 	}
 
 	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
