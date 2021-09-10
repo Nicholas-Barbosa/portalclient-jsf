@@ -7,8 +7,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 
@@ -77,6 +77,12 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 		budgetToMix.getItems().stream().forEach(i -> {
 			this.addItem(mixedBudget, i);
 		});
+	}
+
+	@Override
+	public void lineDiscount(Order order, ItemLineDiscountForm form) {
+		this.itemService.applyLineDiscount(order.getItems(), form);
+		this.calculateTotals(order);
 	}
 
 }

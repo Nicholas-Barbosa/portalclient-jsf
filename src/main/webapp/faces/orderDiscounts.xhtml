@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<f:facet name="first">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<link rel="icon"
+			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
+			type="image/x-icon"></link>
+		<title>Aplicar descontos</title>
+	</f:facet>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+
+</h:head>
+
+<h:body styleClass="#{userStylePreferences.inputStyleClass}">
+	<f:metadata>
+		<f:viewParam name="activeTab"
+			value="#{orderDiscountController.activeTab}" />
+	</f:metadata>
+	<p:growl globalOnly="true" id="growl" showDetail="true" />
+	<h:form>
+		<p:remoteCommand
+			action="#{orderDiscountController.getOrderFromSession}"
+			autoRun="true" update="growl" />
+	</h:form>
+	<div class="card">
+		<p:tabView activeIndex="#{orderDiscountController.activeTab}">
+			<p:tab title="Global" id="tabGlob">
+				<h:form>
+					<div class="ui-fluid">
+						<div class="p-field">
+							<p:outputLabel for="gDis"
+								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
+							<p:spinner id="gDis" stepFactor="0.25"
+								value="#{orderDiscountController.gloablDiscount}" min="0"
+								max="100" required="true" />
+							<small class="p-d-block">Aplicado para todos os produtos.</small>
+							<p:message for="gDis" />
+						</div>
+					</div>
+					<p:commandButton
+						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
+						icon="pi pi-check"
+						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+						process="@form"
+						action="#{orderDiscountController.applyGlobalDiscount}"
+						onstart="PF('block').show()"
+						oncomplete="PF('dlgGlobalDiscount').hide();PF('block').hide()" />
+				</h:form>
+				<p:blockUI block="tabGlob" widgetVar="block" />
+			</p:tab>
+			<p:tab title="Linha" id="tabLine">
+				<h:form>
+					<div class="ui-fluid">
+						<p:remoteCommand name="loadLines" process="@this"
+							update="@form:lines"
+							action="#{orderDiscountController.loadCurrentItemLines}"
+							autoRun="true" />
+						<p:selectOneListbox id="lines"
+							value="#{orderDiscountController.lineDiscountForm.line}"
+							filter="true" required="true">
+							<f:selectItems value="#{orderDiscountController.lines}"
+								var="line" itemLabel="#{line}" itemValue="#{line}" />
+						</p:selectOneListbox>
+						<p:message for="lines" />
+					</div>
+					<div class="ui-fluid">
+						<div class="p-field">
+							<p:outputLabel for="gDis"
+								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
+							<p:spinner id="gDis" stepFactor="0.25"
+								value="#{orderDiscountController.lineDiscountForm.discount}"
+								min="0" max="100" required="true" />
+							<small class="p-d-block">Aplicado para todos os produtos
+								desta linha.</small>
+							<p:message for="gDis" />
+						</div>
+					</div>
+					<p:commandButton
+						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
+						icon="pi pi-check"
+						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+						process="@form"
+						action="#{orderDiscountController.applyLineDiscount}"
+						onstart="PF('block').show()" />
+				</h:form>
+				<p:blockUI block="tabLine" widgetVar="block" />
+			</p:tab>
+		</p:tabView>
+	</div>
+</h:body>
+</html>

@@ -149,10 +149,10 @@
 						<h:form id="formItems">
 							<p:remoteCommand name="updateDtItems" action="#" process="@none"
 								update="dtItems" />
-							<p:dataTable value="#{newOrderController.order.items}"
-								var="item" editable="true" rowKey="#{item.commercialCode}"
-								id="dtItems" reflow="true" size="small" scrollable="true"
-								widgetVar="dtItems" rowIndexVar="crrIndex">
+							<p:dataTable value="#{newOrderController.order.items}" var="item"
+								editable="true" rowKey="#{item.commercialCode}" id="dtItems"
+								reflow="true" size="small" scrollable="true" widgetVar="dtItems"
+								rowIndexVar="crrIndex">
 								<p:autoUpdate on="eventAddItem" />
 								<p:autoUpdate on="eventAddLineDiscount" />
 								<p:ajax event="rowEdit"
@@ -170,15 +170,21 @@
 											</p:commandButton>
 											<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
-												disabled="#{empty newBudgetOrderController.budget.items}">
+												disabled="#{empty newOrderController.order.items}">
 												<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('linha')}"
-													onclick="PF('dlgLineDiscount').show()" process="@none"
-													icon="pi pi-tag" />
+													action="#{orderDiscountShowController.show(newOrderController.order,1)}"
+													process="@this" icon="pi pi-tag">
+													<p:ajax event="dialogReturn"
+														update="formItems:dtItems,frmTotals" />
+												</p:menuitem>
 												<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('global')}"
-													onclick="PF('dlgGlobalDiscount').show()" icon="pi pi-tag" />
-												<p:autoUpdate on="eventAddItem" />
+													action="#{orderDiscountShowController.show(newOrderController.order,0)}"
+													icon="pi pi-tag">
+													<p:ajax event="dialogReturn"
+														update="formItems:dtItems,frmTotals" />
+												</p:menuitem>
 											</p:menuButton>
 										</div>
 										<div>
@@ -352,25 +358,25 @@
 									<p:outputLabel for="liquidV"
 										value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
 									<p:inputNumber id="liquidV"
-										value="#{newOrderController.order.liquidValue}"
-										symbol="R$ " symbolPosition="p" readonly="true"
-										decimalSeparator="," thousandSeparator="." />
+										value="#{newOrderController.order.liquidValue}" symbol="R$ "
+										symbolPosition="p" readonly="true" decimalSeparator=","
+										thousandSeparator="." />
 								</div>
 								<div class="p-field p-col-12 p-md-3">
 									<p:outputLabel for="stT"
 										value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
 									<p:inputNumber id="stT"
-										value="#{newOrderController.order.stValue}"
-										symbol="R$ " symbolPosition="p" readonly="true"
-										decimalSeparator="," thousandSeparator="." />
+										value="#{newOrderController.order.stValue}" symbol="R$ "
+										symbolPosition="p" readonly="true" decimalSeparator=","
+										thousandSeparator="." />
 								</div>
 								<div class="p-field p-col-12 p-md-3">
 									<p:outputLabel for="grossV"
 										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
 									<p:inputNumber id="grossV"
-										value="#{newOrderController.order.grossValue}"
-										symbol="R$ " symbolPosition="p" readonly="true"
-										decimalSeparator="," thousandSeparator="." />
+										value="#{newOrderController.order.grossValue}" symbol="R$ "
+										symbolPosition="p" readonly="true" decimalSeparator=","
+										thousandSeparator="." />
 								</div>
 							</div>
 							<p:autoUpdate on="eventAddItem" />
@@ -395,8 +401,7 @@
 					style="width: 100%" />
 			</p:dialog>
 			<p:dialog widgetVar="saveBudgetOrder" modal="true"
-				header="#{newBudgetOrderController.isOrder() ? 'Efetivar pedido': resourceBundleServiceImpl.getMessage('efetivar_orcamento')}"
-				responsive="true">
+				header="Salvar novo pedido" responsive="true">
 				<h:form>
 					<div class="ui-fluid p-formgrid p-grid">
 						<div class="p-field p-col">
@@ -427,71 +432,6 @@
 					<p:skeleton size="4rem" class="p-mr-2" />
 					<p:skeleton size="5rem" />
 				</div>
-			</p:dialog>
-			<p:dialog widgetVar="dlgLineDiscount" header="Descontos"
-				responsive="true" fitViewport="true" modal="true"
-				onShow="loadLines()" id="dlgLineDiscount">
-				<h:form>
-					<div class="ui-fluid">
-						<p:remoteCommand name="loadLines" process="@this"
-							update="@form:lines"
-							action="#{newBudgetOrderController.loadCurrentItemLines}" />
-						<p:selectOneListbox id="lines"
-							value="#{newBudgetOrderController.itemLineDiscount.line}"
-							filter="true" required="true">
-							<f:selectItems value="#{newBudgetOrderController.itemLines}"
-								var="line" itemLabel="#{line}" itemValue="#{line}" />
-						</p:selectOneListbox>
-						<p:message for="lines" />
-					</div>
-					<div class="ui-fluid">
-						<div class="p-field">
-							<p:outputLabel for="gDis"
-								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
-							<p:spinner id="gDis" stepFactor="0.25"
-								value="#{newBudgetOrderController.itemLineDiscount.discount}"
-								min="0" max="100" required="true" />
-							<small class="p-d-block">Aplicado para todos os produtos
-								desta linha.</small>
-							<p:message for="gDis" />
-						</div>
-					</div>
-					<p:commandButton
-						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
-						icon="pi pi-check"
-						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-						process="@form" update="formItems:dtItems,frmTotals"
-						action="#{newBudgetOrderController.applyLineDiscount}"
-						onstart="PF('block').show()"
-						oncomplete="PF('dlgLineDiscount').hide();PF('block').hide()" />
-				</h:form>
-				<p:blockUI block="dlgLineDiscount" widgetVar="block" />
-			</p:dialog>
-
-			<p:dialog widgetVar="dlgGlobalDiscount" modal="true"
-				responsive="true" id="dlgGlobalDiscount">
-				<h:form>
-					<div class="ui-fluid">
-						<div class="p-field">
-							<p:outputLabel for="gDis"
-								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
-							<p:spinner id="gDis" stepFactor="0.25"
-								value="#{newBudgetOrderController.globalDiscount}" min="0"
-								max="100" required="true" />
-							<small class="p-d-block">Aplicado para todos os produtos.</small>
-							<p:message for="gDis" />
-						</div>
-					</div>
-					<p:commandButton
-						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
-						icon="pi pi-check"
-						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-						process="@form" update="formItems:dtItems,frmTotals"
-						action="#{newBudgetOrderController.applyGlobalDiscount}"
-						onstart="PF('block').show()"
-						oncomplete="PF('dlgGlobalDiscount').hide();PF('block').hide()" />
-				</h:form>
-				<p:blockUI block="dlgGlobalDiscount" widgetVar="block" />
 			</p:dialog>
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
@@ -605,7 +545,7 @@
 											<p:commandButton icon="pi pi-check"
 												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
 												action="#{prospectCustomerFormController.create}"
-												process="@this,@form:pn" oncomplete="getProspect()"/>
+												process="@this,@form:pn" oncomplete="getProspect()" />
 										</p:column>
 										<p:growl for="prospCnpj" id="growlForCnpj" />
 									</p:row>
@@ -661,19 +601,18 @@ body .ui-panelgrid .ui-panelgrid-cell {
 </style>
 
 			<script type="text/javascript">
-			//<![CDATA[
-			function turnDtScrollBodyResponsive(clientId, maxHeight) {
-				PF(clientId).scrollBody[0].style.setProperty('max-height',
-						maxHeight);
-			}
+				//<![CDATA[
+				function turnDtScrollBodyResponsive(clientId, maxHeight) {
+					PF(clientId).scrollBody[0].style.setProperty('max-height',
+							maxHeight);
+				}
 
+				function getResponseHeader(xhr) {
+					return xhr.getResponseHeader("Backbone-Status") != "Error";
+				}
 
-			function getResponseHeader(xhr) {
-				return xhr.getResponseHeader("Backbone-Status") != "Error";
-			}
-
-			//	]]>
-		</script>
+				//	]]>
+			</script>
 		</f:view>
 	</ui:define>
 

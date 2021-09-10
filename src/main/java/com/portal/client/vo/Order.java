@@ -33,7 +33,6 @@ public class Order {
 		this.stValue = stValue;
 		this.globalDiscount = globalDiscount;
 		this.message = message;
-
 		this.items = items;
 		this.createdAt = createdAt;
 	}

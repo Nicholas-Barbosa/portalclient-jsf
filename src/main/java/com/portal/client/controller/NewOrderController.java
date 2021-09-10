@@ -2,6 +2,8 @@ package com.portal.client.controller;
 
 import java.io.Serializable;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -12,6 +14,7 @@ import org.primefaces.event.SelectEvent;
 
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
+import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.util.jsf.FacesUtils;
@@ -33,22 +36,31 @@ public class NewOrderController implements Serializable {
 	private String cNameToSearch;
 	@Inject
 	private OrderCommonBehaviorHelper orderHelper;
-
 	@Inject
 	private HttpSession session;
 
+	private Set<String> itemsToApplyLineDiscount;
+	private ItemLineDiscountForm lineDiscForm;
+
 	public NewOrderController() {
 		newOrder();
+		this.lineDiscForm = new ItemLineDiscountForm();
 	}
 
 	public final void newOrder() {
 		this.order = new Order();
 	}
 
+	public void loadCurrentItemLines() {
+		this.itemsToApplyLineDiscount = order.getItems().parallelStream().map(Item::getLine)
+				.collect(Collectors.toSet());
+	}
+
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
 		this.orderHelper.merge(order, event.getObject());
 		FacesUtils.ajaxUpdate("formItems:dtItems", "frmTotals");
 	}
+
 	public void getProspectFromSession() {
 		ProspectCustomerOnOrder prosp = (ProspectCustomerOnOrder) session.getAttribute("prospect");
 		orderHelper.setCustomer(order, prosp);
@@ -81,5 +93,13 @@ public class NewOrderController implements Serializable {
 
 	public void setcNameToSearch(String cNameToSearch) {
 		this.cNameToSearch = cNameToSearch;
+	}
+
+	public Set<String> getItemsToApplyLineDiscount() {
+		return itemsToApplyLineDiscount;
+	}
+
+	public ItemLineDiscountForm getLineDiscForm() {
+		return lineDiscForm;
 	}
 }

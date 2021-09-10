@@ -204,7 +204,6 @@ public class NewBudgetOrderController implements Serializable {
 
 	public void applyGlobalDiscount() {
 		try {
-			System.out.println("Global discount " + globalDiscount);
 			budgetBehaviorHelper.setDiscount(budget, globalDiscount);
 		} catch (CustomerNotAllowed e) {
 			FacesUtils.fatal(null, "Cliente não autorizado", null);
