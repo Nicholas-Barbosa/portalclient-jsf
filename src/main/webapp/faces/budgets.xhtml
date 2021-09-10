@@ -17,7 +17,7 @@
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/budgetList">#{resourceBundleServiceImpl.getMessage('orcamentos')}</p:link>
+		<li><p:link outcome="/faces/budgets">#{resourceBundleServiceImpl.getMessage('orcamentos')}</p:link>
 		</li>
 	</ui:define>
 
@@ -42,7 +42,7 @@
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('orcamento')}">
-								<h:outputText value="#{budget.idCode}" />
+								<h:outputText value="#{budget.code}" />
 							</p:column>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">

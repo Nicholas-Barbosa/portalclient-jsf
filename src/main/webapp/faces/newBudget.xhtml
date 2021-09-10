@@ -27,10 +27,7 @@
 
 	<ui:define name="content">
 		<f:view locale="pt_BR">
-			<f:metadata>
-				<f:viewParam name="isOrder"
-					value="#{newBudgetOrderController.order}" />
-			</f:metadata>
+
 			<p:growl id="growl" showDetail="true" globalOnly="true"
 				widgetVar="growl" />
 			<div class="card">
@@ -42,7 +39,7 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
-								action="#{newBudgetOrderController.newBudgetObject}"
+								action="#{newBudgetOrderController.newBudget}"
 								update="customerForm formItems:dtItems budgetTotals"
 								onclick="PF('blockItems').show()">
 								<p:confirm type="popup"
@@ -53,14 +50,13 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-								action="#{newBudgetOrderController.openItemImportView}"
+								action="#{itemImportShowController.show(newBudgetOrderController.budget,newBudgetOrderController.budget.customerOnOrder)}"
 								process="@this">
 								<p:ajax event="dialogReturn"
-									listener="#{newBudgetOrderController.handleItemImportReturn}" />
+									listener="#{newBudgetOrderController.handleItemImportReturn}" onstart="PF('topSidebar').show()" oncomplete="PF('topSidebar').hide()"/>
 							</p:commandButton>
-							<p:commandButton
-								action="#{newBudgetOrderController.checkBudgetRequestObj}"
-								value="#{newBudgetOrderController.isOrder() ? resourceBundleServiceImpl.getMessage('salvar_pedido') : resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
+							<p:commandButton action="#{newBudgetOrderController.validBudget}"
+								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
 								icon="pi pi-check" styleClass="ui-button-success " />
 							<i class="pi pi-bars p-px-2" />
 							<p:commandButton title="Print" icon="pi pi-print"
@@ -142,8 +138,7 @@
 								</div>
 								<p:remoteCommand name="saveMessage"
 									process="@this,@form:mensagem"
-									action="#{newBudgetOrderController.saveMessageOrder}"
-									update="growl" />
+									action="#{orderMessageMessageController.displayMessage}" />
 
 
 							</div>
@@ -176,19 +171,27 @@
 												process="@this" icon="pi pi-plus"
 												styleClass="ui-button-raised ui-button-success p-mr-2">
 												<p:ajax event="dialogReturn"
-													listener="#{newBudgetOrderController.handleProductResult}" />
+													listener="#{newBudgetOrderController.handleProductResult}"
+													onstart="PF('topSidebar').show()"
+													oncomplete="PF('topSidebar').hide()" />
 											</p:commandButton>
 											<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 												disabled="#{empty newBudgetOrderController.budget.items}">
 												<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('linha')}"
-													onclick="PF('dlgLineDiscount').show()" process="@none"
-													icon="pi pi-tag" />
+													action="#{orderDiscountShowController.show(newBudgetOrderController.budget,1)}"
+													process="@this" icon="pi pi-tag">
+													<p:ajax event="dialogReturn"
+														update="formItems:dtItems,budgetTotals" />
+												</p:menuitem>
 												<p:menuitem
 													value="#{resourceBundleServiceImpl.getMessage('global')}"
-													onclick="PF('dlgGlobalDiscount').show()" icon="pi pi-tag" />
-												<p:autoUpdate on="eventAddItem" />
+													action="#{orderDiscountShowController.show(newBudgetOrderController.budget,0)}"
+													icon="pi pi-tag">
+													<p:ajax event="dialogReturn"
+														update="formItems:dtItems,budgetTotals" />
+												</p:menuitem>
 											</p:menuButton>
 										</div>
 										<div>
@@ -334,14 +337,14 @@
 												id="labelItemStock" />
 										</p>
 									</p:overlayPanel>
+
 									<p:commandButton icon="pi pi-times"
 										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 										title="Remover"
-										action="#{newBudgetOrderController.removeItem(item)}"
+										action="#{orderCommonBehaviorHelperImpl.removeItem(newBudgetOrderController.budget,item)}"
 										update="formItems:dtItems,budgetTotals,customerForm:btnShowSearchCustomer"
 										process="@this"
 										oncomplete="turnDtScrollBodyResponsive('dtItems','32vh')" />
-
 								</p:column>
 
 							</p:dataTable>
@@ -392,117 +395,6 @@
 
 
 			</div>
-			<p:remoteCommand name="cleanBudgetObj"
-				action="#{newBudgetOrderController.newBudgetObject}" process="@this"
-				update="customerForm, formItems:dtItems, budgetTotals" />
-			<p:dialog widgetVar="successSavedBudgetOrOrder" modal="true"
-				responsive="true" id="successSavedBudgetOrOrder"
-				header="#{newBudgetOrderController.budget.code}"
-				onHide="cleanBudgetObj()">
-				<p:staticMessage severity="info"
-					summary="Orçamento salvo com sucesso."
-					detail="Orçamento salvo com identificador: #{newBudgetOrderController.budget.code}"
-					style="width: 100%" />
-			</p:dialog>
-			<p:dialog widgetVar="saveBudgetOrder" modal="true"
-				header="#{newBudgetOrderController.isOrder() ? 'Efetivar pedido': resourceBundleServiceImpl.getMessage('efetivar_orcamento')}"
-				responsive="true">
-				<h:form>
-					<div class="ui-fluid p-formgrid p-grid">
-						<div class="p-field p-col">
-							<label for="pR">#{resourceBundleServiceImpl.getMessage('pedido_representante')}</label>
-							<p:inputText id="pR" type="text"
-								value="#{newBudgetOrderController.customerRepresentativeOrderForm.representativeOrder}" />
-						</div>
-						<div class="p-field p-col">
-							<label for="pC">#{resourceBundleServiceImpl.getMessage('pedido_cliente')}</label>
-							<p:inputText id="pC" type="text"
-								value="#{newBudgetOrderController.customerRepresentativeOrderForm.customerOrder}" />
-						</div>
-					</div>
-					<p:commandButton icon="pi pi-check" styleClass="ui-button-success"
-						process="@this,@form"
-						action="#{newBudgetOrderController.saveBudgetOrOrder}"
-						onstart="PF('savingBudget').show();"
-						oncomplete="PF('savingBudget').hide();PF('saveBudgetOrder').hide()" />
-				</h:form>
-			</p:dialog>
-
-			<p:dialog modal="true" closable="false" responsive="true"
-				widgetVar="savingBudget">
-				<h5 class="p-mt-3">#{resourceBundleServiceImpl.getMessage('salvando_orcamento')}</h5>
-				<div class="p-d-flex p-ai-end">
-					<p:skeleton size="2rem" class="p-mr-2" />
-					<p:skeleton size="3rem" class="p-mr-2" />
-					<p:skeleton size="4rem" class="p-mr-2" />
-					<p:skeleton size="5rem" />
-				</div>
-			</p:dialog>
-			<p:dialog widgetVar="dlgLineDiscount" header="Descontos"
-				responsive="true" fitViewport="true" modal="true"
-				onShow="loadLines()" id="dlgLineDiscount">
-				<h:form>
-					<div class="ui-fluid">
-						<p:remoteCommand name="loadLines" process="@this"
-							update="@form:lines"
-							action="#{newBudgetOrderController.loadCurrentItemLines}" />
-						<p:selectOneListbox id="lines"
-							value="#{newBudgetOrderController.itemLineDiscount.line}"
-							filter="true" required="true">
-							<f:selectItems value="#{newBudgetOrderController.itemLines}"
-								var="line" itemLabel="#{line}" itemValue="#{line}" />
-						</p:selectOneListbox>
-						<p:message for="lines" />
-					</div>
-					<div class="ui-fluid">
-						<div class="p-field">
-							<p:outputLabel for="gDis"
-								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
-							<p:spinner id="gDis" stepFactor="0.25"
-								value="#{newBudgetOrderController.itemLineDiscount.discount}"
-								min="0" max="100" required="true" />
-							<small class="p-d-block">Aplicado para todos os produtos
-								desta linha.</small>
-							<p:message for="gDis" />
-						</div>
-					</div>
-					<p:commandButton
-						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
-						icon="pi pi-check"
-						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-						process="@form" update="formItems:dtItems,budgetTotals"
-						action="#{newBudgetOrderController.applyLineDiscount}"
-						onstart="PF('block').show()"
-						oncomplete="PF('dlgLineDiscount').hide();PF('block').hide()" />
-				</h:form>
-				<p:blockUI block="dlgLineDiscount" widgetVar="block" />
-			</p:dialog>
-
-			<p:dialog widgetVar="dlgGlobalDiscount" modal="true"
-				responsive="true" id="dlgGlobalDiscount">
-				<h:form>
-					<div class="ui-fluid">
-						<div class="p-field">
-							<p:outputLabel for="gDis"
-								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
-							<p:spinner id="gDis" stepFactor="0.25"
-								value="#{newBudgetOrderController.globalDiscount}" min="0"
-								max="100" required="true" />
-							<small class="p-d-block">Aplicado para todos os produtos.</small>
-							<p:message for="gDis" />
-						</div>
-					</div>
-					<p:commandButton
-						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
-						icon="pi pi-check"
-						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-						process="@form" update="formItems:dtItems,budgetTotals"
-						action="#{newBudgetOrderController.applyGlobalDiscount}"
-						onstart="PF('block').show()"
-						oncomplete="PF('dlgGlobalDiscount').hide();PF('block').hide()" />
-				</h:form>
-				<p:blockUI block="dlgGlobalDiscount" widgetVar="block" />
-			</p:dialog>
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"
@@ -521,11 +413,11 @@
 									<div class="p-field">
 										<div class="ui-inputgroup">
 											<p:inputText type="text" placeholder="keyword"
-												value="#{newBudgetOrderController.nameCustomerToFind}"
+												value="#{newBudgetOrderController.cNameToSearch}"
 												required="true" id="cName" />
 
 											<p:commandButton icon="pi pi-search"
-												action="#{customerSearchShowController.show(newBudgetOrderController.nameCustomerToFind)}">
+												action="#{customerSearchShowController.show(newBudgetOrderController.cNameToSearch)}">
 												<p:ajax event="dialogReturn"
 													listener="#{newBudgetOrderController.handleCustomerResult}" />
 											</p:commandButton>
@@ -543,23 +435,23 @@
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-									style="border:0px none; background-color:transparent;">
+									style="border:0px none; background-color:transparent;" id="pn">
 
 									<p:outputLabel
 										value="#{resourceBundleServiceImpl.getMessage('nome')}"
 										for="prospName" />
 									<p:inputText
-										value="#{newBudgetOrderController.prospectCustomerForm.name}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.name}"
 										id="prospName" />
 
 									<p:outputLabel for="prospCnpj" value="CNPJ" />
 									<p:inputMask id="prospCnpj"
-										value="#{newBudgetOrderController.prospectCustomerForm.cnpj}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.cnpj}"
 										mask="99.999.999/9999-99" validateMask="true" />
 
 									<p:outputLabel for="@next" value="Vendedor" />
 									<p:selectOneMenu
-										value="#{newBudgetOrderController.prospectCustomerForm.sellerType}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.sellerType}"
 										id="prospVendor">
 										<f:selectItem itemLabel="Agrícola" itemValue="AGRICOLA" />
 										<f:selectItem itemLabel="Carros" itemValue="CARROS" />
@@ -571,7 +463,7 @@
 										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 										for="prospTerms" />
 									<p:inputText
-										value="#{newBudgetOrderController.prospectCustomerForm.paymentTerms}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.paymentTerms}"
 										id="prospTerms" />
 
 									<p:row styleClass="my-heading-row">
@@ -580,33 +472,33 @@
 
 									<p:outputLabel for="cep" value="CEP" />
 									<p:inputText id="cep"
-										value="#{newBudgetOrderController.cepToSearch}" maxlength="8"
-										oninput="if(this.value.length == 8)findCep()" />
+										value="#{prospectCustomerFormController.cepToSearch}"
+										maxlength="8" oninput="if(this.value.length == 8)findCep()" />
 
 									<p:outputLabel for="prospEndereco"
-										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+										value="#{resourceBundleServiceImpl.getMessage('rua')}" />
 									<p:inputText id="prospEndereco"
-										value="#{newBudgetOrderController.prospectCustomerForm.address}" />
+										value="#{prospectCustomerFormController.prospectCustomerForm.street}" />
 
 									<p:outputLabel for="prospBairro"
 										value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
 									<p:inputText id="prospBairro"
-										value="#{newBudgetOrderController.prospectCustomerForm.district}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.district}"
 										readonly="true" />
 
 									<p:outputLabel for="prospCidade"
 										value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
 									<p:inputText id="prospCidade"
-										value="#{newBudgetOrderController.prospectCustomerForm.city}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.city}"
 										readonly="true" />
 
 									<p:outputLabel for="@next" value="Estado" />
 									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
-										value="#{newBudgetOrderController.prospectCustomerForm.stateAcronym}"
+										value="#{prospectCustomerFormController.prospectCustomerForm.stateAcronym}"
 										editable="false">
 										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
 											var="state" itemLabel="#{state.name}"
-											itemValue="#{state.acronym}" itemDisabled="true" />
+											itemValue="#{state.acronym}" />
 									</p:selectOneMenu>
 
 
@@ -614,19 +506,22 @@
 										<p:column styleClass="ui-grid-col-12">
 											<p:commandButton icon="pi pi-check"
 												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-												action="#{newBudgetOrderController.setProspectCustomer}"
-												process="@this,prospName,prospCnpj,prospVendor,prospTerms,prospEndereco"
-												update=":customerForm,@form,budgetToolsForm"
-												oncomplete="PF('blockItems').hide();" />
+												action="#{prospectCustomerFormController.create}"
+												process="@this,@form:pn" oncomplete="getProspect()" />
 										</p:column>
 										<p:growl for="prospCnpj" id="growlForCnpj" />
 									</p:row>
 								</p:panelGrid>
-								<p:remoteCommand action="#{newBudgetOrderController.findCep}"
+								<p:remoteCommand
+									action="#{prospectCustomerFormController.findCep}"
 									name="findCep" process="@this,@form:cep"
 									onstart="PF('blockForCepSearch').show()"
 									oncomplete="PF('blockForCepSearch').hide()"
 									update="growl,@form:prospEndereco,@form:es,@form:cep,@form:prospCidade,@form:prospBairro" />
+								<p:remoteCommand name="getProspect"
+									action="#{newBudgetOrderController.getProspectFromSession}"
+									process="@this" update=":customerForm,@form,budgetToolsForm"
+									oncomplete="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 								<p:blockUI widgetVar="blockForCepSearch" block="@form" />
 							</h:form>
 
@@ -636,18 +531,76 @@
 			</p:dialog>
 
 
-			<p:dialog header="Loading" modal="true" closable="false"
-				widgetVar="globalLoadDlg" responsive="true">
-				<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
-				<div>A long-running process has been detected. Please wait...</div>
-			</p:dialog>
 			<p:confirmPopup global="true">
 				<p:commandButton value="#{holdMessageView.label('nao')}"
 					type="button" styleClass="ui-confirm-popup-no ui-button-flat" />
 				<p:commandButton value="#{holdMessageView.label('sim')}"
 					type="button" styleClass="ui-confirm-popup-yes" />
 			</p:confirmPopup>
+			<p:remoteCommand name="cleanBudgetObj"
+				action="#{newBudgetOrderController.newBudget}" process="@this"
+				update="customerForm, formItems:dtItems, budgetTotals" />
+			
+			<p:dialog widgetVar="dlgBudgetPersistForm" modal="true"
+				header="#{resourceBundleServiceImpl.getMessage('efetivar_orcamento')}"
+				responsive="true">
+				<h:form>
+					<div class="ui-fluid p-formgrid p-grid">
+						<div class="p-field p-col">
+							<label for="pR">#{resourceBundleServiceImpl.getMessage('pedido_representante')}</label>
+							<p:inputText id="pR" type="text"
+								value="#{newBudgetOrderController.customerRepresentativeOrderForm.representativeOrder}" />
+						</div>
+						<div class="p-field p-col">
+							<label for="pC">#{resourceBundleServiceImpl.getMessage('pedido_cliente')}</label>
+							<p:inputText id="pC" type="text"
+								value="#{newBudgetOrderController.customerRepresentativeOrderForm.customerOrder}" />
+						</div>
+					</div>
+					<p:commandButton icon="pi pi-check" styleClass="ui-button-success"
+						process="@this,@form" action="#{newBudgetOrderController.save}"
+						onstart="PF('persistingBudget').show();PF('dlgBudgetPersistForm').hide();"
+						oncomplete="onCompletePersistBudget()" />
+				</h:form>
+			</p:dialog>
 
+			<p:dialog header="Status" modal="true" closable="false"
+				widgetVar="persistingBudget" responsive="true">
+				<div id="statLoading">
+					<h5 class="p-mt-3">#{resourceBundleServiceImpl.getMessage('salvando_orcamento')}</h5>
+					<div class="p-d-flex p-ai-end">
+						<p:skeleton size="2rem" class="p-mr-2" />
+						<p:skeleton size="3rem" class="p-mr-2" />
+						<p:skeleton size="4rem" class="p-mr-2" />
+						<p:skeleton size="5rem" />
+					</div>
+				</div>
+
+				<div id="statConluded" class="p-grid p-flex-column"
+					style="display: none;">
+					<div class="p-col">
+						<div class="box">
+							<p:staticMessage severity="info" summary="Salvo com sucesso!"
+								detail="Orçamento de número #{newBudgetOrderController.budget.code}"
+								style="width: 100%" id="successPersisted" />
+						</div>
+					</div>
+					<div class="p-col">
+						<div class="box">
+							<p:commandButton value="OK"
+								action="#{newBudgetOrderController.newBudget}" process="@this"
+								update="customerForm, formItems:dtItems, budgetTotals"
+								styleClass="p-mr-2 p-mb-2"
+								oncomplete="PF('persistingBudget').hide()" />
+							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star" outcome="budgets"
+								styleClass="p-mb-2" />
+						</div>
+					</div>
+				</div>
+			</p:dialog>
+			<p:sidebar widgetVar="topSidebar" position="top" baseZIndex="10000">
+				<h3>Adicionado produto ao orçamento e calculando totais...</h3>
+			</p:sidebar>
 			<style type="text/css">
 .cheap {
 	background-color: #ff9999 !important;
@@ -668,95 +621,23 @@ body .ui-panelgrid .ui-panelgrid-cell {
 </style>
 
 			<script type="text/javascript">
-			//<![CDATA[
-			$("#error").hide();
-			$("#tryAgain").hide();
-			$("#divSearchProducts").hide();
-			$("#ItemContainarLoader").hide();
-			$("#loaderProducts").hide();
-			$("#divMsgProducts").hide();
-			$("#estimateContent").hide();
-			$("#estimateLoad").hide();
-			$("#selectProducts").hide();
-			$("#btnPrintBudget").hide();
-			$("#divSearchProductByCode").hide();
-			var processFinished = false;
-			
-			
-			function turnDtScrollBodyResponsive(clientId, maxHeight) {
-				PF(clientId).scrollBody[0].style.setProperty('max-height',
-						maxHeight);
-			}
+				//<![CDATA[
+				var processFinished = false;
 
-			function onCompleteEstimate(xhr) {
-				if (getResponseHeader(xhr)) {
-					$('#divSearchProductByCode').hide();
-					$('#divCart').show();
-					$('#totals').show();
-					$("#selectProducts").hide();
-					updateDtItems().then(e=>{
-						turnDtScrollBodyResponsive('dtItems','32vh')
-					});
+				function turnDtScrollBodyResponsive(clientId, maxHeight) {
+					PF(clientId).scrollBody[0].style.setProperty('max-height',
+							maxHeight);
 				}
-				PF('globalLoadDlg').hide();
-			}
-			function onCompleteSearchProductByDescription(xhr) {
-				PF('globalLoadDlg').hide();
-				PF('searchProductDialog').hide();
-				if (getResponseHeader(xhr)) {
-					$("#selectProducts").show();
-					$("#divCart").hide();
-					$("#totals").hide();
-					updateDtProducts().then(e=>{
-						turnDtScrollBodyResponsive('dtSelectProducts', '40vh');
-						
-						console.log(PF('dtSelectProducts'))
-					});
-					
-					
 
+				function getResponseHeader(xhr) {
+					return xhr.getResponseHeader("Backbone-Status") != "Error";
 				}
-			}
-
-			function startDownloadStreams() {
-				PF('globalLoadDlg').show();
-			}
-			function completeDownloadStreams() {
-				console.log('complete!')
-				PF('globalLoadDlg').hide();
-			}
-			function detectLongProcess() {
-				processFinished = false;
-				setTimeout(function() {
-					if (processFinished == false) {
-						PF('globalLoadDlg').show();
-						let interval = setInterval(function() {
-							if (processFinished == true) {
-								PF('globalLoadDlg').hide();
-								clearInterval(interval);
-							}
-						}, 1);
-					}
-
-				}, 450);
-			}
-			function concludeLongProcess() {
-				processFinished = true;
-			}
-
-			function onCompletePageProducts() {
-				processFinished = true;
-
-			
-
-			}
-
-			function getResponseHeader(xhr) {
-				return xhr.getResponseHeader("Backbone-Status") != "Error";
-			}
-
-			//	]]>
-		</script>
+				function onCompletePersistBudget() {
+					$("#statLoading").hide();
+					$("#statConluded").show();
+				}
+				//	]]>
+			</script>
 		</f:view>
 	</ui:define>
 

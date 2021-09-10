@@ -102,7 +102,7 @@
 									<p:outputLabel for="endereco"
 										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 									<p:inputText id="endereco"
-										value="#{newOrderController.order.customerOnOrder.street}, #{newBudgetOrderController.budget.customerOnOrder.city} - #{newBudgetOrderController.budget.customerOnOrder.state}"
+										value="#{newOrderController.order.customerOnOrder.street}, #{newOrderController.order.customerOnOrder.city} - #{newOrderController.order.customerOnOrder.state}"
 										readonly="true" />
 								</div>
 								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
@@ -115,7 +115,7 @@
 								</div>
 
 								<ui:fragment
-									rendered="#{newBudgetOrderController.budget.customerOnOrder.type eq 'PROSPECT'}">
+									rendered="#{newOrderController.order.customerOnOrder.type eq 'PROSPECT'}">
 
 									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 										<p:outputLabel value="Vendedor" for="sellerType" />
@@ -168,24 +168,7 @@
 													onstart="PF('topSidebar').show()"
 													oncomplete="PF('topSidebar').hide()" />
 											</p:commandButton>
-											<!-- 			<p:menuButton
-												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
-												disabled="#{empty newOrderController.order.items}">
-												<p:menuitem
-													value="#{resourceBundleServiceImpl.getMessage('linha')}"
-													action="#{orderDiscountShowController.show(newOrderController.order,1)}"
-													process="@this" icon="pi pi-tag">
-													<p:ajax event="dialogReturn"
-														update="formItems:dtItems,frmTotals" />
-												</p:menuitem>
-												<p:menuitem
-													value="#{resourceBundleServiceImpl.getMessage('global')}"
-													action="#{orderDiscountShowController.show(newOrderController.order,0)}"
-													icon="pi pi-tag">
-													<p:ajax event="dialogReturn"
-														update="formItems:dtItems,frmTotals" />
-												</p:menuitem>
-											</p:menuButton> -->
+											
 										</div>
 										<div>
 											<p:commandButton id="toggler" type="button" value="Colunas"
@@ -318,7 +301,7 @@
 
 						</h:form>
 						<p:blockUI block="formItems" widgetVar="blockItems"
-							blocked="#{newBudgetOrderController.budget.customerOnOrder == null}">
+							blocked="#{newOrderController.order.customerOnOrder == null}">
 							<i class="pi pi-lock" style="font-size: 3rem" />
 						</p:blockUI>
 					</div>
@@ -362,51 +345,6 @@
 
 
 			</div>
-			<p:remoteCommand name="cleanBudgetObj"
-				action="#{newBudgetOrderController.newBudgetObject}" process="@this"
-				update="customerForm, formItems:dtItems, frmTotals" />
-			<p:dialog widgetVar="successSavedBudgetOrOrder" modal="true"
-				responsive="true" id="successSavedBudgetOrOrder"
-				header="#{newBudgetOrderController.budget.code}"
-				onHide="cleanBudgetObj()">
-				<p:staticMessage severity="info"
-					summary="Orçamento salvo com sucesso."
-					detail="Orçamento salvo com identificador: #{newBudgetOrderController.budget.code}"
-					style="width: 100%" />
-			</p:dialog>
-			<p:dialog widgetVar="saveBudgetOrder" modal="true"
-				header="Salvar novo pedido" responsive="true">
-				<h:form>
-					<div class="ui-fluid p-formgrid p-grid">
-						<div class="p-field p-col">
-							<label for="pR">#{resourceBundleServiceImpl.getMessage('pedido_representante')}</label>
-							<p:inputText id="pR" type="text"
-								value="#{newBudgetOrderController.customerRepresentativeOrderForm.representativeOrder}" />
-						</div>
-						<div class="p-field p-col">
-							<label for="pC">#{resourceBundleServiceImpl.getMessage('pedido_cliente')}</label>
-							<p:inputText id="pC" type="text"
-								value="#{newBudgetOrderController.customerRepresentativeOrderForm.customerOrder}" />
-						</div>
-					</div>
-					<p:commandButton icon="pi pi-check" styleClass="ui-button-success"
-						process="@this,@form"
-						action="#{newBudgetOrderController.saveBudgetOrOrder}"
-						onstart="PF('savingBudget').show();"
-						oncomplete="PF('savingBudget').hide();PF('saveBudgetOrder').hide()" />
-				</h:form>
-			</p:dialog>
-
-			<p:dialog modal="true" closable="false" responsive="true"
-				widgetVar="savingBudget">
-				<h5 class="p-mt-3">#{resourceBundleServiceImpl.getMessage('salvando_orcamento')}</h5>
-				<div class="p-d-flex p-ai-end">
-					<p:skeleton size="2rem" class="p-mr-2" />
-					<p:skeleton size="3rem" class="p-mr-2" />
-					<p:skeleton size="4rem" class="p-mr-2" />
-					<p:skeleton size="5rem" />
-				</div>
-			</p:dialog>
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{resourceBundleServiceImpl.getMessage('busca_de_cliente')}"
@@ -541,19 +479,37 @@
 					</p:tabView>
 				</div>
 			</p:dialog>
-
-
 			<p:dialog header="Status" modal="true" closable="false"
 				widgetVar="persistingOrder" responsive="true">
 				<div id="statLoading">
-					<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
-					<div>Um processo de longa duração foi detectado.Por favor
-						aguarde...</div>
+					<h5 class="p-mt-3">#{resourceBundleServiceImpl.getMessage('salvando_pedido')}</h5>
+					<div class="p-d-flex p-ai-end">
+						<p:skeleton size="2rem" class="p-mr-2" />
+						<p:skeleton size="3rem" class="p-mr-2" />
+						<p:skeleton size="4rem" class="p-mr-2" />
+						<p:skeleton size="5rem" />
+					</div>
 				</div>
-				<div id="statConluded" style="display: none;">
-					<p:staticMessage severity="info" summary="Salvo com sucesso!"
-						detail="Pedido de número #{newOrderController.order.code}"
-						style="width: 100%" id="successPersisted" />
+
+				<div id="statConluded" class="p-grid p-flex-column" style="display: none;">
+					<div class="p-col">
+						<div class="box">
+							<p:staticMessage severity="info" summary="Salvo com sucesso!"
+								detail="Pedido de número #{newOrderController.order.code}"
+								style="width: 100%" id="successPersisted" />
+						</div>
+					</div>
+					<div class="p-col">
+						<div class="box">
+							<p:commandButton value="OK"
+								action="#{newOrderController.newOrder}"
+								process="@this"
+								update="customerForm, formItems:dtItems, frmTotals"
+								styleClass="p-mr-2 p-mb-2" oncomplete="PF('persistingOrder').hide()"/>
+							<p:commandButton value="Visualizar outros pedidos"
+								styleClass="p-mb-2" />
+						</div>
+					</div>
 				</div>
 			</p:dialog>
 
