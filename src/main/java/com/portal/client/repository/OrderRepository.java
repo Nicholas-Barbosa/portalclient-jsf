@@ -6,7 +6,7 @@ import com.portal.client.vo.Order;
 
 public interface OrderRepository {
 
-	void save(Order order);
+	void persist(Order order);
 
 	List<Order> findAll(int page, int pageSize);
 }

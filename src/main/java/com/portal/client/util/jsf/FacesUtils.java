@@ -12,8 +12,6 @@ import javax.faces.context.FacesContext;
 
 import org.primefaces.PrimeFaces;
 
-import com.portal.client.export.OrderExportType;
-
 public class FacesUtils {
 
 	private FacesUtils() {

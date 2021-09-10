@@ -2,21 +2,23 @@ package com.portal.client.controller;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
+import org.primefaces.PrimeFaces;
+import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
+import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderItemQuantityCalculator;
+import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
@@ -37,23 +39,34 @@ public class NewOrderController implements Serializable {
 	@Inject
 	private OrderCommonBehaviorHelper orderHelper;
 	@Inject
+	private OrderCrudService orderCrudService;
+	@Inject
 	private HttpSession session;
+	@Inject
+	private OrderItemQuantityCalculator ordemQuantityCalculator;
 
-	private Set<String> itemsToApplyLineDiscount;
-	private ItemLineDiscountForm lineDiscForm;
+	private int onRowItemQuantity;
 
 	public NewOrderController() {
 		newOrder();
-		this.lineDiscForm = new ItemLineDiscountForm();
 	}
 
 	public final void newOrder() {
 		this.order = new Order();
 	}
 
-	public void loadCurrentItemLines() {
-		this.itemsToApplyLineDiscount = order.getItems().parallelStream().map(Item::getLine)
-				.collect(Collectors.toSet());
+	public void onRowItemEdit(RowEditEvent<Item> event) {
+		try {
+			ordemQuantityCalculator.calc(order, event.getObject(), onRowItemQuantity);
+		} catch (ItemQuantityNotAllowed e) {
+			FacesUtils.error(null, e.getMessage(), null);
+			PrimeFaces.current().ajax().update("growl");
+		}
+	}
+
+	public void save() {
+		orderCrudService.persist(order);
+		FacesUtils.ajaxUpdate("successPersisted");
 	}
 
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
@@ -95,11 +108,11 @@ public class NewOrderController implements Serializable {
 		this.cNameToSearch = cNameToSearch;
 	}
 
-	public Set<String> getItemsToApplyLineDiscount() {
-		return itemsToApplyLineDiscount;
+	public int getOnRowItemQuantity() {
+		return onRowItemQuantity;
 	}
 
-	public ItemLineDiscountForm getLineDiscForm() {
-		return lineDiscForm;
+	public void setOnRowItemQuantity(int onRowItemQuantity) {
+		this.onRowItemQuantity = onRowItemQuantity;
 	}
 }

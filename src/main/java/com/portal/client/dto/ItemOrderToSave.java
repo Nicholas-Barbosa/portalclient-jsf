@@ -13,14 +13,16 @@ public class ItemOrderToSave {
 	private Item item;
 
 	@JsonbTransient
-	private Product itemProduct;
+	private final Product itemProduct;
 
 	@JsonbTransient
-	private ItemValue value;
+	private final ItemValue value;
 	
 	public ItemOrderToSave(Item item) {
 		super();
 		this.item = item;
+		this.itemProduct = item.getProduct();
+		this.value = item.getValue();
 	}
 
 	@JsonbProperty("product_code")

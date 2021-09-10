@@ -1,5 +1,8 @@
 package com.portal.client.dto;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 
@@ -31,7 +34,7 @@ public class OrderToPersist {
 
 	@JsonbProperty("message")
 	public String getMessage() {
-		return order.getMessage();
+		return order.getMessage() == null ? "null" : order.getMessage();
 
 	}
 
@@ -45,6 +48,11 @@ public class OrderToPersist {
 	public String getCustomerOrder() {
 		return order.getCustomerNumOrder();
 
+	}
+
+	@JsonbProperty("items")
+	public Set<ItemOrderToSave> getItems() {
+		return order.getItems().stream().map(ItemOrderToSave::new).collect(Collectors.toSet());
 	}
 
 	public static OrderToPersist of(Order order2) {

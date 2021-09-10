@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import com.portal.client.dto.OrderPersisted;
 import com.portal.client.dto.OrderToPersist;
 import com.portal.client.jaxrs.client.RestClient;
+import com.portal.client.resources.ConfigPropertyResolver;
 import com.portal.client.security.UserSessionAPIManager;
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.vo.Order;
@@ -20,12 +21,14 @@ public class OrderRepositoryImpl implements OrderRepository {
 	private RestClient restClient;
 	@Inject
 	private UserSessionAPIManager apiManager;
+	@Inject
+	private ConfigPropertyResolver properties;
 
 	@Override
-	public void save(Order order) {
+	public void persist(Order order) {
 		OrderToPersist transientOrder = OrderToPersist.of(order);
-		ServerAPI api = apiManager.getAPI("ORCMANETO_API");
-		OrderPersisted managedOrder = restClient.post(apiManager.buildEndpoint(api, "orders"), api.getToken(),
+		ServerAPI api = apiManager.getAPI("ORCAMENTO_API");
+		OrderPersisted managedOrder = restClient.post(properties.getProperty("neworder_endpoint"), api.getToken(),
 				api.getTokenPrefix(), OrderPersisted.class, null, null, transientOrder, MediaType.APPLICATION_JSON);
 		order.setCode(managedOrder.getCode());
 	}

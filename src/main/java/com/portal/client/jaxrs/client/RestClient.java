@@ -34,7 +34,7 @@ public interface RestClient {
 
 	default Client getClientFollowingMediaType(String media) {
 		Client client = media.equals("application/json")
-				? ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS).readTimeout(10, TimeUnit.SECONDS)
+				? ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS)
 						.build().register(JsonMessageReader.class).register(JsonMessageWriter.class)
 				: null;
 		client.register(WebApplicationExceptionExceptionLauncherFilter.class);

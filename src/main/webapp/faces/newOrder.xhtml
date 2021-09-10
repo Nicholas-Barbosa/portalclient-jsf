@@ -52,10 +52,11 @@
 								<p:ajax event="dialogReturn"
 									listener="#{newOrderController.handleItemImportReturn}" />
 							</p:commandButton>
-							<p:commandButton
-								action="#{newBudgetOrderController.checkBudgetRequestObj}"
-								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
-								icon="pi pi-check" styleClass="ui-button-success " />
+							<p:commandButton action="#{newOrderController.save}"
+								value="#{resourceBundleServiceImpl.getMessage('salvar_pedido')}"
+								icon="pi pi-check" styleClass="ui-button-success "
+								onstart="PF('persistingOrder').show()"
+								oncomplete="onCompletePersistOrder()" />
 							<i class="pi pi-bars p-px-2" />
 							<p:commandButton title="Print" icon="pi pi-print"
 								styleClass="ui-button-success p-mr-2"
@@ -127,15 +128,12 @@
 								<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 									<p:outputLabel for="mensagem" value="Mensagem" />
 									<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-										value="#{newBudgetOrderController.budget.message}"
+										value="#{newOrderController.order.message}"
 										onchange="saveMessage();" />
 								</div>
 								<p:remoteCommand name="saveMessage"
 									process="@this,@form:mensagem"
-									action="#{newBudgetOrderController.saveMessageOrder}"
-									update="growl" />
-
-
+									action="#{orderMessageMessageController.displayMessage}" />
 							</div>
 						</h:form>
 					</div>
@@ -156,7 +154,7 @@
 								<p:autoUpdate on="eventAddItem" />
 								<p:autoUpdate on="eventAddLineDiscount" />
 								<p:ajax event="rowEdit"
-									listener="#{newBudgetOrderController.onRowItemEdit}"
+									listener="#{newOrderController.onRowItemEdit}"
 									update="frmTotals" />
 								<f:facet name="header">
 									<div class="p-d-flex p-jc-between p-ai-center">
@@ -168,7 +166,7 @@
 												<p:ajax event="dialogReturn"
 													listener="#{newOrderController.handleProductResult}" />
 											</p:commandButton>
-											<p:menuButton
+											<!-- 			<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 												disabled="#{empty newOrderController.order.items}">
 												<p:menuitem
@@ -185,7 +183,7 @@
 													<p:ajax event="dialogReturn"
 														update="formItems:dtItems,frmTotals" />
 												</p:menuitem>
-											</p:menuButton>
+											</p:menuButton> -->
 										</div>
 										<div>
 											<p:commandButton id="toggler" type="button" value="Colunas"
@@ -248,9 +246,8 @@
 											<h:outputText value="#{item.value.quantity}" />
 										</f:facet>
 										<f:facet name="input">
-											<p:spinner
-												value="#{newBudgetOrderController.onRowItemQuantity}"
-												style="width:100%" label="Name" />
+											<p:spinner value="#{newOrderController.onRowItemQuantity}"
+												style="width:100%" label="Quantidade" />
 										</f:facet>
 									</p:cellEditor>
 								</p:column>
@@ -275,32 +272,7 @@
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('desconto')}%">
-									<p:commandLink id="viewItemDiscounts"
-										oncomplete="PF('itemDiscOP').show()" update="itemDiscOP">
-										<h:outputText value="#{item.value.totalDiscount}">
-											<f:convertNumber locale="pt_BR" />
-										</h:outputText>
-										<f:setPropertyActionListener value="#{item}"
-											target="#{newBudgetOrderController.discView.item}" />
-									</p:commandLink>
-									<p:overlayPanel modal="true" widgetVar="itemDiscOP"
-										showCloseIcon="true" id="itemDiscOP">
-										<div class="ui-fluid p-formgrid p-grid">
-											<div class="p-field p-col">
-												<label for="discG">Desconto global</label>
-												<p:inputNumber id="discG" readonly="true"
-													value="#{newBudgetOrderController.discView.globalDiscount}" />
-											</div>
-											<div class="p-field p-col">
-												<label for="discLine">Desconto por linha</label>
-												<p:inputNumber id="discLine" readonly="true"
-													value="#{newBudgetOrderController.discView.lineDiscount}" />
-											</div>
-										</div>
-									</p:overlayPanel>
-								</p:column>
+
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
 									<h:outputText value="#{item.value.totalGrossValue}">
@@ -569,10 +541,18 @@
 			</p:dialog>
 
 
-			<p:dialog header="Loading" modal="true" closable="false"
-				widgetVar="globalLoadDlg" responsive="true">
-				<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
-				<div>A long-running process has been detected. Please wait...</div>
+			<p:dialog header="Status" modal="true" closable="false"
+				widgetVar="persistingOrder" responsive="true">
+				<div id="statLoading">
+					<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+					<div>Um processo de longa duração foi detectado.Por favor
+						aguarde...</div>
+				</div>
+				<div id="statConluded" style="display: none;">
+					<p:staticMessage severity="info" summary="Salvo com sucesso!"
+						detail="Pedido de número #{newOrderController.order.code}"
+						style="width: 100%" id="successPersisted" />
+				</div>
 			</p:dialog>
 			<p:confirmPopup global="true">
 				<p:commandButton value="#{holdMessageView.label('nao')}"
@@ -611,6 +591,10 @@ body .ui-panelgrid .ui-panelgrid-cell {
 					return xhr.getResponseHeader("Backbone-Status") != "Error";
 				}
 
+				function onCompletePersistOrder() {
+					$("#statLoading").hide();
+					$("#statConluded").show();
+				}
 				//	]]>
 			</script>
 		</f:view>

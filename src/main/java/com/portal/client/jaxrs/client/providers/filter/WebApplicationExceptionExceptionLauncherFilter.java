@@ -27,7 +27,9 @@ public class WebApplicationExceptionExceptionLauncherFilter implements ClientRes
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
 		switch (responseContext.getStatus()) {
 		case 404:
+			System.out.println("GOT 404 from "+ requestContext.getUri());
 			String responseTxt = readResponse(responseContext.getEntityStream());
+			System.out.println("response txt " +responseTxt);
 			Response responseNotFound = Response.status(404).entity(responseTxt).build();
 			throw new NotFoundException(responseNotFound);
 		case 500:
