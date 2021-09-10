@@ -164,7 +164,9 @@
 												process="@this" icon="pi pi-plus"
 												styleClass="ui-button-raised ui-button-success p-mr-2">
 												<p:ajax event="dialogReturn"
-													listener="#{newOrderController.handleProductResult}" />
+													listener="#{newOrderController.handleProductResult}"
+													onstart="PF('topSidebar').show()"
+													oncomplete="PF('topSidebar').hide()" />
 											</p:commandButton>
 											<!-- 			<p:menuButton
 												value="#{resourceBundleServiceImpl.getMessage('descontos')}"
@@ -194,7 +196,7 @@
 								</f:facet>
 								<f:facet name="footer">
 									<span class="p-text-bold">Há
-										#{fn:length(newBudgetOrderController.budget.items)} produtos.</span>
+										#{fn:length(newOrderController.order.items)} itens.</span>
 								</f:facet>
 								<p:column>
 									<h:outputText value="#{crrIndex+1}" />
@@ -554,13 +556,16 @@
 						style="width: 100%" id="successPersisted" />
 				</div>
 			</p:dialog>
+
 			<p:confirmPopup global="true">
 				<p:commandButton value="#{holdMessageView.label('nao')}"
 					type="button" styleClass="ui-confirm-popup-no ui-button-flat" />
 				<p:commandButton value="#{holdMessageView.label('sim')}"
 					type="button" styleClass="ui-confirm-popup-yes" />
 			</p:confirmPopup>
-
+			<p:sidebar widgetVar="topSidebar" position="top" baseZIndex="10000">
+				<h3>Adicionado produto ao orçamento e calculando totais...</h3>
+			</p:sidebar>
 			<style type="text/css">
 .cheap {
 	background-color: #ff9999 !important;
