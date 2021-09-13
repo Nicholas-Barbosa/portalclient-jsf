@@ -168,7 +168,7 @@
 													onstart="PF('topSidebar').show()"
 													oncomplete="PF('topSidebar').hide()" />
 											</p:commandButton>
-											
+
 										</div>
 										<div>
 											<p:commandButton id="toggler" type="button" value="Colunas"
@@ -491,7 +491,8 @@
 					</div>
 				</div>
 
-				<div id="statConluded" class="p-grid p-flex-column" style="display: none;">
+				<div id="statConluded" class="p-grid p-flex-column"
+					style="display: none;">
 					<div class="p-col">
 						<div class="box">
 							<p:staticMessage severity="info" summary="Salvo com sucesso!"
@@ -502,10 +503,10 @@
 					<div class="p-col">
 						<div class="box">
 							<p:commandButton value="OK"
-								action="#{newOrderController.newOrder}"
-								process="@this"
+								action="#{newOrderController.newOrder}" process="@this"
 								update="customerForm, formItems:dtItems, frmTotals"
-								styleClass="p-mr-2 p-mb-2" oncomplete="PF('persistingOrder').hide()"/>
+								styleClass="p-mr-2 p-mb-2"
+								oncomplete="PF('persistingOrder').hide()" />
 							<p:commandButton value="Visualizar outros pedidos"
 								styleClass="p-mb-2" />
 						</div>
@@ -520,7 +521,7 @@
 					type="button" styleClass="ui-confirm-popup-yes" />
 			</p:confirmPopup>
 			<p:sidebar widgetVar="topSidebar" position="top" baseZIndex="10000">
-				<h3>Adicionado produto ao orçamento e calculando totais...</h3>
+				<h4>Adicionado produto ao orçamento e calculando totais...</h4>
 			</p:sidebar>
 			<style type="text/css">
 .cheap {
@@ -556,6 +557,8 @@ body .ui-panelgrid .ui-panelgrid-cell {
 					$("#statLoading").hide();
 					$("#statConluded").show();
 				}
+				
+				
 				//	]]>
 			</script>
 		</f:view>

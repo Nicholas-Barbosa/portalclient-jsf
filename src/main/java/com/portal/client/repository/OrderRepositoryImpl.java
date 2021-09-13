@@ -28,7 +28,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 	public void persist(Order order) {
 		OrderToPersist transientOrder = OrderToPersist.of(order);
 		ServerAPI api = apiManager.getAPI("ORCAMENTO_API");
-		OrderPersisted managedOrder = restClient.post(properties.getProperty("neworder_endpoint_external"), api.getToken(),
+		OrderPersisted managedOrder = restClient.post(properties.getProperty("neworder_endpoint"), api.getToken(),
 				api.getTokenPrefix(), OrderPersisted.class, null, null, transientOrder, MediaType.APPLICATION_JSON);
 		order.setCode(managedOrder.getCode());
 	}

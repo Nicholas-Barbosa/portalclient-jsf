@@ -68,7 +68,7 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
 								icon="pi pi-eye"
-								action="#{showCustomerDetailController.show(newBudgetOrderController.budget.customerOnOrder)}" />
+								action="#{customerDetailShowController.show(newBudgetOrderController.budget.customerOnOrder)}" />
 
 						</p:toolbarGroup>
 					</p:toolbar>
@@ -599,7 +599,7 @@
 				</div>
 			</p:dialog>
 			<p:sidebar widgetVar="topSidebar" position="top" baseZIndex="10000">
-				<h3>Adicionado produto ao orçamento e calculando totais...</h3>
+				<h4>Adicionado produto ao orçamento e calculando totais...</h4>
 			</p:sidebar>
 			<style type="text/css">
 .cheap {
