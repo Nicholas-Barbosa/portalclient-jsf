@@ -508,7 +508,7 @@
 								styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingOrder').hide()" />
 							<p:commandButton value="Visualizar outros pedidos"
-								styleClass="p-mb-2" />
+								styleClass="p-mb-2" action="orders"/>
 						</div>
 					</div>
 				</div>
@@ -522,6 +522,10 @@
 			</p:confirmPopup>
 			<p:sidebar widgetVar="topSidebar" position="top" baseZIndex="10000">
 				<h4>Adicionado produto ao orçamento e calculando totais...</h4>
+			</p:sidebar>
+			<p:sidebar widgetVar="jsonDown" position="top" baseZIndex="10000">
+				<h2>Exportar pedido</h2>
+				
 			</p:sidebar>
 			<style type="text/css">
 .cheap {
@@ -557,8 +561,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 					$("#statLoading").hide();
 					$("#statConluded").show();
 				}
-				
-				
+
 				//	]]>
 			</script>
 		</f:view>

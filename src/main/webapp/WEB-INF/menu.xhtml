@@ -54,6 +54,9 @@
 							label="#{resourceBundleServiceImpl.getMessage('pedido')}"
 							icon="pi pi-shopping-cart">
 							<p:menuitem
+								value="#{resourceBundleServiceImpl.getMessage('pedidos')}"
+								icon="pi pi-list" outcome="orders" />
+							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-plus" outcome="newOrder" />
 						</p:submenu>

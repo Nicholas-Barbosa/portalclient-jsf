@@ -3,7 +3,8 @@ package com.portal.client.export;
 public enum OrderExportType {
 
 	PDF("application/pdf"), EXCEL("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-	EXCEL_CALC_CONFERENCE("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+	EXCEL_CALC_CONFERENCE("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+	JSON("application/json");
 
 	private final String type;
 

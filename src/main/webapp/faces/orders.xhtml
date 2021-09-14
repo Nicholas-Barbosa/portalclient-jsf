@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<ui:define name="head">
+		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+		<h:outputScript name="dataTable.js" library="javascript" />
+	</ui:define>
+
+	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamentos')}</ui:define>
+
+	<ui:define name="viewname">
+		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li><p:link outcome="/faces/budgets">#{resourceBundleServiceImpl.getMessage('orcamentos')}</p:link>
+		</li>
+	</ui:define>
+
+	<ui:define name="content">
+		<p:growl id="growl" globalOnly="true" />
+		<div class="p-grid table-demo">
+			<div class="p-col-12">
+				<div id="divListContent" class="card" style="display: none">
+					<h:form>
+						<p:remoteCommand action="#{ordersController.getOrders(1)}"
+							process="@this" autoRun="true"
+							oncomplete="$('#divLoading').hide();$('#divListContent').show();updateDtOrders()" />
+						<p:remoteCommand name="updateDtOrders" update="dtOrders"
+							action="@none" process="@none"
+							oncomplete="editScrollBodyMaxHeight('dtOrders','90vh')" />
+
+						<p:dataTable id="dtOrders" widgetVar="dtOrders" var="order"
+							value="#{ordersController.orders}" paginator="true"
+							paginatorPosition="bottom" rows="#{ordersController.pageSize}"
+							scrollable="true" lazy="true" reflow="true">
+							<p:ajax event="page" listener="#{ordersController.onPage}"
+								onstart="$('#divLoading').show();$('#divListContent').hide();"
+								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('pedido')}">
+								<h:outputText value="#{order.code}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
+								<h:outputText value="#{order.createdAt}">
+									<f:convertDateTime type="localDate" locale="pt_BR"
+										dateStyle="long" />
+								</h:outputText>
+							</p:column>
+
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+								<h:outputText value="#{order.customerName}" />
+							</p:column>
+							
+						</p:dataTable>
+
+					</h:form>
+				</div>
+				<div id="divLoading" class="card">
+					<p:dataTable value="#{dataTableSkeletonObjects.getSkeleton(10)}">
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('pedido')}">
+							<p:skeleton />
+						</p:column>
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
+							<p:skeleton />
+						</p:column>
+
+						<p:column
+							headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+							<p:skeleton />
+						</p:column>
+					</p:dataTable>
+
+				</div>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>

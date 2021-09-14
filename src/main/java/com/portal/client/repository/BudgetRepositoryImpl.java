@@ -67,8 +67,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	@Override
 	public void save(Budget budget) {
 		ServerAPI api = apiManager.getAPI(orcamentoKey);
-//		budget.replaceItems(budget.getItems().parallelStream().map(ItemBudgetToSaveJsonSerializable::new)
-//				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll));
+
 		BudgetSavedResponse response = restClient.post(apiManager.buildEndpoint(api, "budgets"), api.getToken(),
 				api.getTokenPrefix(), BudgetSavedResponse.class, null, null, BudgetToSaveJsonSerializable.of(budget),
 				MediaType.APPLICATION_JSON);

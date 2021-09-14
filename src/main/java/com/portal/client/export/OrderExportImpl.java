@@ -21,6 +21,7 @@ public class OrderExportImpl implements OrderExporter,Serializable {
 	@Inject
 	private OrderExcelCalculusConference orderExcelCalculusConference;
 
+	private OrderJsonHandler jsonHandler;
 	@Override
 	public byte[] export(Order order, OrderExportType type) {
 		switch (type) {
@@ -30,6 +31,8 @@ public class OrderExportImpl implements OrderExporter,Serializable {
 			return orderReport.export(new OrderJasper(order), type);
 		case EXCEL_CALC_CONFERENCE:
 			return orderExcelCalculusConference.createWorkbook(order);
+		case JSON:
+			return jsonHandler.toJson(order);
 		}
 		throw new IllegalArgumentException(type + " not supported");
 	}

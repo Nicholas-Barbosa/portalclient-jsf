@@ -1,10 +1,9 @@
 package com.portal.client.service.crud;
 
-import java.io.Serializable;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.repository.OrderRepository;
 import com.portal.client.vo.Order;
 
@@ -18,6 +17,11 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	public void persist(Order order) {
 		repository.persist(order);
 
+	}
+
+	@Override
+	public OrderSemiProjectionPage findAll(int page, int pageSize) {
+		return repository.findAll(page, pageSize);
 	}
 
 }
