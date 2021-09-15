@@ -1,12 +1,16 @@
 package com.portal.client.jaxrs.client;
 
+import java.time.LocalDateTime;
+
 import javax.ws.rs.client.Client;
 
-public class ClientWrapper {
+public final class ClientWrapper {
 
 	private boolean inUse;
 
-	private Client client;
+	private final Client client;
+
+	private LocalDateTime lastUsed;
 
 	public ClientWrapper(boolean inUse, Client client) {
 		super();
@@ -20,10 +24,19 @@ public class ClientWrapper {
 
 	public synchronized void setInUse(boolean inUse) {
 		this.inUse = inUse;
+		if (!inUse) {
+			lastUsed = LocalDateTime.now();
+		}
 	}
 
 	public Client getClient() {
 		return client;
 	}
 
+	public void closeClient() {
+		this.client.close();
+	}
+	public LocalDateTime getLastUsed() {
+		return lastUsed;
+	}
 }

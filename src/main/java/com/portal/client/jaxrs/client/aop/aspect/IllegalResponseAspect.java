@@ -1,8 +1,10 @@
-package com.portal.client.jaxrs.client.aop;
+package com.portal.client.jaxrs.client.aop.aspect;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+
+import com.portal.client.jaxrs.client.aop.IllegalResponsePointCutJoinPoint;
 
 @Interceptor
 @IllegalResponsePointCutJoinPoint
@@ -17,7 +19,7 @@ public class IllegalResponseAspect {
 				System.out.println("IllegalStateException");
 				return joinPoint.proceed();
 			}
-			return null;
+			throw e;
 		}
 	}
 }

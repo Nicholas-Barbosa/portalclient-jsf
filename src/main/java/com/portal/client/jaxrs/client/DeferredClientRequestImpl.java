@@ -1,13 +1,17 @@
 package com.portal.client.jaxrs.client;
 
 import java.io.Serializable;
+import java.util.concurrent.Future;
 import java.util.function.Function;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 
+import com.portal.client.jaxrs.client.aop.IllegalResponsePointCutJoinPoint;
+
 @ApplicationScoped
+@IllegalResponsePointCutJoinPoint
 public class DeferredClientRequestImpl implements Serializable, DeferredClientRequest {
 
 	/**
@@ -20,7 +24,19 @@ public class DeferredClientRequestImpl implements Serializable, DeferredClientRe
 
 	@Override
 	public <T> T request(Function<Client, T> lambda) {
-		return lambda.apply(clientDS.getClient());
+		ClientWrapper wrapper = clientDS.getClient();
+		T result = lambda.apply(wrapper.getClient());
+		wrapper.setInUse(false);
+		return result;
+	}
+
+	@Override
+	public <T> Future<T> requestAsync(Function<Client, Future<T>> lambda) {
+		// TODO Auto-generated method stub
+		ClientWrapper wrapper = clientDS.getClient();
+		Future<T> result = lambda.apply(wrapper.getClient());
+		wrapper.setInUse(false);
+		return result;
 	}
 
 }

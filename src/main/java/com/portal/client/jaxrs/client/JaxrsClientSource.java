@@ -7,15 +7,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.SessionScoped;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
 import com.portal.client.jaxrs.client.providers.message.reader.JsonMessageReader;
 import com.portal.client.jaxrs.client.providers.message.writer.JsonMessageWriter;
 
 @SessionScoped
-public class JaxrsClientSource implements Serializable{
+public class JaxrsClientSource implements Serializable {
 
 	/**
 	 * 
@@ -23,6 +23,8 @@ public class JaxrsClientSource implements Serializable{
 	private static final long serialVersionUID = -41223482409279482L;
 
 	private int initialPoolSize = 5;
+
+	private int maxPoolSize = 10;
 
 	private List<ClientWrapper> clients;
 
@@ -32,20 +34,33 @@ public class JaxrsClientSource implements Serializable{
 				.collect(Collectors.toList());
 	}
 
+	@PreDestroy
+	public void destroy() {
+		clients.forEach(c -> {
+			c.getClient().close();
+			c = null;
+		});
+		clients = null;
+	}
+
 	private ClientWrapper createClient() {
 		return new ClientWrapper(false, ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS).build()
 				.register(JsonMessageReader.class).register(JsonMessageWriter.class));
 	}
 
-	private Client getClientFromPool() {
+	private ClientWrapper getClientFromPool() {
 		return clients.parallelStream().filter(c -> !c.isInUse()).findAny().orElseGet(() -> {
-			ClientWrapper wrapper = createClient();
-			wrapper.setInUse(true);
-			return wrapper;
-		}).getClient();
+			if (clients.size() <= maxPoolSize) {
+				ClientWrapper wrapper = createClient();
+				wrapper.setInUse(true);
+				return wrapper;
+			}
+			return this.getClientFromPool();
+		});
 	}
 
-	public Client getClient() {
+	public ClientWrapper getClient() {
 		return getClientFromPool();
 	}
+
 }
