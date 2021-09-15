@@ -20,18 +20,12 @@ public interface RestClient {
 	<T> Future<T> getAsync(String uri, Class<T> responseType, Map<String, Object> queryParams,
 			Map<String, Object> pathParams, String media) throws ExecutionException;
 
-	<T> T get(String uri, String token, String tokenPrefix, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String media);
-
-	<T> Future<T> getAsync(String uri, String token, String tokenPrefix, Class<T> responseType,
-			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ExecutionException;
-
+	
 	<T, E> T post(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
 			E requestBody, String mediaType);
 
-	<T, E> T post(String uri, String token, String tokenPrefix, Class<T> responseType, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, E requestBody, String mediaType);
-
+	
+	
 	default Client getClientFollowingMediaType(String media) {
 		Client client = media.equals("application/json")
 				? ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS)

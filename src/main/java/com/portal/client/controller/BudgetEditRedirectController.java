@@ -10,7 +10,7 @@ public class BudgetEditRedirectController {
 	private String budgetId;
 
 	public String redirect() {
-		return "editBudget?faces-redirect=true&budgetID=" + budgetId;
+		return "budgetEditing?faces-redirect=true&budgetID=" + budgetId;
 	}
 
 	public String redirect(String budgetID) {

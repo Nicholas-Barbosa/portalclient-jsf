@@ -24,30 +24,20 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBuilder {
 			@JsonbProperty("available_stock") int stock, @JsonbProperty("st_value") BigDecimal totalStValue,
 			@JsonbProperty("description") String description, @JsonbProperty("multiple") int multiple,
 			@JsonbProperty("product_type") String acronymLine, @JsonbProperty("description_product_type") String line) {
-		try {
-			Product product = ProductBuilder.getInstance().withCode(productCode).withCommercialCode(commercialCode)
-					.withUnitGrossValue(unitGross).withUnitValue(unitValue)
-					.withUnitStValue(totalStValue.divide(new BigDecimal(quantity), RoundingMode.HALF_UP))
-					.withDescription(description).withAcronymLine(acronymLine).withMultiple(multiple).withLine(line)
-					.withQuantity(quantity).withStock(stock).build();
-			super.withGlobalDiscount(BigDecimal.ZERO).withTotalGrossValue(totalGross).withLineDiscount(lineDiscount)
-					.withQuantity(quantity).withTotalValue(totalValue).withTotalStValue(totalStValue)
-					.withProduct(product);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Product product = ProductBuilder.getInstance().withCode(productCode).withCommercialCode(commercialCode)
+				.withUnitGrossValue(unitGross).withUnitValue(unitValue)
+				.withUnitStValue(totalStValue.divide(new BigDecimal(quantity), RoundingMode.HALF_UP))
+				.withDescription(description).withAcronymLine(acronymLine).withMultiple(multiple).withLine(line)
+				.withQuantity(quantity).withStock(stock).build();
+		ItemValue itemValue = ItemValueBuilder.getInstance().withGlobalDiscount(BigDecimal.ZERO)
+				.withTotalGrossValue(totalGross).withLineDiscount(lineDiscount).withQuantity(quantity)
+				.withTotalValue(totalValue).withTotalStValue(totalStValue).build();
+		super.withProduct(product).withValue(itemValue);
 	}
 
 	@Override
 	public Item build() {
-		ItemValue value = new ItemValue(super.getQuantity(), super.getProduct().getValue().getMultiple(),
-				super.getBudgetGlobalDiscount(), super.getLineDiscount(),
-				super.getProduct().getValue().getUnitStValue(), super.getProduct().getValue().getUnitValue(),
-				super.getProduct().getValue().getUnitGrossValue(), super.getTotalStValue(), super.getTotalValue(),
-				super.getTotalGrossValue()
-
-		);
-		return new Item(super.getProduct(), value);
+		return super.build();
 	}
 
 	public static Set<Item> build(Set<ItemBudgetEstimatedResultBuilder> items) {

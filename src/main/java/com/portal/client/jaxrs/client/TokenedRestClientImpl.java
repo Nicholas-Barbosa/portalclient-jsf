@@ -15,7 +15,7 @@ import com.portal.client.exception.IllegalResponseStatusException;
 import com.portal.client.jaxrs.client.providers.filter.TokenHeaderSupport;
 
 @ApplicationScoped
-public class RestClientImpl implements RestClient {
+public class TokenedRestClientImpl implements TokenedRestClient {
 
 	public <T> T get(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
 			String media) {
@@ -114,5 +114,12 @@ public class RestClientImpl implements RestClient {
 			}
 		}
 		return resource;
+	}
+
+	@Override
+	public <RESP, RQS> RESP put(String uri, String token, String tokenPrefix, Class<RESP> responseType,
+			Map<String, Object> queryParams, Map<String, Object> pathParams, RQS requestBody, String mediaType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

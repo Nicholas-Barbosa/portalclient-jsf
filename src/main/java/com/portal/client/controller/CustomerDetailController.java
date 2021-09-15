@@ -44,7 +44,8 @@ public class CustomerDetailController {
 	private LazyBehaviorDataModel<FinacialBondsDTO> titles;
 
 	private ProcessingExceptionFacesMessageHelper externalExcpetionHelper;
-
+	
+	
 	@Inject
 	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,
 			FinancialBondsService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper) {

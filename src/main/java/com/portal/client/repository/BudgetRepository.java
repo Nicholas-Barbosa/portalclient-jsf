@@ -18,6 +18,8 @@ public interface BudgetRepository extends Serializable {
 
 	void save(Budget request);
 
+	void update(Budget budget);
+	
 	Budget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
 			throws CustomerNotFoundException, ItemsNotFoundException;
 }

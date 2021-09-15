@@ -12,7 +12,7 @@ import com.portal.client.dto.LoginForm;
 import com.portal.client.dto.LoginGssResponseDTO;
 import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
 
 public class MainAuthenticationRepository implements AuthenticationRepository, Serializable {
@@ -22,7 +22,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	 */
 	private static final long serialVersionUID = -6233748924596132481L;
 	private final RestClient restClient;
-	private final UserSessionAPIManager userPropertyHolder;
+	private final APIManager userPropertyHolder;
 	@EJB
 	private ConfigPropertyResolver propertiesReader;
 
@@ -31,7 +31,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	}
 
 	@Inject
-	public MainAuthenticationRepository(RestClient restClient, UserSessionAPIManager userPropertyHolder) {
+	public MainAuthenticationRepository(RestClient restClient, APIManager userPropertyHolder) {
 		super();
 		this.restClient = restClient;
 		this.userPropertyHolder = userPropertyHolder;

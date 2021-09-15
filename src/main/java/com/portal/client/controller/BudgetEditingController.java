@@ -1,24 +1,31 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ProcessingException;
 
+import org.primefaces.event.SelectEvent;
+
+import com.portal.client.controller.show.CustomerDetailShowController;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.service.CustomerService;
+import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.Item;
+import com.portal.client.vo.Product;
 
 @Named
 @ViewScoped
-public class EditBudgetController implements Serializable {
+public class BudgetEditingController implements Serializable {
 
 	/**
 	 * 
@@ -37,29 +44,48 @@ public class EditBudgetController implements Serializable {
 
 	private boolean isCustomerDataComplete;
 
+	private CustomerDetailShowController customerShow;
+
+	private OrderCommonBehaviorHelper orderHelper;
+
 	@Inject
-	public EditBudgetController(BudgetCrudService budgetService, CustomerService customerService,
-			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper) {
+	public BudgetEditingController(BudgetCrudService budgetService, CustomerService customerService,
+			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
+			CustomerDetailShowController customerShowOrderCommonBehaviorHelper,
+			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
 		this.exceptionShowMessage = serverApiExceptionMessageHelper;
+		this.customerShow = customerShow;
+		this.orderHelper = orderHelper;
 	}
 
-	public void getById() {
-		try {
-			budgetService.findByCode(budgetID).ifPresentOrElse(b -> {
-				FacesUtils.info(null, "Orçamento encontrado", null, "growl");
-				budget = b;
-			}, () -> {
-				FacesUtils.error(null, "Orçamento não encontrado", "Código inexistente!", "growl");
-			});
-		} catch (Exception e) {
-			FacesUtils.fatal(null, "Error", e.getMessage(), "growl");
-		}
+	public void handleProductResult(SelectEvent<Optional<Product>> event) {
+		event.getObject().ifPresentOrElse(p -> {
+			orderHelper.addItem(budget, Item.product(p));
+			FacesUtils.ajaxUpdate("dtItems", "totals");
+		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
+
 	}
 
-	public void loadCustomerData() {
+	public void find() {
+		budgetService.findByCode(budgetID).ifPresentOrElse(b -> {
+			budget = b;
+		}, () -> {
+			FacesUtils.error(null, "Orçamento não encontrado!",
+					"Não foi possível encontrar nenhum orçamento com este identificador", "growl");
+		});
+
+	}
+
+	public void showCustomerData() {
+		if (!isCustomerDataComplete)
+			this.loadAdditionalCustomerData();
+		customerShow.show(budget.getCustomerOnOrder());
+	}
+
+	private void loadAdditionalCustomerData() {
 		try {
 			customerService
 					.findByCodeAndStore(new SearchCustomerByCodeAndStoreDTO(budget.getCustomerOnOrder().getCode(),
@@ -75,8 +101,7 @@ public class EditBudgetController implements Serializable {
 		CustomerOnOrder newCustomer = new CustomerOnOrder(customer);
 		budget.setCustomerOnOrder(newCustomer);
 		this.isCustomerDataComplete = true;
-		FacesUtils.info(null, "Cliente carregado", "Os dados adicionais do cliente foram carregados com sucesso!");
-		FacesUtils.ajaxUpdate("panelCustomer", "growl");
+		FacesUtils.ajaxUpdate("panelCustomer");
 	}
 
 	public String getBudgetID() {

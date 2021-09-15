@@ -7,17 +7,17 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.dto.FinancialBondsPage;
-import com.portal.client.jaxrs.client.RestClient;
-import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
 
 public class FinancialBondsRepositoryImpl implements FinancialBondsRepository {
 
-	private RestClient restClient;
-	private UserSessionAPIManager apiManager;
+	private TokenedRestClient restClient;
+	private APIManager apiManager;
 
 	@Inject
-	public FinancialBondsRepositoryImpl(RestClient restClient, UserSessionAPIManager endpointBuilder) {
+	public FinancialBondsRepositoryImpl(TokenedRestClient restClient, APIManager endpointBuilder) {
 		super();
 		this.restClient = restClient;
 		this.apiManager = endpointBuilder;

@@ -18,13 +18,12 @@ import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
+import com.portal.client.dto.BudgetToUpdateDTO;
 import com.portal.client.dto.FormToEstimateBudget;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
-import com.portal.client.jaxrs.client.RestClient;
-import com.portal.client.security.UserSessionAPIManager;
-import com.portal.client.security.api.ServerAPI;
+import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Customer404Error;
@@ -38,49 +37,46 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	 * 
 	 */
 	private static final long serialVersionUID = -1758905240244736233L;
-	private final RestClient restClient;
-	private final UserSessionAPIManager apiManager;
+	private final TokenedRestClient restClient;
 	private final JsonbService jsonbService;
-	private final String orcamentoKey = "ORCAMENTO_API";
-
+	private OrcamentoAPIHelper orcamentoAPI;
+	
 	public BudgetRepositoryImpl() {
 		this(null, null, null);
 	}
 
 	@Inject
-	public BudgetRepositoryImpl(RestClient restClient, UserSessionAPIManager apiManager, JsonbService jsonbService) {
+	public BudgetRepositoryImpl(TokenedRestClient restClient, 
+			JsonbService jsonbService, OrcamentoAPIHelper orcamentoAPI) {
 		super();
 		this.restClient = restClient;
-		this.apiManager = apiManager;
 		this.jsonbService = jsonbService;
+		this.orcamentoAPI = orcamentoAPI;
 	}
 
 	@Override
 	public BudgetPage findAll(int page, int pageSize) {
-		ServerAPI api = apiManager.getAPI(orcamentoKey);
-		StringBuilder endpointURL = new StringBuilder(api.getBasePath());
+		StringBuilder endpointURL = new StringBuilder(orcamentoAPI.getBasePath());
 		endpointURL.append("/budgets");
-		return restClient.get(endpointURL.toString(), api.getToken(), api.getTokenPrefix(), BudgetPage.class,
-				Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC"), null, MediaType.APPLICATION_JSON);
+		return restClient.get(endpointURL.toString(), orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(),
+				BudgetPage.class, Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC"), null,
+				MediaType.APPLICATION_JSON);
 	}
 
 	@Override
 	public void save(Budget budget) {
-		ServerAPI api = apiManager.getAPI(orcamentoKey);
-
-		BudgetSavedResponse response = restClient.post(apiManager.buildEndpoint(api, "budgets"), api.getToken(),
-				api.getTokenPrefix(), BudgetSavedResponse.class, null, null, BudgetToSaveJsonSerializable.of(budget),
-				MediaType.APPLICATION_JSON);
+		BudgetSavedResponse response = restClient.post(orcamentoAPI.buildEndpoint("budgets"),
+				orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), BudgetSavedResponse.class, null, null,
+				BudgetToSaveJsonSerializable.of(budget), MediaType.APPLICATION_JSON);
 		budget.setCode(response.getCode());
 	}
 
 	@Override
 	public Optional<Budget> findByCode(String code) {
-		ServerAPI api = apiManager.getAPI(orcamentoKey);
 		try {
-			return Optional.of(restClient.get(apiManager.buildEndpoint(api, "budgets/{code}"), api.getToken(),
-					api.getTokenPrefix(), BudgetFullProjection.class, null, Map.of("code", code),
-					MediaType.APPLICATION_JSON));
+			return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"),
+					orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, null,
+					Map.of("code", code), MediaType.APPLICATION_JSON));
 		} catch (javax.ws.rs.NotFoundException e) {
 			return Optional.empty();
 		}
@@ -89,13 +85,13 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	@Override
 	public Budget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
 			throws CustomerNotFoundException, ItemsNotFoundException {
-		ServerAPI server = apiManager.getAPI(orcamentoKey);
 
 		FormToEstimateBudget toEstimate = new FormToEstimateBudget(customerCode, customerStore, items);
 		try {
-			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(apiManager.buildEndpoint(server, "estimate"),
-					server.getToken(), server.getTokenPrefix(), BudgetEstimatedResultBuilder.class, null, null,
-					toEstimate, "application/json");
+			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(
+					orcamentoAPI.buildEndpoint("estimate"), orcamentoAPI.getToken(),
+					orcamentoAPI.getPrefixToken(), BudgetEstimatedResultBuilder.class, null, null, toEstimate,
+					"application/json");
 			return budgetBuilder.build();
 		} catch (NotFoundException e) {
 			Deseriaized404JsonEstimateEndpoint notFoundCause = deserializeJson404FromEstimateEndpoint(
@@ -124,5 +120,12 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 		} finally {
 			executor.shutdown();
 		}
+	}
+
+	@Override
+	public void update(Budget budget) {
+		BudgetToUpdateDTO toUpdate = new BudgetToUpdateDTO(budget);
+		restClient.put(orcamentoAPI.buildEndpoint("budgets"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), null, null, null, toUpdate, "application/json");
 	}
 }

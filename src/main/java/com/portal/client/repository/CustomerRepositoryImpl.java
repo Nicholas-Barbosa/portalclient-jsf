@@ -14,8 +14,8 @@ import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.NoPageCustomerResponseDTO;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
-import com.portal.client.jaxrs.client.RestClient;
-import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
 
 @ApplicationScoped
@@ -25,15 +25,15 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 	 * 
 	 */
 	private static final long serialVersionUID = -8042300828676622038L;
-	private final RestClient restClient;
-	private final UserSessionAPIManager apiManager;
+	private final TokenedRestClient restClient;
+	private final APIManager apiManager;
 
 	public CustomerRepositoryImpl() {
 		this(null, null);
 	}
 
 	@Inject
-	public CustomerRepositoryImpl(RestClient restClient, UserSessionAPIManager endpointBuilder) {
+	public CustomerRepositoryImpl(TokenedRestClient restClient, APIManager endpointBuilder) {
 		super();
 		this.restClient = restClient;
 		this.apiManager = endpointBuilder;

@@ -12,20 +12,20 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.security.APIManager;
 import com.portal.client.service.route.RequestTracker;
 
 @WebFilter(value = "/faces/*")
 public class FacesFilter implements Filter {
 
-	private final UserSessionAPIManager userPropertyHolder;
+	private final APIManager userPropertyHolder;
 	private final RequestTracker requestTracker;
 
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
 	@Inject
-	public FacesFilter(UserSessionAPIManager userPropertyHolder, RequestTracker requestTracker) {
+	public FacesFilter(APIManager userPropertyHolder, RequestTracker requestTracker) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
 		this.requestTracker = requestTracker;

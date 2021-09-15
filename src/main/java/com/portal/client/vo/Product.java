@@ -16,7 +16,7 @@ public class Product {
 	private final String description;
 	private final String line;
 	private final String acronymLine;
-	private int stock;
+	private Integer stock;
 	private final boolean commercialBlock;
 	private ProductImage image;
 	private final ProductValue value;
@@ -38,7 +38,7 @@ public class Product {
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, int stock, boolean commercialBlock, ProductImage image,
+			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image,
 			ProductValue price, ProductTechDetail productTechDetail) {
 		super();
 		this.code = code;
@@ -55,7 +55,7 @@ public class Product {
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, int stock,  boolean commercialBlock, ProductImage image,
+			String acronymLine, Integer stock,  boolean commercialBlock, ProductImage image,
 			ProductValue price, ProductTechDetail productTechDetail, String link) {
 		super();
 		this.code = code;
@@ -97,11 +97,9 @@ public class Product {
 		return acronymLine;
 	}
 
-	public int getStock() {
+	public Integer getStock() {
 		return stock;
 	}
-
-	
 
 	public boolean isCommercialBlock() {
 		return commercialBlock;

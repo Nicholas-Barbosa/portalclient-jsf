@@ -17,7 +17,7 @@
 		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li><p:link
-				outcome="/faces/editBudget?budgetID=#{editBudgetController.budgetID}">#{resourceBundleServiceImpl.getMessage('editar')} - #{editBudgetController.budgetID}</p:link>
+				outcome="/faces/budgetEditing?budgetID=#{budgetEditingController.budgetID}">#{resourceBundleServiceImpl.getMessage('editar')} - #{budgetEditingController.budgetID}</p:link>
 		</li>
 	</ui:define>
 
@@ -25,17 +25,16 @@
 		<f:view locale="pt_BR">
 			<f:metadata>
 				<f:viewParam name="budgetID"
-					value="#{editBudgetController.budgetID}"
-					id="idParam" />
+					value="#{budgetEditingController.budgetID}" id="idParam" />
 			</f:metadata>
 
 			<p:growl id="growl" showDetail="true" globalOnly="true"
-				widgetVar="growl" />
+				widgetVar="growl" skipDetailIfEqualsSummary="true" />
 			<p:growl id="growlParam" showDetail="true" for="idParam" />
 
 			<h:form>
 				<p:remoteCommand autoRun="true"
-					action="#{editBudgetController.getById}" process="@this"
+					action="#{budgetEditingController.find}" process="@this"
 					oncomplete="$('#divLoading').hide();$('#content').show()"
 					update="panelCustomer,panelItems,panelTotals" />
 			</h:form>
@@ -60,38 +59,91 @@
 			</div>
 			<div id="content" style="display: none">
 				<div class="card">
-					<h5>Cliente</h5>
-					<p:outputPanel deferred="true" id="panelCustomer">
-						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col">
-								<label for="firstname">Código</label>
-								<p:inputText id="firstname" type="text" readonly="true"
-									value="#{editBudgetController.budget.customerOnOrder.code}" />
-							</div>
-							<div class="p-field p-col">
-								<label for="lastname">Loja</label>
-								<p:inputText id="lastname" type="text" readonly="true"
-									value="#{editBudgetController.budget.customerOnOrder.store}" />
-							</div>
+					<p:commandButton id="dynaButton" type="button" icon="pi pi-bars" />
+					<h:form>
+						<p:menu overlay="true" trigger="dynaButton" my="left top"
+							at="left bottom">
+							<p:submenu label="Opções">
+								<p:menuitem value="Confirmar" action="#{menuView.save}"
+									ajax="false" icon="pi pi-check" />
+									<p:menuitem value="Exportar" icon="pi pi-download" action="#{orderExportShowController.show(budgetEditingController.budget)}"/>
+							</p:submenu>
+						</p:menu>
+					</h:form>
+				</div>
+
+				<div class="card">
+					<div class="p-grid">
+						<div class="p-col-2">
+
+							<h5>Cliente</h5>
+						</div>
+						<div class="p-col-2">
 							<h:form>
-								<p:commandButton
-									value="#{editBudgetController.isCustomerDataComplete() ? 'Visualizar todos os detalhes' : 'Carregar dados adicionais'}"
-									icon="pi pi-refresh"
-									action="#{editBudgetController.loadCustomerData}"
-									process="@this" update="@none" />
+								<p:commandButton icon="pi pi-search-plus"
+									action="#{budgetEditingController.showCustomerData}"
+									process="@this" update="@none" title="Visualizar cliente"
+									styleClass="rounded-button ui-button-success "
+									onstart="PF('sideBarForLoadingCustomer').show()"
+									oncomplete="PF('sideBarForLoadingCustomer').hide()" />
 							</h:form>
+
+							<p:sidebar widgetVar="sideBarForLoadingCustomer" position="top"
+								baseZIndex="10000" modal="true">
+								<h3 style="font-weight: normal">Tratando cliente...</h3>
+								<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+							</p:sidebar>
+
+						</div>
+
+					</div>
+					<p:outputPanel deferred="true" deferredMode="visible"
+						id="panelCustomer">
+						<div class="ui-fluid p-formgrid p-grid">
+							<div class="p-field p-col-12 p-md-6">
+								<label for="cName">Código - Nome</label>
+								<p:inputText id="cName" type="text" readonly="true"
+									value="#{budgetEditingController.budget.customerOnOrder.code} - #{budgetEditingController.budget.customerOnOrder.name}" />
+							</div>
+
+							<div class="p-field p-col-12 p-md-6">
+								<label for="cCnpj">CNPJ</label>
+								<p:inputText id="cCnpj" type="text" readonly="true"
+									value="#{budgetEditingController.budget.customerOnOrder.cnpj}" />
+							</div>
+							<div class="p-field p-col-12">
+								<label for="cAddress">Endereço</label>
+								<p:inputText id="cAddress" type="text" readonly="true"
+									value="#{budgetEditingController.budget.customerOnOrder.address.street} - #{budgetEditingController.budget.customerOnOrder.address.district}, #{budgetEditingController.budget.customerOnOrder.address.city} - #{budgetEditingController.budget.customerOnOrder.address.state}" />
+							</div>
 						</div>
 					</p:outputPanel>
 				</div>
 
 				<div class="card">
-					<h5>Items</h5>
+					<h5>Itens</h5>
+
 					<p:outputPanel deferred="true" deferredMode="visible"
 						id="panelItems">
 						<h:form prependId="false">
 							<p:dataTable var="item"
-								value="#{editBudgetController.budget.items}" id="dtItems"
+								value="#{budgetEditingController.budget.items}" id="dtItems"
 								editable="true">
+								<f:facet name="header">
+									<p:commandButton icon="pi pi-plus"
+										styleClass="ui-button-raised ui-button-success"
+										action="#{productSearchShowController.show(budgetEditingController.budget.customerOnOrder)}">
+										<p:ajax event="dialogReturn"
+											listener="#{budgetEditingController.handleProductResult}"
+											onstart="PF('topSidebar').show()"
+											oncomplete="PF('topSidebar').hide()" />
+										<p:sidebar widgetVar="topSidebar" position="top"
+											baseZIndex="10000">
+											<h4>Adicionado produto ao orçamento e calculando
+												totais...</h4>
+										</p:sidebar>
+									</p:commandButton>
+								</f:facet>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
 									<h:outputText value="#{item.product.commercialCode}" />
@@ -100,7 +152,7 @@
 									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
 									<p:cellEditor>
 										<f:facet name="output">
-											<h:outputText value="#{item.values.quantity}" />
+											<h:outputText value="#{item.value.quantity}" />
 										</f:facet>
 										<f:facet name="input">
 											<p:spinner />
@@ -118,7 +170,7 @@
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('valor')}">
 									<h:outputText
-										value="#{item.values.getTotalValueWithoutDiscount()}">
+										value="#{item.value.getTotalValueWithoutDiscount()}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -126,7 +178,7 @@
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('total_st')}">
 									<h:outputText
-										value="#{item.values.getTotalStValueWithoutDiscount()}">
+										value="#{item.value.getTotalStValueWithoutDiscount()}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -134,34 +186,34 @@
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('valor_bruto')}">
 									<h:outputText
-										value="#{item.values.getTotalGrossWithoutDiscount()}">
+										value="#{item.value.getTotalGrossWithoutDiscount()}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('desc_linha')}">
-									<h:outputText value="#{item.values.lineDiscount}">
+									<h:outputText value="#{item.value.lineDiscount}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('total_cm_desc')}">
-									<h:outputText value="#{item.values.totalValue}">
+									<h:outputText value="#{item.value.totalValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column headerText="ST">
-									<h:outputText value="#{item.values.totalStValue}">
+									<h:outputText value="#{item.value.totalStValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('bruto_cm_desc')}">
-									<h:outputText value="#{item.values.totalGrossValue}">
+									<h:outputText value="#{item.value.totalGrossValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
@@ -184,7 +236,7 @@
 									<p:outputLabel for="liquidV"
 										value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
 									<p:inputNumber id="liquidV"
-										value="#{editBudgetController.budget.liquidValue}"
+										value="#{budgetEditingController.budget.liquidValue}"
 										symbol="R$ " symbolPosition="p" readonly="true"
 										decimalSeparator="," thousandSeparator="." />
 								</div>
@@ -192,7 +244,7 @@
 									<p:outputLabel for="stT"
 										value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
 									<p:inputNumber id="stT"
-										value="#{editBudgetController.budget.stValue}" symbol="R$ "
+										value="#{budgetEditingController.budget.stValue}" symbol="R$ "
 										symbolPosition="p" readonly="true" decimalSeparator=","
 										thousandSeparator="." />
 								</div>
@@ -200,16 +252,15 @@
 									<p:outputLabel for="grossV"
 										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
 									<p:inputNumber id="grossV"
-										value="#{editBudgetController.budget.grossValue}" symbol="R$ "
-										symbolPosition="p" readonly="true" decimalSeparator=","
-										thousandSeparator="." />
+										value="#{budgetEditingController.budget.grossValue}"
+										symbol="R$ " symbolPosition="p" readonly="true"
+										decimalSeparator="," thousandSeparator="." />
 								</div>
 							</div>
 							<p:autoUpdate on="eventAddItem" />
 						</h:form>
 					</p:outputPanel>
 				</div>
-
 			</div>
 		</f:view>
 	</ui:define>

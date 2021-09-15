@@ -20,7 +20,7 @@ import com.portal.client.security.api.ServerAPI;
  *
  */
 @SessionScoped
-public class UserSessionAPIManager implements Serializable {
+public class APIManager implements Serializable {
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public class UserSessionAPIManager implements Serializable {
 	private String name;
 	private final Map<String, ServerAPI> authenticatedServices = new ConcurrentHashMap<>();
 
-	private final Logger logger = LoggerFactory.getLogger(UserSessionAPIManager.class);
+	private final Logger logger = LoggerFactory.getLogger(APIManager.class);
 
 	/**
 	 * Register this service to the hash table.

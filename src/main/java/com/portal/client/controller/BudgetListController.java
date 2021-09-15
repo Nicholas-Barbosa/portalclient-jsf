@@ -34,10 +34,6 @@ public class BudgetListController implements Serializable {
 		this.buService = buService;
 	}
 
-	public void showEditBudget(BudgetSemiProjection budget) {
-		PrimeFaces.current().executeScript("alert('orçamento " + budget.getIdCode() + "')");
-	}
-
 	public void loadBudgets(int page) {
 		if (budgets == null)
 			this.budgets = new BudgetLazyDataModel();

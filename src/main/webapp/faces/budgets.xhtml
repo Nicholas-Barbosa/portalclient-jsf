@@ -70,10 +70,11 @@
 								<h:outputText value="#{budget.customerOnOrder.code}" />
 							</p:column>
 							<p:column>
-								<p:commandButton icon="pi pi-pencil"
-									styleClass="edit-button rounded-button ui-button-success"
-									action="#{budgetEditRedirectController.redirect(budget.idCode)}"
-									update="@none" process="@this" />
+								<p:linkButton icon="pi pi-pencil"
+									styleClass="rounded-button ui-button-help  p-mr-3"
+									outcome="budgetEditing">
+									<f:param name="budgetID" value="#{budget.code}" />
+								</p:linkButton>
 							</p:column>
 						</p:dataTable>
 

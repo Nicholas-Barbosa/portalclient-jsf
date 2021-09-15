@@ -125,11 +125,15 @@ div.container {
 
 				<div class="p-field">
 					<h:form>
-						<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}</p:outputLabel>
+						<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}<strong>(*
+								#{searchProductController.product.value.multiple})</strong>
+						</p:outputLabel>
 						<p:spinner id="quantity"
 							value="#{searchProductController.newQuantity}"
 							stepFactor="#{searchProductController.product.value.multiple}"
 							onblur="calcQuantity()" />
+						<p:tooltip for="quantity" 
+							value="Entre com algum número múltiplo de #{searchProductController.product.value.multiple}" position="bottom"/>
 						<p:remoteCommand name="calcQuantity" process="@this,quantity"
 							action="#{searchProductController.onQuantityChange}"
 							update="vLiquid,vGross,vSt" />

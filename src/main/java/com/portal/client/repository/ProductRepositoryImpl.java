@@ -17,8 +17,8 @@ import javax.ws.rs.core.MediaType;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductTechDetailJson;
-import com.portal.client.jaxrs.client.RestClient;
-import com.portal.client.security.UserSessionAPIManager;
+import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.vo.Product;
 
@@ -27,11 +27,11 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 
 	private static final long serialVersionUID = 4463669170628763803L;
 
-	private RestClient restClient;
-	private UserSessionAPIManager apiManager;
+	private TokenedRestClient restClient;
+	private APIManager apiManager;
 
 	@Inject
-	public ProductRepositoryImpl(RestClient restClient, UserSessionAPIManager userSessionAPIManager) {
+	public ProductRepositoryImpl(TokenedRestClient restClient, APIManager userSessionAPIManager) {
 		super();
 		this.restClient = restClient;
 		this.apiManager = userSessionAPIManager;
