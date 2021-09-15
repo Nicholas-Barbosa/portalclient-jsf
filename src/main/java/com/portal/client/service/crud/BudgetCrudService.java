@@ -23,4 +23,6 @@ public interface BudgetCrudService extends ServiceSerializable, CrudService {
 
 	Budget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> itemsToEstimate)
 			throws CustomerNotFoundException, ItemsNotFoundException;
+
+	void update(Budget budget);
 }

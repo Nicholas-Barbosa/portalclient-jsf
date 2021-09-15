@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -12,10 +13,14 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
 import com.portal.client.exception.IllegalResponseStatusException;
+import com.portal.client.jaxrs.client.aop.IllegalResponsePointCutJoinPoint;
 import com.portal.client.jaxrs.client.providers.filter.TokenHeaderSupport;
 
 @ApplicationScoped
 public class TokenedRestClientImpl implements TokenedRestClient {
+
+	@Inject
+	private DeferredClientRequest clientRequest;
 
 	public <T> T get(String uri, Class<T> responseType, Map<String, Object> queryParams, Map<String, Object> pathParams,
 			String media) {
@@ -23,25 +28,33 @@ public class TokenedRestClientImpl implements TokenedRestClient {
 
 	}
 
+	@IllegalResponsePointCutJoinPoint
 	public <T> T get(String uri, String token, String tokenPrefix, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) {
-		Client client = null;
-		try {
-			client = getClient(token, tokenPrefix, media);
-
-			WebTarget resource = getWebTarget(client, uri, queryParams, pathParams);
+		return clientRequest.request(c -> {
+			WebTarget resource = getWebTarget(c, uri, queryParams, pathParams)
+					.register(new TokenHeaderSupport(token, tokenPrefix));
 			Response rawResponse = resource.request().accept(media).get();
 			T t = rawResponse.readEntity(responseType);
 			return t;
-		} catch (ProcessingException e) {
-			if (e.getCause() instanceof IllegalResponseStatusException) {
-				return this.get(uri, token, tokenPrefix, responseType, queryParams, pathParams, media);
-			}
-			throw e;
-		} finally {
-			if (client != null)
-				client.close();
-		}
+		});
+//		Client client = null;
+//		try {
+//			client = getClient(token, tokenPrefix, media);
+//
+//			WebTarget resource = getWebTarget(client, uri, queryParams, pathParams);
+//			Response rawResponse = resource.request().accept(media).get();
+//			T t = rawResponse.readEntity(responseType);
+//			return t;
+//		} catch (ProcessingException e) {
+//			if (e.getCause() instanceof IllegalResponseStatusException) {
+//				return this.get(uri, token, tokenPrefix, responseType, queryParams, pathParams, media);
+//			}
+//			throw e;
+//		} finally {
+//			if (client != null)
+//				client.close();
+//		}
 
 	}
 
@@ -89,6 +102,7 @@ public class TokenedRestClientImpl implements TokenedRestClient {
 		client = getClient(token, tokenPrefix, media);
 
 		WebTarget resource = getWebTarget(client, uri, queryParams, pathParams);
+
 		return resource.request().accept(media).async().get(responseType);
 	}
 
@@ -119,7 +133,16 @@ public class TokenedRestClientImpl implements TokenedRestClient {
 	@Override
 	public <RESP, RQS> RESP put(String uri, String token, String tokenPrefix, Class<RESP> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, RQS requestBody, String mediaType) {
-		// TODO Auto-generated method stub
-		return null;
+		Client client = null;
+		try {
+			client = getClient(token, tokenPrefix, mediaType);
+			WebTarget resource = getWebTarget(client, uri, queryParams, pathParams);
+			Entity<RQS> entityRequest = requestBody != null ? Entity.entity(requestBody, mediaType)
+					: Entity.entity(null, mediaType);
+
+			return resource.request().accept(mediaType).put(entityRequest, responseType);
+		} finally {
+			client.close();
+		}
 	}
 }

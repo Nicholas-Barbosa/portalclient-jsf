@@ -64,9 +64,11 @@
 						<p:menu overlay="true" trigger="dynaButton" my="left top"
 							at="left bottom">
 							<p:submenu label="Opções">
-								<p:menuitem value="Confirmar" action="#{menuView.save}"
-									ajax="false" icon="pi pi-check" />
-									<p:menuitem value="Exportar" icon="pi pi-download" action="#{orderExportShowController.show(budgetEditingController.budget)}"/>
+								<p:menuitem value="Confirmar"
+									action="#{budgetEditingController.confirmBudgetEditing}"
+									ajax="true" icon="pi pi-check" process="@this"/>
+								<p:menuitem value="Exportar" icon="pi pi-download"
+									action="#{orderExportShowController.show(budgetEditingController.budget)}" />
 							</p:submenu>
 						</p:menu>
 					</h:form>

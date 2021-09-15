@@ -61,6 +61,15 @@ public class BudgetEditingController implements Serializable {
 		this.orderHelper = orderHelper;
 	}
 
+	public void confirmBudgetEditing() {
+		try {
+			budgetService.update(budget);
+		} catch (Exception e) {
+			FacesUtils.fatal(null, "Fatal", "Exception lançada!", "growl");
+			e.printStackTrace();
+		}
+	}
+
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresentOrElse(p -> {
 			orderHelper.addItem(budget, Item.product(p));

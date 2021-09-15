@@ -40,14 +40,14 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	private final TokenedRestClient restClient;
 	private final JsonbService jsonbService;
 	private OrcamentoAPIHelper orcamentoAPI;
-	
+
 	public BudgetRepositoryImpl() {
 		this(null, null, null);
 	}
 
 	@Inject
-	public BudgetRepositoryImpl(TokenedRestClient restClient, 
-			JsonbService jsonbService, OrcamentoAPIHelper orcamentoAPI) {
+	public BudgetRepositoryImpl(TokenedRestClient restClient, JsonbService jsonbService,
+			OrcamentoAPIHelper orcamentoAPI) {
 		super();
 		this.restClient = restClient;
 		this.jsonbService = jsonbService;
@@ -65,8 +65,8 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 
 	@Override
 	public void save(Budget budget) {
-		BudgetSavedResponse response = restClient.post(orcamentoAPI.buildEndpoint("budgets"),
-				orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), BudgetSavedResponse.class, null, null,
+		BudgetSavedResponse response = restClient.post(orcamentoAPI.buildEndpoint("budgets"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), BudgetSavedResponse.class, null, null,
 				BudgetToSaveJsonSerializable.of(budget), MediaType.APPLICATION_JSON);
 		budget.setCode(response.getCode());
 	}
@@ -74,9 +74,9 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	@Override
 	public Optional<Budget> findByCode(String code) {
 		try {
-			return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"),
-					orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, null,
-					Map.of("code", code), MediaType.APPLICATION_JSON));
+			return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"), orcamentoAPI.getToken(),
+					orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, null, Map.of("code", code),
+					MediaType.APPLICATION_JSON));
 		} catch (javax.ws.rs.NotFoundException e) {
 			return Optional.empty();
 		}
@@ -88,10 +88,9 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 
 		FormToEstimateBudget toEstimate = new FormToEstimateBudget(customerCode, customerStore, items);
 		try {
-			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(
-					orcamentoAPI.buildEndpoint("estimate"), orcamentoAPI.getToken(),
-					orcamentoAPI.getPrefixToken(), BudgetEstimatedResultBuilder.class, null, null, toEstimate,
-					"application/json");
+			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(orcamentoAPI.buildEndpoint("estimate"),
+					orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), BudgetEstimatedResultBuilder.class, null,
+					null, toEstimate, "application/json");
 			return budgetBuilder.build();
 		} catch (NotFoundException e) {
 			Deseriaized404JsonEstimateEndpoint notFoundCause = deserializeJson404FromEstimateEndpoint(
@@ -125,7 +124,8 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	@Override
 	public void update(Budget budget) {
 		BudgetToUpdateDTO toUpdate = new BudgetToUpdateDTO(budget);
-		restClient.put(orcamentoAPI.buildEndpoint("budgets"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), null, null, null, toUpdate, "application/json");
+		restClient.put(orcamentoAPI.buildEndpoint("budgets/{id}"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), null, null, Map.of("id", budget.getCode()), toUpdate,
+				"application/json");
 	}
 }

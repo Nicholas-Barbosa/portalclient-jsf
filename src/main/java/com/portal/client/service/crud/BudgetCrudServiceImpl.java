@@ -69,4 +69,10 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 		return budgetRepository.estimate(customerCode, customerStore, itemsToEstimate);
 	}
 
+	@Override
+	public void update(Budget budget) {
+		budgetRepository.update(budget);
+
+	}
+
 }
