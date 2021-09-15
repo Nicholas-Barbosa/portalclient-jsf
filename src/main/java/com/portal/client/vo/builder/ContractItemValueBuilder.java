@@ -2,6 +2,7 @@ package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
 
+import com.portal.client.dto.ProductValue;
 import com.portal.client.vo.ItemValue;
 
 public interface ContractItemValueBuilder {
@@ -23,8 +24,10 @@ public interface ContractItemValueBuilder {
 	ContractItemValueBuilder withQuantity(int value);
 
 	ContractItemValueBuilder withMultiple(Integer value);
-	
+
 	ContractItemValueBuilder withUnitValue(BigDecimal value);
+
+	ContractItemValueBuilder withProductValue(ProductValue vl);
 
 	ItemValue build();
 }

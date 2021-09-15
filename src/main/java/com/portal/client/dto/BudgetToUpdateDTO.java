@@ -27,8 +27,24 @@ public class BudgetToUpdateDTO extends BudgetToSaveJsonSerializable {
 		return super.getBudget().getGrossValue();
 	}
 
-	@JsonbProperty("gross_order_value")
+	@JsonbProperty("client_description")
 	public String getCustomerDescription() {
 		return super.getBudget().getCustomerOnOrder().getName();
+	}
+
+	@Override
+	@JsonbProperty("representative_order")
+	public String getRepresentativeOrder() {
+		// TODO Auto-generated method stub
+		String value = super.getRepresentativeOrder();
+		return value == null ? "empty" : value;
+	}
+
+	@Override
+	@JsonbProperty("client_order")
+	public String getCustomerOrder() {
+		// TODO Auto-generated method stub
+		String value = super.getCustomerOrder();
+		return value == null ? "empty" : value;
 	}
 }

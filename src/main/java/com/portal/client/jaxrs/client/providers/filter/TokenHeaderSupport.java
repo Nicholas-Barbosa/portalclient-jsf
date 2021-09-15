@@ -29,8 +29,7 @@ public final class TokenHeaderSupport implements ClientRequestFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext) throws IOException {
-		logger.debug("Setting header authorization, " + tokenPrefix + " " + token);
 		requestContext.getHeaders().add(HttpHeaders.AUTHORIZATION, tokenPrefix + " " + this.token);
-		
+
 	}
 }

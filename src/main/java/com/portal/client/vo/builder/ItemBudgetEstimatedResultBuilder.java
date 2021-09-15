@@ -2,7 +2,7 @@ package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbCreator;
@@ -24,6 +24,7 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBuilder {
 			@JsonbProperty("available_stock") int stock, @JsonbProperty("st_value") BigDecimal totalStValue,
 			@JsonbProperty("description") String description, @JsonbProperty("multiple") int multiple,
 			@JsonbProperty("product_type") String acronymLine, @JsonbProperty("description_product_type") String line) {
+		System.out.println("Unit value " + unitGross);
 		Product product = ProductBuilder.getInstance().withCode(productCode).withCommercialCode(commercialCode)
 				.withUnitGrossValue(unitGross).withUnitValue(unitValue)
 				.withUnitStValue(totalStValue.divide(new BigDecimal(quantity), RoundingMode.HALF_UP))
@@ -31,8 +32,9 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBuilder {
 				.withQuantity(quantity).withStock(stock).build();
 		ItemValue itemValue = ItemValueBuilder.getInstance().withGlobalDiscount(BigDecimal.ZERO)
 				.withTotalGrossValue(totalGross).withLineDiscount(lineDiscount).withQuantity(quantity)
-				.withTotalValue(totalValue).withTotalStValue(totalStValue).build();
+				.withTotalValue(totalValue).withTotalStValue(totalStValue).withProductValue(product.getValue()).build();
 		super.withProduct(product).withValue(itemValue);
+
 	}
 
 	@Override
@@ -40,8 +42,8 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBuilder {
 		return super.build();
 	}
 
-	public static Set<Item> build(Set<ItemBudgetEstimatedResultBuilder> items) {
-		return items.stream().map(ItemBudgetEstimatedResultBuilder::build).collect(Collectors.toSet());
+	public static List<Item> build(List<ItemBudgetEstimatedResultBuilder> items) {
+		return items.stream().map(ItemBudgetEstimatedResultBuilder::build).collect(Collectors.toList());
 
 	}
 }

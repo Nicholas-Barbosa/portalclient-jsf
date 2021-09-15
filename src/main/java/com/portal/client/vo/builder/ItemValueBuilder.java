@@ -2,7 +2,7 @@ package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
 
-import com.portal.client.util.MathUtils;
+import com.portal.client.dto.ProductValue;
 import com.portal.client.vo.ItemValue;
 
 public class ItemValueBuilder implements ContractItemValueBuilder {
@@ -79,6 +79,13 @@ public class ItemValueBuilder implements ContractItemValueBuilder {
 	@Override
 	public ContractItemValueBuilder withGlobalDiscount(BigDecimal value) {
 		this.budgetGlobalDiscount = value;
+		return this;
+	}
+
+	@Override
+	public ContractItemValueBuilder withProductValue(ProductValue vl) {
+		this.withUnitGrossValue(vl.getUnitGrossValue()).withUnitStValue(vl.getUnitStValue())
+				.withUnitValue(vl.getUnitValue());
 		return this;
 	}
 

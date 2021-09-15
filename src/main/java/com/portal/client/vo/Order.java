@@ -2,8 +2,8 @@ package com.portal.client.vo;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.portal.client.dto.CustomerOnOrder;
 
@@ -16,7 +16,7 @@ public class Order {
 	private BigDecimal stValue;
 	private BigDecimal globalDiscount;
 	private String message;
-	private Set<Item> items;
+	private List<Item> items;
 	private LocalDate createdAt;
 
 	public Order() {
@@ -24,9 +24,11 @@ public class Order {
 
 	public Order(String code, String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder,
 			BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount,
-			String message, Set<Item> items, LocalDate createdAt) {
+			String message, List<Item> items, LocalDate createdAt) {
 		super();
 		this.code = code;
+		this.customerNumOrder = customerNumOrder;
+		this.repNumOrder = repNumOrder;
 		this.customerOnOrder = customerOnOrder;
 		this.grossValue = grossValue;
 		this.liquidValue = liquidValue;
@@ -35,6 +37,12 @@ public class Order {
 		this.message = message;
 		this.items = items;
 		this.createdAt = createdAt;
+	}
+
+	public Order(Order order) {
+		this(order.code, order.customerNumOrder, order.repNumOrder, order.customerOnOrder, order.grossValue,
+				order.liquidValue, order.stValue, order.globalDiscount, order.message, new ArrayList<>(order.items),
+				order.createdAt);
 	}
 
 	public String getCode() {
@@ -109,15 +117,17 @@ public class Order {
 		this.message = message;
 	}
 
-	public Set<Item> getItems() {
+	public List<Item> getItems() {
 		return items;
 	}
 
 	public boolean addItem(Item item) {
 		if (items == null) {
-			items = new HashSet<>();
+			items = new ArrayList<>();
 		}
-		return this.items.add(item);
+		if (!items.contains(item))
+			return this.items.add(item);
+		return false;
 	}
 
 	public boolean removeItem(Item item) {

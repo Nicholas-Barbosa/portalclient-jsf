@@ -16,7 +16,6 @@ public class IllegalResponseAspect {
 			return joinPoint.proceed();
 		} catch (Exception e) {
 			if (e instanceof IllegalStateException) {
-				System.out.println("IllegalStateException");
 				return joinPoint.proceed();
 			}
 			throw e;

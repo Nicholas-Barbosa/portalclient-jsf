@@ -6,7 +6,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.dto.BudgetSemiProjection;

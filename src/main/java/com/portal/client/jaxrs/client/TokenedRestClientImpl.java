@@ -93,7 +93,6 @@ public class TokenedRestClientImpl implements TokenedRestClient {
 			WebTarget resource = getWebTarget(c, uri, queryParams, pathParams, token, tokenPrefix);
 			Entity<RQS> entityRequest = requestBody != null ? Entity.entity(requestBody, mediaType)
 					: Entity.entity(null, mediaType);
-
 			return resource.request().accept(mediaType).put(entityRequest, responseType);
 		});
 

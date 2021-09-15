@@ -2,11 +2,10 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.portal.client.vo.Item;
-import com.portal.client.vo.builder.ItemBuilder;
 
 public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 
@@ -16,7 +15,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
 	private BigDecimal stValue;
-	private Set<Item> items;
+	private List<Item> items;
 	private String message;
 	private LocalDate createdAt;
 
@@ -50,8 +49,8 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 		return this;
 	}
 
-	public BaseBudgetJsonBuilder withItems(Set<Item> items) {
-		this.items = new HashSet<>(items);
+	public BaseBudgetJsonBuilder withItems(List<Item> items) {
+		this.items = new ArrayList<>(items);
 		return this;
 	}
 
@@ -89,7 +88,7 @@ public abstract class BaseBudgetJsonBuilder implements BudgetBuilder {
 		return stValue;
 	}
 
-	public Set<Item> getItems() {
+	public List<Item> getItems() {
 		return items;
 	}
 

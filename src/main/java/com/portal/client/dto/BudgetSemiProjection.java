@@ -2,7 +2,6 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import javax.json.bind.annotation.JsonbCreator;
@@ -22,16 +21,16 @@ public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
 	}
 
 	private LocalDate convertToLdt(String dateInString) {
-		return LocalDateTime.parse(dateInString.substring(0, dateInString.lastIndexOf("-")),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")).toLocalDate();
+		return LocalDate.parse(dateInString.substring(0, dateInString.lastIndexOf("T")),
+				DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 	}
 
 	@Override
 	public Budget build() {
 		CustomerOnOrder customer = new CustomerOnOrder(super.getCustomerCode(), super.getCustomerStore(), null, null,
 				null, null, null, null, null);
-		Budget budget = new Budget(super.getIdCode(), customer, null, super.getLiquidValue(),
-				super.getStValue(), null, null, null);
+		Budget budget = new Budget(super.getIdCode(), null, null, customer, null, super.getLiquidValue(),
+				super.getStValue(), null, null, null, super.getCreatedAt());
 		return budget;
 	}
 

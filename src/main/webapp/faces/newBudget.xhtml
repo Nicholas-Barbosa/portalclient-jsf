@@ -53,7 +53,9 @@
 								action="#{itemImportShowController.show(newBudgetOrderController.budget,newBudgetOrderController.budget.customerOnOrder)}"
 								process="@this">
 								<p:ajax event="dialogReturn"
-									listener="#{newBudgetOrderController.handleItemImportReturn}" onstart="PF('topSidebar').show()" oncomplete="PF('topSidebar').hide()"/>
+									listener="#{newBudgetOrderController.handleItemImportReturn}"
+									onstart="PF('topSidebar').show()"
+									oncomplete="PF('topSidebar').hide()" />
 							</p:commandButton>
 							<p:commandButton action="#{newBudgetOrderController.validBudget}"
 								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
@@ -157,7 +159,7 @@
 							<p:dataTable value="#{newBudgetOrderController.budget.items}"
 								var="item" editable="true" rowKey="#{item.commercialCode}"
 								id="dtItems" reflow="true" size="small" scrollable="true"
-								widgetVar="dtItems" rowIndexVar="crrIndex">
+								widgetVar="dtItems" rowIndexVar="crrIndex" filterDelay="100">
 								<p:autoUpdate on="eventAddItem" />
 								<p:autoUpdate on="eventAddLineDiscount" />
 								<p:ajax event="rowEdit"
@@ -205,19 +207,19 @@
 									<span class="p-text-bold">Há
 										#{fn:length(newBudgetOrderController.budget.items)} produtos.</span>
 								</f:facet>
-								<p:column>
+								<p:column style="width:2rem">
 									<h:outputText value="#{crrIndex+1}" />
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}" filterBy="#{item.product.commercialCode}">
 									<h:outputText value="#{item.product.commercialCode}" />
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('descricao')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('descricao')}" filterBy="#{item.product.description}">
 									<h:outputText value="#{item.product.description}" />
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('linha')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('linha')}" filterBy="#{item.product.line}">
 									<h:outputText value="#{item.product.line}" />
 								</p:column>
 								<p:column
@@ -249,7 +251,7 @@
 								</p:column>
 
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}" sortBy="#{item.value.quantity}">
 									<p:cellEditor>
 										<f:facet name="output">
 											<h:outputText value="#{item.value.quantity}" />
@@ -257,26 +259,29 @@
 										<f:facet name="input">
 											<p:spinner
 												value="#{newBudgetOrderController.onRowItemQuantity}"
-												style="width:100%" label="Name" />
+												style="width:100%" label="Name" id="spnQ" />
+											<p:tooltip
+												value="Entre com um número múltiplo de #{item.value.multiple}"
+												for="spnQ" />
 										</f:facet>
 									</p:cellEditor>
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}" sortBy="#{item.value.unitValue}">
 									<h:outputText value="#{item.value.unitValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('total')}" sortBy="#{item.value.totalValue}">
 									<h:outputText value="#{item.value.totalValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}" sortBy="#{item.value.totalStValue}">
 									<h:outputText value="#{item.value.totalStValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
@@ -309,7 +314,7 @@
 									</p:overlayPanel>
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}" sortBy="#{item.value.totalGrossValue}">
 									<h:outputText value="#{item.value.totalGrossValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
@@ -540,7 +545,7 @@
 			<p:remoteCommand name="cleanBudgetObj"
 				action="#{newBudgetOrderController.newBudget}" process="@this"
 				update="customerForm, formItems:dtItems, budgetTotals" />
-			
+
 			<p:dialog widgetVar="dlgBudgetPersistForm" modal="true"
 				header="#{resourceBundleServiceImpl.getMessage('efetivar_orcamento')}"
 				responsive="true">
@@ -592,8 +597,8 @@
 								update="customerForm, formItems:dtItems, budgetTotals"
 								styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingBudget').hide()" />
-							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star" outcome="budgets"
-								styleClass="p-mb-2" />
+							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star"
+								outcome="budgets" styleClass="p-mb-2" />
 						</div>
 					</div>
 				</div>

@@ -1,5 +1,6 @@
 package com.portal.client.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.json.bind.annotation.JsonbCreator;
@@ -11,7 +12,16 @@ import com.portal.client.vo.Product;
 import com.portal.client.vo.builder.ItemValueBuilder;
 import com.portal.client.vo.builder.ProductBuilder;
 
-public class ItemBudgetProjection extends Item {
+public class ItemBudgetProjection extends Item implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8717026150120991873L;
+
+	public ItemBudgetProjection() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@JsonbCreator
 	public static ItemBudgetProjection ofJsonb(@JsonbProperty("unit_gross_value") BigDecimal grossValue,

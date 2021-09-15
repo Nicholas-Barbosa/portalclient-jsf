@@ -5,6 +5,5 @@
 
 	<interceptors>
 		<class>com.portal.client.jaxrs.client.aop.aspect.IllegalResponseAspect</class>
-		<class>com.portal.client.jaxrs.client.aop.aspect.ClientHandlerAspect</class>
 	</interceptors>
 </beans>

@@ -150,7 +150,7 @@
 							<p:dataTable value="#{newOrderController.order.items}" var="item"
 								editable="true" rowKey="#{item.commercialCode}" id="dtItems"
 								reflow="true" size="small" scrollable="true" widgetVar="dtItems"
-								rowIndexVar="crrIndex">
+								rowIndexVar="crrIndex" filterDelay="100">
 								<p:autoUpdate on="eventAddItem" />
 								<p:autoUpdate on="eventAddLineDiscount" />
 								<p:ajax event="rowEdit"
@@ -181,19 +181,20 @@
 									<span class="p-text-bold">Há
 										#{fn:length(newOrderController.order.items)} itens.</span>
 								</f:facet>
-								<p:column>
+								<p:column style="width:2rem" >
 									<h:outputText value="#{crrIndex+1}" />
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}"
+									filterBy="#{item.product.commercialCode}" >
 									<h:outputText value="#{item.product.commercialCode}" />
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('descricao')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('descricao')}" filterBy="#{item.product.description}">
 									<h:outputText value="#{item.product.description}" />
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('linha')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('linha')}" filterBy="#{item.product.line}">
 									<h:outputText value="#{item.product.line}" />
 								</p:column>
 								<p:column
@@ -225,33 +226,36 @@
 								</p:column>
 
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}" sortBy="#{item.value.quantity}">
 									<p:cellEditor>
 										<f:facet name="output">
 											<h:outputText value="#{item.value.quantity}" />
 										</f:facet>
 										<f:facet name="input">
 											<p:spinner value="#{newOrderController.onRowItemQuantity}"
-												style="width:100%" label="Quantidade" />
+												style="width:100%" label="Quantidade" id="spnQ" />
+											<p:tooltip
+												value="Entre com um número múltiplo de #{item.value.multiple}"
+												for="spnQ" />
 										</f:facet>
 									</p:cellEditor>
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}" sortBy="#{item.value.unitValue}">
 									<h:outputText value="#{item.value.unitValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('total')}" sortBy="#{item.value.totalValue}">
 									<h:outputText value="#{item.value.totalValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
 									</h:outputText>
 								</p:column>
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}" sortBy="#{item.value.totalStValue}">
 									<h:outputText value="#{item.value.totalStValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
@@ -259,7 +263,7 @@
 								</p:column>
 
 								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}">
+									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}" sortBy="#{item.value.totalGrossValue}">
 									<h:outputText value="#{item.value.totalGrossValue}">
 										<f:convertNumber currencySymbol="R$" type="currency"
 											locale="pt_BR" />
@@ -508,7 +512,7 @@
 								styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingOrder').hide()" />
 							<p:commandButton value="Visualizar outros pedidos"
-								styleClass="p-mb-2" action="orders"/>
+								styleClass="p-mb-2" action="orders" />
 						</div>
 					</div>
 				</div>
@@ -525,7 +529,7 @@
 			</p:sidebar>
 			<p:sidebar widgetVar="jsonDown" position="top" baseZIndex="10000">
 				<h2>Exportar pedido</h2>
-				
+
 			</p:sidebar>
 			<style type="text/css">
 .cheap {

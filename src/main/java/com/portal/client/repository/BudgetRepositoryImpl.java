@@ -125,7 +125,7 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 	public void update(Budget budget) {
 		BudgetToUpdateDTO toUpdate = new BudgetToUpdateDTO(budget);
 		restClient.put(orcamentoAPI.buildEndpoint("budgets/{id}"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), null, null, Map.of("id", budget.getCode()), toUpdate,
+				orcamentoAPI.getPrefixToken(), String.class, null, Map.of("id", budget.getCode()), toUpdate,
 				"application/json");
 	}
 }

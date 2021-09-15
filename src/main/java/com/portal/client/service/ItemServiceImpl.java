@@ -103,7 +103,7 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public boolean checkQuantityPolicies(Item item, int quantity) {
 		// TODO Auto-generated method stub
-		if (item.getProduct().getValue().getMultiple() == 0)
+		if (item.getProduct().getValue().getMultiple() == null || item.getProduct().getValue().getMultiple() == 0)
 			return true;
 		return quantity % item.getProduct().getValue().getMultiple() == 0 ? true : false;
 	}
