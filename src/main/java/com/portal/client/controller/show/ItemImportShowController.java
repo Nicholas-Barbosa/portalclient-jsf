@@ -32,15 +32,15 @@ public class ItemImportShowController implements ShowController<CustomerOnOrder>
 
 	}
 
-	public void show(Order order, CustomerOnOrder p) {
-		if (order !=null && p != null) {
-			if (p instanceof ProspectCustomerOnOrder) {
+	public void show(Order order) {
+		if (order !=null && order.getCustomerOnOrder() != null) {
+			if (order.getCustomerOnOrder() instanceof ProspectCustomerOnOrder) {
 				FacesUtils.warn(null, "Operação indisponível",
 						"Esta operação não está disponivel para clientes de tipo prospect.", "growl");
 			}
 			FacesUtils.openViewOnDialog(
 					Map.of("modal", true, "responsive", true, "contentWidth", "98vw", "contentHeight", "80vh"),
-					"itemImport", Map.of("customerCode", List.of(p.getCode()), "customerStore", List.of(p.getStore()),
+					"itemImport", Map.of("customerCode", List.of(order.getCustomerOnOrder().getCode()), "customerStore", List.of(order.getCustomerOnOrder().getStore()),
 							"onDialog", List.of("true")));
 			return;
 		}

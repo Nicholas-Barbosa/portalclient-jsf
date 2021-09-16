@@ -1,12 +1,11 @@
 package com.portal.client.dto;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.dto.helper.OrderStringDateConverter;
 import com.portal.client.vo.Budget;
 
 public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
@@ -17,12 +16,7 @@ public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
 			@JsonbProperty("creation_date") String createdAt, @JsonbProperty("st_value") BigDecimal stValue,
 			@JsonbProperty("liquid_order_value") BigDecimal liquidOrderValue) {
 		super.withCustomerCode(customerCode).withCustomerStore("store").withId(budgetCode).withStValue(stValue)
-				.withLiquidValue(liquidOrderValue).withCreatedAt(convertToLdt(createdAt));
-	}
-
-	private LocalDate convertToLdt(String dateInString) {
-		return LocalDate.parse(dateInString.substring(0, dateInString.lastIndexOf("T")),
-				DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+				.withLiquidValue(liquidOrderValue).withCreatedAt(OrderStringDateConverter.convert(createdAt));
 	}
 
 	@Override

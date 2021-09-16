@@ -141,4 +141,8 @@ public class Order {
 	public void setCreatedAt(LocalDate createdAt) {
 		this.createdAt = createdAt;
 	}
+
+	public boolean removeItems(List<Item> originalItems) {
+		return originalItems.removeAll(originalItems);
+	}
 }

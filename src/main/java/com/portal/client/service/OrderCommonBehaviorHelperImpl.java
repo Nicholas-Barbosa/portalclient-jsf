@@ -2,6 +2,7 @@ package com.portal.client.service;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -83,6 +84,14 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	public void lineDiscount(Order order, ItemLineDiscountForm form) {
 		this.itemService.applyLineDiscount(order.getItems(), form);
 		this.calculateTotals(order);
+	}
+
+	@Override
+	public void removeItems(Order order, List<Item> originalItems) {
+		if(order.removeItems(originalItems)) {
+			calculateTotals(order);
+		}
+		
 	}
 
 }

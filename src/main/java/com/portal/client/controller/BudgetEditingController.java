@@ -78,6 +78,11 @@ public class BudgetEditingController implements Serializable {
 		this.orderService = orderService;
 	}
 
+	public void handleItemImportReturn(SelectEvent<Budget> event) {
+		this.orderHelper.merge(budget, event.getObject());
+		FacesUtils.ajaxUpdate("dtItems","panelTotals");
+	}
+	
 	public void saveToOrder() {
 		if (savedOrder == null) {
 			savedOrder = new Order(budget);

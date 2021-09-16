@@ -36,8 +36,8 @@
 			<h:form>
 				<p:remoteCommand autoRun="true"
 					action="#{budgetEditingController.find}" process="@this"
-					oncomplete="$('#divLoading').hide();$('#content').show();"
-					update="panelBudget,panelCustomer,panelItems,panelTotals" />
+					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
+					update="panelBudget,panelCustomer,panelTotals" />
 			</h:form>
 
 			<div class="card" id="divLoading">
@@ -140,7 +140,10 @@
 							<div class="p-field p-col-12 p-md-6">
 								<label for="createdAt">Criado em</label>
 								<p:inputText id="createdAt" type="text" readonly="true"
-									value="#{budgetEditingController.budget.createdAt}" />
+									value="#{budgetEditingController.budget.createdAt}">
+									<f:convertDateTime locale="pt_BR" type="localDate"
+										dateStyle="full" />
+								</p:inputText>
 							</div>
 							<div class="p-field p-col-12 p-md-6">
 								<label for="oPNum">N°Pedido representante</label>
@@ -208,31 +211,84 @@
 						</div>
 					</p:outputPanel>
 				</div>
+				<div class="p-grid crud-demo">
+					<div class="p-col-12">
+						<div class="card">
+							<h5>Gerenciar itens</h5>
 
-				<div class="card">
-					<h5>Itens</h5>
+							<p:outputPanel deferred="true" deferredMode="visible"
+								id="panelItems">
+								<h:form prependId="false">
+									<p:toolbar styleClass="p-mb-4">
+										<p:toolbarGroup>
+											<p:commandButton value="Novo" icon="pi pi-plus"
+												styleClass="ui-button-raised ui-button-success"
+												action="#{productSearchShowController.show(budgetEditingController.budget.customerOnOrder)}"
+												style="margin-right: .5rem">
+												<p:ajax event="dialogReturn"
+													listener="#{budgetEditingController.handleProductResult}"
+													onstart="PF('topSidebar').show()"
+													oncomplete="PF('topSidebar').hide()" />
+												<p:sidebar widgetVar="topSidebar" position="top"
+													baseZIndex="10000">
+													<h4>Adicionado produto ao orçamento e calculando
+														totais...</h4>
+												</p:sidebar>
+											</p:commandButton>
+											<p:commandButton
+												value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+												icon="pi pi-folder-open"
+												styleClass="ui-button-success p-mr-2"
+												action="#{itemImportShowController.show(budgetEditingController.budget)}"
+												process="@this">
+												<p:ajax event="dialogReturn"
+													listener="#{budgetEditingController.handleItemImportReturn}" />
+											</p:commandButton>
+											<p:commandButton id="delete-products-button"
+												value="#{dtableBudgetEditingController.deleteButtonMessage}"
+												icon="pi pi-trash"
+												action="#{dtableBudgetEditingController.deleteItems(budgetEditingController.budget)}"
+												styleClass="ui-button-danger"
+												disabled="#{dtableBudgetEditingController.disableDeleteProductsBtn()}"
+												process="@this" update="@this,dtItems,panelTotals">
+												<p:confirm header="Confirmar"
+													message="Deletar produtos selecionados?"
+													icon="pi pi-exclamation-triangle" />
+											</p:commandButton>
+										</p:toolbarGroup>
 
-					<p:outputPanel deferred="true" deferredMode="visible"
-						id="panelItems">
-						<h:form prependId="false">
-							<p:dataTable var="item"
-								value="#{budgetEditingController.budget.items}" id="dtItems" widgetVar="dtItems"
-								editable="true" scrollable="true" size="small" filterDelay="100">
-								<f:facet name="header">
-									<p:commandButton icon="pi pi-plus"
-										styleClass="ui-button-raised ui-button-success"
-										action="#{productSearchShowController.show(budgetEditingController.budget.customerOnOrder)}">
-										<p:ajax event="dialogReturn"
-											listener="#{budgetEditingController.handleProductResult}"
-											onstart="PF('topSidebar').show()"
-											oncomplete="PF('topSidebar').hide()" />
-										<p:sidebar widgetVar="topSidebar" position="top"
-											baseZIndex="10000">
-											<h4>Adicionado produto ao orçamento e calculando
-												totais...</h4>
-										</p:sidebar>
-									</p:commandButton>
-									<!--  	<p:menuButton
+									</p:toolbar>
+
+									<p:remoteCommand name="updateDtItems" process="@none"
+										update="dtItems" onstart="$('#divUpdatingDtItems').show();"
+										oncomplete="$('#divUpdatingDtItems').hide();" />
+
+									<div class="custom-skeleton p-p-4" id="divUpdatingDtItems">
+										<div class="p-d-flex p-mb-3">
+											<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+											<div>
+												<p:skeleton width="10rem" class="p-mb-2" />
+												<p:skeleton width="5rem" class="p-mb-2" />
+												<p:skeleton height=".5rem" />
+											</div>
+										</div>
+										<p:skeleton width="100%" height="150px" />
+										<div class="p-d-flex p-jc-between p-mt-3">
+											<p:skeleton width="4rem" height="2rem" />
+											<p:skeleton width="4rem" height="2rem" />
+										</div>
+									</div>
+
+									<p:dataTable var="item"
+										value="#{budgetEditingController.budget.items}" id="dtItems"
+										widgetVar="dtItems" editable="true" scrollable="true"
+										size="small" filterDelay="100"
+										selection="#{dtableBudgetEditingController.items}"
+										rowKey="#{item.product.commercialCode}" rowSelectMode="add"
+										reflow="true">
+										<f:facet name="header">
+
+											<!--  	<p:menuButton
 										value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 										disabled="#{empty budgetEditingController.budget.items}">
 										<p:menuitem
@@ -248,108 +304,136 @@
 											<p:ajax event="dialogReturn" update="dtItems,panelTotals" />
 										</p:menuitem>
 									</p:menuButton>-->
-								</f:facet>
-
-								<p:ajax event="rowEdit"
-									listener="#{budgetEditingController.onRowItemEdit}"
-									update="panelTotals" />
-
-
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('codigo')}" filterBy="#{item.product.commercialCode}">
-									<h:outputText value="#{item.product.commercialCode}" />
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}" sortBy="#{item.value.quantity}">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{item.value.quantity}" />
 										</f:facet>
-										<f:facet name="input">
-											<p:spinner
-												value="#{budgetEditingController.onRowItemQuantity}"
-												style="width:100%" label="Quantidade" id="spnQ" />
-											<p:tooltip
-												value="Entre com um número múltiplo de #{item.value.multiple}"
-												for="spnQ" />
-										</f:facet>
-									</p:cellEditor>
 
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('valor_unitario')}" sortBy="#{item.product.value.unitValue}">
-									<h:outputText value="#{item.product.value.unitValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('valor')}" sortBy="#{item.value.getTotalValueWithoutDiscount()}">
-									<h:outputText
-										value="#{item.value.getTotalValueWithoutDiscount()}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total_st')}" sortBy="#{item.value.getTotalStValueWithoutDiscount()}">
-									<h:outputText
-										value="#{item.value.getTotalStValueWithoutDiscount()}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('valor_bruto')}" sortBy="#{item.value.getTotalGrossWithoutDiscount()}">
-									<h:outputText
-										value="#{item.value.getTotalGrossWithoutDiscount()}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('desc_linha')}" sortBy="#{item.value.lineDiscount}">
-									<h:outputText value="#{item.value.lineDiscount}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total_cm_desc')}" sortBy="#{item.value.totalValue}">
-									<h:outputText value="#{item.value.totalValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column headerText="ST" sortBy="#{item.value.totalStValue}">
-									<h:outputText value="#{item.value.totalStValue}" >
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('bruto_cm_desc')}" sortBy="#{item.value.totalGrossValue}">
-									<h:outputText value="#{item.value.totalGrossValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column style="width:4rem">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-										saveTitle="Save Row" />
 
-								</p:column>
-								<p:column>
-									<p:commandButton icon="pi pi-times"
-										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
-										title="Remover"
-										action="#{orderCommonBehaviorHelperImpl.removeItem(budgetEditingController.budget,item)}"
-										oncomplete="editScrollBodyMaxHeight('dtItems','30vh')"
-										update="dtItems,panelTotals" process="@this" />
-								</p:column>
-							</p:dataTable>
-						</h:form>
-					</p:outputPanel>
+										<p:ajax event="rowEdit"
+											listener="#{budgetEditingController.onRowItemEdit}"
+											update="panelTotals" />
+
+										<p:ajax event="rowSelect" update="delete-products-button" />
+										<p:ajax event="rowUnselect" update="delete-products-button" />
+										<p:ajax event="rowSelectCheckbox"
+											update="delete-products-button" />
+										<p:ajax event="rowUnselectCheckbox"
+											update="delete-products-button" />
+										<p:ajax event="toggleSelect" update="delete-products-button" />
+
+
+										<p:column selectionMode="multiple"></p:column>
+										<p:column exportable="false">
+											<p:rowToggler />
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('codigo')}"
+											filterBy="#{item.product.commercialCode}">
+											<h:outputText value="#{item.product.commercialCode}" />
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}"
+											sortBy="#{item.value.quantity}">
+											<p:cellEditor>
+												<f:facet name="output">
+													<h:outputText value="#{item.value.quantity}" />
+												</f:facet>
+												<f:facet name="input">
+													<p:spinner
+														value="#{budgetEditingController.onRowItemQuantity}"
+														style="width:100%" label="Quantidade" id="spnQ" />
+													<p:tooltip
+														value="Entre com um número múltiplo de #{item.value.multiple}"
+														for="spnQ" />
+												</f:facet>
+											</p:cellEditor>
+
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('valor_unitario')}"
+											sortBy="#{item.product.value.unitValue}">
+											<h:outputText value="#{item.product.value.unitValue}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('valor')}"
+											sortBy="#{item.value.getTotalValueWithoutDiscount()}">
+											<h:outputText
+												value="#{item.value.getTotalValueWithoutDiscount()}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('total_st')}"
+											sortBy="#{item.value.getTotalStValueWithoutDiscount()}">
+											<h:outputText
+												value="#{item.value.getTotalStValueWithoutDiscount()}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('valor_bruto')}"
+											sortBy="#{item.value.getTotalGrossWithoutDiscount()}">
+											<h:outputText
+												value="#{item.value.getTotalGrossWithoutDiscount()}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('desc_linha')}"
+											sortBy="#{item.value.lineDiscount}">
+											<h:outputText value="#{item.value.lineDiscount}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('total_cm_desc')}"
+											sortBy="#{item.value.totalValue}">
+											<h:outputText value="#{item.value.totalValue}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column headerText="ST" sortBy="#{item.value.totalStValue}">
+											<h:outputText value="#{item.value.totalStValue}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column
+											headerText="#{resourceBundleServiceImpl.getMessage('bruto_cm_desc')}"
+											sortBy="#{item.value.totalGrossValue}">
+											<h:outputText value="#{item.value.totalGrossValue}">
+												<f:convertNumber currencySymbol="R$" type="currency"
+													locale="pt_BR" />
+											</h:outputText>
+										</p:column>
+										<p:column style="width:4rem">
+											<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+												saveTitle="Save Row" />
+
+										</p:column>
+										<p:column>
+											<p:commandButton icon="pi pi-times"
+												styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
+												title="Remover"
+												action="#{orderCommonBehaviorHelperImpl.removeItem(budgetEditingController.budget,item)}"
+												oncomplete="editScrollBodyMaxHeight('dtItems','30vh')"
+												update="dtItems,panelTotals" process="@this" />
+										</p:column>
+
+										<p:rowExpansion>
+											<h3>Olá!</h3>
+										</p:rowExpansion>
+									</p:dataTable>
+								</h:form>
+							</p:outputPanel>
+						</div>
+					</div>
 				</div>
 
 				<div class="card">
@@ -386,6 +470,14 @@
 						</h:form>
 					</p:outputPanel>
 				</div>
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
+					responsive="true" width="350">
+					<p:commandButton value="Sim" type="button"
+						styleClass="ui-confirmdialog-yes" />
+					<p:commandButton value="Não" type="button"
+						styleClass="ui-confirmdialog-no ui-button-flat" />
+
+				</p:confirmDialog>
 			</div>
 		</f:view>
 	</ui:define>

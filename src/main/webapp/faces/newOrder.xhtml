@@ -25,6 +25,9 @@
 	</ui:define>
 
 	<ui:define name="content">
+<p:commandButton value="Delete" action="#{confirmView.delete}"  styleClass="ui-button-danger" icon="pi pi-times">
+            <p:confirm header="Confirmation" message="Do you want to delete this record?" icon="pi pi-info-circle"/>
+        </p:commandButton>
 		<f:view locale="pt_BR">
 			<p:growl id="growl" showDetail="true" globalOnly="true"
 				widgetVar="growl" />
@@ -44,10 +47,11 @@
 									message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
 									icon="pi pi-info-circle" />
 							</p:commandButton>
+							
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-								action="#{itemImportShowController.show(newOrderController.order,newOrderController.order.customerOnOrder)}"
+								action="#{itemImportShowController.show(newOrderController.order)}"
 								process="@this">
 								<p:ajax event="dialogReturn"
 									listener="#{newOrderController.handleItemImportReturn}" />

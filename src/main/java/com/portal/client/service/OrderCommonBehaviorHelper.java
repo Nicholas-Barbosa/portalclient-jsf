@@ -1,6 +1,7 @@
 package com.portal.client.service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ItemLineDiscountForm;
@@ -39,4 +40,6 @@ public interface OrderCommonBehaviorHelper {
 	void merge(Order mixedBudget, Order budgetToMix);
 
 	void lineDiscount(Order order, ItemLineDiscountForm form);
+
+	void removeItems(Order order, List<Item> originalItems);
 }

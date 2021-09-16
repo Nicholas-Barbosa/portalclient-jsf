@@ -50,7 +50,7 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-								action="#{itemImportShowController.show(newBudgetOrderController.budget,newBudgetOrderController.budget.customerOnOrder)}"
+								action="#{itemImportShowController.show(newBudgetOrderController.budget)}"
 								process="@this">
 								<p:ajax event="dialogReturn"
 									listener="#{newBudgetOrderController.handleItemImportReturn}"

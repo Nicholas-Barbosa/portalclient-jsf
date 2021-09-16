@@ -28,19 +28,21 @@ public class ItemBudgetProjection extends Item implements Serializable {
 			@JsonbProperty("line_discount") BigDecimal lineDiscount,
 			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("product_code") String productCode,
 			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("quantity") int quantity,
-			@JsonbProperty("total_price") BigDecimal totalValue, @JsonbProperty("st_value") BigDecimal stValue) {
+			@JsonbProperty("total_price") BigDecimal totalValue, @JsonbProperty("st_value") BigDecimal stValue,
+			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
+			@JsonbProperty("multiple") int multiple) {
 		BigDecimal quantityBgDecimal = new BigDecimal(quantity);
 
 		ItemValue value = ItemValueBuilder.getInstance().withGlobalDiscount(BigDecimal.ZERO)
 				.withLineDiscount(lineDiscount).withQuantity(quantity).withUnitGrossValue(grossValue)
 				.withUnitStValue(stValue.divide(quantityBgDecimal)).withTotalValue(totalValue).withUnitValue(unitValue)
-				.build();
+				.withMultiple(multiple).build();
 
 		Product product = ProductBuilder.getInstance().withUnitGrossValue(value.getUnitGrossValueWithoutDiscount())
 				.withCommercialCode(commercialCode).withCode(productCode)
 				.withUnitValue(value.getUnitValueWithoutDiscount()).withQuantity(1)
 				.withUnitStValue(value.getUnitStValueWithoutDiscount()).withCommercialCode(commercialCode)
-				.withCode(productCode).build();
+				.withCode(productCode).withAcronymLine(acronymLine).withLine(line).build();
 
 		return new ItemBudgetProjection(product, value);
 

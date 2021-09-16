@@ -20,7 +20,6 @@ import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;
@@ -69,7 +68,7 @@ public class NewOrderController implements Serializable {
 		FacesUtils.ajaxUpdate("successPersisted");
 	}
 
-	public void handleItemImportReturn(SelectEvent<Budget> event) {
+	public void handleItemImportReturn(SelectEvent<Order> event) {
 		this.orderHelper.merge(order, event.getObject());
 		FacesUtils.ajaxUpdate("formItems:dtItems", "frmTotals");
 	}
