@@ -142,7 +142,7 @@ public class Order {
 		this.createdAt = createdAt;
 	}
 
-	public boolean removeItems(List<Item> originalItems) {
-		return originalItems.removeAll(originalItems);
+	public boolean removeItems(List<Item> itemsToCompareAndRemove) {
+		return items.removeAll(itemsToCompareAndRemove);
 	}
 }

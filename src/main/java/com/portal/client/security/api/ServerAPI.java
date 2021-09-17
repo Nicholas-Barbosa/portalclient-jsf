@@ -1,7 +1,8 @@
 package com.portal.client.security.api;
 
 import java.io.Serializable;
-import java.util.Arrays;
+
+import com.portal.client.security.user.User;
 
 public class ServerAPI implements Serializable {
 
@@ -9,32 +10,21 @@ public class ServerAPI implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -5239012235740247278L;
-	private final String username;
-	private final char[] password;
+
 	private final String baseURL;
 	private final String loginEndpoint;
 	private String token;
 	private final String tokenPrefix;
-	
+	private final User userData;
 
-	public ServerAPI(String username, char[] password, String basePath, String loginEndpoint, String token,
-			String tokenPrefix) {
+	public ServerAPI(User user, String basePath, String loginEndpoint, String token, String tokenPrefix) {
 		super();
-		this.username = username;
-		this.password = password;
+		this.userData = user;
 		this.baseURL = basePath;
 		this.loginEndpoint = loginEndpoint;
 		this.token = token;
 		this.tokenPrefix = tokenPrefix;
-		
-	}
 
-	public String getUsername() {
-		return username;
-	}
-
-	public char[] getPassword() {
-		return password;
 	}
 
 	public String getBasePath() {
@@ -53,11 +43,9 @@ public class ServerAPI implements Serializable {
 		return token;
 	}
 
-	@Override
-	public String toString() {
-		return "ServerAPI [username=" + username + ", password=" + Arrays.toString(password) + ", baseURL=" + baseURL
-				+ ", loginEndpoint=" + loginEndpoint + ", token=" + token + ", tokenPrefix=" + tokenPrefix + "]";
+	public User getUserData() {
+		return userData;
 	}
-	
-	
+
+
 }

@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.user.RepresentativeUser;
 
 @ApplicationScoped
 public class OrcamentoAPIHelper implements Serializable, APIHelper {
@@ -63,6 +64,17 @@ public class OrcamentoAPIHelper implements Serializable, APIHelper {
 	public String getBasePath() {
 		// TODO Auto-generated method stub
 		return orcamentoAPI.getBasePath();
+	}
+
+	@Override
+	public RepresentativeUser getUser() {
+		// TODO Auto-generated method stub
+		return (RepresentativeUser) orcamentoAPI.getUserData();
+	}
+
+	@Override
+	public boolean isUserDataComplete() {
+		return apiManager.isUserDataComplete(orcamentoAPIKey);
 	}
 
 }

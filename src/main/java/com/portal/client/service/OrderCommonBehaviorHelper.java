@@ -41,5 +41,5 @@ public interface OrderCommonBehaviorHelper {
 
 	void lineDiscount(Order order, ItemLineDiscountForm form);
 
-	void removeItems(Order order, List<Item> originalItems);
+	void removeItems(Order order, List<Item> itemsToCompareAndRemove);
 }

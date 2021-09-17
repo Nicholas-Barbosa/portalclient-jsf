@@ -1,6 +1,7 @@
 package com.portal.client.repository;
 
 import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.user.User;
 
 public interface APIHelper {
 
@@ -15,4 +16,8 @@ public interface APIHelper {
 	ServerAPI getSourceAPI();
 
 	String getSourceAPIKey();
+	
+	User getUser();
+	
+	boolean isUserDataComplete();
 }

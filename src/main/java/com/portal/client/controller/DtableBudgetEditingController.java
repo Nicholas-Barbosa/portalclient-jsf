@@ -30,7 +30,7 @@ public class DtableBudgetEditingController implements Serializable {
 	}
 
 	public void deleteItems(Order order) {
-		helper.removeItems(order, order.getItems());
+		helper.removeItems(order, items);
 		items.clear();
 		FacesUtils.info(null, "Itens removidos", null, "growl");
 	}

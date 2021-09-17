@@ -87,8 +87,8 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	}
 
 	@Override
-	public void removeItems(Order order, List<Item> originalItems) {
-		if(order.removeItems(originalItems)) {
+	public void removeItems(Order order, List<Item> itemsToCompareAndRemove) {
+		if(order.removeItems(itemsToCompareAndRemove)) {
 			calculateTotals(order);
 		}
 		

@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +25,6 @@ public class APIManager implements Serializable {
 	 */
 	private static final long serialVersionUID = 6271296356737609480L;
 
-	private String name;
 	private final Map<String, ServerAPI> authenticatedServices = new ConcurrentHashMap<>();
 
 	private final Logger logger = LoggerFactory.getLogger(APIManager.class);
@@ -67,24 +64,6 @@ public class APIManager implements Serializable {
 		return authenticatedServices.containsKey(key);
 	}
 
-	/**
-	 * Set the global name for the session user.
-	 * 
-	 * @param name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Get the name of global user.
-	 * 
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
-
 	public boolean isAuthenticated() {
 		return !authenticatedServices.isEmpty();
 	}
@@ -95,5 +74,15 @@ public class APIManager implements Serializable {
 
 	public String buildEndpoint(ServerAPI serverAPI, String endpoint) {
 		return new StringBuilder(serverAPI.getBasePath()).append("/" + endpoint).toString();
+	}
+
+	/**
+	 * return if User object is null. Does not necessarily mean that there is not a
+	 * user authenticated in the api.
+	 * 
+	 * @return
+	 */
+	public boolean isUserDataComplete(String api) {
+		return authenticatedServices.get(api).getUserData().isDataComplete();
 	}
 }

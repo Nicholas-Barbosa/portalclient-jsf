@@ -14,6 +14,8 @@ import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.resources.ConfigPropertyResolver;
 import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.user.User;
+import com.portal.client.security.user.builder.RepresentativeUserBuilder;
 
 public class MainAuthenticationRepository implements AuthenticationRepository, Serializable {
 
@@ -50,8 +52,10 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 
 		LoginGssResponseDTO doPost = restClient.post(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
 				MediaType.APPLICATION_JSON);
-		ServerAPI server = new ServerAPI(loginForm.getUsername(), loginForm.getPassword().toCharArray(),
-				currentEniviromentUrl, "v1/token", doPost.getAccessToken(), "Bearer");
+
+		User user = RepresentativeUserBuilder.getInstance().withUsername(loginForm.getUsername())
+				.withPassword(loginForm.getPassword().toCharArray()).build();
+		ServerAPI server = new ServerAPI(user, currentEniviromentUrl, "v1/token", doPost.getAccessToken(), "Bearer");
 
 		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", server);
 		loginForm = null;

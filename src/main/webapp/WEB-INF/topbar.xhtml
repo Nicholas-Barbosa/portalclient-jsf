@@ -23,13 +23,31 @@
 						</div>
 					</a>
 				</div>
+
 				<ul class="layout-topbar-actions">
+					<li><i class="pi pi-spin pi-spinner" style="font-size: 3rem"
+						id="loadingUser"></i></li>
+					<li class="topbar-item user-profile"><a href="#"> <p:avatar
+								icon="pi pi-user" styleClass="p-mr-2" size="xlarge"
+								shape="circle" id="avatar"/>
+					</a>
+						<ul>
+							<li><a href="#"> <i class="pi pi-user"></i> <span><p:outputLabel
+											value="#{userTopBarController.user.name}" id="user-label" />
+								</span>
+							</a></li>
+							
+						</ul></li>
+
 					<li class="topbar-item notifications"><a href="#"> <i
 							class="topbar-icon pi pi-power-off" onclick="logout();"> </i>
 					</a></li>
 				</ul>
 				<p:remoteCommand action="#{session.invalidate}" process="@this"
 					name="logout" oncomplete="window.location='/portal/login.xhtml'" />
+				<p:remoteCommand action="#{userTopBarController.loadUserData}"
+					autoRun="true" async="true" onstart="$('#loadingUser').show();$('#avatar').hide();"
+					oncomplete="$('#loadingUser').hide();$('#avatar').show();" update="user-label" />
 			</div>
 		</div>
 
