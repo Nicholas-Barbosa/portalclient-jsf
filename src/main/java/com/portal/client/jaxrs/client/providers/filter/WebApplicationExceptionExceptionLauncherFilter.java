@@ -25,12 +25,9 @@ public class WebApplicationExceptionExceptionLauncherFilter implements ClientRes
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
-		System.out.println("Got 200 from " + requestContext.getUri());
 		switch (responseContext.getStatus()) {
 		case 404:
-			System.out.println("GOT 404 from " + requestContext.getUri());
 			String responseTxt = readResponse(responseContext.getEntityStream());
-			System.out.println("response txt " + responseTxt);
 			Response responseNotFound = Response.status(404).entity(responseTxt).build();
 			throw new NotFoundException(responseNotFound);
 		case 500:
@@ -38,7 +35,10 @@ public class WebApplicationExceptionExceptionLauncherFilter implements ClientRes
 		case 403:
 			throw new ForbiddenException();
 		case 401:
-			throw new NotAuthorizedException(Response.status(401).build());
+			System.out.println("--headers--");
+			requestContext.getHeaders().forEach((k, v) -> System.out.println(k + ":" + v));
+			throw new NotAuthorizedException(
+					Response.status(401).entity(readResponse(responseContext.getEntityStream())).build());
 		case 409:
 			Response response = Response.status(409).entity(readResponse(responseContext.getEntityStream())).build();
 			throw new ClientErrorException(response);

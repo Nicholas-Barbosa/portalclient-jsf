@@ -35,7 +35,7 @@ public class FacesFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		requestTracker.addRequest(httpRequest);
+//		requestTracker.addRequest(httpRequest);
 		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			String loginUrl = String.format("%s/%s", httpRequest.getContextPath(), "login.xhtml");

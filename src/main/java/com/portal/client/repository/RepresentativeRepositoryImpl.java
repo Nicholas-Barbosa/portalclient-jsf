@@ -6,8 +6,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
-import com.portal.client.dto.RepresentativeAddtionalDataDTO;
-import com.portal.client.dto.RepresentativeAddtionalDataWrapperDTO;
+import com.portal.client.dto.RepresentativeData;
+import com.portal.client.dto.WrapperRepresentativeData;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.security.user.RepresentativeUser;
 
@@ -28,9 +28,9 @@ public class RepresentativeRepositoryImpl implements RepresentativeRepository, S
 	@Override
 	public void getAdditionalData() {
 		// TODO Auto-generated method stub
-		RepresentativeAddtionalDataDTO data = restClient.get(orcamentoAPI.buildEndpoint("representative"),
-				orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), RepresentativeAddtionalDataWrapperDTO.class,
-				null, null, MediaType.APPLICATION_JSON).getData();
+		RepresentativeData data = restClient.get(orcamentoAPI.buildEndpoint("representative"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), WrapperRepresentativeData.class, null, null, MediaType.APPLICATION_JSON)
+				.getData();
 		RepresentativeUser user = (RepresentativeUser) orcamentoAPI.getUser();
 		user.setCode(data.getCode());
 		user.setFantasyName(data.getFantasyname());

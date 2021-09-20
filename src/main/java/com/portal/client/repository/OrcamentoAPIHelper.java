@@ -2,14 +2,14 @@ package com.portal.client.repository;
 
 import java.io.Serializable;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
 import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.security.user.RepresentativeUser;
 
-@ApplicationScoped
+@SessionScoped
 public class OrcamentoAPIHelper implements Serializable, APIHelper {
 
 	/**

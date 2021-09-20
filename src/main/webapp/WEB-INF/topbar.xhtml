@@ -27,8 +27,8 @@
 				<ul class="layout-topbar-actions">
 					<li><i class="pi pi-spin pi-spinner" style="font-size: 3rem"
 						id="loadingUser"></i></li>
-					<li class="topbar-item user-profile"><a href="#"> <p:avatar
-								icon="pi pi-user" styleClass="p-mr-2" size="xlarge"
+					<li class="topbar-item"><a href="#">  <p:avatar
+								icon="pi pi-user" styleClass="p-mr-2" size="large"
 								shape="circle" id="avatar"/>
 					</a>
 						<ul>
@@ -36,12 +36,15 @@
 											value="#{userTopBarController.user.name}" id="user-label" />
 								</span>
 							</a></li>
-							
+							<li onclick="logout()"><a href="#"> <i
+							class="topbar-icon pi pi-power-off"> </i><span>Sair</span>
+					</a></li>
 						</ul></li>
 
 					<li class="topbar-item notifications"><a href="#"> <i
 							class="topbar-icon pi pi-power-off" onclick="logout();"> </i>
 					</a></li>
+					
 				</ul>
 				<p:remoteCommand action="#{session.invalidate}" process="@this"
 					name="logout" oncomplete="window.location='/portal/login.xhtml'" />

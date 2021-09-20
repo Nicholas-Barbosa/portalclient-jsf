@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.helper.OrderStringDateConverter;
+import com.portal.client.dto.helper.StringToDateParser;
 import com.portal.client.vo.Budget;
 
 public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
@@ -16,7 +16,7 @@ public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
 			@JsonbProperty("creation_date") String createdAt, @JsonbProperty("st_value") BigDecimal stValue,
 			@JsonbProperty("liquid_order_value") BigDecimal liquidOrderValue) {
 		super.withCustomerCode(customerCode).withCustomerStore("store").withId(budgetCode).withStValue(stValue)
-				.withLiquidValue(liquidOrderValue).withCreatedAt(OrderStringDateConverter.convert(createdAt));
+				.withLiquidValue(liquidOrderValue).withCreatedAt(StringToDateParser.convert(createdAt));
 	}
 
 	@Override

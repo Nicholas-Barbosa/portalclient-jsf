@@ -24,7 +24,6 @@ public class ItemBudgetEstimatedResultBuilder extends ItemBuilder {
 			@JsonbProperty("available_stock") int stock, @JsonbProperty("st_value") BigDecimal totalStValue,
 			@JsonbProperty("description") String description, @JsonbProperty("multiple") int multiple,
 			@JsonbProperty("product_type") String acronymLine, @JsonbProperty("description_product_type") String line) {
-		System.out.println("Unit value " + unitGross);
 		Product product = ProductBuilder.getInstance().withCode(productCode).withCommercialCode(commercialCode)
 				.withUnitGrossValue(unitGross).withUnitValue(unitValue)
 				.withUnitStValue(totalStValue.divide(new BigDecimal(quantity), RoundingMode.HALF_UP))

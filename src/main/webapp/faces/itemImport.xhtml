@@ -20,6 +20,7 @@
 			href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
 			integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
 			crossorigin="anonymous"></link>
+		<h:outputScript name="dataTable.js" library="javascript" />
 	</f:facet>
 	<title>Importar itens</title>
 	<style>
@@ -170,7 +171,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 	<p:dialog header="Itens não encontrados" modal="true"
 		widgetVar="dlgItemsNotFound" responsive="true"
 		style="max-width: 20vw;max-height:80vh"
-		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsNotFound').clearFilters();">
+		onShow="editScrollBodyMaxHeight('dtItemsNotFound','35vh');">
 		<p:outputPanel deferredMode="visible" deferred="true">
 			<h:form prependId="false">
 				<p:dataTable id="dtItemsNotFound" widgetVar="dtItemsNotFound"
@@ -210,7 +211,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 	</p:dialog>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
-	<h:outputScript name="dataTable.js" library="javascript" />
+
 </h:body>
 </html>
 

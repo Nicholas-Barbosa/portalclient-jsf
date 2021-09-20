@@ -42,6 +42,8 @@ public class ProcessingExceptionFacesMessageHelper {
 					resourceBundleService.getMessage("timeout_ler_response_detalhes"));
 		} else if (cause instanceof InternalServerErrorException) {
 			FacesUtils.error(clientId, resourceBundleService.getMessage("erro_servidor_destino"), null);
+		}else {
+			throw exception;
 		}
 	}
 

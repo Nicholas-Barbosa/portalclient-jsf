@@ -1,6 +1,7 @@
 package com.portal.client.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -11,6 +12,7 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.helper.StringToDateParser;
 
 public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 
@@ -42,7 +44,7 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 		private BigDecimal sale;
 		private String docNumber;
 		private String customerName;
-		private LocalDateTime dueDate;
+		private LocalDate dueDate;
 		private String situation;
 
 		@JsonbCreator
@@ -54,7 +56,7 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 			this.docNumber = docNumber;
 			this.customerName = customerName;
 			this.situation = situation;
-			parseToDate(date);
+			this.dueDate =  StringToDateParser.convert(date);
 		}
 
 		public BigDecimal getSale() {
@@ -69,7 +71,7 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 			return customerName;
 		}
 
-		public LocalDateTime getDueDate() {
+		public LocalDate getDueDate() {
 			return dueDate;
 		}
 
@@ -77,11 +79,7 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 			return situation;
 		}
 
-		private void parseToDate(String date) {
-			int lastIndexOf = date.lastIndexOf("-");
-			this.dueDate = LocalDateTime.parse(date.substring(0, lastIndexOf),
-					DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
-		}
+	
 
 		@Override
 		public int hashCode() {

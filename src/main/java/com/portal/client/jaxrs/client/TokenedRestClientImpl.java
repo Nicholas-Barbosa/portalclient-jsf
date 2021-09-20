@@ -6,12 +6,8 @@ import java.util.concurrent.Future;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-
-import com.portal.client.jaxrs.client.providers.filter.TokenHeaderSupport;
 
 @ApplicationScoped
 public class TokenedRestClientImpl implements TokenedRestClient {
@@ -27,12 +23,12 @@ public class TokenedRestClientImpl implements TokenedRestClient {
 
 	public <T> T get(String uri, String token, String tokenPrefix, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) {
-		return clientRequest.request(c -> {
-			WebTarget resource = getWebTarget(c, uri, queryParams, pathParams, token, tokenPrefix);
+		return clientRequest.request((c, resource) -> {
 			Response rawResponse = resource.request().accept(media).get();
 			T t = rawResponse.readEntity(responseType);
 			return t;
-		});
+		}, WebTargetDataBuilder.getInstance().withPathParams(pathParams).withQueryParams(queryParams).withToken(token)
+				.withPrefixToken(tokenPrefix).withUri(uri).build());
 
 	}
 
@@ -44,14 +40,14 @@ public class TokenedRestClientImpl implements TokenedRestClient {
 
 	public <T, E> T post(String uri, String token, String tokenPrefix, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, E requestBody, String mediaType) {
-		return clientRequest.request(c -> {
-			WebTarget resource = getWebTarget(c, uri, queryParams, pathParams, token, tokenPrefix);
+		return clientRequest.request((c, resource) -> {
 
 			Entity<E> entityRequest = requestBody != null ? Entity.entity(requestBody, mediaType)
 					: Entity.entity(null, mediaType);
 
 			return resource.request().accept(mediaType).post(entityRequest, responseType);
-		});
+		}, WebTargetDataBuilder.getInstance().withPathParams(pathParams).withQueryParams(queryParams).withToken(token)
+				.withPrefixToken(tokenPrefix).withUri(uri).build());
 
 	}
 
@@ -64,37 +60,22 @@ public class TokenedRestClientImpl implements TokenedRestClient {
 	@Override
 	public <T> Future<T> getAsync(String uri, String token, String tokenPrefix, Class<T> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, String media) throws ExecutionException {
-		return clientRequest.requestAsync(c -> {
-			WebTarget resource = getWebTarget(c, uri, queryParams, pathParams, token, tokenPrefix);
-
+		return clientRequest.requestAsync((c, resource) -> {
 			return resource.request().accept(media).async().get(responseType);
-		});
+		}, WebTargetDataBuilder.getInstance().withPathParams(pathParams).withQueryParams(queryParams).withToken(token)
+				.withPrefixToken(tokenPrefix).withUri(uri).build());
 
-	}
-
-	private WebTarget getWebTarget(Client client, String url, Map<String, Object> queryParams,
-			Map<String, Object> pathParams, String token, String tokenPrefix) {
-		WebTarget resource = client.target(url);
-		if (pathParams != null && !pathParams.isEmpty()) {
-			resource = resource.resolveTemplatesFromEncoded(pathParams);
-		}
-		if (queryParams != null && !queryParams.isEmpty()) {
-			for (String key : queryParams.keySet()) {
-				resource = resource.queryParam(key, queryParams.get(key));
-			}
-		}
-		return resource.register(new TokenHeaderSupport(token, tokenPrefix));
 	}
 
 	@Override
 	public <RESP, RQS> RESP put(String uri, String token, String tokenPrefix, Class<RESP> responseType,
 			Map<String, Object> queryParams, Map<String, Object> pathParams, RQS requestBody, String mediaType) {
-		return clientRequest.request(c -> {
-			WebTarget resource = getWebTarget(c, uri, queryParams, pathParams, token, tokenPrefix);
+		return clientRequest.request((c, resource) -> {
 			Entity<RQS> entityRequest = requestBody != null ? Entity.entity(requestBody, mediaType)
 					: Entity.entity(null, mediaType);
 			return resource.request().accept(mediaType).put(entityRequest, responseType);
-		});
+		}, WebTargetDataBuilder.getInstance().withPathParams(pathParams).withQueryParams(queryParams).withToken(token)
+				.withPrefixToken(tokenPrefix).withUri(uri).build());
 
 	}
 }

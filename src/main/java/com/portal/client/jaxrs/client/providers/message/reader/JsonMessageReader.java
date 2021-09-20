@@ -19,6 +19,7 @@ public class JsonMessageReader implements MessageBodyReader<Object> {
 
 	private final Jsonb jsonReader;
 
+
 	public JsonMessageReader() {
 		super();
 		this.jsonReader = JsonbBuilder.create();
@@ -37,7 +38,6 @@ public class JsonMessageReader implements MessageBodyReader<Object> {
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);
 		}
-
 	}
 
 }

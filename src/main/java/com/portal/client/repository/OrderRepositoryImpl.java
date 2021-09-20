@@ -27,7 +27,7 @@ public class OrderRepositoryImpl implements OrderRepository {
 		super();
 		this.restClient = restClient;
 		this.orcamentoAPI = orcamentoAPI;
-		this.basePath = properties.getProperty("neworder_endpoint");
+		this.basePath = properties.getProperty("neworder_endpoint_external");
 	}
 
 	@Override

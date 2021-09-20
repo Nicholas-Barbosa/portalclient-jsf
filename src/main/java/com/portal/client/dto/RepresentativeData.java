@@ -3,14 +3,13 @@ package com.portal.client.dto;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class RepresentativeAddtionalDataDTO {
+public class RepresentativeData {
 
 	private String name, fantasyname, email, code;
 
 	@JsonbCreator
-	public RepresentativeAddtionalDataDTO(@JsonbProperty("name") String name,
-			@JsonbProperty("fantasy_name") String fantasyname, @JsonbProperty("email") String email,
-			@JsonbProperty("code") String code) {
+	public RepresentativeData(@JsonbProperty("name") String name, @JsonbProperty("fantasy_name") String fantasyname,
+			@JsonbProperty("email") String email, @JsonbProperty("code") String code) {
 		super();
 		this.name = name;
 		this.fantasyname = fantasyname;
@@ -32,6 +31,6 @@ public class RepresentativeAddtionalDataDTO {
 
 	public String getCode() {
 		return code;
-	}
 
+	}
 }

@@ -4,6 +4,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import com.portal.client.exception.IllegalResponseStatusException;
 import com.portal.client.jaxrs.client.aop.IllegalResponsePointCutJoinPoint;
 
 @Interceptor
@@ -15,10 +16,13 @@ public class IllegalResponseAspect {
 		try {
 			return joinPoint.proceed();
 		} catch (Exception e) {
-			if (e instanceof IllegalStateException) {
+			System.out.println("exception! "+e);
+			if (e.getCause() instanceof IllegalResponseStatusException) {
 				return joinPoint.proceed();
 			}
 			throw e;
+		}finally {
+			System.out.println("after target!");
 		}
 	}
 }

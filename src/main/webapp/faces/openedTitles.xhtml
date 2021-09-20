@@ -66,8 +66,8 @@
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
 								<h:outputText value="#{title.dueDate}">
-									<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
-										type="localDateTime" />
+									<f:convertDateTime locale="pt_BR" dateStyle="full"
+										type="localDate" />
 								</h:outputText>
 							</p:column>
 							<p:column
