@@ -115,82 +115,87 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 	<p:dialog header="Valores obtidos a partir da examinação da planilha"
 		footer="Verifique os valores" modal="true" widgetVar="dlgResult"
-		responsive="true" style="max-width: 30vw;max-height:80vh"
-		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();">
-		<p:outputPanel deferredMode="visible" deferred="true" id="readResult">
-			<h:form prependId="false">
-				<p:dataTable id="dtItemsResult" widgetVar="dtItemsResult"
-					value="#{itemImportController.itemXlsxProjection}" var="item"
-					editable="true" editMode="cell" reflow="true" scrollable="true"
-					filterDelay="75" paginator="true" paginatorPosition="bottom"
-					paginatorAlwaysVisible="false" rows="10">
-					<p:ajax event="cellEdit"
-						listener="#{itemImportController.onCellEdit}" update="growl" />
-					<p:column headerText="Produto" filterBy="#{item.code}"
-						id="columnCode">
-						<p:cellEditor>
-							<f:facet name="input">
-								<p:inputText value="#{item.code}" />
-							</f:facet>
-							<f:facet name="output">
-								<h:outputText value="#{item.code}" />
-							</f:facet>
-						</p:cellEditor>
+		responsive="true"
+		onShow="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();"
+		blockScroll="true">
+		<div style="max-width: 30vw; max-height: 80vh; overflow: auto;">
+			<p:outputPanel deferredMode="visible" deferred="true" id="readResult">
+				<h:form prependId="false">
+					<p:dataTable id="dtItemsResult" widgetVar="dtItemsResult"
+						value="#{itemImportController.itemXlsxProjection}" var="item"
+						editable="true" editMode="cell" reflow="true" scrollable="true"
+						filterDelay="75" paginator="true" paginatorPosition="bottom"
+						paginatorAlwaysVisible="false" rows="10">
+						<p:ajax event="cellEdit"
+							listener="#{itemImportController.onCellEdit}" update="growl" />
+						<p:column headerText="Produto" filterBy="#{item.code}"
+							id="columnCode">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:inputText value="#{item.code}" />
+								</f:facet>
+								<f:facet name="output">
+									<h:outputText value="#{item.code}" />
+								</f:facet>
+							</p:cellEditor>
 
-					</p:column>
-					<p:column headerText="Quantidade" id="columnQuantity">
-						<p:cellEditor>
-							<f:facet name="input">
-								<p:spinner value="#{item.quantity}" min="1" />
-							</f:facet>
-							<f:facet name="output">
-								<h:outputText value="#{item.quantity}" />
-							</f:facet>
-						</p:cellEditor>
-					</p:column>
-					<p:column>
-						<p:commandButton icon="pi pi-times"
-							styleClass="rounded-button ui-button-danger"
-							action="#{itemImportController.removeItemXlsxProjection(item)}"
-							process="@this" update="dtItemsResult"
-							oncomplete="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();" />
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:outputPanel>
-		<f:facet name="footer">
-			<p:commandButton value="Cancelar" icon="pi pi-arrow-left"
-				iconPos="left" styleClass="ui-button-danger"
-				onclick="PF('dlgResult').hide()"
-				action="#{itemImportController.cancelExa}" process="@this" />
-			<p:button value="Próximo" icon="pi pi-arrow-right" iconPos="right"
-				onclick="discoverItems()" />
-		</f:facet>
+						</p:column>
+						<p:column headerText="Quantidade" id="columnQuantity">
+							<p:cellEditor>
+								<f:facet name="input">
+									<p:spinner value="#{item.quantity}" min="1" />
+								</f:facet>
+								<f:facet name="output">
+									<h:outputText value="#{item.quantity}" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column>
+							<p:commandButton icon="pi pi-times"
+								styleClass="rounded-button ui-button-danger"
+								action="#{itemImportController.removeItemXlsxProjection(item)}"
+								process="@this" update="dtItemsResult"
+								oncomplete="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:outputPanel>
+			<f:facet name="footer">
+				<p:commandButton value="Cancelar" icon="pi pi-arrow-left"
+					iconPos="left" styleClass="ui-button-danger"
+					onclick="PF('dlgResult').hide()"
+					action="#{itemImportController.cancelExa}" process="@this" />
+				<p:button value="Próximo" icon="pi pi-arrow-right" iconPos="right"
+					onclick="discoverItems()" />
+			</f:facet>
+		</div>
 	</p:dialog>
 
 	<p:dialog header="Itens não encontrados" modal="true"
 		widgetVar="dlgItemsNotFound" responsive="true"
-		style="max-width: 20vw;max-height:80vh"
-		onShow="editScrollBodyMaxHeight('dtItemsNotFound','35vh');">
-		<p:outputPanel deferredMode="visible" deferred="true">
-			<h:form prependId="false">
-				<p:dataTable id="dtItemsNotFound" widgetVar="dtItemsNotFound"
-					value="#{itemImportController.itemsNotFound}" var="item"
-					reflow="true" scrollable="true" filterDelay="75">
-					<p:column headerText="Item" id="columnCode">
-						<h:outputText value="#{item.itemIdentity}" />
-					</p:column>
-				</p:dataTable>
-			</h:form>
-		</p:outputPanel>
-		<f:facet name="footer">
-			<p:commandButton value="Cancelar" icon="pi pi-arrow-left"
-				iconPos="left" styleClass="ui-button-danger"
-				onclick="PF('dlgItemsNotFound').hide()"
-				action="#{itemImportController.cancelExa}" process="@this" />
-			<p:button value="Prosseguir e ignorar estes itens"
-				icon="pi pi-arrow-right" iconPos="right" onclick="discoverItems()" />
-		</f:facet>
+		onShow="editScrollBodyMaxHeight('dtItemsNotFound','35vh');"
+		blockScroll="true">
+		<div style="max-width: 20vw; max-height: 80vh; overflow: auto">
+			<p:outputPanel deferredMode="visible" deferred="true">
+				<h:form prependId="false">
+					<p:dataTable id="dtItemsNotFound" widgetVar="dtItemsNotFound"
+						value="#{itemImportController.itemsNotFound}" var="item"
+						reflow="true" scrollable="true" filterDelay="75">
+						<p:column headerText="Item" id="columnCode">
+							<h:outputText value="#{item.itemIdentity}" />
+						</p:column>
+					</p:dataTable>
+				</h:form>
+			</p:outputPanel>
+			<f:facet name="footer">
+				<p:commandButton value="Cancelar" icon="pi pi-arrow-left"
+					iconPos="left" styleClass="ui-button-danger"
+					onclick="PF('dlgItemsNotFound').hide()"
+					action="#{itemImportController.cancelExa}" process="@this" />
+				<p:button value="Prosseguir e ignorar estes itens"
+					icon="pi pi-arrow-right" iconPos="right" onclick="discoverItems()" />
+			</f:facet>
+		</div>
 	</p:dialog>
 
 	<h:form>
