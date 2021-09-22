@@ -11,7 +11,7 @@ public class ItemBudgetToUpdateJsonSerializable extends ItemBudgetToSaveJsonSeri
 	public static ItemBudgetToUpdateJsonSerializable of(Item item) {
 		return new ItemBudgetToUpdateJsonSerializable(item);
 	}
-	
+
 	public ItemBudgetToUpdateJsonSerializable(Item item) {
 		super(item);
 		// TODO Auto-generated constructor stub
