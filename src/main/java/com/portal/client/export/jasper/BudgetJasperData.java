@@ -11,7 +11,7 @@ import com.portal.client.vo.Item;
 import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Order;
 
-public class BudgetJasper implements Serializable {
+public class BudgetJasperData implements Serializable {
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public class BudgetJasper implements Serializable {
 
 	private String message;
 
-	public BudgetJasper(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
+	public BudgetJasperData(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
 			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items, String message) {
 		super();
 		this.liquidValue = liquidValue;
@@ -41,7 +41,7 @@ public class BudgetJasper implements Serializable {
 		this.message = message;
 	}
 
-	public BudgetJasper(Order order) {
+	public BudgetJasperData(Order order) {
 		this.liquidValue = order.getLiquidValue();
 		this.grossValue = order.getGrossValue();
 		this.stTotal = order.getStValue();

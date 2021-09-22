@@ -14,6 +14,7 @@ import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.ui.lazy.datamodel.OrderLazyDataModel;
+import com.portal.client.util.jsf.FacesUtils;
 
 @ViewScoped
 @Named
@@ -33,8 +34,11 @@ public class OrdersController implements Serializable {
 	}
 
 	public void getOrders(int page) {
-		OrderSemiProjectionPage wrapper = orderService.findAll(page, pageSize);
-		LazyPopulatorUtils.populate(orders, wrapper);
+		orderService.findAll(page, pageSize).ifPresentOrElse(o -> {
+			OrderSemiProjectionPage wrapper = o;
+			LazyPopulatorUtils.populate(orders, wrapper);
+		}, () -> FacesUtils.error(null, "Não há pedidos", "Não há pedidos para o representante", "growl"));
+
 	}
 
 	public void onPage(PageEvent page) {

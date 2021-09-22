@@ -6,23 +6,23 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import com.portal.client.dto.OrderExporterForm;
+import com.portal.client.export.BudgetExporter;
 import com.portal.client.export.OrderExportType;
-import com.portal.client.export.OrderExporter;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.vo.Order;
+import com.portal.client.vo.Budget;
 
 @RequestScoped
 @Named
-public class OrderExportController {
+public class BudgetExporterController {
 
 	private boolean order;
-	private Order orderToExport;
+	private Budget budgetToExport;
 	private HttpSession httpSession;
-	private OrderExporter orderExporter;
+	private BudgetExporter orderExporter;
 	private OrderExporterForm exportForm;
 
 	@Inject
-	public OrderExportController(HttpSession httpSession, OrderExporter orderExporter) {
+	public BudgetExporterController(HttpSession httpSession, BudgetExporter orderExporter) {
 		super();
 		this.httpSession = httpSession;
 		this.orderExporter = orderExporter;
@@ -30,17 +30,18 @@ public class OrderExportController {
 	}
 
 	public void checkOrderToExport() {
-		
+
 	}
+
 	public void export() {
-		orderToExport = (Order) httpSession.getAttribute("order-toexport");
-		byte[] streams = orderExporter.export(orderToExport, exportForm.getType());
+		budgetToExport = (Budget) httpSession.getAttribute("budget-toexport");
+		byte[] streams = orderExporter.export(budgetToExport, exportForm.getType());
 		exportForm.checkFileExtension();
 		FacesUtils.prepareResponseForDownloadOfStreams(getFileName(), streams, getFileType().getType());
 	}
 
 	public void close() {
-		httpSession.removeAttribute("order-toexport");
+		httpSession.removeAttribute("budget-toexport");
 	}
 
 	public boolean isOrder() {

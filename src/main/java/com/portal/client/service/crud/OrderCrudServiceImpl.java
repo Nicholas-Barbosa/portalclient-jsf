@@ -1,5 +1,7 @@
 package com.portal.client.service.crud;
 
+import java.util.Optional;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -20,7 +22,7 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	}
 
 	@Override
-	public OrderSemiProjectionPage findAll(int page, int pageSize) {
+	public Optional<OrderSemiProjectionPage> findAll(int page, int pageSize) {
 		return repository.findAll(page, pageSize);
 	}
 

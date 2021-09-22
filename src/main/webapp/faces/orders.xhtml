@@ -10,14 +10,14 @@
 		<h:outputScript name="dataTable.js" library="javascript" />
 	</ui:define>
 
-	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamentos')}</ui:define>
+	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('pedidos')}</ui:define>
 
 	<ui:define name="viewname">
 		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
+		<li>#{resourceBundleServiceImpl.getMessage('pedido')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/budgets">#{resourceBundleServiceImpl.getMessage('orcamentos')}</p:link>
+		<li><p:link outcome="/faces/budgets">#{resourceBundleServiceImpl.getMessage('pedidos')}</p:link>
 		</li>
 	</ui:define>
 

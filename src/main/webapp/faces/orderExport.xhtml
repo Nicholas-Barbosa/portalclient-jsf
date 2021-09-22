@@ -36,7 +36,7 @@
 					<p:outputLabel for="fileName"
 						value="#{resourceBundleServiceImpl.getMessage('nome_arquivo')}" />
 					<p:inputText id="fileName"
-						value="#{orderExportController.fileName}" />
+						value="#{budgetExporterController.fileName}" />
 				</div>
 
 				<div class="p-field p-col-12 p-md-6">
@@ -55,7 +55,7 @@
 
 				<div class="demo-container p-p-4">
 					<p:commandButton icon="pi pi-download"
-						action="#{orderExportController.export}" process="@form"
+						action="#{budgetExporterController.export}" process="@form"
 						ajax="false" />
 				</div>
 			</div>

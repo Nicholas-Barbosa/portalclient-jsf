@@ -11,19 +11,19 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.repository.aop.OptionalEmptyRepository;
 import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.vo.Product;
 
 @ApplicationScoped
-public class ProductRepositoryImpl implements ProductRepository, Serializable {
+public class ProductRepositoryImpl extends OptionalEmptyRepository implements ProductRepository, Serializable {
 
 	private static final long serialVersionUID = 4463669170628763803L;
 
@@ -44,15 +44,10 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		pathParmas.put("customerCode", customerCode);
 		pathParmas.put("store", store);
 		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		try {
-			return Optional.of(restClient
-					.get(apiManager.buildEndpoint(server, "products/{code}/client/{customerCode}/store/{store}"),
-							server.getToken(), server.getTokenPrefix(), ProductPage.class, null, pathParmas,
-							MediaType.APPLICATION_JSON)
-					.getProducts().get(0));
-		} catch (NotFoundException e) {
-			return Optional.empty();
-		}
+		return Optional.of(
+				restClient.get(apiManager.buildEndpoint(server, "products/{code}/client/{customerCode}/store/{store}"),
+						server.getToken(), server.getTokenPrefix(), ProductPage.class, null, pathParmas,
+						MediaType.APPLICATION_JSON).getProducts().get(0));
 
 	}
 
@@ -90,14 +85,10 @@ public class ProductRepositoryImpl implements ProductRepository, Serializable {
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", description);
 		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		try {
-			ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(
-					apiManager.buildEndpoint(server, "products"), server.getToken(), server.getTokenPrefix(),
-					ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON);
-			return Optional.of(productPageDto);
-		} catch (NotFoundException e) {
-			return Optional.empty();
-		}
+		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(apiManager.buildEndpoint(server, "products"),
+				server.getToken(), server.getTokenPrefix(), ProductPageDTO.class, queryParams, null,
+				MediaType.APPLICATION_JSON);
+		return Optional.of(productPageDto);
 
 	}
 

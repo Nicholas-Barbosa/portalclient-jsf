@@ -1,4 +1,4 @@
-package com.portal.client.repository;
+package com.portal.client.security.api.helper;
 
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.security.user.User;

@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import com.portal.client.dto.FinancialBondsPage;
 
-public interface FinancialBondsService {
+public interface BillsToReceiveService {
 
 	Optional<FinancialBondsPage> find(int page, int pageSize);
 

@@ -3,13 +3,13 @@ package com.portal.client.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.portal.client.dto.ProspectCustomerOnOrder.SellerType;
+import com.portal.client.security.user.RepresentativeUser.RepresentativeType;
 
 public class ProspectCustomerForm {
 
 	@NotEmpty
 	private String name;
-	private SellerType sellerType;
+	private RepresentativeType sellerType;
 	private String stateAcronym;
 	@NotEmpty
 	private String street;
@@ -40,11 +40,11 @@ public class ProspectCustomerForm {
 		this.name = name;
 	}
 
-	public SellerType getSellerType() {
+	public RepresentativeType getSellerType() {
 		return sellerType;
 	}
 
-	public void setSellerType(SellerType sellerType) {
+	public void setSellerType(RepresentativeType sellerType) {
 		this.sellerType = sellerType;
 	}
 

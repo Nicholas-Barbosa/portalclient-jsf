@@ -9,6 +9,7 @@ import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import com.portal.client.dto.BudgetJasperForm;
 import com.portal.client.export.OrderExportType;
 
 import net.sf.jasperreports.engine.JRParameter;
@@ -34,18 +35,19 @@ public class BudgetReportImpl implements BudgetReport {
 	}
 
 	@Override
-	public byte[] export(BudgetJasper budget, OrderExportType type) {
+	public byte[] export(BudgetJasperForm form, OrderExportType type) {
+		BudgetJasperData data = form.getData();
 		Map<String, Object> params = this.configureLayout();
 		params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
-		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems())); 
+		params.put("itemsCollection", new JRBeanCollectionDataSource(data.getItems()));
 		switch (type) {
 		case PDF:
-			return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
-					budget);
+			return reportService.exportToPdf(getClass().getResourceAsStream("/report/budget.jasper"), params,
+					data);
 
 		case EXCEL:
-			return reportService.exportToExcel(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
-					budget);
+			return reportService.exportToExcel(getClass().getResourceAsStream("/report/budget.jasper"), params,
+					data);
 		default:
 			throw new IllegalArgumentException("Invalid type. Only PDF and EXCEL are supported by this service!");
 		}

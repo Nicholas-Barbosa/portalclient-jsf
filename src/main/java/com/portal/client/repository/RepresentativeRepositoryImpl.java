@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import com.portal.client.dto.RepresentativeData;
 import com.portal.client.dto.WrapperRepresentativeData;
 import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.security.user.RepresentativeUser;
 
 @ApplicationScoped

@@ -5,43 +5,36 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
 
 import com.portal.client.dto.FinancialBondsPage;
-import com.portal.client.repository.FinancialBondsRepository;
+import com.portal.client.repository.BillsToReceiveRepository;
 
 @ApplicationScoped
-public class FinancialBondsServiceImpl implements FinancialBondsService, Serializable {
+public class BillsToReceiveServiceImpl implements BillsToReceiveService, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8498999751949468744L;
 
-	private FinancialBondsRepository repository;
+	private BillsToReceiveRepository repository;
 
 	@Inject
-	public FinancialBondsServiceImpl(FinancialBondsRepository repository) {
+	public BillsToReceiveServiceImpl(BillsToReceiveRepository repository) {
 		super();
 		this.repository = repository;
 	}
 
 	@Override
 	public Optional<FinancialBondsPage> find(int page, int pageSize) {
-		try {
-			return Optional.of(repository.find(page, pageSize));
-		} catch (NotFoundException e) {
-			return Optional.empty();
-		}
+		return repository.find(page, pageSize);
+
 	}
 
 	@Override
 	public Optional<FinancialBondsPage> findByCustomerCodeStore(int page, int pageSize, String code, String store) {
-		try {
-			return Optional.of(repository.findByCustomerCodeStore(page, pageSize, code, store));
-		} catch (NotFoundException e) {
-			return Optional.empty();
-		}
+		return repository.findByCustomerCodeStore(page, pageSize, code, store);
+
 	}
 
 }

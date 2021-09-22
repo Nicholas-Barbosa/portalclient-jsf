@@ -24,6 +24,8 @@ import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.repository.aop.OptionalEmptyRepository;
+import com.portal.client.security.api.helper.OrcamentoAPIHelper;
 import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Customer404Error;
@@ -31,7 +33,7 @@ import com.portal.client.vo.Deseriaized404JsonEstimateEndpoint;
 import com.portal.client.vo.WrapperItem404Error;
 
 @ApplicationScoped
-public class BudgetRepositoryImpl implements BudgetRepository {
+public class BudgetRepositoryImpl extends OptionalEmptyRepository implements BudgetRepository {
 
 	/**
 	 * 
@@ -73,13 +75,10 @@ public class BudgetRepositoryImpl implements BudgetRepository {
 
 	@Override
 	public Optional<Budget> findByCode(String code) {
-		try {
-			return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"), orcamentoAPI.getToken(),
-					orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, null, Map.of("code", code),
-					MediaType.APPLICATION_JSON));
-		} catch (javax.ws.rs.NotFoundException e) {
-			return Optional.empty();
-		}
+		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, null, Map.of("code", code),
+				MediaType.APPLICATION_JSON));
+
 	}
 
 	@Override

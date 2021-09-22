@@ -74,7 +74,7 @@
 									oncomplete="PF('sidebarForLoadingEditing').hide()" />
 
 								<p:menuitem value="Exportar" icon="pi pi-download"
-									action="#{orderExportShowController.show(budgetEditingController.budget)}" />
+									action="#{budgetExporterShowController.show(budgetEditingController.budget)}" />
 
 								<p:menuitem value="Efetivar para pedido"
 									action="#{budgetEditingController.saveToOrder}" ajax="true"
@@ -432,7 +432,8 @@
 											<div id="rowData" class="p-grid p-ml-3  p-mt-2">
 												<div id="div-img-wrraper" class="p-col-fixed"
 													style="width: 11.7rem">
-													<div id="div-img-loader-#{item.product.commercialCode}" style="display: none">
+													<div id="div-img-loader-#{item.product.commercialCode}"
+														style="display: none">
 														<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
 													</div>
 													<div id="div-img-#{item.product.commercialCode}">
@@ -459,12 +460,14 @@
 													<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
 													<div class="p-text-normal">#{item.product.description}</div>
 												</div>
-												<div class="p-col" id="product-tech-loader-#{item.product.commercialCode}"
+												<div class="p-col"
+													id="product-tech-loader-#{item.product.commercialCode}"
 													style="display: none">
 													Buscando detalhes técnicos... <i
 														class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
 												</div>
-												<div class="p-col-6" id="product-tech-#{item.product.commercialCode}">
+												<div class="p-col-6"
+													id="product-tech-#{item.product.commercialCode}">
 													<h:form>
 														<p:panelGrid columns="4"
 															columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
@@ -473,29 +476,33 @@
 															id="pnTechData"
 															rendered="#{item.product.productTechDetail != null}">
 
-															<p:outputLabel for="@next" value="Aplicação:" styleClass="p-text-bold"/>
+															<p:outputLabel for="@next" value="Aplicação:"
+																styleClass="p-text-bold" />
 															<p:outputLabel
 																value="#{item.product.productTechDetail.application}"
 																styleClass="label-r" />
 
-															<p:outputLabel for="@next" value="Substituições:" styleClass="p-text-bold"/>
+															<p:outputLabel for="@next" value="Substituições:"
+																styleClass="p-text-bold" />
 															<p:outputLabel
 																value="#{item.product.productTechDetail.productsReplaces}"
 																styleClass="label-r" />
 
-															<p:outputLabel for="@next" value="Peso bruto:" styleClass="p-text-bold"/>
+															<p:outputLabel for="@next" value="Peso bruto:"
+																styleClass="p-text-bold" />
 															<p:outputLabel
 																value="#{item.product.productTechDetail.grossWeight}"
 																styleClass="label-r" />
 
-															<p:outputLabel for="@next" value="Dimensões da caixa:" styleClass="p-text-bold"/>
+															<p:outputLabel for="@next" value="Dimensões da caixa:"
+																styleClass="p-text-bold" />
 															<p:outputLabel
 																value="#{item.product.productTechDetail.packageDimension}"
 																styleClass="label-r" />
 
 
 															<p:linkButton href="#{item.product.link}" value="Site"
-																icon="pi pi-external-link" target="_blank"/>
+																icon="pi pi-external-link" target="_blank" />
 
 														</p:panelGrid>
 														<p:commandButton value="Dados técnicos"

@@ -20,7 +20,7 @@ import com.portal.client.dto.Customer;
 import com.portal.client.dto.FinancialBondsPage;
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 import com.portal.client.service.ZipCodeService;
-import com.portal.client.service.crud.FinancialBondsService;
+import com.portal.client.service.crud.BillsToReceiveService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
@@ -33,7 +33,7 @@ public class CustomerDetailController {
 
 	private ZipCodeService zipCodeService;
 
-	private FinancialBondsService bondsService;
+	private BillsToReceiveService bondsService;
 
 	private Customer customer;
 
@@ -48,7 +48,7 @@ public class CustomerDetailController {
 	
 	@Inject
 	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,
-			FinancialBondsService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper) {
+			BillsToReceiveService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper) {
 		super();
 		this.zipCodeService = zipCodeService;
 		this.bondsService = bondsService;

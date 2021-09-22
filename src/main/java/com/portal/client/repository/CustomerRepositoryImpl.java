@@ -6,8 +6,6 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
 
 import com.portal.client.dto.Customer;
@@ -15,11 +13,12 @@ import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.NoPageCustomerResponseDTO;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.repository.aop.OptionalEmptyRepository;
 import com.portal.client.security.APIManager;
 import com.portal.client.security.api.ServerAPI;
 
 @ApplicationScoped
-public class CustomerRepositoryImpl implements CustomerRepository {
+public class CustomerRepositoryImpl extends OptionalEmptyRepository implements CustomerRepository {
 
 	/**
 	 * 
@@ -55,37 +54,28 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
 	@Override
 	public Optional<Customer> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO) {
-		try {
-			Map<String, Object> pathParams = getMapInstance();
-			pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
-			pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
-			ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
-			return Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients/{code}/loja/{codeStore}"),
-					serverAPI.getToken(), serverAPI.getTokenPrefix(), NoPageCustomerResponseDTO.class, null, pathParams,
-					MediaType.APPLICATION_JSON).getClients().get(0));
-		} catch (NotFoundException e) {
-			return Optional.empty();
-		}
+		Map<String, Object> pathParams = getMapInstance();
+		pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
+		pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
+		ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
+		return Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients/{code}/loja/{codeStore}"),
+				serverAPI.getToken(), serverAPI.getTokenPrefix(), NoPageCustomerResponseDTO.class, null, pathParams,
+				MediaType.APPLICATION_JSON).getClients().get(0));
+
 	}
 
 	@Override
 	public Optional<CustomerPageDTO> findByName(String name, int page, int pageSize) {
-		try {
-			Map<String, Object> queryParams = getMapInstance();
-			queryParams.put("page", page);
-			queryParams.put("pageSize", pageSize);
-			queryParams.put("searchKey", name);
-			ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
-			Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients"),
-					serverAPI.getToken(), serverAPI.getTokenPrefix(), CustomerPageDTO.class, queryParams, null,
-					MediaType.APPLICATION_JSON));
+		Map<String, Object> queryParams = getMapInstance();
+		queryParams.put("page", page);
+		queryParams.put("pageSize", pageSize);
+		queryParams.put("searchKey", name);
+		ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
+		Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients"),
+				serverAPI.getToken(), serverAPI.getTokenPrefix(), CustomerPageDTO.class, queryParams, null,
+				MediaType.APPLICATION_JSON));
 
-			return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();
-		} catch (ProcessingException e) {
-			if (e.getCause() instanceof NotFoundException)
-				return Optional.empty();
-			throw e;
-		}
+		return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();
 
 	}
 

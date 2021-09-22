@@ -15,7 +15,7 @@
 	<ui:define name="viewname">
 		<li>#{resourceBundleServiceImpl.getMessage('financeiro')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/openedTitles">#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}</p:link>
+		<li><p:link outcome="/faces/billsToReceive">#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}</p:link>
 		</li>
 	</ui:define>
 
@@ -113,6 +113,18 @@
 					</p:dataTable>
 
 				</div>
+			</div>
+		</div>
+
+		<div id="noCustomersFound" class="exception-body notfound"
+			style="display: none">
+			<div class="exception-card">
+				<h1>
+					<span>NENHUM</span> REGISTRO ENCONTRADO
+				</h1>
+				<p:graphicImage name="images/pages/asset-404.svg"
+					library="rain-layout" />
+				<span>Tente novamente com outra palavra-chave</span>
 			</div>
 		</div>
 

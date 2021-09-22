@@ -5,8 +5,8 @@ import java.io.Serializable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.repository.APIHelper;
 import com.portal.client.repository.RepresentativeRepository;
+import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.security.user.User;
 
 @ApplicationScoped

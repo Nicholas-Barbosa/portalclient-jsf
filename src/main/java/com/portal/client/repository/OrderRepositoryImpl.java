@@ -1,6 +1,7 @@
 package com.portal.client.repository;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -10,10 +11,12 @@ import com.portal.client.dto.OrderPersisted;
 import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.dto.OrderToPersist;
 import com.portal.client.jaxrs.client.TokenedRestClient;
+import com.portal.client.repository.aop.OptionalEmptyRepository;
+import com.portal.client.security.api.helper.OrcamentoAPIHelper;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
-public class OrderRepositoryImpl implements OrderRepository {
+public class OrderRepositoryImpl extends OptionalEmptyRepository implements OrderRepository {
 
 	private TokenedRestClient restClient;
 	private OrcamentoAPIHelper orcamentoAPI;
@@ -35,10 +38,10 @@ public class OrderRepositoryImpl implements OrderRepository {
 	}
 
 	@Override
-	public OrderSemiProjectionPage findAll(int page, int pageSize) {
+	public Optional<OrderSemiProjectionPage> findAll(int page, int pageSize) {
 		Map<String, Object> queryParams = Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC");
-		return restClient.get(orcamentoAPI.buildEndpoint("orders"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), OrderSemiProjectionPage.class, queryParams, null, "application/json");
+		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("orders"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), OrderSemiProjectionPage.class, queryParams, null, "application/json"));
 	}
 
 }
