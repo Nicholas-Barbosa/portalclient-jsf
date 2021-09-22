@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 
 import com.portal.client.export.OrderExportType;
 import com.portal.client.export.jasper.JasperService;
-import com.portal.client.export.jasper.OrderJasper;
-import com.portal.client.export.jasper.OrderReport;
-import com.portal.client.export.jasper.OrderReportImpl;
-import com.portal.client.export.jasper.OrderJasper.CustomerJasperReportDTO;
-import com.portal.client.export.jasper.OrderJasper.OrderItemJasper;
+import com.portal.client.export.jasper.BudgetJasper;
+import com.portal.client.export.jasper.BudgetReport;
+import com.portal.client.export.jasper.BudgetReportImpl;
+import com.portal.client.export.jasper.BudgetJasper.CustomerJasperReportDTO;
+import com.portal.client.export.jasper.BudgetJasper.OrderItemJasper;
 
 class BudgetReportImplTest {
 
@@ -24,11 +24,11 @@ class BudgetReportImplTest {
 
 	@Test
 	void test() {
-		OrderJasper budgetDTO = new OrderJasper(new BigDecimal(12.99), new BigDecimal(20.98),
+		BudgetJasper budgetDTO = new BudgetJasper(new BigDecimal(12.99), new BigDecimal(20.98),
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373", "ddd"),
 				Set.of(item), "Mensagem");
-		OrderReport budgetReport = new OrderReportImpl(new JasperService());
+		BudgetReport budgetReport = new BudgetReportImpl(new JasperService());
 		byte[] bytes = budgetReport.export(budgetDTO, OrderExportType.PDF);
 		System.out.println("lenght " + bytes.length);
 		try (OutputStream out = new BufferedOutputStream(
@@ -41,11 +41,11 @@ class BudgetReportImplTest {
 
 	@Test
 	void testExcel() {
-		OrderJasper budgetDTO = new OrderJasper(new BigDecimal(12.99), new BigDecimal(20.98),
+		BudgetJasper budgetDTO = new BudgetJasper(new BigDecimal(12.99), new BigDecimal(20.98),
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich", "ddd"), Set.of(item),
 				"Message");
-		OrderReport budgetReport = new OrderReportImpl(new JasperService());
+		BudgetReport budgetReport = new BudgetReportImpl(new JasperService());
 		byte[] bytes = budgetReport.export(budgetDTO, OrderExportType.EXCEL);
 
 	}

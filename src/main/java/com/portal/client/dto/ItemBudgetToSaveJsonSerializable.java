@@ -3,6 +3,7 @@ package com.portal.client.dto;
 import java.math.BigDecimal;
 
 import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 
 import com.portal.client.vo.Item;
 
@@ -51,6 +52,11 @@ public class ItemBudgetToSaveJsonSerializable implements Comparable<ItemBudgetTo
 		return item.getValue().getQuantity();
 	}
 
+	@JsonbTransient
+	public Item getItem() {
+		return item;
+	}
+	
 	@Override
 	public int compareTo(ItemBudgetToSaveJsonSerializable o) {
 		return Integer.valueOf(o.getQuantity()).compareTo(getQuantity());

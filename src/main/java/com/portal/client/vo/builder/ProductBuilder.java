@@ -64,8 +64,8 @@ public class ProductBuilder implements ContractProductBuilder {
 	}
 
 	@Override
-	public ProductBuilder withImage(byte[] image) {
-		productImage.setImageStreams(image);
+	public ProductBuilder withImage(ProductImage image) {
+	this.productImage = image;
 		return this;
 	}
 

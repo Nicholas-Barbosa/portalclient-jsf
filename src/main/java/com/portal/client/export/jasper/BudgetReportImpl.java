@@ -16,7 +16,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Singleton
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class OrderReportImpl implements OrderReport {
+public class BudgetReportImpl implements BudgetReport {
 
 	@EJB
 	private JasperService reportService;
@@ -24,21 +24,20 @@ public class OrderReportImpl implements OrderReport {
 	private final String GAUSS_LOGO = getLogos("GAUSS");
 	private final String CDG_LOGO = getLogos("CDG");
 
-	public OrderReportImpl() {
+	public BudgetReportImpl() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public OrderReportImpl(JasperService reportService) {
+	public BudgetReportImpl(JasperService reportService) {
 		super();
 		this.reportService = reportService;
 	}
 
 	@Override
-	public byte[] export(OrderJasper budget, OrderExportType type) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems()));
-		params.put("logoGaussPath", GAUSS_LOGO);
+	public byte[] export(BudgetJasper budget, OrderExportType type) {
+		Map<String, Object> params = this.configureLayout();
 		params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
+		params.put("itemsCollection", new JRBeanCollectionDataSource(budget.getItems())); 
 		switch (type) {
 		case PDF:
 			return reportService.exportToPdf(getClass().getResourceAsStream("/report/budgetEstimate.jasper"), params,
@@ -66,5 +65,13 @@ public class OrderReportImpl implements OrderReport {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public Map<String, Object> configureLayout() {
+		Map<String, Object> params = new HashMap<>();
+
+		params.put("logoGaussPath", GAUSS_LOGO);
+		params.put("title", "Gauss Indústria");
+		return params;
 	}
 }

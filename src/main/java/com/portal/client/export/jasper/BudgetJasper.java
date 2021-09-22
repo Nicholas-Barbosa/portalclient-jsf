@@ -11,7 +11,7 @@ import com.portal.client.vo.Item;
 import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Order;
 
-public class OrderJasper implements Serializable {
+public class BudgetJasper implements Serializable {
 
 	/**
 	 * 
@@ -30,7 +30,7 @@ public class OrderJasper implements Serializable {
 
 	private String message;
 
-	public OrderJasper(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
+	public BudgetJasper(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
 			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items, String message) {
 		super();
 		this.liquidValue = liquidValue;
@@ -41,7 +41,7 @@ public class OrderJasper implements Serializable {
 		this.message = message;
 	}
 
-	public OrderJasper(Order order) {
+	public BudgetJasper(Order order) {
 		this.liquidValue = order.getLiquidValue();
 		this.grossValue = order.getGrossValue();
 		this.stTotal = order.getStValue();
@@ -145,7 +145,7 @@ public class OrderJasper implements Serializable {
 	public static class OrderItemJasper implements Comparable<OrderItemJasper> {
 
 		private String commercialCode;
-		private String line;
+		private String description;
 		private int quantity;
 		private BigDecimal unitValue;
 		private BigDecimal totalValue;
@@ -155,12 +155,12 @@ public class OrderJasper implements Serializable {
 		private BigDecimal totalGrossValue;
 		private BigDecimal totalGrossValueWithoutDiscount;
 
-		public OrderItemJasper(String commercialCode, String line, int quantity, BigDecimal unitValue,
+		public OrderItemJasper(String commercialCode, String description, int quantity, BigDecimal unitValue,
 				BigDecimal totalValue, BigDecimal totalStValue, BigDecimal discGlobal, BigDecimal lineDisc,
 				BigDecimal totalGrossValue, BigDecimal totalGrossValueWithoutDiscount) {
 			super();
 			this.commercialCode = commercialCode;
-			this.line = line;
+			this.description = description;
 			this.quantity = quantity;
 			this.unitValue = unitValue;
 			this.totalValue = totalValue;
@@ -175,7 +175,7 @@ public class OrderJasper implements Serializable {
 		public OrderItemJasper(Item item) {
 			super();
 			this.commercialCode = item.getProduct().getCommercialCode();
-			this.line = item.getLine();
+			this.description = item.getProduct().getDescription();
 
 			ItemValue values = item.getValue();
 			this.quantity = values.getQuantity();
@@ -193,8 +193,8 @@ public class OrderJasper implements Serializable {
 			return commercialCode;
 		}
 
-		public String getLine() {
-			return line;
+		public String getDescription() {
+			return description;
 		}
 
 		public int getQuantity() {

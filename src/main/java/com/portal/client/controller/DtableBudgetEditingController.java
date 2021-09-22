@@ -8,6 +8,8 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.ToggleEvent;
+
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Item;
@@ -33,6 +35,10 @@ public class DtableBudgetEditingController implements Serializable {
 		helper.removeItems(order, items);
 		items.clear();
 		FacesUtils.info(null, "Itens removidos", null, "growl");
+	}
+
+	public void onRowToggle(ToggleEvent event) {
+		System.out.println("event " + event.getData());
 	}
 
 	public boolean hasSelectedItems() {

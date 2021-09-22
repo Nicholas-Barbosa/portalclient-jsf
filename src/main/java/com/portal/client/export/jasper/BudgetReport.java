@@ -2,8 +2,8 @@ package com.portal.client.export.jasper;
 
 import com.portal.client.export.OrderExportType;
 
-public interface OrderReport {
+public interface BudgetReport {
 
-	byte[] export(OrderJasper budget, OrderExportType type);
+	byte[] export(BudgetJasper budget, OrderExportType type);
 
 }

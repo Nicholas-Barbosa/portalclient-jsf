@@ -3,6 +3,7 @@ package com.portal.client.vo.builder;
 import java.math.BigDecimal;
 
 import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductImage;
 import com.portal.client.vo.ProductTechDetail;
 
 public interface ContractProductBuilder {
@@ -20,7 +21,7 @@ public interface ContractProductBuilder {
 
 	public ContractProductBuilder withCommercialBlock(boolean commercialBlock);
 
-	public ContractProductBuilder withImage(byte[] image);
+	public ContractProductBuilder withImage(ProductImage image);
 
 	public ContractProductBuilder withUnitStValue(BigDecimal unitStValue);
 

@@ -20,11 +20,13 @@ public class ProductImage {
 	}
 
 	public byte[] getImageStreams() {
-		return  imageStreams.clone();
+		return imageStreams.clone();
 	}
 
 	public void setImageStreams(byte[] image) {
-		this.imageStreams = image.clone();
+		if (image != null)
+			this.imageStreams = image.clone();
+
 	}
 
 	public ImageInfoState getCurrentState() {
@@ -34,7 +36,7 @@ public class ProductImage {
 	public void setCurrentState(ImageInfoState currentState) {
 		this.currentState = currentState;
 	}
-	
+
 	public static enum ImageInfoState {
 		FOUND, NOT_FOUND, TIMEOUT_EXCPTION, NOT_LOADED
 	}

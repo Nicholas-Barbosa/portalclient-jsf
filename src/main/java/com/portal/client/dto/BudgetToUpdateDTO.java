@@ -1,6 +1,8 @@
 package com.portal.client.dto;
 
 import java.math.BigDecimal;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.json.bind.annotation.JsonbProperty;
 
@@ -46,5 +48,11 @@ public class BudgetToUpdateDTO extends BudgetToSaveJsonSerializable {
 		// TODO Auto-generated method stub
 		String value = super.getCustomerOrder();
 		return value == null ? "empty" : value;
+	}
+
+	@Override
+	@JsonbProperty("items")
+	public Set<ItemBudgetToSaveJsonSerializable> getItems() {
+		return super.getBudget().getItems().stream().map(ItemBudgetToUpdateJsonSerializable::of).collect(Collectors.toSet());
 	}
 }

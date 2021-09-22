@@ -3,7 +3,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" lang="en">
+	xmlns:p="http://primefaces.org/ui">
 
 <h:head>
 	<f:facet name="first">
@@ -15,8 +15,11 @@
 		<link rel="icon"
 			href="#{request.contextPath}/resources/rain-layout/images/favicon.ico"
 			type="image/x-icon"></link>
+		<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+			library="rain-layout" />
+		<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
 	</f:facet>
-	<title>#{resourceBundleServiceImpl.getMessage('cliente_detalhes')}</title>
+	<title>Exportar contas a receber</title>
 
 	<style>
 /* reset on the showcase style*/
@@ -34,6 +37,25 @@ body .ui-panelgrid .ui-panelgrid-cell {
 </h:head>
 
 <h:body styleClass="#{userStylePreferences.inputStyleClass}">
+	<f:metadata>
+		<f:viewParam name="limitRecords"
+			value="#{billToReceiveExportController.limitRecords}" />
+	</f:metadata>
+	<div class="card">
+		<h:form>
+			<div class="p-field ui-fluid">
 
+				<label for="username">Registros</label>
+				<p:spinner id="basic"
+					value="#{billToReceiveExportController.records}" min="1"
+					max="#{billToReceiveExportController.limitRecords}" />
+				<small style="font-size: 0.75rem">Registros que serão
+					exportados.</small>
+
+			</div>
+			<p:commandButton ajax="false" icon="pi pi-download"
+				action="#{financialBondsController.export}" process="@form" />
+		</h:form>
+	</div>
 </h:body>
 </html>

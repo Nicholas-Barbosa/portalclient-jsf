@@ -32,7 +32,7 @@ public class FinancialBondsController implements Serializable {
 	private LazyBehaviorDataModel<FinacialBondsDTO> titles;
 	private ProcessingExceptionFacesMessageHelper prossExcpetionShowMsg;
 	private FinancialBondsExporter exporter;
-	private int pagesToExport = 1;
+	private int recordsToExport;
 
 	@Inject
 	public FinancialBondsController(FinancialBondsService fiTitleService,
@@ -54,7 +54,6 @@ public class FinancialBondsController implements Serializable {
 	}
 
 	public void loadTitles(int page) {
-
 		if (titles == null)
 			titles = new FinancialTitleLazyDataModel();
 
@@ -75,11 +74,13 @@ public class FinancialBondsController implements Serializable {
 		return titles;
 	}
 
-	public int getPagesToExport() {
-		return pagesToExport;
+	public int getRecordsToExport() {
+		return recordsToExport;
 	}
 
-	public void setPagesToExport(int pagesToExport) {
-		this.pagesToExport = pagesToExport;
+	public void setRecordsToExport(int recordsToExport) {
+		this.recordsToExport = recordsToExport;
 	}
+
+	
 }

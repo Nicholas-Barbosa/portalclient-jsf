@@ -8,6 +8,7 @@
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
 		<h:outputScript name="dataTable.js" library="javascript" />
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
@@ -305,7 +306,8 @@
 										</p:menuitem>
 									</p:menuButton>-->
 										</f:facet>
-
+										<p:ajax event="rowToggle"
+											listener="#{dtableBudgetEditingController.onRowToggle}" />
 
 										<p:ajax event="rowEdit"
 											listener="#{budgetEditingController.onRowItemEdit}"
@@ -427,7 +429,37 @@
 										</p:column>
 
 										<p:rowExpansion>
-											<h3>Olá!</h3>
+											<div id="rowData" class="p-grid">
+												<div id="div-img-wrraper" class="p-col-fixed"
+													style="width: 8.5rem">
+													<div id="div-img-loader" style="display: none">
+														<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
+													</div>
+													<div id="div-img">
+														<h:form>
+															<p:graphicImage value="#{item.product.imageStreams}"
+																stream="false"
+																styleClass="w3-round-xlarge product-image"
+																style="height: 6.5rem; width: 7.5rem" id="img"
+																alt="Imagem não encontrada"
+																rendered="#{item.product.image.currentState eq 'FOUND' || item.product.image.currentState eq 'NOT_FOUND'}" />
+
+															<p:commandButton value="Carregar imagem"
+																action="#{productImageLoaderController.loadImage(item.product)}"
+																rendered="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
+																update="@form" process="@this"
+																onstart="$('#div-img-loader').show();$('#div-img').hide();"
+																oncomplete="$('#div-img-loader').hide();$('#div-img').show();" />
+
+														</h:form>
+													</div>
+
+												</div>
+												<div class="p-col">
+													<div class="p-text-bold p-mb-2" >#{item.product.commercialCode}</div>
+													<div class="p-text-normal">#{item.product.description}</div>
+												</div>
+											</div>
 										</p:rowExpansion>
 									</p:dataTable>
 								</h:form>
