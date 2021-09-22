@@ -23,4 +23,6 @@ public interface ProductRepository {
 			throws ExecutionException;
 
 	ProductTechDetailJson findTechDetails(String commercialCode);
+
+	void findStock(Product... products);
 }

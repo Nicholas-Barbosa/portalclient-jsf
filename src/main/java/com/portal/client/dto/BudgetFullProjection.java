@@ -23,7 +23,7 @@ public class BudgetFullProjection extends Budget {
 			@JsonbProperty("representative_order") String representativeOrder, @JsonbProperty("message") String message,
 			@JsonbProperty("gross_order_value") BigDecimal grossValue,
 			@JsonbProperty("items") Set<ItemBudgetProjection> items,
-			@JsonbProperty("discount") BigDecimal globalDiscount,@JsonbProperty("creation_date") String createdAt) {
+			@JsonbProperty("discount") BigDecimal globalDiscount, @JsonbProperty("creation_date") String createdAt) {
 
 		CustomerOnOrder customer = new CustomerOnOrder(customerCode, customerStore, null, null, null, null, null, null,
 				null);

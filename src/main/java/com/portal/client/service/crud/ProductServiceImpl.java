@@ -98,4 +98,10 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
+	@Override
+	public void findStock(Product... products) {
+		productRepository.findStock(products);
+
+	}
+
 }

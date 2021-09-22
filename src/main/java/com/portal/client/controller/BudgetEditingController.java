@@ -12,6 +12,7 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
+import com.portal.client.controller.show.BudgetExporterShowController;
 import com.portal.client.controller.show.CustomerDetailShowController;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
@@ -62,12 +63,14 @@ public class BudgetEditingController implements Serializable {
 
 	private Order savedOrder;
 
+	private BudgetExporterShowController exporterShow;
+	
 	@Inject
 	public BudgetEditingController(BudgetCrudService budgetService, CustomerService customerService,
 			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
 			CustomerDetailShowController customerShowOrderCommonBehaviorHelper,
 			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper,
-			OrderItemQuantityCalculator ordemQuantityCalculator, OrderCrudService orderService) {
+			OrderItemQuantityCalculator ordemQuantityCalculator, OrderCrudService orderService,BudgetExporterShowController exporterShow) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
@@ -76,8 +79,15 @@ public class BudgetEditingController implements Serializable {
 		this.orderHelper = orderHelper;
 		this.ordemQuantityCalculator = ordemQuantityCalculator;
 		this.orderService = orderService;
+		this.exporterShow = exporterShow;
 	}
 
+	public void export() {
+		if(budget.getCustomerOnOrder().getName() !=null)
+			exporterShow.show(budget);
+		else
+			FacesUtils.warn(null, "Não é possível exportar neste momento", "Carregue os dados do cliente deste orçamento", "growl");
+	}
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
 		this.orderHelper.merge(budget, event.getObject());
 		FacesUtils.ajaxUpdate("dtItems", "panelTotals");

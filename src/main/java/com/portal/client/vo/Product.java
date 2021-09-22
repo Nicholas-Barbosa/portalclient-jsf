@@ -32,14 +32,14 @@ public class Product {
 			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("stock") int stock,
 			@JsonbProperty("description") String description,
 			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
-		ProductValue price = new ProductValue(stValue, unitValue, unitGrossValue,1,multiple);
+		ProductValue price = new ProductValue(stValue, unitValue, unitGrossValue, 1, multiple);
 		return new Product(code, cCode, application, description, line, acronymLine, stock,
 				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price, null);
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image,
-			ProductValue price, ProductTechDetail productTechDetail) {
+			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image, ProductValue price,
+			ProductTechDetail productTechDetail) {
 		super();
 		this.code = code;
 		this.commercialCode = commercialCode;
@@ -55,8 +55,8 @@ public class Product {
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, Integer stock,  boolean commercialBlock, ProductImage image,
-			ProductValue price, ProductTechDetail productTechDetail, String link) {
+			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image, ProductValue price,
+			ProductTechDetail productTechDetail, String link) {
 		super();
 		this.code = code;
 		this.commercialCode = commercialCode;
@@ -99,6 +99,10 @@ public class Product {
 
 	public Integer getStock() {
 		return stock;
+	}
+
+	public void setStock(Integer stock) {
+		this.stock = stock;
 	}
 
 	public boolean isCommercialBlock() {

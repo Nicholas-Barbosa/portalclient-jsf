@@ -37,6 +37,7 @@ public class RepresentativeRepositoryImpl implements RepresentativeRepository, S
 		user.setFantasyName(data.getFantasyname());
 		user.setName(data.getName());
 		user.setEmail(data.getEmail());
+		user.setType(data.getType());
 	}
 
 }

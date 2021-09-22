@@ -44,6 +44,10 @@ public class RepresentativeUser extends User {
 		return type;
 	}
 
+	public void setType(RepresentativeType type) {
+		this.type = type;
+	}
+	
 	public static enum RepresentativeType {
 		CARROS("C"), MOTOS("M"), AGRICOLA("A");
 

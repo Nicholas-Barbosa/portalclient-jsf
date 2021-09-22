@@ -1,7 +1,9 @@
 package com.portal.client.repository;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
@@ -15,11 +17,13 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
+import com.portal.client.dto.ProductStock;
+import com.portal.client.dto.ProductStockWrapper;
 import com.portal.client.dto.ProductTechDetailJson;
+import com.portal.client.dto.ProductToFindStock;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
-import com.portal.client.security.APIManager;
-import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.api.helper.OrcamentoAPIHelper;
 import com.portal.client.vo.Product;
 
 @ApplicationScoped
@@ -28,13 +32,13 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 	private static final long serialVersionUID = 4463669170628763803L;
 
 	private TokenedRestClient restClient;
-	private APIManager apiManager;
+	private OrcamentoAPIHelper orcamentoAPI;
 
 	@Inject
-	public ProductRepositoryImpl(TokenedRestClient restClient, APIManager userSessionAPIManager) {
+	public ProductRepositoryImpl(TokenedRestClient restClient, OrcamentoAPIHelper orcamentoAPI) {
 		super();
 		this.restClient = restClient;
-		this.apiManager = userSessionAPIManager;
+		this.orcamentoAPI = orcamentoAPI;
 	}
 
 	@Override
@@ -43,10 +47,9 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		pathParmas.put("code", code);
 		pathParmas.put("customerCode", customerCode);
 		pathParmas.put("store", store);
-		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		return Optional.of(
-				restClient.get(apiManager.buildEndpoint(server, "products/{code}/client/{customerCode}/store/{store}"),
-						server.getToken(), server.getTokenPrefix(), ProductPage.class, null, pathParmas,
+		return Optional
+				.of(restClient.get(orcamentoAPI.buildEndpoint("products/{code}/client/{customerCode}/store/{store}"),
+						orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), ProductPage.class, null, pathParmas,
 						MediaType.APPLICATION_JSON).getProducts().get(0));
 
 	}
@@ -58,10 +61,8 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		pathParams.put("code", code);
 		pathParams.put("customerCode", customerCode);
 		pathParams.put("store", store);
-		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		return restClient.getAsync(
-				apiManager.buildEndpoint(server, "products/{code}/client/{customerCode}/store/{store}"),
-				server.getToken(), server.getTokenPrefix(), ProductPage.class, null, pathParams,
+		return restClient.getAsync(orcamentoAPI.buildEndpoint("products/{code}/client/{customerCode}/store/{store}"),
+				orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), ProductPage.class, null, pathParams,
 				MediaType.APPLICATION_JSON);
 	}
 
@@ -69,10 +70,8 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 	public ProductPageDTO find(int page, int pageSize) {
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
-		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-
-		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(apiManager.buildEndpoint(server, "products"),
-				server.getToken(), server.getTokenPrefix(), ProductPageDTO.class, queryParams, null,
+		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(orcamentoAPI.buildEndpoint("products"),
+				orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), ProductPageDTO.class, queryParams, null,
 				MediaType.APPLICATION_JSON);
 
 		return productPageDto;
@@ -84,9 +83,8 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", description);
-		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(apiManager.buildEndpoint(server, "products"),
-				server.getToken(), server.getTokenPrefix(), ProductPageDTO.class, queryParams, null,
+		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(orcamentoAPI.buildEndpoint("products"),
+				orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), ProductPageDTO.class, queryParams, null,
 				MediaType.APPLICATION_JSON);
 		return Optional.of(productPageDto);
 
@@ -101,9 +99,8 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("state", state);
 		queryParams.put("type", sellerType);
-		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		return restClient.getAsync(apiManager.buildEndpoint(server, "products/{code}"), server.getToken(),
-				server.getTokenPrefix(), ProductPage.class, queryParams, pathParmas, MediaType.APPLICATION_JSON);
+		return restClient.getAsync(orcamentoAPI.buildEndpoint("products/{code}"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), ProductPage.class, queryParams, pathParmas, MediaType.APPLICATION_JSON);
 
 	}
 
@@ -112,6 +109,23 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		return restClient.get("https://gauss.com.br/produtos/wp-json/wp/v2/gauss_products",
 				System.getProperty("site.api.token"), "Bearer", ProductTechDetailJson[].class,
 				Map.of("slug", commercialCode, "lang", "pt"), null, "application/json")[0];
+	}
+
+	@Override
+	public void findStock(Product... products) {
+		ProductToFindStock[] productsToFind = Arrays.stream(products).map(ProductToFindStock::of)
+				.collect(Collectors.toSet()).toArray(new ProductToFindStock[0]);
+		List<ProductStock> stocks = restClient.post(orcamentoAPI.buildEndpoint("stock/search"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), ProductStockWrapper.class, null, null, productsToFind,
+				MediaType.APPLICATION_JSON).getStock();
+		Arrays.stream(products).parallel().forEach(p -> {
+			stocks.stream().filter(pStock -> p.getCommercialCode().equals(pStock.getCommercialCode())).findAny()
+					.ifPresent(pStock -> {
+						p.setStock(pStock.getStock());
+					});
+
+		});
+
 	}
 
 }

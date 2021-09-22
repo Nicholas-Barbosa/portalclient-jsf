@@ -9,6 +9,18 @@
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
 		<h:outputScript name="dataTable.js" library="javascript" />
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
+
+		<style>
+.product-in-stock {
+	background-color: #C8E6C9;
+	color: #256029;
+}
+
+.product-out-stock {
+	background: #FFCDD2;
+	color: #C63737;
+}
+</style>
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
@@ -74,7 +86,7 @@
 									oncomplete="PF('sidebarForLoadingEditing').hide()" />
 
 								<p:menuitem value="Exportar" icon="pi pi-download"
-									action="#{budgetExporterShowController.show(budgetEditingController.budget)}" />
+									action="#{budgetEditingController.export}" />
 
 								<p:menuitem value="Efetivar para pedido"
 									action="#{budgetEditingController.saveToOrder}" ajax="true"
@@ -431,7 +443,7 @@
 										<p:rowExpansion>
 											<div id="rowData" class="p-grid p-ml-3  p-mt-2">
 												<div id="div-img-wrraper" class="p-col-fixed"
-													style="width: 11.7rem">
+													style="width: 12rem">
 													<div id="div-img-loader-#{item.product.commercialCode}"
 														style="display: none">
 														<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
@@ -458,7 +470,31 @@
 												</div>
 												<div class="p-col-2">
 													<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
-													<div class="p-text-normal">#{item.product.description}</div>
+													<div class="p-text-normal p-mb-1">#{item.product.description}</div>
+													<div id="div-stock-wrapper">
+														<div id="div-loading-stock-#{item.product.commercialCode}"
+															style="display: none">
+															Buscando estoque... <i class="pi pi-spin pi-spinner"
+																style="font-size: 3rem;" />
+														</div>
+														<div id="div-stock-content-#{item.product.commercialCode}">
+															<h:form>
+																<div class="p-text-normal p-text-uppercase"
+																	style=" display: #{item.product.stock eq null ?'none':block};">
+																	<span class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
+																		#{productStockMessageController.getMessage(item.product.stock)}
+																	</span>
+
+																</div>
+																<p:commandButton value="Estoque"
+																	action="#{findProductStockController.find(item.product)}"
+																	process="@this" update="@form"
+																	rendered="#{item.product.stock eq null}"
+																	onstart="$('#div-stock-content-#{item.product.commercialCode}').hide();$('#div-loading-stock-#{item.product.commercialCode}').show();"
+																	oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();" />
+															</h:form>
+														</div>
+													</div>
 												</div>
 												<div class="p-col"
 													id="product-tech-loader-#{item.product.commercialCode}"
