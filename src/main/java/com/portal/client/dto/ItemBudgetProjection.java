@@ -2,6 +2,7 @@ package com.portal.client.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
@@ -38,7 +39,7 @@ public class ItemBudgetProjection extends Item implements Serializable {
 
 		ItemValue value = ItemValueBuilder.getInstance().withGlobalDiscount(BigDecimal.ZERO)
 				.withLineDiscount(lineDiscount).withQuantity(quantity)
-				.withUnitGrossValue(grossValue.divide(quantityBgDecimal))
+				.withUnitGrossValue(grossValue.divide(quantityBgDecimal,RoundingMode.HALF_UP))
 				.withUnitStValue(stValue.divide(quantityBgDecimal)).withTotalValue(totalValue).withUnitValue(unitValue)
 				.withMultiple(multiple).withTotalGrossValue(grossValue).build();
 
