@@ -39,7 +39,7 @@ public class ProductTechDataController {
 
 	public void loadDetails() {
 		try {
-			productService.findTechDetails(getCode(), product);
+			productService.loadTechDetails(product);
 		} catch (ProcessingException e) {
 			if (e.getCause() instanceof NotAuthorizedException) {
 				FacesUtils.fatal(null, "Token inválido", "Contate o suporte!", "growl");

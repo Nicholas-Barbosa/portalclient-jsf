@@ -89,9 +89,9 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void findTechDetails(String commercialCode, Product product) {
+	public void loadTechDetails(Product product) {
 		if (product.getProductTechDetail() == null) {
-			ProductTechDetailJson json = productRepository.findTechDetails(commercialCode);
+			ProductTechDetailJson json = productRepository.findTechDetails(product.getCommercialCode());
 			ProductTechDetail detail = json.toDetail();
 			product.setProductTechDetail(detail);
 			product.setLink(json.getLink());

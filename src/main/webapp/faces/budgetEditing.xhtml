@@ -62,7 +62,7 @@
 			<div id="content" style="display: none">
 				<div class="card">
 					<p:commandButton id="dynaButton" type="button" icon="pi pi-bars" />
-					<h:form>
+					<h:form prependId="false">
 						<p:menu overlay="true" trigger="dynaButton" my="left top"
 							at="left bottom">
 							<p:submenu label="Opções">
@@ -431,33 +431,82 @@
 										<p:rowExpansion>
 											<div id="rowData" class="p-grid p-ml-3  p-mt-2">
 												<div id="div-img-wrraper" class="p-col-fixed"
-													style="width: 9.7rem">
-													<div id="div-img-loader" style="display: none">
+													style="width: 11.7rem">
+													<div id="div-img-loader-#{item.product.commercialCode}" style="display: none">
 														<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
 													</div>
-													<div id="div-img">
+													<div id="div-img-#{item.product.commercialCode}">
 														<h:form>
 															<p:graphicImage value="#{item.product.imageStreams}"
 																stream="false"
 																styleClass="w3-round-xlarge product-image"
-																style="height: 6.5rem; width: 7.5rem" id="img"
+																style="height: 8.2rem; width: 10rem" id="img"
 																alt="Imagem não encontrada"
 																rendered="#{item.product.image.currentState eq 'FOUND' || item.product.image.currentState eq 'NOT_FOUND'}" />
 
-															<p:commandButton value="Carregar imagem"
+															<p:commandButton value="Imagem" icon="pi pi-image"
 																action="#{productImageLoaderController.loadImage(item.product)}"
 																rendered="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
 																update="@form" process="@this"
-																onstart="$('#div-img-loader').show();$('#div-img').hide();"
-																oncomplete="$('#div-img-loader').hide();$('#div-img').show();" />
+																onstart="$('#div-img-loader-#{item.product.commercialCode}').show();$('#div-img-#{item.product.commercialCode}').hide();"
+																oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();" />
 
 														</h:form>
 													</div>
 
 												</div>
-												<div class="p-col">
+												<div class="p-col-2">
 													<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
 													<div class="p-text-normal">#{item.product.description}</div>
+												</div>
+												<div class="p-col" id="product-tech-loader-#{item.product.commercialCode}"
+													style="display: none">
+													Buscando detalhes técnicos... <i
+														class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
+												</div>
+												<div class="p-col-6" id="product-tech-#{item.product.commercialCode}">
+													<h:form>
+														<p:panelGrid columns="4"
+															columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+															layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+															style="border:0px none; background-color:transparent;"
+															id="pnTechData"
+															rendered="#{item.product.productTechDetail != null}">
+
+															<p:outputLabel for="@next" value="Aplicação:" styleClass="p-text-bold"/>
+															<p:outputLabel
+																value="#{item.product.productTechDetail.application}"
+																styleClass="label-r" />
+
+															<p:outputLabel for="@next" value="Substituições:" styleClass="p-text-bold"/>
+															<p:outputLabel
+																value="#{item.product.productTechDetail.productsReplaces}"
+																styleClass="label-r" />
+
+															<p:outputLabel for="@next" value="Peso bruto:" styleClass="p-text-bold"/>
+															<p:outputLabel
+																value="#{item.product.productTechDetail.grossWeight}"
+																styleClass="label-r" />
+
+															<p:outputLabel for="@next" value="Dimensões da caixa:" styleClass="p-text-bold"/>
+															<p:outputLabel
+																value="#{item.product.productTechDetail.packageDimension}"
+																styleClass="label-r" />
+
+
+															<p:linkButton href="#{item.product.link}" value="Site"
+																icon="pi pi-external-link" target="_blank"/>
+
+														</p:panelGrid>
+														<p:commandButton value="Dados técnicos"
+															rendered="#{item.product.productTechDetail eq null}"
+															icon="pi pi-th-large"
+															action="#{productTechDetailLoaderController.load(item.product)}"
+															onstart="$('#product-tech-loader-#{item.product.commercialCode}').show();$('#product-tech-#{item.product.commercialCode}').hide();"
+															oncomplete="$('#product-tech-loader-#{item.product.commercialCode}').hide();$('#product-tech-#{item.product.commercialCode}').show();"
+															update="@form" process="@this" />
+													</h:form>
+
 												</div>
 											</div>
 										</p:rowExpansion>

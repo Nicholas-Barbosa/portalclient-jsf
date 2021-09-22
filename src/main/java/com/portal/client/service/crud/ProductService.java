@@ -16,5 +16,5 @@ public interface ProductService extends ServiceSerializable {
 
 	void loadImage(Product product);
 
-	void findTechDetails(String commercialCode, Product product);
+	void loadTechDetails(Product product);
 }
