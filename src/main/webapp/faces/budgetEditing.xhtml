@@ -48,7 +48,8 @@
 
 			<h:form>
 				<p:remoteCommand autoRun="true"
-					action="#{budgetEditingController.find}" process="@this"
+					action="#{budgetEditingController.dtableController.initialFind()}"
+					process="@this"
 					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
 					update="panelBudget,panelCustomer,panelTotals" />
 			</h:form>
@@ -293,12 +294,14 @@
 									</div>
 
 									<p:dataTable var="item"
-										value="#{budgetEditingController.budget.items}" id="dtItems"
-										widgetVar="dtItems" editable="true" scrollable="true"
-										size="small" filterDelay="100"
-										selection="#{dtableBudgetEditingController.items}"
+										value="#{budgetEditingController.dtableController.items}"
+										id="dtItems" widgetVar="dtItems" editable="true"
+										scrollable="true" lazy="true" size="small" filterDelay="100"
+										selection="#{budgetEditingController.dtableController.itemsToRemove}"
 										rowKey="#{item.product.commercialCode}" rowSelectMode="add"
-										reflow="true">
+										reflow="true"
+										rows="#{budgetEditingController.dtableController.pageSize}"
+										paginator="true">
 										<f:facet name="header">
 
 											<!--  	<p:menuButton
@@ -318,9 +321,8 @@
 										</p:menuitem>
 									</p:menuButton>-->
 										</f:facet>
-										<p:ajax event="rowToggle"
-											listener="#{dtableBudgetEditingController.onRowToggle}" />
-
+										<p:ajax event="page"
+											listener="#{budgetEditingController.dtableController.onPage}" />
 										<p:ajax event="rowEdit"
 											listener="#{budgetEditingController.onRowItemEdit}"
 											update="panelTotals" />
@@ -481,7 +483,8 @@
 															<h:form>
 																<div class="p-text-normal p-text-uppercase"
 																	style=" display: #{item.product.stock eq null ?'none':block};">
-																	<span class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
+																	<span
+																		class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
 																		#{productStockMessageController.getMessage(item.product.stock)}
 																	</span>
 

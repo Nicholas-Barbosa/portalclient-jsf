@@ -6,9 +6,9 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemToFindPrice;
+import com.portal.client.dto.Page;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.CustomerNotFoundException;
@@ -33,7 +33,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public BudgetPage findAll(int page, int pageSize) {
+	public Page<Budget> findAll(int page, int pageSize) {
 		return budgetRepository.findAll(page, pageSize);
 
 	}
@@ -47,8 +47,8 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public Optional<Budget> findByCode(String code) {
-		return budgetRepository.findByCode(code);
+	public Optional<Page<Budget>> findByCode(String code, int page, int pageSize) {
+		return budgetRepository.findByCode(code, page, pageSize);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.portal.client.service;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -88,10 +89,15 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 
 	@Override
 	public void removeItems(Order order, List<Item> itemsToCompareAndRemove) {
-		if(order.removeItems(itemsToCompareAndRemove)) {
+		if (order.removeItems(itemsToCompareAndRemove)) {
 			calculateTotals(order);
 		}
-		
+
+	}
+
+	@Override
+	public void addItem(Order order, Collection<Item> items) {
+		items.stream().forEach(item -> this.addItem(order, item));
 	}
 
 }

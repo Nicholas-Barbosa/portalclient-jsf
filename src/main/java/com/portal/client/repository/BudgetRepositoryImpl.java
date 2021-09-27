@@ -21,6 +21,7 @@ import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.BudgetToUpdateDTO;
 import com.portal.client.dto.FormToEstimateBudget;
 import com.portal.client.dto.ItemToFindPrice;
+import com.portal.client.dto.Page;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.jaxrs.client.TokenedRestClient;
@@ -57,7 +58,7 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	}
 
 	@Override
-	public BudgetPage findAll(int page, int pageSize) {
+	public Page<Budget> findAll(int page, int pageSize) {
 		StringBuilder endpointURL = new StringBuilder(orcamentoAPI.getBasePath());
 		endpointURL.append("/budgets");
 		return restClient.get(endpointURL.toString(), orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(),
@@ -74,10 +75,10 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	}
 
 	@Override
-	public Optional<Budget> findByCode(String code) {
+	public Optional<Page<Budget>> findByCode(String code, int page, int pageSize) {
 		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, null, Map.of("code", code),
-				MediaType.APPLICATION_JSON));
+				orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, Map.of("page", page, "pageSize", pageSize),
+				Map.of("code", code), MediaType.APPLICATION_JSON));
 
 	}
 

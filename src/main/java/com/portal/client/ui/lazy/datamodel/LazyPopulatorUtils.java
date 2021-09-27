@@ -9,8 +9,8 @@ public class LazyPopulatorUtils {
 
 	/**
 	 * 
-	 * @param <T>         LazyBehaviorDataModel covariante. Type that will be used as
-	 *                    list in p:dataTable.
+	 * @param <T>         LazyBehaviorDataModel covariante. Type that will be used
+	 *                    as list in p:dataTable.
 	 * @param <U>         Page covariante.
 	 * @param lazy
 	 * @param wrapperPage
@@ -20,6 +20,13 @@ public class LazyPopulatorUtils {
 		lazy.setPageSize(wrapperPage.getPageSize());
 		lazy.setRowCount(wrapperPage.totalItems());
 		Collection<?> content = wrapperPage.getContent();
+		((LazyBehavior<T>) lazy).addCollection((Collection<T>) content);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends LazyBehaviorDataModel<?>, P extends Page<?>, C> void populate(T lazy, P page, C content) {
+		lazy.setPageSize(page.getPageSize());
+		lazy.setRowCount(page.totalItems());
 		((LazyBehavior<T>) lazy).addCollection((Collection<T>) content);
 	}
 

@@ -1,6 +1,7 @@
 package com.portal.client.service;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 
 import com.portal.client.dto.CustomerOnOrder;
@@ -22,6 +23,8 @@ public interface OrderCommonBehaviorHelper {
 
 	void addItem(Order order, Item produc);
 
+	void addItem(Order order, Collection<Item> items);
+	
 	default void setCustomer(Order order, CustomerOnOrder customer) {
 		if (order.getItems() != null && order.getItems().size() >= 1)
 			throw new UnsupportedOperationException(

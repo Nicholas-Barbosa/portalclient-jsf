@@ -45,10 +45,6 @@ public class BudgetEditingController implements Serializable {
 
 	private ProcessingExceptionFacesMessageHelper exceptionShowMessage;
 
-	private Budget budget;
-
-	private String budgetID;
-
 	private boolean isCustomerDataComplete;
 
 	private CustomerDetailShowController customerShow;
@@ -64,13 +60,15 @@ public class BudgetEditingController implements Serializable {
 	private Order savedOrder;
 
 	private BudgetExporterShowController exporterShow;
+
+	private DtableBudgetEditingController dtableController;
 	
 	@Inject
 	public BudgetEditingController(BudgetCrudService budgetService, CustomerService customerService,
 			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
-			CustomerDetailShowController customerShowOrderCommonBehaviorHelper,
 			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper,
-			OrderItemQuantityCalculator ordemQuantityCalculator, OrderCrudService orderService,BudgetExporterShowController exporterShow) {
+			OrderItemQuantityCalculator ordemQuantityCalculator, OrderCrudService orderService,
+			BudgetExporterShowController exporterShow,DtableBudgetEditingController dtableController) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
@@ -80,22 +78,25 @@ public class BudgetEditingController implements Serializable {
 		this.ordemQuantityCalculator = ordemQuantityCalculator;
 		this.orderService = orderService;
 		this.exporterShow = exporterShow;
+		this.dtableController = dtableController;
 	}
 
 	public void export() {
-		if(budget.getCustomerOnOrder().getName() !=null)
-			exporterShow.show(budget);
+		if (this.getBudget().getCustomerOnOrder().getName() != null)
+			exporterShow.show(this.getBudget());
 		else
-			FacesUtils.warn(null, "Não é possível exportar neste momento", "Carregue os dados do cliente deste orçamento", "growl");
+			FacesUtils.warn(null, "Não é possível exportar neste momento",
+					"Carregue os dados do cliente deste orçamento", "growl");
 	}
+
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
-		this.orderHelper.merge(budget, event.getObject());
+		this.orderHelper.merge(this.getBudget(), event.getObject());
 		FacesUtils.ajaxUpdate("dtItems", "panelTotals");
 	}
 
 	public void saveToOrder() {
 		if (savedOrder == null) {
-			savedOrder = new Order(budget);
+			savedOrder = new Order(this.getBudget());
 			orderService.persist(savedOrder);
 			FacesUtils.executeScript("PF('effectivedBudget').show();");
 			FacesUtils.ajaxUpdate("successPersisted");
@@ -105,13 +106,13 @@ public class BudgetEditingController implements Serializable {
 	}
 
 	public void confirmBudgetEditing() {
-		budgetService.update(budget);
+		budgetService.update(this.getBudget());
 		FacesUtils.info(null, "Orçamento atualizado", null, "growl");
 	}
 
 	public void onRowItemEdit(RowEditEvent<Item> event) {
 		try {
-			ordemQuantityCalculator.calc(budget, event.getObject(), onRowItemQuantity);
+			ordemQuantityCalculator.calc(this.getBudget(), event.getObject(), onRowItemQuantity);
 		} catch (ItemQuantityNotAllowed e) {
 			FacesUtils.error(null, e.getMessage(), null);
 			PrimeFaces.current().ajax().update("growl");
@@ -120,33 +121,24 @@ public class BudgetEditingController implements Serializable {
 
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresentOrElse(p -> {
-			orderHelper.addItem(budget, Item.product(p));
+			orderHelper.addItem(this.getBudget(), Item.product(p));
 			FacesUtils.ajaxUpdate("dtItems", "totals");
 		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
 
 	}
 
-	public void find() {
-		budgetService.findByCode(budgetID).ifPresentOrElse(b -> {
-			budget = b;
-		}, () -> {
-			FacesUtils.error(null, "Orçamento não encontrado!",
-					"Não foi possível encontrar nenhum orçamento com este identificador", "growl");
-		});
-
-	}
 
 	public void showCustomerData() {
 		if (!isCustomerDataComplete)
 			this.loadAdditionalCustomerData();
-		customerShow.show(budget.getCustomerOnOrder());
+		customerShow.show(this.getBudget().getCustomerOnOrder());
 	}
 
 	private void loadAdditionalCustomerData() {
 		try {
 			customerService
-					.findByCodeAndStore(new SearchCustomerByCodeAndStoreDTO(budget.getCustomerOnOrder().getCode(),
-							budget.getCustomerOnOrder().getStore()))
+					.findByCodeAndStore(new SearchCustomerByCodeAndStoreDTO(this.getBudget().getCustomerOnOrder().getCode(),
+							this.getBudget().getCustomerOnOrder().getStore()))
 					.ifPresentOrElse(this::populateCustomerData,
 							() -> FacesUtils.error(null, "Cliente não encontrado", null, "growl"));
 		} catch (ProcessingException e) {
@@ -156,21 +148,21 @@ public class BudgetEditingController implements Serializable {
 
 	private void populateCustomerData(Customer customer) {
 		CustomerOnOrder newCustomer = new CustomerOnOrder(customer);
-		budget.setCustomerOnOrder(newCustomer);
+		this.getBudget().setCustomerOnOrder(newCustomer);
 		this.isCustomerDataComplete = true;
 		FacesUtils.ajaxUpdate("panelCustomer");
 	}
 
 	public String getBudgetID() {
-		return budgetID;
+		return dtableController.getBudgetId();
 	}
 
 	public void setBudgetID(String budgetID) {
-		this.budgetID = budgetID;
+		dtableController.setBudgetId(budgetID);
 	}
 
 	public Budget getBudget() {
-		return budget;
+		return dtableController.getBudget();
 	}
 
 	public boolean isCustomerDataComplete() {
@@ -188,4 +180,9 @@ public class BudgetEditingController implements Serializable {
 	public Order getSavedOrder() {
 		return savedOrder;
 	}
+
+	public DtableBudgetEditingController getDtableController() {
+		return dtableController;
+	}
+	
 }

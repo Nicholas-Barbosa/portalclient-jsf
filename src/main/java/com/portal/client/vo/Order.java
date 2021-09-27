@@ -130,6 +130,10 @@ public class Order {
 		return false;
 	}
 
+	public boolean addItems(List<Item> items) {
+		return items.stream().map(this::addItem).allMatch(x -> x == true);
+	}
+
 	public boolean removeItem(Item item) {
 		return this.items.remove(item);
 	}
@@ -144,5 +148,9 @@ public class Order {
 
 	public boolean removeItems(List<Item> itemsToCompareAndRemove) {
 		return items.removeAll(itemsToCompareAndRemove);
+	}
+
+	public void removeItems() {
+		items.clear();
 	}
 }
