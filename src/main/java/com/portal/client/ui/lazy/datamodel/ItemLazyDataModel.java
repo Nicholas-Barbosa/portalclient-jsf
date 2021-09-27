@@ -49,8 +49,26 @@ public class ItemLazyDataModel extends LazyBehaviorDataModel<Item> {
 	}
 
 	@Override
+	public Item getRowData(String rowKey) {
+		// TODO Auto-generated method stub
+		return items.parallelStream().filter(i -> this.getRowKey(i).equals(rowKey)).findAny().orElse(null);
+	}
+
+	@Override
 	public String getRowKey(Item object) {
 		return object.getProduct().getCommercialCode();
+	}
+
+	@Override
+	public boolean removeObject(Item t) {
+		// TODO Auto-generated method stub
+		return items.remove(t);
+	}
+
+	@Override
+	public boolean removeObjects(List<Item> t) {
+		return items.removeAll(t);
+
 	}
 
 }

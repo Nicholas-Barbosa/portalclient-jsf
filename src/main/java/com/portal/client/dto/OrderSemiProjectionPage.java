@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.vo.Page;
+
 public class OrderSemiProjectionPage implements Page<OrderSemiProjection> {
 
 	/**

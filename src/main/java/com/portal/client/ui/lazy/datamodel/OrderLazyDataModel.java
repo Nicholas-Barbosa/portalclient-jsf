@@ -49,4 +49,16 @@ public class OrderLazyDataModel extends LazyBehaviorDataModel<OrderSemiProjectio
 		return orders;
 	}
 
+	@Override
+	public boolean removeObject(OrderSemiProjection t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeObjects(List<OrderSemiProjection> t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

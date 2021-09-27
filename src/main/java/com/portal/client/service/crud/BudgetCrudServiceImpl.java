@@ -8,13 +8,13 @@ import javax.inject.Inject;
 
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemToFindPrice;
-import com.portal.client.dto.Page;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.repository.BudgetRepository;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.Page;
 
 @ApplicationScoped
 public class BudgetCrudServiceImpl implements BudgetCrudService {

@@ -1,4 +1,4 @@
-package com.portal.client.dto;
+package com.portal.client.vo;
 
 import java.io.Serializable;
 import java.util.Collection;

@@ -47,4 +47,15 @@ public class BudgetLazyDataModel extends LazyBehaviorDataModel<BudgetSemiProject
 		return budgets;
 	}
 
+	@Override
+	public boolean removeObject(BudgetSemiProjection t) {
+		return budgets.remove(t);
+	}
+
+	@Override
+	public boolean removeObjects(List<BudgetSemiProjection> t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

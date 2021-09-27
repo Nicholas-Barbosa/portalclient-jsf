@@ -68,4 +68,16 @@ public class CustomerLazyDataModel extends LazyBehaviorDataModel<Customer>  {
 
 	}
 
+	@Override
+	public boolean removeObject(Customer t) {
+		// TODO Auto-generated method stub
+		return customers.remove(t);
+	}
+
+	@Override
+	public boolean removeObjects(List<Customer> t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

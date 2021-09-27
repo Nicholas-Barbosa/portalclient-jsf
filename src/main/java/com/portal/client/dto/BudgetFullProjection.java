@@ -13,6 +13,7 @@ import javax.json.bind.annotation.JsonbProperty;
 import com.portal.client.dto.helper.StringToDateParser;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
+import com.portal.client.vo.Page;
 
 public class BudgetFullProjection extends Budget implements Page<Budget> {
 

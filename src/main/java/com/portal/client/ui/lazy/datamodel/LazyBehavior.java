@@ -1,6 +1,7 @@
 package com.portal.client.ui.lazy.datamodel;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface LazyBehavior<T> {
 
@@ -12,4 +13,7 @@ public interface LazyBehavior<T> {
 
 	void turnCollectionElegibleToGB();
 
+	boolean removeObject(T t);
+	
+	boolean removeObjects(List<T> t);
 }

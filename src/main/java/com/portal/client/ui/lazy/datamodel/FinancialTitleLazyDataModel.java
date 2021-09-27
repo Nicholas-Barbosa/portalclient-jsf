@@ -47,4 +47,16 @@ public class FinancialTitleLazyDataModel extends LazyBehaviorDataModel<FinacialB
 
 	}
 
+	@Override
+	public boolean removeObject(FinacialBondsDTO t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeObjects(List<FinacialBondsDTO> t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

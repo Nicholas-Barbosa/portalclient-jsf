@@ -9,6 +9,7 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.Page;
 
 public class BudgetPage implements Page<Budget> {
 

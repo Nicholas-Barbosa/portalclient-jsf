@@ -5,10 +5,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.portal.client.dto.ItemToFindPrice;
-import com.portal.client.dto.Page;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.Page;
 
 public interface BudgetRepository extends Serializable {
 

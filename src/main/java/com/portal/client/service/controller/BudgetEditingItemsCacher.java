@@ -12,20 +12,21 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BudgetEditingItemsPage;
-import com.portal.client.dto.Page;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.Item;
+import com.portal.client.vo.Page;
 
 @Stateful
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class BudgetEditingItemsFetcher {
+public class BudgetEditingItemsCacher {
 
 	@Inject
 	private BudgetCrudService budgetService;
 
 	private Page<Budget> currentPage;
 
-	private Map<Integer, BudgetEditingItemsPage> chachedPages = new HashMap<>();
+	private Map<Integer, BudgetEditingItemsPage> cachedPages = new HashMap<>();
 
 	private Budget budget;
 
@@ -38,17 +39,21 @@ public class BudgetEditingItemsFetcher {
 		return Optional.ofNullable(currentPage);
 	}
 
-	public boolean fetch(String code, int page) {
+	public boolean pageFetch(String code, int page) {
 		if (budget == null)
 			throw new IllegalStateException("Budget object is null!");
-		if (chachedPages.containsKey(page)) {
+		if (cachedPages.containsKey(page)) {
 			budget.removeItems();
-			budget.addItems(chachedPages.get(page).getItems());
+			BudgetEditingItemsPage cachedPage = cachedPages.get(page);
+			budget.addItems(cachedPage.getItems());
+			currentPage = cachedPage.getPageWrapper();
 			return true;
 		}
 		Optional<Page<Budget>> findByCode = budgetService.findByCode(code, page, pageSize);
 		if (findByCode.isPresent()) {
-			this.getBudgetFromPage(findByCode.get());
+			Budget budgetFromPage = this.getBudgetFromPage(findByCode.get());
+			budget.removeItems();
+			budget.addItems(budgetFromPage.getItems());
 			return true;
 		}
 		return false;
@@ -56,8 +61,7 @@ public class BudgetEditingItemsFetcher {
 
 	private Budget getBudgetFromPage(Page<Budget> page) {
 		Budget budget = ((List<Budget>) page.getContent()).get(0);
-		chachedPages.put(page.getPage(),
-				new BudgetEditingItemsPage(page.getPage(), new ArrayList<>(budget.getItems())));
+		cachedPages.put(page.getPage(), new BudgetEditingItemsPage(page, new ArrayList<>(budget.getItems())));
 		currentPage = page;
 		return budget;
 	}
@@ -66,6 +70,34 @@ public class BudgetEditingItemsFetcher {
 		int currenNumPage = currentPage.getPage();
 		int totalElements = currentPage.totalItems();
 
+	}
+
+	/**
+	 * Remove item from current cached page
+	 * 
+	 * @param item
+	 */
+	public void removeItem(Item item) {
+		List<Item> items = getItemsOnCurrentPage();
+		items.remove(item);
+	}
+
+	/**
+	 * Remove items from current cached page
+	 * 
+	 * @param item
+	 */
+	public void removeItemS(List<Item> items) {
+		items.forEach(this::removeItem);
+	}
+
+	private BudgetEditingItemsPage getCurrentItemPage() {
+		return cachedPages.get(currentPage.getPage());
+
+	}
+
+	private List<Item> getItemsOnCurrentPage() {
+		return this.getCurrentItemPage().getItems();
 	}
 
 	public int getPageSize() {
@@ -82,5 +114,9 @@ public class BudgetEditingItemsFetcher {
 
 	public void setBudget(Budget budget) {
 		this.budget = budget;
+	}
+
+	public Page<Budget> getCurrentPage() {
+		return currentPage;
 	}
 }

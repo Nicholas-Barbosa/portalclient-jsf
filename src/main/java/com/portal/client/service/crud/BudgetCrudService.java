@@ -5,11 +5,11 @@ import java.util.Set;
 
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemToFindPrice;
-import com.portal.client.dto.Page;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.ServiceSerializable;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.Page;
 
 public interface BudgetCrudService extends ServiceSerializable, CrudService {
 

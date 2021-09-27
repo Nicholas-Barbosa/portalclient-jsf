@@ -21,7 +21,6 @@ import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.BudgetToUpdateDTO;
 import com.portal.client.dto.FormToEstimateBudget;
 import com.portal.client.dto.ItemToFindPrice;
-import com.portal.client.dto.Page;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.jaxrs.client.TokenedRestClient;
@@ -31,6 +30,7 @@ import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Customer404Error;
 import com.portal.client.vo.Deseriaized404JsonEstimateEndpoint;
+import com.portal.client.vo.Page;
 import com.portal.client.vo.WrapperItem404Error;
 
 @ApplicationScoped

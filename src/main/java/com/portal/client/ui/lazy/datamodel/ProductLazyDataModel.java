@@ -65,4 +65,16 @@ public class ProductLazyDataModel extends LazyBehaviorDataModel<Product> {
 
 	}
 
+	@Override
+	public boolean removeObject(Product t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean removeObjects(List<Product> t) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

@@ -259,11 +259,11 @@
 													listener="#{budgetEditingController.handleItemImportReturn}" />
 											</p:commandButton>
 											<p:commandButton id="delete-products-button"
-												value="#{dtableBudgetEditingController.deleteButtonMessage}"
+												value="#{budgetEditingController.dtableController.deleteButtonMessage}"
 												icon="pi pi-trash"
-												action="#{dtableBudgetEditingController.deleteItems(budgetEditingController.budget)}"
+												action="#{budgetEditingController.dtableController.removeItems}"
 												styleClass="ui-button-danger"
-												disabled="#{dtableBudgetEditingController.disableDeleteProductsBtn()}"
+												disabled="#{budgetEditingController.dtableController.disableDeleteProductsBtn()}"
 												process="@this" update="@this,dtItems,panelTotals">
 												<p:confirm header="Confirmar"
 													message="Deletar produtos selecionados?"
@@ -437,7 +437,7 @@
 											<p:commandButton icon="pi pi-times"
 												styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 												title="Remover"
-												action="#{orderCommonBehaviorHelperImpl.removeItem(budgetEditingController.budget,item)}"
+												action="#{budgetEditingController.dtableController.removeItem(item)}"
 												oncomplete="editScrollBodyMaxHeight('dtItems','30vh')"
 												update="dtItems,panelTotals" process="@this" />
 										</p:column>

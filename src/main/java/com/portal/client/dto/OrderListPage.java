@@ -3,6 +3,7 @@ package com.portal.client.dto;
 import java.util.Collection;
 
 import com.portal.client.vo.Order;
+import com.portal.client.vo.Page;
 
 public class OrderListPage implements Page<Order>{
 

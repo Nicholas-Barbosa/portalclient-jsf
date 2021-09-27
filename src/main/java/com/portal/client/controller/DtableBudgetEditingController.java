@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import org.primefaces.event.data.PageEvent;
 
 import com.portal.client.service.OrderCommonBehaviorHelper;
-import com.portal.client.service.controller.BudgetEditingItemsFetcher;
+import com.portal.client.service.controller.BudgetEditingItemsCacher;
 import com.portal.client.ui.lazy.datamodel.ItemLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
@@ -32,7 +32,7 @@ public class DtableBudgetEditingController implements Serializable {
 	private OrderCommonBehaviorHelper helper;
 
 	@EJB
-	private BudgetEditingItemsFetcher itemsFetcher;
+	private BudgetEditingItemsCacher itemsCacher;
 
 	private int pageSize = 10;
 
@@ -44,11 +44,13 @@ public class DtableBudgetEditingController implements Serializable {
 	}
 
 	public void onPage(PageEvent page) {
-		itemsFetcher.fetch(budgetId, page.getPage() + 1);
+		if (itemsCacher.pageFetch(budgetId, page.getPage() + 1))
+			LazyPopulatorUtils.populate(items, itemsCacher.getCurrentPage(), this.getBudget().getItems());
+
 	}
 
 	public void initialFind() {
-		itemsFetcher.initialFetch(budgetId, 1).ifPresentOrElse(budgetPage -> {
+		itemsCacher.initialFetch(budgetId, 1).ifPresentOrElse(budgetPage -> {
 			Budget budget = ((List<Budget>) budgetPage.getContent()).get(0);
 			LazyPopulatorUtils.populate(items, budgetPage, budget.getItems());
 		}, () -> {
@@ -58,10 +60,17 @@ public class DtableBudgetEditingController implements Serializable {
 
 	}
 
-	public void deleteItems(LazyBehaviorDataModel<Item> lazyItems) {
-		helper.removeItems(itemsFetcher.getBudget(), itemsToRemove);
+	public void removeItem(Item item) {
+		helper.removeItem(getBudget(), item);
+		items.removeObject(item);
+		itemsCacher.removeItem(item);
+	}
+
+	public void removeItems() {
+		helper.removeItems(itemsCacher.getBudget(), itemsToRemove);
+		items.removeObjects(itemsToRemove);
+		itemsCacher.removeItemS(itemsToRemove);
 		itemsToRemove.clear();
-		lazyItems.getWrappedData().removeAll(itemsToRemove);
 		FacesUtils.info(null, "Itens removidos", null, "growl");
 	}
 
@@ -90,11 +99,11 @@ public class DtableBudgetEditingController implements Serializable {
 	}
 
 	public void setBudget(Budget budget) {
-		this.itemsFetcher.setBudget(budget);
+		this.itemsCacher.setBudget(budget);
 	}
 
 	public Budget getBudget() {
-		return itemsFetcher.getBudget();
+		return itemsCacher.getBudget();
 	}
 
 	public String getDeleteButtonMessage() {

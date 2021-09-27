@@ -7,6 +7,8 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.vo.Page;
+
 public class CustomerPageDTO implements Page<Customer> {
 
 	/**
