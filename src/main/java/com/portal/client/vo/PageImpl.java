@@ -1,5 +1,6 @@
 package com.portal.client.vo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class PageImpl<T> implements Page<T> {
@@ -19,6 +20,11 @@ public class PageImpl<T> implements Page<T> {
 		this.totalPages = totalPages;
 		this.totalItems = totalItems;
 		this.content = content;
+	}
+
+	public PageImpl(Page<T> page) {
+		this(page.getPageSize(), page.getPage(), page.totalPages(), page.totalItems(),
+				new ArrayList<>(page.getContent()));
 	}
 
 	@Override

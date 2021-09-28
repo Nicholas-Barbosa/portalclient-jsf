@@ -2,6 +2,7 @@ package com.portal.client.vo.builder;
 
 import java.util.Collection;
 
+import com.portal.client.vo.Page;
 import com.portal.client.vo.PageImpl;
 
 public class PageBuilder<T> {
@@ -11,6 +12,10 @@ public class PageBuilder<T> {
 
 	public static <T> PageBuilder<T> getInstance(Class<T> type) {
 		return new PageBuilder<T>();
+	}
+
+	public static <T> PageImpl<T> deepCopy(Page<T> page) {
+		return new PageImpl<T>(page);
 	}
 
 	public PageBuilder<T> withPage(int page) {

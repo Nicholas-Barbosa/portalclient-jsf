@@ -1,6 +1,5 @@
 package com.portal.client.service.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +31,8 @@ public class BudgetEditingItemsCacher {
 
 	private int pageSize = 10;
 
-	public Optional<Page<Budget>> initialFetch(String code, int page) {
-		budgetService.findByCode(code, page, pageSize).ifPresentOrElse(budgetPage -> {
+	public Optional<Page<Budget>> initialFetch(String code) {
+		budgetService.findByCode(code, 1, pageSize).ifPresentOrElse(budgetPage -> {
 			this.budget = this.getBudgetFromPage(budgetPage);
 		}, () -> currentPage = null);
 		return Optional.ofNullable(currentPage);
@@ -43,10 +42,10 @@ public class BudgetEditingItemsCacher {
 		if (budget == null)
 			throw new IllegalStateException("Budget object is null!");
 		if (cachedPages.containsKey(page)) {
-			budget.removeItems();
 			BudgetEditingItemsPage cachedPage = cachedPages.get(page);
-			budget.addItems(cachedPage.getItems());
 			currentPage = cachedPage.getPageWrapper();
+			budget.removeItems();
+			budget.addItems(cachedPage.getItems());
 			return true;
 		}
 		Optional<Page<Budget>> findByCode = budgetService.findByCode(code, page, pageSize);
@@ -60,16 +59,9 @@ public class BudgetEditingItemsCacher {
 	}
 
 	private Budget getBudgetFromPage(Page<Budget> page) {
-		Budget budget = ((List<Budget>) page.getContent()).get(0);
-		cachedPages.put(page.getPage(), new BudgetEditingItemsPage(page, new ArrayList<>(budget.getItems())));
+		cachePage(page);
 		currentPage = page;
-		return budget;
-	}
-
-	public void prepareBudgetForDownload(Budget budget) {
-		int currenNumPage = currentPage.getPage();
-		int totalElements = currentPage.totalItems();
-
+		return ((List<Budget>) page.getContent()).get(0);
 	}
 
 	/**
@@ -78,8 +70,7 @@ public class BudgetEditingItemsCacher {
 	 * @param item
 	 */
 	public void removeItem(Item item) {
-		List<Item> items = getItemsOnCurrentPage();
-		items.remove(item);
+		getCurrentItemPage().removeItem(item);
 	}
 
 	/**
@@ -88,16 +79,15 @@ public class BudgetEditingItemsCacher {
 	 * @param item
 	 */
 	public void removeItemS(List<Item> items) {
-		items.forEach(this::removeItem);
+		getCurrentItemPage().removeItems(items);
 	}
 
-	private BudgetEditingItemsPage getCurrentItemPage() {
+	public BudgetEditingItemsPage getCurrentItemPage() {
 		return cachedPages.get(currentPage.getPage());
-
 	}
 
-	private List<Item> getItemsOnCurrentPage() {
-		return this.getCurrentItemPage().getItems();
+	private void cachePage(Page<Budget> pageToCache) {
+		cachedPages.put(pageToCache.getPage(), new BudgetEditingItemsPage(pageToCache));
 	}
 
 	public int getPageSize() {

@@ -50,7 +50,7 @@ public class DtableBudgetEditingController implements Serializable {
 	}
 
 	public void initialFind() {
-		itemsCacher.initialFetch(budgetId, 1).ifPresentOrElse(budgetPage -> {
+		itemsCacher.initialFetch(budgetId).ifPresentOrElse(budgetPage -> {
 			Budget budget = ((List<Budget>) budgetPage.getContent()).get(0);
 			LazyPopulatorUtils.populate(items, budgetPage, budget.getItems());
 		}, () -> {

@@ -322,7 +322,9 @@
 									</p:menuButton>-->
 										</f:facet>
 										<p:ajax event="page"
-											listener="#{budgetEditingController.dtableController.onPage}" />
+											listener="#{budgetEditingController.dtableController.onPage}"
+											onstart="PF('blockItemsPanel').show()"
+											oncomplete="PF('blockItemsPanel').hide()" />
 										<p:ajax event="rowEdit"
 											listener="#{budgetEditingController.onRowItemEdit}"
 											update="panelTotals" />
@@ -489,10 +491,10 @@
 																	</span>
 
 																</div>
-																<p:commandButton value="Estoque"
+																<p:remoteCommand name="loadStock"
 																	action="#{findProductStockController.find(item.product)}"
 																	process="@this" update="@form"
-																	rendered="#{item.product.stock eq null}"
+																	autoRun="#{item.product.stock eq null}"
 																	onstart="$('#div-stock-content-#{item.product.commercialCode}').hide();$('#div-loading-stock-#{item.product.commercialCode}').show();"
 																	oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();" />
 															</h:form>
@@ -557,7 +559,11 @@
 											</div>
 										</p:rowExpansion>
 									</p:dataTable>
+									<p:blockUI widgetVar="blockItemsPanel" block="panelItems">
+										<i class="pi pi-spin pi-spinner" style="font-size: 3rem" />
+									</p:blockUI>
 								</h:form>
+
 							</p:outputPanel>
 						</div>
 					</div>
