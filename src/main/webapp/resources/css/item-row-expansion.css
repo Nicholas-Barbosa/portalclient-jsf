@@ -1,0 +1,14 @@
+.product-tech-data{
+max-height: 35vh;
+overflow-y: auto;
+}
+
+.product-in-stock {
+	background-color: #C8E6C9;
+	color: #256029;
+}
+
+.product-out-stock {
+	background: #FFCDD2;
+	color: #C63737;
+}
