@@ -206,6 +206,9 @@
 								<p:ajax event="rowEdit"
 									listener="#{newBudgetOrderController.onRowItemEdit}"
 									update="budgetTotals" />
+								<p:ajax event="rowToggle" onstart="PF('expandingItem').show();"
+									oncomplete="PF('expandingItem').hide();" />
+
 								<f:facet name="header">
 									<div class="p-d-flex p-jc-between p-ai-center">
 										<div>
@@ -435,6 +438,18 @@
 							blocked="#{newBudgetOrderController.budget.customerOnOrder == null}">
 							<i class="pi pi-lock" style="font-size: 3rem" />
 						</p:blockUI>
+
+						<p:sidebar widgetVar="expandingItem" modal="true"
+							baseZIndex="1000" position="bottom" showCloseIcon="false">
+							<h3 style="font-weight: normal">Expandindo item...</h3>
+							<div class="p-d-flex p-ai-end">
+								<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="5rem" />
+							</div>
+						</p:sidebar>
+
 					</div>
 				</div>
 

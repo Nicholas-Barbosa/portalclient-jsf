@@ -8,11 +8,10 @@
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
 		<h:outputScript name="dataTable.js" library="javascript" />
-		<h:outputStylesheet name="item-row-expansion.css" library="css"/>
+		<h:outputStylesheet name="item-row-expansion.css" library="css" />
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
 
 		<style>
-
 </style>
 	</ui:define>
 
@@ -330,6 +329,11 @@
 											update="delete-products-button" />
 										<p:ajax event="toggleSelect" update="delete-products-button" />
 
+										<p:ajax event="rowToggle"
+											onstart="PF('expandingItem').show();"
+											oncomplete="PF('expandingItem').hide();" />
+
+
 
 										<p:column selectionMode="multiple"></p:column>
 										<p:column exportable="false">
@@ -468,7 +472,8 @@
 												<div class="p-col-2">
 													<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
 													<div class="p-text-normal p-mb-1">#{item.product.description}</div>
-													<div class="p-text-normal p-mb-1">Quantidade múltiplo de #{item.value.multiple}</div>
+													<div class="p-text-normal p-mb-1">Quantidade múltiplo
+														de #{item.value.multiple}</div>
 													<div id="div-stock-wrapper">
 														<div id="div-loading-stock-#{item.product.commercialCode}"
 															style="display: none">
@@ -557,6 +562,16 @@
 										<i class="pi pi-spin pi-spinner" style="font-size: 3rem" />
 									</p:blockUI>
 								</h:form>
+								<p:sidebar widgetVar="expandingItem" modal="true"
+									baseZIndex="1000" position="bottom" showCloseIcon="false">
+									<h3 style="font-weight: normal">Expandindo item...</h3>
+									<div class="p-d-flex p-ai-end">
+										<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
+										<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
+										<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+										<p:skeleton shape="circle" size="5rem" />
+									</div>
+								</p:sidebar>
 
 							</p:outputPanel>
 						</div>
@@ -587,7 +602,7 @@
 								<p:remoteCommand
 									autoRun="#{budgetEditingController.budget.stValue eq null}"
 									action="#{orderCommonBehaviorHelperImpl.sumStValue(budgetEditingController.budget)}"
-									update="stT" process="@this"/>
+									update="stT" process="@this" />
 								<div class="p-field p-col-12 p-md-3">
 									<p:outputLabel for="grossV"
 										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
