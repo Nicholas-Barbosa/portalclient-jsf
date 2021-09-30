@@ -24,7 +24,7 @@ public interface OrderCommonBehaviorHelper {
 	void addItem(Order order, Item produc);
 
 	void addItem(Order order, Collection<Item> items);
-	
+
 	default void setCustomer(Order order, CustomerOnOrder customer) {
 		if (order.getItems() != null && order.getItems().size() >= 1)
 			throw new UnsupportedOperationException(
@@ -45,4 +45,6 @@ public interface OrderCommonBehaviorHelper {
 	void lineDiscount(Order order, ItemLineDiscountForm form);
 
 	void removeItems(Order order, List<Item> itemsToCompareAndRemove);
+
+	void sumStValue(Order order);
 }

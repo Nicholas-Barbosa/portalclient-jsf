@@ -590,6 +590,10 @@
 										symbolPosition="p" readonly="true" decimalSeparator=","
 										thousandSeparator="." />
 								</div>
+								<p:remoteCommand
+									autoRun="#{budgetEditingController.budget.stValue eq null}"
+									action="#{orderCommonBehaviorHelperImpl.sumStValue(budgetEditingController.budget)}"
+									update="stT" process="@this"/>
 								<div class="p-field p-col-12 p-md-3">
 									<p:outputLabel for="grossV"
 										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />

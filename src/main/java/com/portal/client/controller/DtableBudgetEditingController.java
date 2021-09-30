@@ -64,6 +64,7 @@ public class DtableBudgetEditingController implements Serializable {
 		helper.removeItem(getBudget(), item);
 		items.removeObject(item);
 		itemsCacher.removeItem(item);
+		item=null;
 	}
 
 	public void removeItems() {
