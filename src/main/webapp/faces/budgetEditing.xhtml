@@ -458,12 +458,12 @@
 																alt="Imagem não encontrada"
 																rendered="#{item.product.image.currentState eq 'FOUND' || item.product.image.currentState eq 'NOT_FOUND'}" />
 
-															<p:commandButton value="Imagem" icon="pi pi-image"
+															<p:remoteCommand name="imageLoader" icon="pi pi-image"
 																action="#{productImageLoaderController.loadImage(item.product)}"
-																rendered="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
+																autoRun="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
 																update="@form" process="@this"
 																onstart="$('#div-img-loader-#{item.product.commercialCode}').show();$('#div-img-#{item.product.commercialCode}').hide();"
-																oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();" />
+																oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();" async="true"/>
 
 														</h:form>
 													</div>
@@ -551,7 +551,7 @@
 															action="#{productTechDetailLoaderController.load(item.product)}"
 															onstart="$('#product-tech-loader-#{item.product.commercialCode}').show();$('#product-tech-#{item.product.commercialCode}').hide();"
 															oncomplete="$('#product-tech-loader-#{item.product.commercialCode}').hide();$('#product-tech-#{item.product.commercialCode}').show();"
-															update="@form" process="@this" />
+															update="@form" process="@this" async="true"/>
 													</h:form>
 
 												</div>

@@ -161,7 +161,8 @@
 										<p:ajax event="dialogReturn"
 											listener="#{newBudgetOrderController.handleProductResult}"
 											onstart="PF('topSidebar').show()"
-											oncomplete="PF('topSidebar').hide()" />
+											oncomplete="PF('topSidebar').hide()"
+											update="menu-button-discount" />
 									</p:commandButton>
 									<p:commandButton
 										value="#{resourceBundleServiceImpl.getMessage('abrir')}"
@@ -171,12 +172,14 @@
 										<p:ajax event="dialogReturn"
 											listener="#{newBudgetOrderController.handleItemImportReturn}"
 											onstart="PF('topSidebar').show()"
-											oncomplete="PF('topSidebar').hide()" />
+											oncomplete="PF('topSidebar').hide()"
+											update="menu-button-discount" />
 									</p:commandButton>
 
 									<p:menuButton
 										value="#{resourceBundleServiceImpl.getMessage('descontos')}"
-										disabled="#{empty newBudgetOrderController.budget.items}">
+										disabled="#{empty newBudgetOrderController.budget.items}"
+										id="menu-button-discount">
 										<p:menuitem
 											value="#{resourceBundleServiceImpl.getMessage('linha')}"
 											action="#{orderDiscountShowController.show(newBudgetOrderController.budget,1)}"
@@ -234,11 +237,7 @@
 									filterBy="#{item.product.commercialCode}">
 									<h:outputText value="#{item.product.commercialCode}" />
 								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('descricao')}"
-									filterBy="#{item.product.description}">
-									<h:outputText value="#{item.product.description}" />
-								</p:column>
+
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('linha')}"
 									filterBy="#{item.product.line}">
@@ -261,6 +260,13 @@
 												for="spnQ" />
 										</f:facet>
 									</p:cellEditor>
+								</p:column>
+								<p:column
+									headerText="#{resourceBundleServiceImpl.getMessage('desc_linha')}"
+									sortBy="#{item.value.lineDiscount}">
+									<h:outputText value="#{item.value.lineDiscount}">
+										<f:convertNumber  locale="pt_BR" />
+									</h:outputText>
 								</p:column>
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}"
