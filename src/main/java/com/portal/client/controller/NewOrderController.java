@@ -3,6 +3,7 @@ package com.portal.client.controller;
 import java.io.Serializable;
 import java.util.Optional;
 
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,14 +45,22 @@ public class NewOrderController implements Serializable {
 	@Inject
 	private OrderItemQuantityCalculator ordemQuantityCalculator;
 
+	@Inject
+	private DtableItemController dtItemsController;
+
 	private int onRowItemQuantity;
 
 	public NewOrderController() {
-		newOrder();
+		
 	}
 
+	@PostConstruct
+	public void init() {
+		newOrder();
+	}
 	public final void newOrder() {
 		this.order = new Order();
+		dtItemsController.setOrder(order);
 	}
 
 	public void onRowItemEdit(RowEditEvent<Item> event) {
@@ -113,5 +122,9 @@ public class NewOrderController implements Serializable {
 
 	public void setOnRowItemQuantity(int onRowItemQuantity) {
 		this.onRowItemQuantity = onRowItemQuantity;
+	}
+
+	public DtableItemController getDtItemsController() {
+		return dtItemsController;
 	}
 }

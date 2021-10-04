@@ -3,7 +3,9 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
+	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -39,7 +41,7 @@
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
 								action="#{newOrderController.newOrder}"
-								update="customerForm formItems:dtItems frmTotals"
+								update="customerForm itemsComponent:panelItems frmTotals"
 								onclick="PF('blockItems').show()">
 								<p:confirm type="popup"
 									header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
@@ -69,8 +71,6 @@
 				</h:form>
 			</div>
 
-			<div class="p-grid">
-				<div class="p-col-12">
 					<div class="card">
 						<h:form id="customerForm">
 							<div class="ui-fluid p-formgrid p-grid">
@@ -133,277 +133,14 @@
 							</div>
 						</h:form>
 					</div>
-				</div>
+				
 
-				<div class="p-col-12" id="divCart">
-					<div class="card">
-						<div class="card-header">
-							<h5>#{resourceBundleServiceImpl.getMessage('carrinho_compras')}</h5>
-						</div>
-						<h:form id="formItems">
-							<p:remoteCommand name="updateDtItems" action="#" process="@none"
-								update="dtItems" />
-							<p:toolbar styleClass="p-mb-4">
-								<p:toolbarGroup>
-									<p:commandButton
-										action="#{productSearchShowController.show(newOrderController.order.customerOnOrder)}"
-										process="@this" icon="pi pi-plus"
-										styleClass="ui-button-raised ui-button-success p-mr-2">
-										<p:ajax event="dialogReturn"
-											listener="#{newOrderController.handleProductResult}"
-											onstart="PF('topSidebar').show()"
-											oncomplete="PF('topSidebar').hide()" />
-									</p:commandButton>
-
-									<p:commandButton
-										value="#{resourceBundleServiceImpl.getMessage('abrir')}"
-										icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-										action="#{itemImportShowController.show(newOrderController.order)}"
-										process="@this">
-										<p:ajax event="dialogReturn"
-											listener="#{newOrderController.handleItemImportReturn}" />
-									</p:commandButton>
-
-								</p:toolbarGroup>
-							</p:toolbar>
-
-							<p:dataTable value="#{newOrderController.order.items}" var="item"
-								editable="true" rowKey="#{item.commercialCode}" id="dtItems"
-								reflow="true" size="small" scrollable="true" widgetVar="dtItems"
-								rowIndexVar="crrIndex" filterDelay="100">
-								<p:autoUpdate on="eventAddItem" />
-								<p:autoUpdate on="eventAddLineDiscount" />
-								<p:ajax event="rowEdit"
-									listener="#{newOrderController.onRowItemEdit}"
-									update="frmTotals" />
-								<f:facet name="header">
-									<div class="p-d-flex p-jc-between p-ai-center">
-
-										<div>
-											<p:commandButton id="toggler" type="button" value="Colunas"
-												icon="pi pi-align-justify" />
-											<p:columnToggler datasource="dtItems" trigger="toggler" />
-										</div>
-									</div>
-								</f:facet>
-								<f:facet name="footer">
-									<span class="p-text-bold">Há
-										#{fn:length(newOrderController.order.items)} itens.</span>
-								</f:facet>
-
-								<p:column exportable="false" style="width:2rem">
-									<p:rowToggler />
-								</p:column>
-
-								<p:column style="width:2rem">
-									<h:outputText value="#{crrIndex+1}" />
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('codigo_comercial')}"
-									filterBy="#{item.product.commercialCode}">
-									<h:outputText value="#{item.product.commercialCode}" />
-								</p:column>
-
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('linha')}"
-									filterBy="#{item.product.line}">
-									<h:outputText value="#{item.product.line}" />
-								</p:column>
-
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}"
-									sortBy="#{item.value.quantity}">
-									<p:cellEditor>
-										<f:facet name="output">
-											<h:outputText value="#{item.value.quantity}" />
-										</f:facet>
-										<f:facet name="input">
-											<p:spinner value="#{newOrderController.onRowItemQuantity}"
-												style="width:100%" label="Quantidade" id="spnQ" />
-											<p:tooltip
-												value="Entre com um número múltiplo de #{item.value.multiple}"
-												for="spnQ" />
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('preco_unitario')}"
-									sortBy="#{item.value.unitValue}">
-									<h:outputText value="#{item.value.unitValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total')}"
-									sortBy="#{item.value.totalValue}">
-									<h:outputText value="#{item.value.totalValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('valor_st')}"
-									sortBy="#{item.value.totalStValue}">
-									<h:outputText value="#{item.value.totalStValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-
-								<p:column
-									headerText="#{resourceBundleServiceImpl.getMessage('total_com_st')}"
-									sortBy="#{item.value.totalGrossValue}">
-									<h:outputText value="#{item.value.totalGrossValue}">
-										<f:convertNumber currencySymbol="R$" type="currency"
-											locale="pt_BR" />
-									</h:outputText>
-								</p:column>
-								<p:column style="width:2rem">
-									<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-										saveTitle="Save Row" />
-								</p:column>
-								<p:column>
-
-									<p:commandButton icon="pi pi-times"
-										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
-										title="Remover"
-										action="#{orderCommonBehaviorHelperImpl.removeItem(newOrderController.order,item)}"
-										update="formItems:dtItems,frmTotals,customerForm:btnShowSearchCustomer"
-										process="@this"
-										oncomplete="turnDtScrollBodyResponsive('dtItems','32vh')" />
-
-								</p:column>
-
-								<p:rowExpansion>
-									<div id="rowData" class="p-grid p-ml-3  p-mt-2">
-										<div id="div-img-wrraper" class="p-col-fixed"
-											style="width: 12rem">
-											<div id="div-img-loader-#{item.product.commercialCode}"
-												style="display: none">
-												<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
-											</div>
-											<div id="div-img-#{item.product.commercialCode}">
-												<h:form>
-													<p:graphicImage value="#{item.product.imageStreams}"
-														stream="false" styleClass="w3-round-xlarge product-image"
-														style="height: 8.2rem; width: 10rem" id="img"
-														alt="Imagem não encontrada"
-														rendered="#{item.product.image.currentState eq 'FOUND' || item.product.image.currentState eq 'NOT_FOUND'}" />
-
-													<p:commandButton value="Imagem" icon="pi pi-image"
-														action="#{productImageLoaderController.loadImage(item.product)}"
-														rendered="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
-														update="@form" process="@this"
-														onstart="$('#div-img-loader-#{item.product.commercialCode}').show();$('#div-img-#{item.product.commercialCode}').hide();"
-														oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();" />
-
-												</h:form>
-											</div>
-
-										</div>
-										<div class="p-col-2">
-											<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
-											<div class="p-text-normal p-mb-1">#{item.product.description}</div>
-											<div class="p-text-normal p-mb-1">Quantidade múltiplo
-												de #{item.value.multiple}</div>
-											<div id="div-stock-wrapper">
-												<div id="div-loading-stock-#{item.product.commercialCode}"
-													style="display: none">
-													Buscando estoque... <i class="pi pi-spin pi-spinner"
-														style="font-size: 3rem;" />
-												</div>
-												<div id="div-stock-content-#{item.product.commercialCode}">
-													<h:form>
-														<div class="p-text-normal p-text-uppercase"
-															style=" display: #{item.product.stock eq null ?'none':block};">
-															<span
-																class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
-																#{productStockMessageController.getMessage(item.product.stock)}
-															</span>
-
-														</div>
-														<p:remoteCommand name="loadStock"
-															action="#{findProductStockController.find(item.product)}"
-															process="@this" update="@form"
-															autoRun="#{item.product.stock eq null}"
-															onstart="$('#div-stock-content-#{item.product.commercialCode}').hide();$('#div-loading-stock-#{item.product.commercialCode}').show();"
-															oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();" />
-													</h:form>
-												</div>
-											</div>
-										</div>
-										<div class="p-col"
-											id="product-tech-loader-#{item.product.commercialCode}"
-											style="display: none">
-											Buscando detalhes técnicos... <i
-												class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
-										</div>
-										<div class="p-col-6 product-tech-data"
-											id="product-tech-#{item.product.commercialCode}">
-											<h:form>
-												<p:panelGrid columns="4"
-													columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-													layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-													style="border:0px none; background-color:transparent;"
-													id="pnTechData"
-													rendered="#{item.product.productTechDetail != null}">
-
-													<p:outputLabel for="@next" value="Aplicação:"
-														styleClass="p-text-bold" />
-													<p:outputLabel
-														value="#{item.product.productTechDetail.application}"
-														styleClass="label-r" />
-
-													<p:outputLabel for="@next" value="Substituições:"
-														styleClass="p-text-bold" />
-													<p:outputLabel
-														value="#{item.product.productTechDetail.productsReplaces}"
-														styleClass="label-r" />
-
-													<p:outputLabel for="@next" value="Peso bruto:"
-														styleClass="p-text-bold" />
-													<p:outputLabel
-														value="#{item.product.productTechDetail.grossWeight}"
-														styleClass="label-r" />
-
-													<p:outputLabel for="@next" value="Dimensões da caixa:"
-														styleClass="p-text-bold" />
-													<p:outputLabel
-														value="#{item.product.productTechDetail.packageDimension}"
-														styleClass="label-r" />
-
-
-													<p:commandButton
-														action="#{productTechDataShowController.show(item.product)}"
-														process="@this" icon="pi pi-exclamation-circle"
-														styleClass="rounded-button ui-button-flat p-mr-2 p-mb-2"
-														title="Site" />
-
-												</p:panelGrid>
-												<p:commandButton value="Dados técnicos"
-													rendered="#{item.product.productTechDetail eq null}"
-													icon="pi pi-th-large"
-													action="#{productTechDetailLoaderController.load(item.product)}"
-													onstart="$('#product-tech-loader-#{item.product.commercialCode}').show();$('#product-tech-#{item.product.commercialCode}').hide();"
-													oncomplete="$('#product-tech-loader-#{item.product.commercialCode}').hide();$('#product-tech-#{item.product.commercialCode}').show();"
-													update="@form" process="@this" />
-
-											</h:form>
-
-										</div>
-									</div>
-								</p:rowExpansion>
-
-							</p:dataTable>
-
-						</h:form>
-						<p:blockUI block="formItems" widgetVar="blockItems"
-							blocked="#{newOrderController.order.customerOnOrder == null}">
-							<i class="pi pi-lock" style="font-size: 3rem" />
-						</p:blockUI>
-					</div>
-				</div>
+				<ic:itemDtableComponent
+					handleProductSearchResultAction="#{newOrderController.handleProductResult}"
+					handleItemImportAction="#{newOrderController.handleItemImportReturn}"
+					itemComponentController="#{newOrderController.dtItemsController}"
+					totalComponent="frmTotals" 
+					id="itemsComponent" />
 
 				<div class="p-col-12 p-shadow-24" id="totals">
 					<div class="card ">
@@ -440,10 +177,6 @@
 				</div>
 
 
-
-
-			</div>
-
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{resourceBundleServiceImpl.getMessage('busca_de_cliente')}"
 				positionType="absolute" responsive="true" blockScroll="true">
@@ -479,104 +212,15 @@
 						</p:tab>
 
 						<p:tab title="PROSPECT">
-							<h:form>
-								<p:panelGrid columns="4"
-									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-									style="border:0px none; background-color:transparent;" id="pn">
-
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('nome')}"
-										for="prospName" />
-									<p:inputText
-										value="#{prospectCustomerFormController.prospectCustomerForm.name}"
-										id="prospName" />
-
-									<p:outputLabel for="prospCnpj" value="CNPJ" />
-									<p:inputMask id="prospCnpj"
-										value="#{prospectCustomerFormController.prospectCustomerForm.cnpj}"
-										mask="99.999.999/9999-99" validateMask="true" />
-
-									<p:outputLabel for="@next" value="Vendedor" />
-									<p:selectOneMenu
-										value="#{prospectCustomerFormController.prospectCustomerForm.sellerType}"
-										id="prospVendor">
-										<f:selectItem itemLabel="Agrícola" itemValue="AGRICOLA" />
-										<f:selectItem itemLabel="Carros" itemValue="CARROS" />
-										<f:selectItem itemLabel="Motos" itemValue="MOTOS" />
-
-									</p:selectOneMenu>
-
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
-										for="prospTerms" />
-									<p:inputText
-										value="#{prospectCustomerFormController.prospectCustomerForm.paymentTerms}"
-										id="prospTerms" />
-
-									<p:row styleClass="my-heading-row">
-           				 				Endereço
-        							</p:row>
-
-									<p:outputLabel for="cep" value="CEP" />
-									<p:inputText id="cep"
-										value="#{prospectCustomerFormController.cepToSearch}"
-										maxlength="8" oninput="if(this.value.length == 8)findCep()" />
-
-									<p:outputLabel for="prospEndereco"
-										value="#{resourceBundleServiceImpl.getMessage('rua')}" />
-									<p:inputText id="prospEndereco"
-										value="#{prospectCustomerFormController.prospectCustomerForm.street}" />
-
-									<p:outputLabel for="prospBairro"
-										value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
-									<p:inputText id="prospBairro"
-										value="#{prospectCustomerFormController.prospectCustomerForm.district}"
-										readonly="true" />
-
-									<p:outputLabel for="prospCidade"
-										value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
-									<p:inputText id="prospCidade"
-										value="#{prospectCustomerFormController.prospectCustomerForm.city}"
-										readonly="true" />
-
-									<p:outputLabel for="@next" value="Estado" />
-									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
-										value="#{prospectCustomerFormController.prospectCustomerForm.stateAcronym}"
-										editable="false">
-										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
-											var="state" itemLabel="#{state.name}"
-											itemValue="#{state.acronym}" />
-									</p:selectOneMenu>
-
-
-									<p:row>
-										<p:column styleClass="ui-grid-col-12">
-											<p:commandButton icon="pi pi-check"
-												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-												action="#{prospectCustomerFormController.create}"
-												process="@this,@form:pn" oncomplete="getProspect()" />
-										</p:column>
-										<p:growl for="prospCnpj" id="growlForCnpj" />
-									</p:row>
-								</p:panelGrid>
-								<p:remoteCommand
-									action="#{prospectCustomerFormController.findCep}"
-									name="findCep" process="@this,@form:cep"
-									onstart="PF('blockForCepSearch').show()"
-									oncomplete="PF('blockForCepSearch').hide()"
-									update="growl,@form:prospEndereco,@form:es,@form:cep,@form:prospCidade,@form:prospBairro" />
-								<p:remoteCommand name="getProspect"
-									action="#{newOrderController.getProspectFromSession}"
-									process="@this" update=":customerForm,@form,budgetToolsForm"
-									oncomplete="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
-								<p:blockUI widgetVar="blockForCepSearch" block="@form" />
-							</h:form>
-
+							<cstomer:prospectForm order="#{newOrderController.order}"
+								update=":customerForm"
+								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 						</p:tab>
+
 					</p:tabView>
 				</div>
 			</p:dialog>
+			
 			<p:dialog header="Status" modal="true" closable="false"
 				widgetVar="persistingOrder" responsive="true">
 				<div id="statLoading">
@@ -602,7 +246,7 @@
 						<div class="box">
 							<p:commandButton value="OK"
 								action="#{newOrderController.newOrder}" process="@this"
-								update="customerForm, formItems:dtItems, frmTotals"
+								update="customerForm, :itemsComponent, frmTotals"
 								styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingOrder').hide()" />
 							<p:commandButton value="Visualizar outros pedidos"

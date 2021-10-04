@@ -46,7 +46,7 @@
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
 								action="#{newBudgetOrderController.newBudget}"
-								update="customerForm :itemsComponent budgetTotals">
+								update="customerForm itemsComponent:panelItems budgetTotals">
 								<p:confirm type="popup"
 									header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
 									message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
@@ -140,7 +140,7 @@
 				</h:form>
 			</div>
 
-			<ic:itemDtableComponent budget="#{newBudgetOrderController.budget}"
+			<ic:itemDtableComponent
 				handleProductSearchResultAction="#{newBudgetOrderController.handleProductResult}"
 				handleItemImportAction="#{newBudgetOrderController.handleItemImportReturn}"
 				itemComponentController="#{newBudgetOrderController.dtItemsController}"
@@ -206,7 +206,7 @@
 											<p:commandButton icon="pi pi-search"
 												action="#{customerSearchShowController.show(newBudgetOrderController.cNameToSearch)}">
 												<p:ajax event="dialogReturn"
-													listener="#{newBudgetOrderController.handleCustomerResult}" />
+													listener="#{newBudgetOrderController.handleCustomerResult}"  />
 											</p:commandButton>
 										</div>
 
@@ -227,13 +227,13 @@
 				</div>
 			</p:dialog>
 
-
 			<p:confirmPopup global="true">
 				<p:commandButton value="#{holdMessageView.label('nao')}"
 					type="button" styleClass="ui-confirm-popup-no ui-button-flat" />
 				<p:commandButton value="#{holdMessageView.label('sim')}"
 					type="button" styleClass="ui-confirm-popup-yes" />
 			</p:confirmPopup>
+			
 			<p:remoteCommand name="cleanBudgetObj"
 				action="#{newBudgetOrderController.newBudget}" process="@this"
 				update="customerForm, :itemsComponent, budgetTotals" />

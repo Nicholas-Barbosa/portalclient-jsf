@@ -115,12 +115,13 @@ public class NewBudgetOrderController implements Serializable {
 
 	public final void newBudget() {
 		this.budget = new Budget();
-		dtItemsController.setBudget(budget);
+		dtItemsController.setOrder(budget);
 	}
 
 	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
 		event.getObject().ifPresentOrElse(c -> {
 			budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(c));
+			
 			FacesUtils.info(null, "Cliente selecionado", null, "growl");
 			FacesUtils.ajaxUpdate("customerForm");
 			FacesUtils.executeScript("PF('dlgSearchCustomer').hide();PF('blockItems').hide();");

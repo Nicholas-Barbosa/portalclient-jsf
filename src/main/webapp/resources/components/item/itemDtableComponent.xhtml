@@ -12,9 +12,6 @@
 </h:head>
 
 <composite:interface>
-	<composite:attribute name="budget"
-		shortDescription="mutable Budget object to show all items and customer"
-		required="true" type="com.portal.client.vo.Budget" />
 	<composite:attribute name="handleProductSearchResultAction"
 		method-signature="void handleProductResult( org.primefaces.event.SelectEvent)"
 		required="true" />
@@ -38,15 +35,13 @@
 
 	<div class="card">
 		<h5>Gerenciar itens</h5>
-
-
 		<p:outputPanel deferred="true" deferredMode="visible" id="panelItems">
 			<h:form prependId="false">
 				<p:toolbar styleClass="p-mb-4">
 					<p:toolbarGroup>
 						<p:commandButton value="Novo" icon="pi pi-plus"
 							styleClass="ui-button-raised ui-button-success"
-							action="#{productSearchShowController.show(cc.attrs.budget.customerOnOrder)}"
+							action="#{productSearchShowController.show(cc.attrs.itemComponentController.order.customerOnOrder)}"
 							style="margin-right: .5rem">
 							<p:ajax event="dialogReturn"
 								listener="#{cc.attrs.handleProductSearchResultAction}"
@@ -61,7 +56,7 @@
 						<p:commandButton
 							value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 							icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-							action="#{itemImportShowController.show(cc.attrs.budget)}"
+							action="#{itemImportShowController.show(cc.attrs.itemComponentController.order)}"
 							process="@this">
 							<p:ajax event="dialogReturn"
 								listener="#{cc.attrs.handleItemImportAction}"
@@ -72,14 +67,14 @@
 							rendered="#{cc.attrs.renderDiscountButton}" styleClass="p-mr-2">
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('linha')}"
-								action="#{orderDiscountShowController.show(cc.attrs.budget,1)}"
+								action="#{orderDiscountShowController.show(cc.attrs.itemComponentController.order,1)}"
 								process="@this" icon="pi pi-tag">
 								<p:ajax event="dialogReturn"
 									update="dtItems,#{cc.attrs.totalComponent}" />
 							</p:menuitem>
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('global')}"
-								action="#{orderDiscountShowController.show(cc.attrs.budget,0)}"
+								action="#{orderDiscountShowController.show(cc.attrs.itemComponentController.order,0)}"
 								icon="pi pi-tag">
 								<p:ajax event="dialogReturn"
 									update="dtItems,#{cc.attrs.totalComponent}" />
@@ -92,7 +87,8 @@
 							action="#{cc.attrs.itemComponentController.removeItems}"
 							styleClass="ui-button-danger"
 							disabled="#{cc.attrs.itemComponentController.disableDeleteProductsBtn()}"
-							process="@this" update="@this,@obs(newItem)">
+							process="@this"
+							update="@this,dtItems, #{cc.attributes.totalComponent}">
 							<p:confirm header="Confirmar"
 								message="Deletar produtos selecionados?"
 								icon="pi pi-exclamation-triangle" />
@@ -122,7 +118,8 @@
 					</div>
 				</div>
 
-				<p:dataTable var="item" value="#{cc.attributes.budget.items}"
+				<p:dataTable var="item"
+					value="#{cc.attributes.itemComponentController.order.items}"
 					id="dtItems" widgetVar="dtItems" editable="true" scrollable="true"
 					size="small" filterDelay="100"
 					selection="#{cc.attrs.itemComponentController.itemsToRemove}"
@@ -149,7 +146,6 @@
 						update="#{cc.clientId}:delete-products-button" />
 					<p:ajax event="rowToggle" onstart="PF('expandingItem').show();"
 						oncomplete="PF('expandingItem').hide();" />
-
 
 					<p:column exportable="false" style="width:2rem">
 						<h:outputText value="#{index+1}"
@@ -378,8 +374,8 @@
 					</p:rowExpansion>
 				</p:dataTable>
 
-			
-				
+
+
 
 			</h:form>
 			<p:sidebar widgetVar="expandingItem" modal="true" baseZIndex="1000"

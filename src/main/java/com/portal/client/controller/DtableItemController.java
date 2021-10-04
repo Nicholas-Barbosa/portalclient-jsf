@@ -14,8 +14,8 @@ import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
+import com.portal.client.vo.Order;
 
 @Dependent
 public class DtableItemController implements Serializable {
@@ -32,7 +32,7 @@ public class DtableItemController implements Serializable {
 	@Inject
 	private OrderItemQuantityCalculator itemQuantityCalculator;
 
-	private Budget budget;
+	private Order order;
 
 	private int pageSize = 10;
 
@@ -44,7 +44,7 @@ public class DtableItemController implements Serializable {
 
 	public void onRowItemEdit(RowEditEvent<Item> event) {
 		try {
-			itemQuantityCalculator.calc(budget, event.getObject(), onRowItemQuantity);
+			itemQuantityCalculator.calc(order, event.getObject(), onRowItemQuantity);
 		} catch (ItemQuantityNotAllowed e) {
 			FacesUtils.error(null, e.getMessage(), null);
 			PrimeFaces.current().ajax().update("growl");
@@ -52,13 +52,13 @@ public class DtableItemController implements Serializable {
 	}
 
 	public void removeItem(Item item) {
-		helper.removeItem(budget, item);
+		helper.removeItem(order, item);
 		itemsToRemove.remove(item);
 		item = null;
 	}
 
 	public void removeItems() {
-		helper.removeItems(budget, itemsToRemove);
+		helper.removeItems(order, itemsToRemove);
 		itemsToRemove.clear();
 		FacesUtils.info(null, "Itens removidos", null, "growl");
 	}
@@ -94,15 +94,16 @@ public class DtableItemController implements Serializable {
 	}
 
 	public List<Item> getItems() {
-		return budget == null ? null : budget.getItems();
+		return order == null ? null : order.getItems();
 	}
 
-	public Budget getBudget() {
-		return budget;
+	public Order getOrder() {
+		return order;
 	}
 
-	public void setBudget(Budget budget) {
-		this.budget = budget;
+	public void setOrder(Order order) {
+		this.order = order;
+		System.out.println("this.order " + this.order.getCustomerOnOrder());
 	}
 
 	public int getOnRowItemQuantity() {
