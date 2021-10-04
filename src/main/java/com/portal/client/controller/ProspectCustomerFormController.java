@@ -5,11 +5,12 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
 
 import com.portal.client.dto.ProspectCustomerForm;
+import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.Order;
 
 @Named
 @ViewScoped
@@ -23,7 +24,7 @@ public class ProspectCustomerFormController implements Serializable {
 	private ZipCodeService zipCodeService;
 
 	@Inject
-	private HttpSession session;
+	private OrderCommonBehaviorHelper orderHelper;
 
 	private ProspectCustomerForm prospectCustomerForm;
 
@@ -47,8 +48,8 @@ public class ProspectCustomerFormController implements Serializable {
 		});
 	}
 
-	public void create() {
-		session.setAttribute("prospect", prospectCustomerForm.toProsp());
+	public void create(Order order) {
+		orderHelper.setCustomer(order, prospectCustomerForm.toProsp());
 	}
 
 	public ProspectCustomerForm getProspectCustomerForm() {

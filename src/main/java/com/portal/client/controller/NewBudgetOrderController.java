@@ -123,8 +123,11 @@ public class NewBudgetOrderController implements Serializable {
 			budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(c));
 			FacesUtils.info(null, "Cliente selecionado", null, "growl");
 			FacesUtils.ajaxUpdate("customerForm");
-			FacesUtils.executeScript("PF('dlgSearchCustomer').hide();");
-		}, () -> FacesUtils.warn(null, "Nenhum cliente selecionado", null, "growl"));
+			FacesUtils.executeScript("PF('dlgSearchCustomer').hide();PF('blockItems').hide();");
+		}, () -> {
+			FacesUtils.warn(null, "Nenhum cliente selecionado", null, "growl");
+			FacesUtils.executeScript("PF('blockItems').show;");
+		});
 
 	}
 

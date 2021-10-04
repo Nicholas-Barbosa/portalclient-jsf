@@ -28,13 +28,17 @@
 		required="true" type="java.lang.String" />
 	<composite:attribute name="renderDiscountButton"
 		shortDescription="Conditionaly render menu button for discount"
-		required="true" type="java.lang.Boolean" default="true" />
+		type="java.lang.Boolean" default="true" />
+	<composite:attribute name="block"
+		shortDescription="Conditionaly activate UI Block"
+		type="java.lang.Boolean" default="true" />
 </composite:interface>
 <composite:implementation>
 
 
 	<div class="card">
 		<h5>Gerenciar itens</h5>
+
 
 		<p:outputPanel deferred="true" deferredMode="visible" id="panelItems">
 			<h:form prependId="false">
@@ -130,8 +134,6 @@
 							value="#{cc.attrs.itemComponentController.getDtableFooterMessage()}"
 							id="footer-message" />
 					</f:facet>
-
-
 					<p:ajax event="rowEdit"
 						listener="#{cc.attrs.itemComponentController.onRowItemEdit}"
 						update="#{cc.attributes.totalComponent}" />
@@ -376,10 +378,8 @@
 					</p:rowExpansion>
 				</p:dataTable>
 
-				<p:blockUI widgetVar="blockItemsPanel"
-					block=":#{cc.clientId}:panelItems">
-					<i class="pi pi-spin pi-spinner" style="font-size: 3rem" />
-				</p:blockUI>
+			
+				
 
 			</h:form>
 			<p:sidebar widgetVar="expandingItem" modal="true" baseZIndex="1000"
@@ -393,7 +393,19 @@
 				</div>
 			</p:sidebar>
 
+			<p:blockUI block="panelItems" widgetVar="blockItems"
+				blocked="#{cc.attrs.block}">
+				<div class="p-grid p-flex-column">
+					<div class="p-col">
+						<i class="pi pi-lock" style="font-size: 3rem" />
+					</div>
+					<div class="p-col">Nenhum cliente configurado</div>
+
+				</div>
+			</p:blockUI>
 		</p:outputPanel>
+
+
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
 			responsive="true" width="350">
 			<p:commandButton value="Sim" type="button"

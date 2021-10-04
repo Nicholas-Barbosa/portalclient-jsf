@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="oncompleteJsCode"
+		shortDescription="Js client code to execute when prospect customer object has been created"
+		type="java.lang.String" />
+	<composite:attribute name="update"
+		shortDescription="Elements to update when prospect customer object has been created"
+		type="java.lang.String" />
+	<composite:attribute name="order"
+		shortDescription="Order mutable object to set a reference to the created prospect customer object"
+		type="com.portal.client.vo.Order" required="true"/>
+</composite:interface>
+
+<composite:implementation>
+	<h:form>
+		<p:panelGrid columns="4"
+			columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+			layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+			style="border:0px none; background-color:transparent;" id="pn">
+
+			<p:outputLabel
+				value="#{resourceBundleServiceImpl.getMessage('nome')}"
+				for="prospName" />
+			<p:inputText
+				value="#{prospectCustomerFormController.prospectCustomerForm.name}"
+				id="prospName" />
+
+			<p:outputLabel for="prospCnpj" value="CNPJ" />
+			<p:inputMask id="prospCnpj"
+				value="#{prospectCustomerFormController.prospectCustomerForm.cnpj}"
+				mask="99.999.999/9999-99" validateMask="true" />
+
+			<p:outputLabel for="@next" value="Vendedor" />
+			<p:selectOneMenu
+				value="#{prospectCustomerFormController.prospectCustomerForm.sellerType}"
+				id="prospVendor">
+				<f:selectItem itemLabel="Agrícola" itemValue="AGRICOLA" />
+				<f:selectItem itemLabel="Carros" itemValue="CARROS" />
+				<f:selectItem itemLabel="Motos" itemValue="MOTOS" />
+
+			</p:selectOneMenu>
+
+			<p:outputLabel
+				value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
+				for="prospTerms" />
+			<p:inputText
+				value="#{prospectCustomerFormController.prospectCustomerForm.paymentTerms}"
+				id="prospTerms" />
+
+			<p:row styleClass="my-heading-row">
+           				 				Endereço
+        							</p:row>
+
+			<p:outputLabel for="cep" value="CEP" />
+			<p:inputText id="cep"
+				value="#{prospectCustomerFormController.cepToSearch}" maxlength="8"
+				oninput="if(this.value.length == 8)findCep()" />
+
+			<p:outputLabel for="prospEndereco"
+				value="#{resourceBundleServiceImpl.getMessage('rua')}" />
+			<p:inputText id="prospEndereco"
+				value="#{prospectCustomerFormController.prospectCustomerForm.street}" />
+
+			<p:outputLabel for="prospBairro"
+				value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
+			<p:inputText id="prospBairro"
+				value="#{prospectCustomerFormController.prospectCustomerForm.district}"
+				readonly="true" />
+
+			<p:outputLabel for="prospCidade"
+				value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
+			<p:inputText id="prospCidade"
+				value="#{prospectCustomerFormController.prospectCustomerForm.city}"
+				readonly="true" />
+
+			<p:outputLabel for="@next" value="Estado" />
+			<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
+				value="#{prospectCustomerFormController.prospectCustomerForm.stateAcronym}"
+				editable="false">
+				<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
+					var="state" itemLabel="#{state.name}" itemValue="#{state.acronym}" />
+			</p:selectOneMenu>
+			<p:row>
+				<p:column styleClass="ui-grid-col-12">
+					<p:commandButton icon="pi pi-check"
+						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+						action="#{prospectCustomerFormController.create(cc.attrs.order)}"
+						process="@this,@form:pn" oncomplete="#{cc.attributes.oncompleteJsCode}"
+						update="#{cc.attrs.update}" />
+				</p:column>
+				<p:growl for="prospCnpj" id="growlForCnpj" />
+			</p:row>
+		</p:panelGrid>
+		<p:remoteCommand action="#{prospectCustomerFormController.findCep}"
+			name="findCep" process="@this,@form:cep"
+			onstart="PF('blockForCepSearch').show()"
+			oncomplete="PF('blockForCepSearch').hide();"
+			update="growl,@form:prospEndereco,@form:es,@form:cep,@form:prospCidade,@form:prospBairro" />
+
+		<p:blockUI widgetVar="blockForCepSearch" block="@form" />
+	</h:form>
+
+</composite:implementation>
+
+</html>

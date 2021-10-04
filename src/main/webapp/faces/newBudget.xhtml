@@ -4,7 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:ic="http://java.sun.com/jsf/composite/components/item">
+	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
+	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -138,12 +139,14 @@
 					</div>
 				</h:form>
 			</div>
+
 			<ic:itemDtableComponent budget="#{newBudgetOrderController.budget}"
 				handleProductSearchResultAction="#{newBudgetOrderController.handleProductResult}"
 				handleItemImportAction="#{newBudgetOrderController.handleItemImportReturn}"
 				itemComponentController="#{newBudgetOrderController.dtItemsController}"
 				totalComponent="budgetTotals" renderDiscountButton="true"
 				id="itemsComponent" />
+
 
 			<div class="p-col-12 p-shadow-24" id="totals">
 				<div class="card ">
@@ -177,9 +180,6 @@
 						<p:autoUpdate on="eventAddItem" />
 					</h:form>
 				</div>
-
-
-
 
 			</div>
 
@@ -218,100 +218,10 @@
 						</p:tab>
 
 						<p:tab title="PROSPECT">
-							<h:form>
-								<p:panelGrid columns="4"
-									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-									style="border:0px none; background-color:transparent;" id="pn">
-
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('nome')}"
-										for="prospName" />
-									<p:inputText
-										value="#{prospectCustomerFormController.prospectCustomerForm.name}"
-										id="prospName" />
-
-									<p:outputLabel for="prospCnpj" value="CNPJ" />
-									<p:inputMask id="prospCnpj"
-										value="#{prospectCustomerFormController.prospectCustomerForm.cnpj}"
-										mask="99.999.999/9999-99" validateMask="true" />
-
-									<p:outputLabel for="@next" value="Vendedor" />
-									<p:selectOneMenu
-										value="#{prospectCustomerFormController.prospectCustomerForm.sellerType}"
-										id="prospVendor">
-										<f:selectItem itemLabel="Agrícola" itemValue="AGRICOLA" />
-										<f:selectItem itemLabel="Carros" itemValue="CARROS" />
-										<f:selectItem itemLabel="Motos" itemValue="MOTOS" />
-
-									</p:selectOneMenu>
-
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
-										for="prospTerms" />
-									<p:inputText
-										value="#{prospectCustomerFormController.prospectCustomerForm.paymentTerms}"
-										id="prospTerms" />
-
-									<p:row styleClass="my-heading-row">
-           				 				Endereço
-        							</p:row>
-
-									<p:outputLabel for="cep" value="CEP" />
-									<p:inputText id="cep"
-										value="#{prospectCustomerFormController.cepToSearch}"
-										maxlength="8" oninput="if(this.value.length == 8)findCep()" />
-
-									<p:outputLabel for="prospEndereco"
-										value="#{resourceBundleServiceImpl.getMessage('rua')}" />
-									<p:inputText id="prospEndereco"
-										value="#{prospectCustomerFormController.prospectCustomerForm.street}" />
-
-									<p:outputLabel for="prospBairro"
-										value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
-									<p:inputText id="prospBairro"
-										value="#{prospectCustomerFormController.prospectCustomerForm.district}"
-										readonly="true" />
-
-									<p:outputLabel for="prospCidade"
-										value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
-									<p:inputText id="prospCidade"
-										value="#{prospectCustomerFormController.prospectCustomerForm.city}"
-										readonly="true" />
-
-									<p:outputLabel for="@next" value="Estado" />
-									<p:selectOneMenu id="es" filter="true" panelStyle="width:180px"
-										value="#{prospectCustomerFormController.prospectCustomerForm.stateAcronym}"
-										editable="false">
-										<f:selectItems value="#{brazilianStateServiceImpl.findAll()}"
-											var="state" itemLabel="#{state.name}"
-											itemValue="#{state.acronym}" />
-									</p:selectOneMenu>
-
-
-									<p:row>
-										<p:column styleClass="ui-grid-col-12">
-											<p:commandButton icon="pi pi-check"
-												styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
-												action="#{prospectCustomerFormController.create}"
-												process="@this,@form:pn" oncomplete="getProspect()" />
-										</p:column>
-										<p:growl for="prospCnpj" id="growlForCnpj" />
-									</p:row>
-								</p:panelGrid>
-								<p:remoteCommand
-									action="#{prospectCustomerFormController.findCep}"
-									name="findCep" process="@this,@form:cep"
-									onstart="PF('blockForCepSearch').show()"
-									oncomplete="PF('blockForCepSearch').hide()"
-									update="growl,@form:prospEndereco,@form:es,@form:cep,@form:prospCidade,@form:prospBairro" />
-								<p:remoteCommand name="getProspect"
-									action="#{newBudgetOrderController.getProspectFromSession}"
-									process="@this" update=":customerForm,@form,budgetToolsForm"
-									oncomplete="PF('dlgSearchCustomer').hide();" />
-								<p:blockUI widgetVar="blockForCepSearch" block="@form" />
-							</h:form>
-
+							<cstomer:prospectForm
+								order="#{newBudgetOrderController.budget}"
+								update=":customerForm,budgetToolsForm"
+								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 						</p:tab>
 					</p:tabView>
 				</div>
