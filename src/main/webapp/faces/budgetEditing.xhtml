@@ -12,8 +12,7 @@
 		<h:outputStylesheet name="item-row-expansion.css" library="css" />
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
 
-		<style>
-</style>
+	
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
@@ -222,7 +221,7 @@
 					handleProductSearchResultAction="#{budgetEditingController.handleProductResult}"
 					handleItemImportAction="#{budgetEditingController.handleItemImportReturn}"
 					itemComponentController="#{budgetEditingController.dtableController}"
-					totalComponent="panelTotals" />
+					totalComponent="panelTotals" renderDiscountButton="false"/>
 					
 				<div class="card">
 					<p:outputPanel id="panelTotals" deferred="true"
@@ -262,14 +261,7 @@
 						</h:form>
 					</p:outputPanel>
 				</div>
-				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade"
-					responsive="true" width="350">
-					<p:commandButton value="Sim" type="button"
-						styleClass="ui-confirmdialog-yes" />
-					<p:commandButton value="Não" type="button"
-						styleClass="ui-confirmdialog-no ui-button-flat" />
-
-				</p:confirmDialog>
+			
 			</div>
 		</f:view>
 	</ui:define>

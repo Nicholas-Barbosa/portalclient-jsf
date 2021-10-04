@@ -12,7 +12,6 @@ import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
 import com.portal.client.dto.Customer;
@@ -21,9 +20,7 @@ import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.DiscountView;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.service.OrderCommonBehaviorHelper;
-import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.util.jsf.FacesUtils;
@@ -51,8 +48,6 @@ public class NewBudgetOrderController implements Serializable {
 	private final OrderCommonBehaviorHelper budgetBehaviorHelper;
 
 	private final HttpSession session;
-	@Inject
-	private OrderItemQuantityCalculator ordemQuantityCalculator;
 
 	private Budget budget;
 
@@ -62,18 +57,19 @@ public class NewBudgetOrderController implements Serializable {
 
 	private CustomerRepresentativeOrderForm customerRepresentativeOrderForm;
 
-	private int onRowItemQuantity;
-
 	private String cNameToSearch;
 
+	private DtableItemController dtItemsController;
+
 	public NewBudgetOrderController() {
-		this(null, null, null, null, null, null);
+		this(null, null, null, null, null, null, null);
 	}
 
 	@Inject
 	public NewBudgetOrderController(BudgetCrudService budgetService, ClientErrorExceptionController responseController,
 			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
-			OrderCommonBehaviorHelper budgetRequestService, HttpSession session) {
+			OrderCommonBehaviorHelper budgetRequestService, HttpSession session,
+			DtableItemController dtItemsController) {
 		super();
 		this.budgetService = budgetService;
 		this.responseController = responseController;
@@ -82,6 +78,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.session = session;
 		this.discView = new DiscountView();
 		this.customerRepresentativeOrderForm = new CustomerRepresentativeOrderForm();
+		this.dtItemsController = dtItemsController;
 		this.newBudget();
 	}
 
@@ -111,15 +108,6 @@ public class NewBudgetOrderController implements Serializable {
 
 	}
 
-	public void onRowItemEdit(RowEditEvent<Item> event) {
-		try {
-			ordemQuantityCalculator.calc(budget, event.getObject(), onRowItemQuantity);
-		} catch (ItemQuantityNotAllowed e) {
-			FacesUtils.error(null, e.getMessage(), null);
-			PrimeFaces.current().ajax().update("growl");
-		}
-	}
-
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
 		this.budgetBehaviorHelper.merge(budget, event.getObject());
 		FacesUtils.ajaxUpdate("formItems:dtItems", "budgetTotals");
@@ -127,6 +115,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	public final void newBudget() {
 		this.budget = new Budget();
+		dtItemsController.setBudget(budget);
 	}
 
 	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
@@ -134,7 +123,7 @@ public class NewBudgetOrderController implements Serializable {
 			budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(c));
 			FacesUtils.info(null, "Cliente selecionado", null, "growl");
 			FacesUtils.ajaxUpdate("customerForm");
-			FacesUtils.executeScript("PF('dlgSearchCustomer').hide();PF('blockItems').hide();");
+			FacesUtils.executeScript("PF('dlgSearchCustomer').hide();");
 		}, () -> FacesUtils.warn(null, "Nenhum cliente selecionado", null, "growl"));
 
 	}
@@ -176,19 +165,15 @@ public class NewBudgetOrderController implements Serializable {
 		return customerRepresentativeOrderForm;
 	}
 
-	public int getOnRowItemQuantity() {
-		return onRowItemQuantity;
-	}
-
-	public void setOnRowItemQuantity(int onRowItemQuantity) {
-		this.onRowItemQuantity = onRowItemQuantity;
-	}
-
 	public String getcNameToSearch() {
 		return cNameToSearch;
 	}
 
 	public void setcNameToSearch(String cNameToSearch) {
 		this.cNameToSearch = cNameToSearch;
+	}
+
+	public DtableItemController getDtItemsController() {
+		return dtItemsController;
 	}
 }

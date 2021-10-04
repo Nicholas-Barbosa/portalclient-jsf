@@ -53,6 +53,7 @@ public class DtableItemController implements Serializable {
 
 	public void removeItem(Item item) {
 		helper.removeItem(budget, item);
+		itemsToRemove.remove(item);
 		item = null;
 	}
 
