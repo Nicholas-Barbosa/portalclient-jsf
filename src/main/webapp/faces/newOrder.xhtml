@@ -47,14 +47,7 @@
 									icon="pi pi-info-circle" />
 							</p:commandButton>
 
-							<p:commandButton
-								value="#{resourceBundleServiceImpl.getMessage('abrir')}"
-								icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-								action="#{itemImportShowController.show(newOrderController.order)}"
-								process="@this">
-								<p:ajax event="dialogReturn"
-									listener="#{newOrderController.handleItemImportReturn}" />
-							</p:commandButton>
+
 							<p:commandButton action="#{newOrderController.save}"
 								value="#{resourceBundleServiceImpl.getMessage('salvar_pedido')}"
 								icon="pi pi-check" styleClass="ui-button-success "
@@ -150,6 +143,30 @@
 						<h:form id="formItems">
 							<p:remoteCommand name="updateDtItems" action="#" process="@none"
 								update="dtItems" />
+							<p:toolbar styleClass="p-mb-4">
+								<p:toolbarGroup>
+									<p:commandButton
+										action="#{productSearchShowController.show(newOrderController.order.customerOnOrder)}"
+										process="@this" icon="pi pi-plus"
+										styleClass="ui-button-raised ui-button-success p-mr-2">
+										<p:ajax event="dialogReturn"
+											listener="#{newOrderController.handleProductResult}"
+											onstart="PF('topSidebar').show()"
+											oncomplete="PF('topSidebar').hide()" />
+									</p:commandButton>
+
+									<p:commandButton
+										value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+										icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
+										action="#{itemImportShowController.show(newOrderController.order)}"
+										process="@this">
+										<p:ajax event="dialogReturn"
+											listener="#{newOrderController.handleItemImportReturn}" />
+									</p:commandButton>
+
+								</p:toolbarGroup>
+							</p:toolbar>
+
 							<p:dataTable value="#{newOrderController.order.items}" var="item"
 								editable="true" rowKey="#{item.commercialCode}" id="dtItems"
 								reflow="true" size="small" scrollable="true" widgetVar="dtItems"
@@ -161,18 +178,7 @@
 									update="frmTotals" />
 								<f:facet name="header">
 									<div class="p-d-flex p-jc-between p-ai-center">
-										<div>
-											<p:commandButton
-												action="#{productSearchShowController.show(newOrderController.order.customerOnOrder)}"
-												process="@this" icon="pi pi-plus"
-												styleClass="ui-button-raised ui-button-success p-mr-2">
-												<p:ajax event="dialogReturn"
-													listener="#{newOrderController.handleProductResult}"
-													onstart="PF('topSidebar').show()"
-													oncomplete="PF('topSidebar').hide()" />
-											</p:commandButton>
 
-										</div>
 										<div>
 											<p:commandButton id="toggler" type="button" value="Colunas"
 												icon="pi pi-align-justify" />
@@ -197,13 +203,13 @@
 									filterBy="#{item.product.commercialCode}">
 									<h:outputText value="#{item.product.commercialCode}" />
 								</p:column>
-							
+
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('linha')}"
 									filterBy="#{item.product.line}">
 									<h:outputText value="#{item.product.line}" />
 								</p:column>
-								
+
 								<p:column
 									headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}"
 									sortBy="#{item.value.quantity}">
@@ -258,7 +264,7 @@
 										saveTitle="Save Row" />
 								</p:column>
 								<p:column>
-								
+
 									<p:commandButton icon="pi pi-times"
 										styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
 										title="Remover"

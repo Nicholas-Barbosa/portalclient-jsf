@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.Set;
 
+import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
@@ -14,7 +15,7 @@ public interface BudgetRepository extends Serializable {
 
 	Page<Budget> findAll(int page, int pageSize);
 
-	Optional<Page<Budget>> findByCode(String code, int page, int pageSize);
+	Optional<BudgetFullProjection> findByCode(String code);
 
 	void save(Budget request);
 

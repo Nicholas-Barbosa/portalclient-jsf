@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.dto.ProspectCustomerOnOrder;
@@ -47,8 +48,8 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public Optional<Page<Budget>> findByCode(String code, int page, int pageSize) {
-		return budgetRepository.findByCode(code, page, pageSize);
+	public Optional<BudgetFullProjection> findByCode(String code) {
+		return budgetRepository.findByCode(code);
 	}
 
 	@Override

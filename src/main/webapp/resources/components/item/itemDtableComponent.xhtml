@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="budget"
+		shortDescription="mutable Budget object to show all items and customer"
+		required="true" type="com.portal.client.vo.Budget" />
+	<composite:attribute name="handleProductSearchResultAction"
+		method-signature="void handleProductResult( org.primefaces.event.SelectEvent)"
+		required="true" />
+	<composite:attribute name="handleItemImportAction"
+		method-signature="void handleItemImportReturn(org.primefaces.event.SelectEvent)"
+		required="true" />
+	<composite:attribute name="itemComponentController" required="true" type="com.portal.client.controller.DtableItemController" />
+	<composite:attribute name="total-component"
+		shortDescription="JSF Component to update when new item is added,removed,edited"
+		required="true" type="java.lang.String"/>
+</composite:interface>
+<composite:implementation>
+
+	<div class="p-grid crud-demo">
+		<div class="p-col-12">
+			<div class="card">
+				<h5>Gerenciar itens</h5>
+
+				<p:outputPanel deferred="true" deferredMode="visible"
+					id="panelItems">
+					<h:form prependId="false">
+						<p:toolbar styleClass="p-mb-4">
+							<p:toolbarGroup>
+								<p:commandButton value="Novo" icon="pi pi-plus"
+									styleClass="ui-button-raised ui-button-success"
+									action="#{productSearchShowController.show(cc.attrs.budget.customerOnOrder)}"
+									style="margin-right: .5rem">
+									<p:ajax event="dialogReturn"
+										listener="#{cc.attrs.handleProductSearchResultAction}"
+										onstart="PF('topSidebar').show()"
+										oncomplete="PF('topSidebar').hide()"
+										update="dtItems,#{cc.attrs.totalComponent}" />
+									<p:sidebar widgetVar="topSidebar" position="top"
+										baseZIndex="10000">
+										<h4>Adicionado produto ao orçamento e calculando
+											totais...</h4>
+									</p:sidebar>
+								</p:commandButton>
+								<p:commandButton
+									value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+									icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
+									action="#{itemImportShowController.show(cc.attrs.budget)}"
+									process="@this">
+									<p:ajax event="dialogReturn"
+										listener="#{cc.attrs.handleItemImportAction}"
+										update="@obs(newItem),#{cc.attrs.totalComponent}" />
+								</p:commandButton>
+								<p:commandButton id="delete-products-button"
+									value="#{cc.attrs.itemComponentController.deleteButtonMessage}"
+									icon="pi pi-trash"
+									action="#{cc.attrs.itemComponentController.removeItems}"
+									styleClass="ui-button-danger"
+									disabled="#{cc.attrs.itemComponentController.disableDeleteProductsBtn()}"
+									process="@this" update="@this,@obs(newItem)">
+									<p:confirm header="Confirmar"
+										message="Deletar produtos selecionados?"
+										icon="pi pi-exclamation-triangle" />
+								</p:commandButton>
+							</p:toolbarGroup>
+
+						</p:toolbar>
+
+						<p:remoteCommand name="updateDtItems" process="@none"
+							update="dtItems" onstart="$('#divUpdatingDtItems').show();"
+							oncomplete="$('#divUpdatingDtItems').hide();editScrollBodyMaxHeight('dtItems','40vh')" />
+
+						<div class="custom-skeleton p-p-4" id="divUpdatingDtItems">
+							<div class="p-d-flex p-mb-3">
+								<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+								<div>
+									<p:skeleton width="10rem" class="p-mb-2" />
+									<p:skeleton width="5rem" class="p-mb-2" />
+									<p:skeleton height=".5rem" />
+								</div>
+							</div>
+							<p:skeleton width="100%" height="150px" />
+							<div class="p-d-flex p-jc-between p-mt-3">
+								<p:skeleton width="4rem" height="2rem" />
+								<p:skeleton width="4rem" height="2rem" />
+							</div>
+						</div>
+
+						<p:dataTable var="item" value="#{cc.attributes.budget.items}"
+							id="dtItems" widgetVar="dtItems" editable="true"
+							scrollable="true" size="small" filterDelay="100"
+							selection="#{cc.attrs.itemComponentController.itemsToRemove}"
+							rowKey="#{item.product.commercialCode}" rowSelectMode="add"
+							reflow="true" rows="10" paginator="true" rowIndexVar="index">
+							<p:autoUpdate on="newItem" />
+							<f:facet name="footer">
+
+								<!--  	<p:menuButton
+										value="#{resourceBundleServiceImpl.getMessage('descontos')}"
+										disabled="#{empty budgetEditingController.budget.items}">
+										<p:menuitem
+											value="#{resourceBundleServiceImpl.getMessage('linha')}"
+											action="#{orderDiscountShowController.show(budgetEditingController.budget,1)}"
+											process="@this" icon="pi pi-tag">
+											<p:ajax event="dialogReturn" update="dtItems,panelTotals" />
+										</p:menuitem>
+										<p:menuitem
+											value="#{resourceBundleServiceImpl.getMessage('global')}"
+											action="#{orderDiscountShowController.show(budgetEditingController.budget,0)}"
+											icon="pi pi-tag">
+											<p:ajax event="dialogReturn" update="dtItems,panelTotals" />
+										</p:menuitem>
+									</p:menuButton>-->
+
+								<h:outputText
+									value="#{cc.attrs.itemComponentController.getDtableFooterMessage()}"
+									id="footer-message" />
+							</f:facet>
+
+
+							<p:ajax event="rowEdit"
+								listener="#{cc.attrs.itemComponentController.onRowItemEdit}"
+								update="panelTotals" />
+							<p:ajax event="rowSelect"
+								update="#{cc.clientId}:delete-products-button" />
+							<p:ajax event="rowUnselect"
+								update="#{cc.clientId}:delete-products-button" />
+							<p:ajax event="rowSelectCheckbox"
+								update="#{cc.clientId}:delete-products-button" />
+							<p:ajax event="rowUnselectCheckbox"
+								update="#{cc.clientId}:delete-products-button" />
+							<p:ajax event="toggleSelect"
+								update="#{cc.clientId}:delete-products-button" />
+							<p:ajax event="rowToggle" onstart="PF('expandingItem').show();"
+								oncomplete="PF('expandingItem').hide();" />
+
+
+							<p:column exportable="false" style="width:2rem">
+								<h:outputText value="#{index+1}"
+									styleClass="p-text-bold p-text-italic" />
+							</p:column>
+
+							<p:column selectionMode="multiple"></p:column>
+
+
+							<p:column exportable="false" style="width:2rem">
+								<p:rowToggler />
+							</p:column>
+
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('codigo')}"
+								id="columnProductCode" field="product.commercialCode" />
+
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}"
+								sortBy="#{item.value.quantity}">
+								<p:cellEditor>
+									<f:facet name="output">
+										<h:outputText value="#{item.value.quantity}" />
+									</f:facet>
+									<f:facet name="input">
+										<p:spinner
+											value="#{cc.attrs.itemComponentController.onRowItemQuantity}"
+											style="width:100%" label="Quantidade" id="spnQ" />
+										<p:tooltip
+											value="Entre com um número múltiplo de #{item.value.multiple}"
+											for="spnQ" />
+									</f:facet>
+								</p:cellEditor>
+
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('valor_unitario')}"
+								sortBy="#{item.product.value.unitValue}">
+								<h:outputText value="#{item.product.value.unitValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('valor')}"
+								sortBy="#{item.value.getTotalValueWithoutDiscount()}">
+								<h:outputText
+									value="#{item.value.getTotalValueWithoutDiscount()}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('total_st')}"
+								sortBy="#{item.value.getTotalStValueWithoutDiscount()}">
+								<h:outputText
+									value="#{item.value.getTotalStValueWithoutDiscount()}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('valor_bruto')}"
+								sortBy="#{item.value.getTotalGrossWithoutDiscount()}">
+								<h:outputText
+									value="#{item.value.getTotalGrossWithoutDiscount()}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('desc_linha')}"
+								sortBy="#{item.value.lineDiscount}">
+								<h:outputText value="#{item.value.lineDiscount}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('total_cm_desc')}"
+								sortBy="#{item.value.totalValue}">
+								<h:outputText value="#{item.value.totalValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="ST" sortBy="#{item.value.totalStValue}">
+								<h:outputText value="#{item.value.totalStValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('bruto_cm_desc')}"
+								sortBy="#{item.value.totalGrossValue}">
+								<h:outputText value="#{item.value.totalGrossValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column style="width:4rem">
+								<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+									saveTitle="Save Row" />
+
+							</p:column>
+							<p:column>
+								<p:commandButton icon="pi pi-times"
+									styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
+									title="Remover"
+									action="#{cc.attrs.itemComponentController.removeItem(item)}"
+									oncomplete="editScrollBodyMaxHeight('dtItems','40vh')"
+									update="dtItems,#{cc.attrs.totalComponent}"
+									process="@this" />
+							</p:column>
+
+							<p:rowExpansion>
+								<div id="rowData" class="p-grid p-ml-3  p-mt-2">
+									<div id="div-img-wrraper" class="p-col-fixed"
+										style="width: 12rem">
+										<div id="div-img-loader-#{item.product.commercialCode}"
+											style="display: none">
+											<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
+										</div>
+										<div id="div-img-#{item.product.commercialCode}">
+											<h:form>
+												<p:graphicImage value="#{item.product.imageStreams}"
+													stream="false" styleClass="w3-round-xlarge product-image"
+													style="height: 8.2rem; width: 10rem" id="img"
+													alt="Imagem não encontrada"
+													rendered="#{item.product.image.currentState eq 'FOUND' || item.product.image.currentState eq 'NOT_FOUND'}" />
+
+												<p:remoteCommand name="imageLoader" icon="pi pi-image"
+													action="#{productImageLoaderController.loadImage(item.product)}"
+													autoRun="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
+													update="@form" process="@this"
+													onstart="$('#div-img-loader-#{item.product.commercialCode}').show();$('#div-img-#{item.product.commercialCode}').hide();"
+													oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();"
+													async="true" />
+
+											</h:form>
+										</div>
+
+									</div>
+									<div class="p-col-2">
+										<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
+										<div class="p-text-normal p-mb-1">#{item.product.description}</div>
+										<div class="p-text-normal p-mb-1">Quantidade múltiplo de
+											#{item.value.multiple}</div>
+										<div id="div-stock-wrapper">
+											<div id="div-loading-stock-#{item.product.commercialCode}"
+												style="display: none">
+												Buscando estoque... <i class="pi pi-spin pi-spinner"
+													style="font-size: 3rem;" />
+											</div>
+											<div id="div-stock-content-#{item.product.commercialCode}">
+												<h:form>
+													<div class="p-text-normal p-text-uppercase"
+														style=" display: #{item.product.stock eq null ?'none':block};">
+														<span
+															class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
+															#{productStockMessageController.getMessage(item.product.stock)}
+														</span>
+
+													</div>
+													<p:remoteCommand name="loadStock"
+														action="#{findProductStockController.find(item.product)}"
+														process="@this" update="@form"
+														autoRun="#{item.product.stock eq null}"
+														onstart="$('#div-stock-content-#{item.product.commercialCode}').hide();$('#div-loading-stock-#{item.product.commercialCode}').show();"
+														oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();" />
+												</h:form>
+											</div>
+										</div>
+									</div>
+									<div class="p-col"
+										id="product-tech-loader-#{item.product.commercialCode}"
+										style="display: none">
+										Buscando detalhes técnicos... <i class="pi pi-spin pi-spinner"
+											style="font-size: 3rem;" />
+									</div>
+									<div class="p-col-6 product-tech-data"
+										id="product-tech-#{item.product.commercialCode}">
+										<h:form>
+											<p:panelGrid columns="4"
+												columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+												layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+												style="border:0px none; background-color:transparent;"
+												id="pnTechData"
+												rendered="#{item.product.productTechDetail != null}">
+
+												<p:outputLabel for="@next" value="Aplicação:"
+													styleClass="p-text-bold" />
+												<p:outputLabel
+													value="#{item.product.productTechDetail.application}"
+													styleClass="label-r" />
+
+												<p:outputLabel for="@next" value="Substituições:"
+													styleClass="p-text-bold" />
+												<p:outputLabel
+													value="#{item.product.productTechDetail.productsReplaces}"
+													styleClass="label-r" />
+
+												<p:outputLabel for="@next" value="Peso bruto:"
+													styleClass="p-text-bold" />
+												<p:outputLabel
+													value="#{item.product.productTechDetail.grossWeight}"
+													styleClass="label-r" />
+
+												<p:outputLabel for="@next" value="Dimensões da caixa:"
+													styleClass="p-text-bold" />
+												<p:outputLabel
+													value="#{item.product.productTechDetail.packageDimension}"
+													styleClass="label-r" />
+												<p:linkButton href="#{item.product.link}" value="Site"
+													icon="pi pi-external-link" target="_blank" />
+											</p:panelGrid>
+											<p:commandButton value="Dados técnicos"
+												rendered="#{item.product.productTechDetail eq null}"
+												icon="pi pi-th-large"
+												action="#{productTechDetailLoaderController.load(item.product)}"
+												onstart="$('#product-tech-loader-#{item.product.commercialCode}').show();$('#product-tech-#{item.product.commercialCode}').hide();"
+												oncomplete="$('#product-tech-loader-#{item.product.commercialCode}').hide();$('#product-tech-#{item.product.commercialCode}').show();"
+												update="@form" process="@this" async="true" />
+										</h:form>
+
+									</div>
+								</div>
+							</p:rowExpansion>
+						</p:dataTable>
+
+						<p:blockUI widgetVar="blockItemsPanel"
+							block=":#{cc.clientId}:panelItems">
+							<i class="pi pi-spin pi-spinner" style="font-size: 3rem" />
+						</p:blockUI>
+
+					</h:form>
+					<p:sidebar widgetVar="expandingItem" modal="true" baseZIndex="1000"
+						position="bottom" showCloseIcon="false">
+						<h3 style="font-weight: normal">Expandindo item...</h3>
+						<div class="p-d-flex p-ai-end">
+							<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
+							<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
+							<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+							<p:skeleton shape="circle" size="5rem" />
+						</div>
+					</p:sidebar>
+
+				</p:outputPanel>
+			</div>
+		</div>
+	</div>
+
+
+
+</composite:implementation>
+
+</html>

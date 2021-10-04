@@ -75,10 +75,9 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	}
 
 	@Override
-	public Optional<Page<Budget>> findByCode(String code, int page, int pageSize) {
+	public Optional<BudgetFullProjection> findByCode(String code) {
 		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), BudgetFullProjection.class, Map.of("page", page, "pageSize", pageSize),
-				Map.of("code", code), MediaType.APPLICATION_JSON));
+				orcamentoAPI.getPrefixToken(), BudgetFullProjection.class,null,Map.of("code",code), MediaType.APPLICATION_JSON));
 
 	}
 

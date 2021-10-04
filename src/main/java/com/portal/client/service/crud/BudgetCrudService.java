@@ -3,6 +3,7 @@ package com.portal.client.service.crud;
 import java.util.Optional;
 import java.util.Set;
 
+import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.exception.CustomerNotFoundException;
@@ -17,7 +18,7 @@ public interface BudgetCrudService extends ServiceSerializable, CrudService {
 
 	void save(Budget budget, CustomerRepresentativeOrderForm ordersForm);
 
-	Optional<Page<Budget>> findByCode(String code, int page, int pageSize);
+	Optional<BudgetFullProjection> findByCode(String code);
 
 	void checkBudgetState(Budget toCheck);
 
