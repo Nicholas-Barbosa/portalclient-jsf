@@ -87,7 +87,7 @@ public class ItemValueBuilder implements ContractItemValueBuilder {
 	@Override
 	public ContractItemValueBuilder withProductValue(ProductValue vl) {
 		this.withUnitGrossValue(vl.getUnitGrossValue()).withUnitStValue(vl.getUnitStValue())
-				.withUnitValue(vl.getUnitValue());
+				.withUnitValue(vl.getUnitValue()).withQuantity(vl.getQuantity());
 		return this;
 	}
 

@@ -13,6 +13,7 @@ import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.dto.OrderToPersist;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
+import com.portal.client.repository.aop.OrderBadRequestJoinPointCut;
 import com.portal.client.security.api.helper.OrcamentoAPIHelper;
 import com.portal.client.vo.Order;
 
@@ -30,6 +31,7 @@ public class OrderRepositoryImpl extends OptionalEmptyRepository implements Orde
 	}
 
 	@Override
+	@OrderBadRequestJoinPointCut
 	public void persist(Order order) {
 		OrderToPersist transientOrder = OrderToPersist.of(order);
 		OrderPersisted managedOrder = restClient.post(orcamentoAPI.buildEndpoint("orders"), orcamentoAPI.getToken(),

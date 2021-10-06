@@ -24,7 +24,7 @@ public class ItemImportShowController implements ShowController<CustomerOnOrder>
 			}
 			FacesUtils.openViewOnDialog(
 					Map.of("modal", true, "responsive", true, "contentWidth", "98vw", "contentHeight", "80vh"),
-					"itemImport", Map.of("customerCode", List.of(p.getCode()), "customerStore", List.of(p.getStore()),
+					"/faces/itemImport", Map.of("customerCode", List.of(p.getCode()), "customerStore", List.of(p.getStore()),
 							"onDialog", List.of("true")));
 			return;
 		}
@@ -40,7 +40,7 @@ public class ItemImportShowController implements ShowController<CustomerOnOrder>
 			}
 			FacesUtils.openViewOnDialog(
 					Map.of("modal", true, "responsive", true, "contentWidth", "98vw", "contentHeight", "80vh"),
-					"itemImport", Map.of("customerCode", List.of(order.getCustomerOnOrder().getCode()), "customerStore", List.of(order.getCustomerOnOrder().getStore()),
+					"/faces/itemImport", Map.of("customerCode", List.of(order.getCustomerOnOrder().getCode()), "customerStore", List.of(order.getCustomerOnOrder().getStore()),
 							"onDialog", List.of("true")));
 			return;
 		}

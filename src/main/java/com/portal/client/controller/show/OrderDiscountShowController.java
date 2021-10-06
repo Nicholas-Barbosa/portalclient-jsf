@@ -38,7 +38,7 @@ public class OrderDiscountShowController implements ShowController<Order> {
 	public void show(Order p, int tab) {
 		session.setAttribute("order-todisc", p);
 		queryParams.put("activeTab", List.of(tab + ""));
-		FacesUtils.openViewOnDialog(options, "orderDiscounts", queryParams);
+		FacesUtils.openViewOnDialog(options, "/faces/orderDiscounts", queryParams);
 	}
 
 	@Override

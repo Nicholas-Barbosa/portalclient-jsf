@@ -30,7 +30,7 @@ public class RequestResource {
 	@GET
 	@Produces("application/json")
 	public Response findAll() {
-
+		System.out.println("findal!!");
 		if (requestTracker.isEmpty())
 			return Response.status(404)
 					.entity(new NoRequests("No requests until now for session ID: " + session.getId())).build();

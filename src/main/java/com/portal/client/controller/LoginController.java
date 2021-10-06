@@ -40,6 +40,7 @@ public class LoginController {
 
 	public String authenticate() {
 		try {
+			System.out.println("login!!!");
 			this.authenticationRepository.login(loginForm);
 			FacesUtils.addHeaderForResponse("ok", true);
 			return "NEW_ORDER";

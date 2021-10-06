@@ -2,7 +2,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="../../WEB-INF/template.xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
 	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer">
@@ -41,7 +42,6 @@
 				<h:form id="budgetToolsForm">
 					<p:toolbar id="tb">
 						<p:toolbarGroup>
-
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
@@ -68,6 +68,8 @@
 								icon="pi pi-eye"
 								action="#{customerDetailShowController.show(newBudgetOrderController.budget.customerOnOrder)}" />
 
+							<p:commandButton value="Teste salvar" icon="pi pi-eye"
+								action="#{newOrderController.test}" process="@this" />
 						</p:toolbarGroup>
 					</p:toolbar>
 					<p:sticky target="tb" />
@@ -206,7 +208,7 @@
 											<p:commandButton icon="pi pi-search"
 												action="#{customerSearchShowController.show(newBudgetOrderController.cNameToSearch)}">
 												<p:ajax event="dialogReturn"
-													listener="#{newBudgetOrderController.handleCustomerResult}"  />
+													listener="#{newBudgetOrderController.handleCustomerResult}" />
 											</p:commandButton>
 										</div>
 
@@ -218,8 +220,7 @@
 						</p:tab>
 
 						<p:tab title="PROSPECT">
-							<cstomer:prospectForm
-								order="#{newBudgetOrderController.budget}"
+							<cstomer:prospectForm order="#{newBudgetOrderController.budget}"
 								update=":customerForm,budgetToolsForm"
 								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 						</p:tab>
@@ -233,7 +234,7 @@
 				<p:commandButton value="#{holdMessageView.label('sim')}"
 					type="button" styleClass="ui-confirm-popup-yes" />
 			</p:confirmPopup>
-			
+
 			<p:remoteCommand name="cleanBudgetObj"
 				action="#{newBudgetOrderController.newBudget}" process="@this"
 				update="customerForm, :itemsComponent, budgetTotals" />

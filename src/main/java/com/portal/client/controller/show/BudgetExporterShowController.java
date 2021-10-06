@@ -27,7 +27,7 @@ public class BudgetExporterShowController implements ShowController<Budget> {
 		session.setAttribute("budget-toexport", p);
 		Map<String, Object> options = Map.of("responsive", true, "closeable", false, "modal", true, "contentWidth",
 				"20vw", "contentHeight", "25vh");
-		FacesUtils.openViewOnDialog(options, "orderExport");
+		FacesUtils.openViewOnDialog(options, "/faces/orderExport");
 	}
 
 }

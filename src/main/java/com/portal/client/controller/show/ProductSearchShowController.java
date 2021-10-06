@@ -31,7 +31,7 @@ public class ProductSearchShowController implements ShowController<CustomerOnOrd
 
 			FacesUtils.openViewOnDialog(
 					Map.of("modal", true, "responsive", true, "contentWidth", "50vw", "contentHeight", "65vh"),
-					"productSearch", queryParams);
+					"/faces/productSearch", queryParams);
 			return;
 		}
 		FacesUtils.error(null, "Cliente nullo", "Selecione um cliente para escolher um produto", "growl");
