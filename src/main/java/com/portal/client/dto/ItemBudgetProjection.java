@@ -39,9 +39,9 @@ public class ItemBudgetProjection extends Item implements Serializable {
 
 		ItemValue value = ItemValueBuilder.getInstance().withGlobalDiscount(BigDecimal.ZERO)
 				.withLineDiscount(lineDiscount).withQuantity(quantity)
-				.withUnitGrossValue(grossValue.divide(quantityBgDecimal,RoundingMode.HALF_UP))
+				.withUnitGrossValue(grossValue.divide(quantityBgDecimal, RoundingMode.HALF_UP))
 				.withUnitStValue(stValue.divide(quantityBgDecimal)).withTotalValue(totalValue).withUnitValue(unitValue)
-				.withMultiple(multiple).withTotalGrossValue(grossValue).build();
+				.withTotalStValue(stValue).withMultiple(multiple).withTotalGrossValue(grossValue).build();
 
 		ProductImage pImage = ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build();
 		Product product = ProductBuilder.getInstance().withUnitGrossValue(value.getUnitGrossValueWithoutDiscount())

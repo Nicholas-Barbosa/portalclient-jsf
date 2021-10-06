@@ -23,7 +23,7 @@
 		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li><p:link
-				outcome="/faces/budgetEditing?budgetID=#{budgetEditingController.budgetIdToSearch}">#{resourceBundleServiceImpl.getMessage('editar')} - #{budgetEditingController.budgetIdToSearch}</p:link>
+				outcome="/faces//budget/editing?budgetID=#{budgetEditingController.budgetIdToSearch}">#{resourceBundleServiceImpl.getMessage('editar')} - #{budgetEditingController.budgetIdToSearch}</p:link>
 		</li>
 	</ui:define>
 
@@ -221,7 +221,7 @@
 					handleProductSearchResultAction="#{budgetEditingController.handleProductResult}"
 					handleItemImportAction="#{budgetEditingController.handleItemImportReturn}"
 					itemComponentController="#{budgetEditingController.dtableController}"
-					totalComponent="panelTotals" renderDiscountButton="false" />
+					totalComponent="panelTotals" renderDiscountButton="false" block="false"/>
 
 				<div class="card">
 					<p:outputPanel id="panelTotals" deferred="true"

@@ -6,7 +6,7 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.ws.rs.BadRequestException;
 
-import com.portal.client.dto.ErrorOrcamentoAPI;
+import com.portal.client.dto.OrderBadRequestData;
 import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.repository.aop.OrderBadRequestJoinPointCut;
 import com.portal.client.service.jsonb.JsonbService;
@@ -24,7 +24,7 @@ public class OrderBadRequestAspect {
 			return joinpoint.proceed();
 		} catch (BadRequestException e) {
 			String json = (String) e.getResponse().getEntity();
-			throw new OrderBadRequestExcpetion(jsonb.fromJson(json, ErrorOrcamentoAPI.class));
+			throw new OrderBadRequestExcpetion(jsonb.fromJson(json, OrderBadRequestData.class));
 
 		}
 	}

@@ -102,18 +102,20 @@ public class ItemValueBuilder implements ContractItemValueBuilder {
 		switch (op) {
 		case 1:
 			if (this.totalGrossValue == null && this.unitGrossValue != null) {
-				MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity), unitGrossValue);
+				this.totalGrossValue = MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity),
+						unitGrossValue);
 			}
 			break;
 
 		case 2:
 			if (this.totalValue == null && this.unitValue != null) {
-				MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity), unitValue);
+				this.totalValue = MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity), unitValue);
 			}
 			break;
 		case 3:
 			if (this.totalStValue == null && this.unitStValue != null) {
-				MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity), this.unitStValue);
+				this.totalStValue = MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity),
+						this.unitStValue);
 			}
 			break;
 

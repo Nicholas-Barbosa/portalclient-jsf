@@ -3,12 +3,12 @@ package com.portal.client.dto;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ErrorOrcamentoAPI {
+public class OrderBadRequestData {
 
 	private String errorMessage;
 
 	@JsonbCreator
-	public ErrorOrcamentoAPI(@JsonbProperty("errorMessage") String errorMessage) {
+	public OrderBadRequestData(@JsonbProperty("errorMessage") String errorMessage) {
 		super();
 		this.errorMessage = errorMessage;
 	}

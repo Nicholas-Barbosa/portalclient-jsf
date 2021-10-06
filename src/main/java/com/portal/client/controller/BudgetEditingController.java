@@ -12,6 +12,7 @@ import org.primefaces.event.SelectEvent;
 
 import com.portal.client.controller.show.BudgetExporterShowController;
 import com.portal.client.controller.show.CustomerDetailShowController;
+import com.portal.client.controller.show.OrderBadRequestShowController;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
@@ -60,12 +61,14 @@ public class BudgetEditingController implements Serializable {
 
 	private String budgetIdToSearch;
 
+	private OrderBadRequestShowController orderBadRequestShowController;
+
 	@Inject
 	public BudgetEditingController(BudgetCrudService budgetService, CustomerService customerService,
 			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
 			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper,
 			OrderCrudService orderService, BudgetExporterShowController exporterShow,
-			DtableItemController dtableController) {
+			DtableItemController dtableController, OrderBadRequestShowController orderBadRequestShowController) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
@@ -75,6 +78,7 @@ public class BudgetEditingController implements Serializable {
 		this.orderService = orderService;
 		this.exporterShow = exporterShow;
 		this.dtableController = dtableController;
+		this.orderBadRequestShowController = orderBadRequestShowController;
 	}
 
 	public void searchBudget() {
@@ -108,7 +112,7 @@ public class BudgetEditingController implements Serializable {
 				FacesUtils.executeScript("PF('effectivedBudget').show();");
 				FacesUtils.ajaxUpdate("successPersisted");
 			} catch (OrderBadRequestExcpetion e) {
-				// TODO: handle exception
+				orderBadRequestShowController.show(e);
 			}
 			return;
 

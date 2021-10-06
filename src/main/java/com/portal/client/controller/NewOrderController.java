@@ -15,9 +15,9 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
+import com.portal.client.controller.show.OrderBadRequestShowController;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ProductValue;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.repository.OrderBadRequestExcpetion;
@@ -26,7 +26,6 @@ import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Item;
-import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.builder.ItemValueBuilder;
@@ -55,6 +54,9 @@ public class NewOrderController implements Serializable {
 	@Inject
 	private DtableItemController dtItemsController;
 
+	@Inject
+	private OrderBadRequestShowController orderBadRequestShowController;
+
 	private int onRowItemQuantity;
 
 	public NewOrderController() {
@@ -64,23 +66,6 @@ public class NewOrderController implements Serializable {
 	@PostConstruct
 	public void init() {
 		newOrder();
-	}
-
-	public void test() {
-		try {
-			Product product = ProductBuilder.getInstance().withCommercialCode("GM14005").withQuantity(1)
-					.withUnitValue(BigDecimal.ZERO).withUnitGrossValue(BigDecimal.ZERO).withUnitStValue(BigDecimal.ZERO)
-					.build();
-
-			Order toPersist = new Order(null, "2", "2",
-					new CustomerOnOrder("001888", "01", null, null, null, null, null, null, null), null, null, null,
-					null, "messafge", List.of(new Item(product,
-							ItemValueBuilder.getInstance().withProductValue(product.getValue()).build())),
-					null);
-			orderCrudService.persist(toPersist);
-		} catch (OrderBadRequestExcpetion e) {
-			System.out.println("bad request!");
-		}
 	}
 
 	public final void newOrder() {
@@ -102,7 +87,7 @@ public class NewOrderController implements Serializable {
 			orderCrudService.persist(order);
 			FacesUtils.ajaxUpdate("successPersisted");
 		} catch (OrderBadRequestExcpetion e) {
-			FacesUtils.error(null, "O servidor retornou um erro", e.getError().getErrorMessage(), "growl");
+			orderBadRequestShowController.show(e);
 		}
 	}
 
@@ -156,4 +141,5 @@ public class NewOrderController implements Serializable {
 	public DtableItemController getDtItemsController() {
 		return dtItemsController;
 	}
+
 }

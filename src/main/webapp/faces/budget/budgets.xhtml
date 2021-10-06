@@ -17,7 +17,7 @@
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/budgets">#{resourceBundleServiceImpl.getMessage('orcamentos')}</p:link>
+		<li><p:link outcome="/faces/budget/budgets">#{resourceBundleServiceImpl.getMessage('orcamentos')}</p:link>
 		</li>
 	</ui:define>
 
@@ -72,7 +72,7 @@
 							<p:column>
 								<p:linkButton icon="pi pi-pencil"
 									styleClass="rounded-button ui-button-help  p-mr-3"
-									outcome="budgetEditing">
+									outcome="/faces/budget/editing">
 									<f:param name="budgetID" value="#{budget.code}" />
 								</p:linkButton>
 							</p:column>

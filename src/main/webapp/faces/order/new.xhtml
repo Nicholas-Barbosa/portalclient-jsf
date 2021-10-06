@@ -2,10 +2,12 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="../../WEB-INF/template.xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
-	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer">
+	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer"
+	xmlns:order="http://java.sun.com/jsf/composite/components/order">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -65,116 +67,115 @@
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
 								icon="pi pi-eye"
 								action="#{customerDetailShowController.show(newOrderController.order.customerOnOrder)}" />
+
+
 						</p:toolbarGroup>
 					</p:toolbar>
 					<p:sticky target="tb" />
 				</h:form>
 			</div>
-
-					<div class="card">
-						<h:form id="customerForm">
-							<div class="ui-fluid p-formgrid p-grid">
-								<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
-									<div class="ui-inputgroup">
-										<p:inputText
-											value="#{newOrderController.order.customerOnOrder.name}-#{newOrderController.order.customerOnOrder.store}"
-											readonly="true" />
-										<p:button icon="pi pi-search" styleClass="ui-button-warning"
-											onclick="PF('dlgSearchCustomer').show()"
-											id="btnShowSearchCustomer">
-										</p:button>
-									</div>
-								</div>
-
-								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-									<p:outputLabel value="CNPJ" for="cnpj" />
-									<p:inputMask
-										value="#{newOrderController.order.customerOnOrder.cnpj}"
-										readonly="true" id="cnpj" mask="99.999.999/9999-99" />
-								</div>
-								<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
-									<p:outputLabel for="endereco"
-										value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
-									<p:inputText id="endereco"
-										value="#{newOrderController.order.customerOnOrder.street}, #{newOrderController.order.customerOnOrder.city} - #{newOrderController.order.customerOnOrder.state}"
-										readonly="true" />
-								</div>
-								<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-									<p:outputLabel
-										value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
-										for="pTerms" />
-									<p:inputText
-										value="#{newOrderController.order.customerOnOrder.paymentTerms}"
-										readonly="true" id="pTerms" />
-								</div>
-
-								<ui:fragment
-									rendered="#{newOrderController.order.customerOnOrder.type eq 'PROSPECT'}">
-
-									<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
-										<p:outputLabel value="Vendedor" for="sellerType" />
-										<p:inputText
-											value="#{newOrderController.order.customerOnOrder.sellerType}"
-											readonly="true" id="sellerType" />
-									</div>
-
-								</ui:fragment>
-								<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
-									<p:outputLabel for="mensagem" value="Mensagem" />
-									<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-										value="#{newOrderController.order.message}"
-										onchange="saveMessage();" />
-								</div>
-								<p:remoteCommand name="saveMessage"
-									process="@this,@form:mensagem"
-									action="#{orderMessageMessageController.displayMessage}" />
+			<div class="card">
+				<h:form id="customerForm">
+					<div class="ui-fluid p-formgrid p-grid">
+						<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+							<p:outputLabel
+								value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
+							<div class="ui-inputgroup">
+								<p:inputText
+									value="#{newOrderController.order.customerOnOrder.name}-#{newOrderController.order.customerOnOrder.store}"
+									readonly="true" />
+								<p:button icon="pi pi-search" styleClass="ui-button-warning"
+									onclick="PF('dlgSearchCustomer').show()"
+									id="btnShowSearchCustomer">
+								</p:button>
 							</div>
-						</h:form>
-					</div>
-				
+						</div>
 
-				<ic:itemDtableComponent
-					handleProductSearchResultAction="#{newOrderController.handleProductResult}"
-					handleItemImportAction="#{newOrderController.handleItemImportReturn}"
-					itemComponentController="#{newOrderController.dtItemsController}"
-					totalComponent="frmTotals" 
-					id="itemsComponent" />
+						<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+							<p:outputLabel value="CNPJ" for="cnpj" />
+							<p:inputMask
+								value="#{newOrderController.order.customerOnOrder.cnpj}"
+								readonly="true" id="cnpj" mask="99.999.999/9999-99" />
+						</div>
+						<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
+							<p:outputLabel for="endereco"
+								value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+							<p:inputText id="endereco"
+								value="#{newOrderController.order.customerOnOrder.street}, #{newOrderController.order.customerOnOrder.city} - #{newOrderController.order.customerOnOrder.state}"
+								readonly="true" />
+						</div>
+						<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+							<p:outputLabel
+								value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
+								for="pTerms" />
+							<p:inputText
+								value="#{newOrderController.order.customerOnOrder.paymentTerms}"
+								readonly="true" id="pTerms" />
+						</div>
 
-				<div class="p-col-12 p-shadow-24" id="totals">
-					<div class="card ">
-						<h:form id="frmTotals">
-							<div class="ui-fluid p-formgrid p-grid">
-								<div class="p-field p-col-12 p-md-3">
-									<p:outputLabel for="liquidV"
-										value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
-									<p:inputNumber id="liquidV"
-										value="#{newOrderController.order.liquidValue}" symbol="R$ "
-										symbolPosition="p" readonly="true" decimalSeparator=","
-										thousandSeparator="." />
-								</div>
-								<div class="p-field p-col-12 p-md-3">
-									<p:outputLabel for="stT"
-										value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
-									<p:inputNumber id="stT"
-										value="#{newOrderController.order.stValue}" symbol="R$ "
-										symbolPosition="p" readonly="true" decimalSeparator=","
-										thousandSeparator="." />
-								</div>
-								<div class="p-field p-col-12 p-md-3">
-									<p:outputLabel for="grossV"
-										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
-									<p:inputNumber id="grossV"
-										value="#{newOrderController.order.grossValue}" symbol="R$ "
-										symbolPosition="p" readonly="true" decimalSeparator=","
-										thousandSeparator="." />
-								</div>
+						<ui:fragment
+							rendered="#{newOrderController.order.customerOnOrder.type eq 'PROSPECT'}">
+
+							<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+								<p:outputLabel value="Vendedor" for="sellerType" />
+								<p:inputText
+									value="#{newOrderController.order.customerOnOrder.sellerType}"
+									readonly="true" id="sellerType" />
 							</div>
-							<p:autoUpdate on="eventAddItem" />
-						</h:form>
+
+						</ui:fragment>
+						<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+							<p:outputLabel for="mensagem" value="Mensagem" />
+							<p:inputTextarea id="mensagem" rows="4" maxlength="250"
+								value="#{newOrderController.order.message}"
+								onchange="saveMessage();" />
+						</div>
+						<p:remoteCommand name="saveMessage" process="@this,@form:mensagem"
+							action="#{orderMessageMessageController.displayMessage}" />
 					</div>
+				</h:form>
+			</div>
+
+
+			<ic:itemDtableComponent
+				handleProductSearchResultAction="#{newOrderController.handleProductResult}"
+				handleItemImportAction="#{newOrderController.handleItemImportReturn}"
+				itemComponentController="#{newOrderController.dtItemsController}"
+				totalComponent="frmTotals" id="itemsComponent" />
+
+			<div class="p-col-12 p-shadow-24" id="totals">
+				<div class="card ">
+					<h:form id="frmTotals">
+						<div class="ui-fluid p-formgrid p-grid">
+							<div class="p-field p-col-12 p-md-3">
+								<p:outputLabel for="liquidV"
+									value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
+								<p:inputNumber id="liquidV"
+									value="#{newOrderController.order.liquidValue}" symbol="R$ "
+									symbolPosition="p" readonly="true" decimalSeparator=","
+									thousandSeparator="." />
+							</div>
+							<div class="p-field p-col-12 p-md-3">
+								<p:outputLabel for="stT"
+									value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
+								<p:inputNumber id="stT"
+									value="#{newOrderController.order.stValue}" symbol="R$ "
+									symbolPosition="p" readonly="true" decimalSeparator=","
+									thousandSeparator="." />
+							</div>
+							<div class="p-field p-col-12 p-md-3">
+								<p:outputLabel for="grossV"
+									value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
+								<p:inputNumber id="grossV"
+									value="#{newOrderController.order.grossValue}" symbol="R$ "
+									symbolPosition="p" readonly="true" decimalSeparator=","
+									thousandSeparator="." />
+							</div>
+						</div>
+						<p:autoUpdate on="eventAddItem" />
+					</h:form>
 				</div>
+			</div>
 
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
@@ -220,7 +221,8 @@
 					</p:tabView>
 				</div>
 			</p:dialog>
-			
+			<p:button value="Abrir" onclick="PF('dlgBadRequest').show()" />
+
 			<p:dialog header="Status" modal="true" closable="false"
 				widgetVar="persistingOrder" responsive="true">
 				<div id="statLoading">
