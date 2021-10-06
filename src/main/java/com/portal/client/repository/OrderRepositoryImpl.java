@@ -7,6 +7,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import com.portal.client.dto.OrderFullProjection;
 import com.portal.client.dto.OrderPersisted;
 import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.dto.OrderToPersist;
@@ -35,6 +36,7 @@ public class OrderRepositoryImpl extends OptionalEmptyRepository implements Orde
 				orcamentoAPI.getPrefixToken(), OrderPersisted.class, null, null, transientOrder,
 				MediaType.APPLICATION_JSON);
 		order.setCode(managedOrder.getCode());
+
 	}
 
 	@Override
@@ -42,6 +44,14 @@ public class OrderRepositoryImpl extends OptionalEmptyRepository implements Orde
 		Map<String, Object> queryParams = Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC");
 		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("orders"), orcamentoAPI.getToken(),
 				orcamentoAPI.getPrefixToken(), OrderSemiProjectionPage.class, queryParams, null, "application/json"));
+	}
+
+	@Override
+	public Optional<OrderFullProjection> findByCode(String code) {
+		// TODO Auto-generated method stub
+		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("orders/{code}"), orcamentoAPI.getToken(),
+				orcamentoAPI.getPrefixToken(), OrderFullProjection.class, null, Map.of("code", code),
+				"application/json"));
 	}
 
 }

@@ -36,15 +36,15 @@
 					<p:submenu id="om_homepage"
 						label="#{resourceBundleServiceImpl.getMessage('compras_message')}"
 						icon="pi pi-shopping-cart">
-						<p:submenu
+					  	<p:submenu
 							label="#{resourceBundleServiceImpl.getMessage('orcamento_message')}"
 							icon="pi pi-shopping-cart">
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('orcamentos')}"
-								icon="pi pi-list" outcome="budgets" />
+								icon="pi pi-list" outcome="/faces/budget/budgets" />
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
-								icon="pi pi-plus" outcome="newBudget" />
+								icon="pi pi-plus" outcome="/faces/budget/new" />
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('editar')}"
 								icon="pi pi-pencil" action="@none" update="@none"
@@ -55,10 +55,10 @@
 							icon="pi pi-shopping-cart">
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('pedidos')}"
-								icon="pi pi-list" outcome="orders" />
+								icon="pi pi-list" outcome="/faces/order/orders" />
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
-								icon="pi pi-plus" outcome="newOrder" />
+								icon="pi pi-plus" outcome="/faces/order/new" />
 						</p:submenu>
 					</p:submenu>
 					<p:submenu
@@ -66,7 +66,7 @@
 						icon="pi pi-wallet">
 						<p:menuitem
 							value="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}"
-							icon="pi pi-wallet" outcome="billsToReceive" />
+							icon="pi pi-wallet" outcome="/faces/billsToReceive" />
 					</p:submenu>
 				</pr:menu>
 

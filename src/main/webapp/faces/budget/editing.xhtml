@@ -1,0 +1,269 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="../../WEB-INF/template.xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ic="http://java.sun.com/jsf/composite/components/item">
+
+	<ui:define name="head">
+		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+		<h:outputScript name="dataTable.js" library="javascript" />
+		<h:outputStylesheet name="item-row-expansion.css" library="css" />
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
+
+
+	</ui:define>
+
+	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
+
+	<ui:define name="viewname">
+		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li><p:link
+				outcome="/faces/budgetEditing?budgetID=#{budgetEditingController.budgetIdToSearch}">#{resourceBundleServiceImpl.getMessage('editar')} - #{budgetEditingController.budgetIdToSearch}</p:link>
+		</li>
+	</ui:define>
+
+	<ui:define name="content">
+		<f:view locale="pt_BR">
+			<f:metadata>
+				<f:viewParam name="budgetID"
+					value="#{budgetEditingController.budgetIdToSearch}" id="idParam" />
+			</f:metadata>
+
+			<p:growl id="growl" showDetail="true" globalOnly="true"
+				widgetVar="growl" skipDetailIfEqualsSummary="true" />
+			<p:growl id="growlParam" showDetail="true" for="idParam" />
+
+			<h:form>
+				<p:remoteCommand autoRun="true"
+					action="#{budgetEditingController.searchBudget}" process="@this"
+					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
+					update="panelBudget,panelCustomer,panelTotals" />
+			</h:form>
+
+			<div class="card" id="divLoading">
+				Loading...
+				<div class="custom-skeleton p-p-4">
+					<div class="p-d-flex p-mb-3">
+						<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+						<div>
+							<p:skeleton width="10rem" class="p-mb-2" />
+							<p:skeleton width="5rem" class="p-mb-2" />
+							<p:skeleton height=".5rem" />
+						</div>
+					</div>
+					<p:skeleton width="100%" height="150px" />
+					<div class="p-d-flex p-jc-between p-mt-3">
+						<p:skeleton width="4rem" height="2rem" />
+						<p:skeleton width="4rem" height="2rem" />
+					</div>
+				</div>
+			</div>
+			<div id="content" style="display: none">
+				<div class="card">
+					<p:commandButton id="dynaButton" type="button" icon="pi pi-bars" />
+					<h:form prependId="false">
+						<p:menu overlay="true" trigger="dynaButton" my="left top"
+							at="left bottom">
+							<p:submenu label="Opções">
+								<p:menuitem value="Confirmar"
+									action="#{budgetEditingController.confirmBudgetEditing}"
+									ajax="true" icon="pi pi-check"
+									process="@this,oPNum,ocNum,mensagem"
+									onstart="PF('sidebarForLoadingEditing').show()"
+									oncomplete="PF('sidebarForLoadingEditing').hide()" />
+
+								<p:menuitem value="Exportar" icon="pi pi-download"
+									action="#{budgetEditingController.export}" />
+
+								<p:menuitem value="Efetivar para pedido"
+									action="#{budgetEditingController.saveToOrder}" ajax="true"
+									icon="pi pi-star" process="@this,oPNum,ocNum,mensagem"
+									onstart="PF('sidebarForSavingBudgetToOrder').show()"
+									oncomplete="PF('sidebarForSavingBudgetToOrder').hide()" />
+							</p:submenu>
+						</p:menu>
+						<p:dialog widgetVar="effectivedBudget" modal="true"
+							responsive="true" header="Pedido salvo">
+							<div class="p-grid p-flex-column">
+								<div class="p-col">
+									<div class="box">
+										<p:staticMessage severity="info"
+											summary="Efetivado para pedido com sucesso!"
+											detail="Pedido de número #{budgetEditingController.savedOrder.code} foi gerado a partir deste orçamento"
+											style="width: 100%" id="successPersisted" />
+									</div>
+								</div>
+								<div class="p-col">
+									<div class="box">
+										<p:commandButton value="OK"
+											oncomplete="PF('effectivedBudget').hide()" />
+										<p:commandButton value="Visualizar outros pedidos"
+											styleClass="p-mb-2" action="orders?faces-redirect=true" />
+									</div>
+								</div>
+							</div>
+						</p:dialog>
+						<p:sidebar widgetVar="sidebarForLoadingEditing" position="top"
+							baseZIndex="10000" modal="true" showCloseIcon="false">
+							<h3 style="font-weight: normal">Alterando orçamento...</h3>
+							<div class="p-d-flex p-ai-end">
+								<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="5rem" />
+							</div>
+						</p:sidebar>
+						<p:sidebar widgetVar="sidebarForSavingBudgetToOrder"
+							position="top" baseZIndex="10000" modal="true"
+							showCloseIcon="false">
+							<h3 style="font-weight: normal">Efetivando pedido...</h3>
+							<div class="p-d-flex p-ai-end">
+								<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+								<p:skeleton shape="circle" size="5rem" />
+							</div>
+						</p:sidebar>
+					</h:form>
+				</div>
+
+				<div class="card">
+					<h5>Orçamento</h5>
+					<p:outputPanel deferred="true" deferredMode="visible"
+						id="panelBudget">
+						<div class="ui-fluid p-formgrid p-grid">
+							<div class="p-field p-col-12 p-md-6">
+								<label for="bCode">Código</label>
+								<p:inputText id="bCode" type="text" readonly="true"
+									value="#{budgetEditingController.budget.code}" />
+							</div>
+							<div class="p-field p-col-12 p-md-6">
+								<label for="createdAt">Criado em</label>
+								<p:inputText id="createdAt" type="text" readonly="true"
+									value="#{budgetEditingController.budget.createdAt}">
+									<f:convertDateTime locale="pt_BR" type="localDate"
+										dateStyle="full" />
+								</p:inputText>
+							</div>
+							<div class="p-field p-col-12 p-md-6">
+								<label for="oPNum">N°Pedido representante</label>
+								<p:inputText id="oPNum" type="text"
+									value="#{budgetEditingController.budget.repNumOrder}" />
+							</div>
+							<div class="p-field p-col-12 p-md-6">
+								<label for="ocNum">N°Pedido cliente</label>
+								<p:inputText id="ocNum" type="text"
+									value="#{budgetEditingController.budget.customerNumOrder}" />
+							</div>
+							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+								<p:outputLabel for="mensagem" value="Mensagem" />
+								<p:inputTextarea id="mensagem" rows="4" maxlength="250"
+									value="#{budgetEditingController.budget.message}" />
+							</div>
+
+						</div>
+					</p:outputPanel>
+				</div>
+				<div class="card">
+					<div class="p-grid">
+						<div class="p-col-2">
+							<h5>Cliente</h5>
+						</div>
+						<div class="p-col-2">
+							<h:form>
+								<p:commandButton icon="pi pi-search-plus"
+									action="#{budgetEditingController.showCustomerData}"
+									process="@this" update="@none" title="Visualizar cliente"
+									styleClass="rounded-button ui-button-success "
+									onstart="PF('sideBarForLoadingCustomer').show()"
+									oncomplete="PF('sideBarForLoadingCustomer').hide()" />
+							</h:form>
+
+							<p:sidebar widgetVar="sideBarForLoadingCustomer" position="top"
+								baseZIndex="10000" modal="true">
+								<h3 style="font-weight: normal">Tratando cliente...</h3>
+								<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+							</p:sidebar>
+
+						</div>
+
+					</div>
+					<p:outputPanel deferred="true" deferredMode="visible"
+						id="panelCustomer">
+						<div class="ui-fluid p-formgrid p-grid">
+
+							<div class="p-field p-col-12 p-md-6">
+								<label for="cName">Código - Nome</label>
+								<p:inputText id="cName" type="text" readonly="true"
+									value="#{budgetEditingController.budget.customerOnOrder.code} - #{budgetEditingController.budget.customerOnOrder.name}" />
+							</div>
+
+							<div class="p-field p-col-12 p-md-6">
+								<label for="cCnpj">CNPJ</label>
+								<p:inputText id="cCnpj" type="text" readonly="true"
+									value="#{budgetEditingController.budget.customerOnOrder.cnpj}" />
+							</div>
+							<div class="p-field p-col-12">
+								<label for="cAddress">Endereço</label>
+								<p:inputText id="cAddress" type="text" readonly="true"
+									value="#{budgetEditingController.budget.customerOnOrder.address.street} - #{budgetEditingController.budget.customerOnOrder.address.district}, #{budgetEditingController.budget.customerOnOrder.address.city} - #{budgetEditingController.budget.customerOnOrder.address.state}" />
+							</div>
+						</div>
+					</p:outputPanel>
+				</div>
+
+				<ic:itemDtableComponent budget="#{budgetEditingController.budget}"
+					handleProductSearchResultAction="#{budgetEditingController.handleProductResult}"
+					handleItemImportAction="#{budgetEditingController.handleItemImportReturn}"
+					itemComponentController="#{budgetEditingController.dtableController}"
+					totalComponent="panelTotals" renderDiscountButton="false" />
+
+				<div class="card">
+					<p:outputPanel id="panelTotals" deferred="true"
+						deferredMode="visible">
+						<h:form id="totals">
+							<div class="ui-fluid p-formgrid p-grid">
+								<div class="p-field p-col-12 p-md-3">
+									<p:outputLabel for="liquidV"
+										value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
+									<p:inputNumber id="liquidV"
+										value="#{budgetEditingController.budget.liquidValue}"
+										symbol="R$ " symbolPosition="p" readonly="true"
+										decimalSeparator="," thousandSeparator="." />
+								</div>
+								<div class="p-field p-col-12 p-md-3">
+									<p:outputLabel for="stT"
+										value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
+									<p:inputNumber id="stT"
+										value="#{budgetEditingController.budget.stValue}" symbol="R$ "
+										symbolPosition="p" readonly="true" decimalSeparator=","
+										thousandSeparator="." />
+								</div>
+								<p:remoteCommand
+									autoRun="#{budgetEditingController.budget.stValue eq null}"
+									action="#{orderCommonBehaviorHelperImpl.sumStValue(budgetEditingController.budget)}"
+									update="stT" process="@this" />
+								<div class="p-field p-col-12 p-md-3">
+									<p:outputLabel for="grossV"
+										value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
+									<p:inputNumber id="grossV"
+										value="#{budgetEditingController.budget.grossValue}"
+										symbol="R$ " symbolPosition="p" readonly="true"
+										decimalSeparator="," thousandSeparator="." />
+								</div>
+							</div>
+							<p:autoUpdate on="eventAddItem" />
+						</h:form>
+					</p:outputPanel>
+				</div>
+
+			</div>
+		</f:view>
+	</ui:define>
+
+</ui:composition>

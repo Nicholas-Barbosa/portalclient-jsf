@@ -28,7 +28,7 @@ public class ItemValue extends ProductValue {
 	public ItemValue(int quantity, Integer multiple, BigDecimal budgetGlobalDiscount, BigDecimal lineDiscount,
 			BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue, BigDecimal totalStValue,
 			BigDecimal totalValue, BigDecimal totalGrossValue) {
-		super(unitStValue, unitValue, unitGrossValue, quantity, multiple);
+		super(unitStValue, unitValue, unitGrossValue, totalStValue, totalValue, totalGrossValue, quantity, multiple);
 		this.budgetGlobalDiscount = budgetGlobalDiscount;
 		this.lineDiscount = lineDiscount;
 		this.totalDiscount = lineDiscount == null ? this.budgetGlobalDiscount

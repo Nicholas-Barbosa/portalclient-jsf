@@ -2,7 +2,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
+	xmlns:p="http://primefaces.org/ui" template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<ui:define name="head">
@@ -17,7 +17,7 @@
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li>#{resourceBundleServiceImpl.getMessage('pedido')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/budgets">#{resourceBundleServiceImpl.getMessage('pedidos')}</p:link>
+		<li><p:link outcome="/faces/orders">#{resourceBundleServiceImpl.getMessage('pedidos')}</p:link>
 		</li>
 	</ui:define>
 

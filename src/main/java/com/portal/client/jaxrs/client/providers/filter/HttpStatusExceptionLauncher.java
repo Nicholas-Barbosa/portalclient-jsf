@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.annotation.Priority;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ForbiddenException;
 import javax.ws.rs.InternalServerErrorException;
@@ -21,7 +22,7 @@ import com.portal.client.exception.IllegalResponseStatusException;
 
 @Provider
 @Priority(0)
-public class WebApplicationExceptionExceptionLauncherFilter implements ClientResponseFilter {
+public class HttpStatusExceptionLauncher implements ClientResponseFilter {
 
 	@Override
 	public void filter(ClientRequestContext requestContext, ClientResponseContext responseContext) throws IOException {
@@ -35,13 +36,14 @@ public class WebApplicationExceptionExceptionLauncherFilter implements ClientRes
 		case 403:
 			throw new ForbiddenException();
 		case 401:
-			System.out.println("--headers--");
-			requestContext.getHeaders().forEach((k, v) -> System.out.println(k + ":" + v));
 			throw new NotAuthorizedException(
 					Response.status(401).entity(readResponse(responseContext.getEntityStream())).build());
 		case 409:
 			Response response = Response.status(409).entity(readResponse(responseContext.getEntityStream())).build();
 			throw new ClientErrorException(response);
+		case 400:
+			throw new BadRequestException(
+					Response.status(400).entity(readResponse(responseContext.getEntityStream())).build());
 		case -1:
 			throw new IllegalResponseStatusException();
 

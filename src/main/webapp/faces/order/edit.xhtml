@@ -2,9 +2,10 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
+	xmlns:p="http://primefaces.org/ui" template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:ic="http://java.sun.com/jsf/composite/components/item">
+	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
+	xmlns:od="http://java.sun.com/jsf/composite/components/order">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -12,7 +13,7 @@
 		<h:outputStylesheet name="item-row-expansion.css" library="css" />
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
 
-	
+
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
@@ -23,7 +24,7 @@
 		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
 		<li><p:link
-				outcome="/faces/budgetEditing?budgetID=#{budgetEditingController.budgetIdToSearch}">#{resourceBundleServiceImpl.getMessage('editar')} - #{budgetEditingController.budgetIdToSearch}</p:link>
+				outcome="/faces/order/edit?budgetID=#{budgetEditingController.budgetIdToSearch}">#{resourceBundleServiceImpl.getMessage('editar')} - #{budgetEditingController.budgetIdToSearch}</p:link>
 		</li>
 	</ui:define>
 
@@ -38,11 +39,12 @@
 				widgetVar="growl" skipDetailIfEqualsSummary="true" />
 			<p:growl id="growlParam" showDetail="true" for="idParam" />
 
+
 			<h:form>
 				<p:remoteCommand autoRun="true"
 					action="#{budgetEditingController.searchBudget}" process="@this"
 					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
-					update="panelBudget,panelCustomer,panelTotals" />
+					update="orderComponent:data,panelCustomer,panelTotals" />
 			</h:form>
 
 			<div class="card" id="divLoading">
@@ -73,7 +75,7 @@
 								<p:menuitem value="Confirmar"
 									action="#{budgetEditingController.confirmBudgetEditing}"
 									ajax="true" icon="pi pi-check"
-									process="@this,oPNum,ocNum,mensagem"
+									process="@this,orderComponent:oPNum,orderComponent:ocNum,orderComponent:mensagem"
 									onstart="PF('sidebarForLoadingEditing').show()"
 									oncomplete="PF('sidebarForLoadingEditing').hide()" />
 
@@ -82,7 +84,7 @@
 
 								<p:menuitem value="Efetivar para pedido"
 									action="#{budgetEditingController.saveToOrder}" ajax="true"
-									icon="pi pi-star" process="@this,oPNum,ocNum,mensagem"
+									icon="pi pi-star" process="@this,orderComponent:oPNum,orderComponent:ocNum,orderComponent:mensagem"
 									onstart="PF('sidebarForSavingBudgetToOrder').show()"
 									oncomplete="PF('sidebarForSavingBudgetToOrder').hide()" />
 							</p:submenu>
@@ -132,43 +134,9 @@
 					</h:form>
 				</div>
 
-				<div class="card">
-					<h5>Orçamento</h5>
-					<p:outputPanel deferred="true" deferredMode="visible"
-						id="panelBudget">
-						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-md-6">
-								<label for="bCode">Código</label>
-								<p:inputText id="bCode" type="text" readonly="true"
-									value="#{budgetEditingController.budget.code}" />
-							</div>
-							<div class="p-field p-col-12 p-md-6">
-								<label for="createdAt">Criado em</label>
-								<p:inputText id="createdAt" type="text" readonly="true"
-									value="#{budgetEditingController.budget.createdAt}">
-									<f:convertDateTime locale="pt_BR" type="localDate"
-										dateStyle="full" />
-								</p:inputText>
-							</div>
-							<div class="p-field p-col-12 p-md-6">
-								<label for="oPNum">N°Pedido representante</label>
-								<p:inputText id="oPNum" type="text"
-									value="#{budgetEditingController.budget.repNumOrder}" />
-							</div>
-							<div class="p-field p-col-12 p-md-6">
-								<label for="ocNum">N°Pedido cliente</label>
-								<p:inputText id="ocNum" type="text"
-									value="#{budgetEditingController.budget.customerNumOrder}" />
-							</div>
-							<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
-								<p:outputLabel for="mensagem" value="Mensagem" />
-								<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-									value="#{budgetEditingController.budget.message}" />
-							</div>
+				<od:data id="orderComponent"
+					order="#{budgetEditingController.budget}" />
 
-						</div>
-					</p:outputPanel>
-				</div>
 				<div class="card">
 					<div class="p-grid">
 						<div class="p-col-2">
@@ -221,8 +189,9 @@
 					handleProductSearchResultAction="#{budgetEditingController.handleProductResult}"
 					handleItemImportAction="#{budgetEditingController.handleItemImportReturn}"
 					itemComponentController="#{budgetEditingController.dtableController}"
-					totalComponent="panelTotals" renderDiscountButton="false"/>
-					
+					totalComponent="panelTotals" renderDiscountButton="false"
+					block="false" />
+
 				<div class="card">
 					<p:outputPanel id="panelTotals" deferred="true"
 						deferredMode="visible">
@@ -261,7 +230,7 @@
 						</h:form>
 					</p:outputPanel>
 				</div>
-			
+
 			</div>
 		</f:view>
 	</ui:define>

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
-import com.portal.client.jaxrs.client.providers.filter.WebApplicationExceptionExceptionLauncherFilter;
+import com.portal.client.jaxrs.client.providers.filter.HttpStatusExceptionLauncher;
 import com.portal.client.jaxrs.client.providers.message.reader.JsonMessageReader;
 import com.portal.client.jaxrs.client.providers.message.writer.JsonMessageWriter;
 
@@ -31,7 +31,7 @@ public interface RestClient {
 				? ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS)
 						.build().register(JsonMessageReader.class).register(JsonMessageWriter.class)
 				: null;
-		client.register(WebApplicationExceptionExceptionLauncherFilter.class);
+		client.register(HttpStatusExceptionLauncher.class);
 		return client;
 	}
 

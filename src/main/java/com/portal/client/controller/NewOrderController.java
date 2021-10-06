@@ -17,6 +17,7 @@ import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.ItemQuantityNotAllowed;
+import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.service.crud.OrderCrudService;
@@ -51,13 +52,14 @@ public class NewOrderController implements Serializable {
 	private int onRowItemQuantity;
 
 	public NewOrderController() {
-		
+
 	}
 
 	@PostConstruct
 	public void init() {
 		newOrder();
 	}
+
 	public final void newOrder() {
 		this.order = new Order();
 		dtItemsController.setOrder(order);
@@ -73,8 +75,12 @@ public class NewOrderController implements Serializable {
 	}
 
 	public void save() {
-		orderCrudService.persist(order);
-		FacesUtils.ajaxUpdate("successPersisted");
+		try {
+			orderCrudService.persist(order);
+			FacesUtils.ajaxUpdate("successPersisted");
+		} catch (OrderBadRequestExcpetion e) {
+			FacesUtils.error(null, "O servidor retornou um erro", e.getError().getErrorMessage(), "growl");
+		}
 	}
 
 	public void handleItemImportReturn(SelectEvent<Order> event) {

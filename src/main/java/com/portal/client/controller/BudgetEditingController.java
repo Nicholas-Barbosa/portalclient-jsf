@@ -15,6 +15,7 @@ import com.portal.client.controller.show.CustomerDetailShowController;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.service.CustomerService;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.crud.BudgetCrudService;
@@ -63,8 +64,8 @@ public class BudgetEditingController implements Serializable {
 	public BudgetEditingController(BudgetCrudService budgetService, CustomerService customerService,
 			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
 			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper,
-			OrderCrudService orderService,
-			BudgetExporterShowController exporterShow, DtableItemController dtableController) {
+			OrderCrudService orderService, BudgetExporterShowController exporterShow,
+			DtableItemController dtableController) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
@@ -79,7 +80,7 @@ public class BudgetEditingController implements Serializable {
 	public void searchBudget() {
 		budgetService.findByCode(budgetIdToSearch).ifPresentOrElse(budget -> {
 			this.budget = budget;
-			this.dtableController.setBudget(budget);
+			this.dtableController.setOrder(budget);
 		}, () -> {
 			this.budget = null;
 			FacesUtils.error(null, "Orçamento não encontrado", null, "growl");
@@ -101,11 +102,16 @@ public class BudgetEditingController implements Serializable {
 
 	public void saveToOrder() {
 		if (savedOrder == null) {
-			savedOrder = new Order(this.getBudget());
-			orderService.persist(savedOrder);
-			FacesUtils.executeScript("PF('effectivedBudget').show();");
-			FacesUtils.ajaxUpdate("successPersisted");
+			try {
+				savedOrder = new Order(this.getBudget());
+				orderService.persist(savedOrder);
+				FacesUtils.executeScript("PF('effectivedBudget').show();");
+				FacesUtils.ajaxUpdate("successPersisted");
+			} catch (OrderBadRequestExcpetion e) {
+				// TODO: handle exception
+			}
 			return;
+
 		}
 		FacesUtils.warn(null, "Pedido já foi salvo", "Pedido derivado deste orçamento já foi salvo!", "growl");
 	}
@@ -114,8 +120,6 @@ public class BudgetEditingController implements Serializable {
 		budgetService.update(this.getBudget());
 		FacesUtils.info(null, "Orçamento atualizado", null, "growl");
 	}
-
-
 
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresentOrElse(p -> {
@@ -166,7 +170,6 @@ public class BudgetEditingController implements Serializable {
 	public boolean isCustomerDataComplete() {
 		return isCustomerDataComplete;
 	}
-
 
 	public Order getSavedOrder() {
 		return savedOrder;

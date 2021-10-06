@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf16186046119701" configfile="/PortalAppClient/src/main/webapp/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" id="pf16303453655800" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf16303453655811" path="/login.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="faces/newBudget" id="pf16303453655812" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf16303453655811" path="/faces/newBudget"/>
-  <links id="pf16303453655811" target="pf16303453655812" source="pf16303453655800" outcome="NEW_ORDER" redirect="true"/>
+  <nodes xsi:type="pageflow:PFPage" name="login.xhtml" id="pf16335411701340" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf16335411701341" path="/login.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="faces/newBudget" id="pf16335411701342" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf16335411701341" path="/faces/budget/new"/>
+  <links id="pf16335411701341" target="pf16335411701342" source="pf16335411701340" outcome="NEW_ORDER" redirect="true">
+    <bendPoints d1Width="113" d1Height="86" d2Width="97" d2Height="86"/>
+  </links>
 </pageflow:Pageflow>

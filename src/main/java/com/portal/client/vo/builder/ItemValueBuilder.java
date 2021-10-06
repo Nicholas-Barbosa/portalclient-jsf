@@ -1,8 +1,10 @@
 package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
+import java.util.stream.IntStream;
 
 import com.portal.client.dto.ProductValue;
+import com.portal.client.util.MathUtils;
 import com.portal.client.vo.ItemValue;
 
 public class ItemValueBuilder implements ContractItemValueBuilder {
@@ -91,8 +93,32 @@ public class ItemValueBuilder implements ContractItemValueBuilder {
 
 	@Override
 	public ItemValue build() {
+		IntStream.of(1, 2, 3).forEach(this::checkTotalValue);
 		return new ItemValue(quantity, multiple, budgetGlobalDiscount, lineDiscount, unitStValue, unitValue,
 				unitGrossValue, totalStValue, totalValue, totalGrossValue);
+	}
+
+	private void checkTotalValue(int op) {
+		switch (op) {
+		case 1:
+			if (this.totalGrossValue == null && this.unitGrossValue != null) {
+				MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity), unitGrossValue);
+			}
+			break;
+
+		case 2:
+			if (this.totalValue == null && this.unitValue != null) {
+				MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity), unitValue);
+			}
+			break;
+		case 3:
+			if (this.totalStValue == null && this.unitStValue != null) {
+				MathUtils.calculateTotalValueOverQuantity(new BigDecimal(this.quantity), this.unitStValue);
+			}
+			break;
+
+		}
+
 	}
 
 	public BigDecimal getBudgetGlobalDiscount() {

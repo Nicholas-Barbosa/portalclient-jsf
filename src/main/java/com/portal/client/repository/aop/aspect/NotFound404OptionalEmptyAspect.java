@@ -23,9 +23,7 @@ public class NotFound404OptionalEmptyAspect {
 					|| e.getCause() instanceof NotFoundException && isOptional(joinpoint))
 				return Optional.empty();
 			throw e;
-		} catch (Exception e) {
-			throw e;
-		}
+		} 
 	}
 
 	private boolean isOptional(InvocationContext joinpoint) {

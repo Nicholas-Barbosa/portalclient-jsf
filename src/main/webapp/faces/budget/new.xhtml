@@ -2,7 +2,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="../WEB-INF/template.xhtml"
+	xmlns:p="http://primefaces.org/ui" template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
 	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer">
@@ -26,7 +26,7 @@
 		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}
 		</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/newBudget">
+		<li><p:link outcome="/faces/budget/new">
 					#{resourceBundleServiceImpl.getMessage('novo_orcamento')}
 			</p:link></li>
 	</ui:define>
@@ -290,7 +290,7 @@
 								styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingBudget').hide()" />
 							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star"
-								outcome="budgets" styleClass="p-mb-2" />
+								outcome="/faces/budget/budgets" styleClass="p-mb-2" />
 						</div>
 					</div>
 				</div>

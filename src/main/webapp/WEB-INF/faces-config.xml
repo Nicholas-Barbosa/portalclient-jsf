@@ -8,7 +8,7 @@
 		<from-view-id>/login.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>NEW_ORDER</from-outcome>
-			<to-view-id>/faces/newBudget</to-view-id>
+			<to-view-id>/faces/budget/new</to-view-id>
 			<redirect />
 		</navigation-case>
 	</navigation-rule>

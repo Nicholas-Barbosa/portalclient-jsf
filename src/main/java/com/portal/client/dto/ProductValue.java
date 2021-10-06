@@ -26,6 +26,7 @@ public class ProductValue {
 		checkQuantity();
 	}
 
+	
 	public ProductValue(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue, int quantity,
 			Integer multiple) {
 		super();
@@ -34,7 +35,21 @@ public class ProductValue {
 		this.unitGrossValue = unitGrossValue;
 		this.quantity = quantity;
 		this.multiple = multiple;
-		checkQuantity();
+		this.checkQuantity();
+	}
+
+	public ProductValue(BigDecimal unitStValue, BigDecimal unitValue, BigDecimal unitGrossValue,
+			BigDecimal totalStValue, BigDecimal totalValue, BigDecimal totalGrossValue, int quantity,
+			Integer multiple) {
+		super();
+		this.unitStValue = unitStValue;
+		this.unitValue = unitValue;
+		this.unitGrossValue = unitGrossValue;
+		this.totalStValue = totalStValue;
+		this.totalValue = totalValue;
+		this.totalGrossValue = totalGrossValue;
+		this.quantity = quantity;
+		this.multiple = multiple;
 	}
 
 	private final void checkQuantity() {

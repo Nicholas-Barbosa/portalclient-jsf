@@ -10,7 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
-import com.portal.client.jaxrs.client.providers.filter.WebApplicationExceptionExceptionLauncherFilter;
+import com.portal.client.jaxrs.client.providers.filter.HttpStatusExceptionLauncher;
 import com.portal.client.jaxrs.client.providers.message.reader.JsonMessageReader;
 import com.portal.client.jaxrs.client.providers.message.writer.JsonMessageWriter;
 
@@ -28,7 +28,7 @@ public class JaxrsClientSource implements Serializable {
 
 	public JaxrsClientSource() {
 		client = ClientBuilder.newBuilder().connectTimeout(10, TimeUnit.SECONDS).register(JsonMessageReader.class)
-				.register(JsonMessageWriter.class).register(WebApplicationExceptionExceptionLauncherFilter.class)
+				.register(JsonMessageWriter.class).register(HttpStatusExceptionLauncher.class)
 				.build();
 	}
 

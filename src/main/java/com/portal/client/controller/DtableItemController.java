@@ -103,7 +103,6 @@ public class DtableItemController implements Serializable {
 
 	public void setOrder(Order order) {
 		this.order = order;
-		System.out.println("this.order " + this.order.getCustomerOnOrder());
 	}
 
 	public int getOnRowItemQuantity() {
