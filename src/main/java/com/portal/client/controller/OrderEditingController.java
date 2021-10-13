@@ -48,4 +48,7 @@ public class OrderEditingController implements Serializable{
 		return order;
 	}
 
+	public DtableItemController getItemComponent() {
+		return itemComponent;
+	}
 }

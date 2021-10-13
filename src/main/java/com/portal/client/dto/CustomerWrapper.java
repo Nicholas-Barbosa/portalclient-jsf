@@ -5,12 +5,12 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class NoPageCustomerResponseDTO {
+public class CustomerWrapper {
 
 	private List<Customer> clients;
 
 	@JsonbCreator
-	public NoPageCustomerResponseDTO(@JsonbProperty("client") List<Customer> clients) {
+	public CustomerWrapper(@JsonbProperty("client") List<Customer> clients) {
 		super();
 		this.clients = clients;
 	}

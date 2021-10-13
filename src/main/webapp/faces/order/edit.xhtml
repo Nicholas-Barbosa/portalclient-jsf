@@ -16,23 +16,23 @@
 
 	</ui:define>
 
-	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
+	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('editar_pedido')}</ui:define>
 
 	<ui:define name="viewname">
 		<li>#{resourceBundleServiceImpl.getMessage('compras_message')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li>#{resourceBundleServiceImpl.getMessage('orcamento_message')}</li>
+		<li>#{resourceBundleServiceImpl.getMessage('pedido')}</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link
-				outcome="/faces/order/edit?budgetID=#{budgetEditingController.budgetIdToSearch}">#{resourceBundleServiceImpl.getMessage('editar')} - #{budgetEditingController.budgetIdToSearch}</p:link>
-		</li>
+		<li><p:link outcome="/faces/order/new">
+					#{resourceBundleServiceImpl.getMessage('editar')}
+			</p:link></li>
 	</ui:define>
 
 	<ui:define name="content">
 		<f:view locale="pt_BR">
 			<f:metadata>
-				<f:viewParam name="budgetID"
-					value="#{budgetEditingController.budgetIdToSearch}" id="idParam" />
+				<f:viewParam name="orderID"
+					value="#{orderEditingController.orderID}" id="idParam" />
 			</f:metadata>
 
 			<p:growl id="growl" showDetail="true" globalOnly="true"
@@ -42,7 +42,7 @@
 
 			<h:form>
 				<p:remoteCommand autoRun="true"
-					action="#{budgetEditingController.searchBudget}" process="@this"
+					action="#{orderEditingController.find}" process="@this"
 					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
 					update="orderComponent:data,panelCustomer,panelTotals" />
 			</h:form>
@@ -82,37 +82,13 @@
 								<p:menuitem value="Exportar" icon="pi pi-download"
 									action="#{budgetEditingController.export}" />
 
-								<p:menuitem value="Efetivar para pedido"
-									action="#{budgetEditingController.saveToOrder}" ajax="true"
-									icon="pi pi-star" process="@this,orderComponent:oPNum,orderComponent:ocNum,orderComponent:mensagem"
-									onstart="PF('sidebarForSavingBudgetToOrder').show()"
-									oncomplete="PF('sidebarForSavingBudgetToOrder').hide()" />
+								
 							</p:submenu>
 						</p:menu>
-						<p:dialog widgetVar="effectivedBudget" modal="true"
-							responsive="true" header="Pedido salvo">
-							<div class="p-grid p-flex-column">
-								<div class="p-col">
-									<div class="box">
-										<p:staticMessage severity="info"
-											summary="Efetivado para pedido com sucesso!"
-											detail="Pedido de número #{budgetEditingController.savedOrder.code} foi gerado a partir deste orçamento"
-											style="width: 100%" id="successPersisted" />
-									</div>
-								</div>
-								<div class="p-col">
-									<div class="box">
-										<p:commandButton value="OK"
-											oncomplete="PF('effectivedBudget').hide()" />
-										<p:commandButton value="Visualizar outros pedidos"
-											styleClass="p-mb-2" action="orders?faces-redirect=true" />
-									</div>
-								</div>
-							</div>
-						</p:dialog>
+					
 						<p:sidebar widgetVar="sidebarForLoadingEditing" position="top"
 							baseZIndex="10000" modal="true" showCloseIcon="false">
-							<h3 style="font-weight: normal">Alterando orçamento...</h3>
+							<h3 style="font-weight: normal">Alterando pedido...</h3>
 							<div class="p-d-flex p-ai-end">
 								<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
 								<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
@@ -120,22 +96,12 @@
 								<p:skeleton shape="circle" size="5rem" />
 							</div>
 						</p:sidebar>
-						<p:sidebar widgetVar="sidebarForSavingBudgetToOrder"
-							position="top" baseZIndex="10000" modal="true"
-							showCloseIcon="false">
-							<h3 style="font-weight: normal">Efetivando pedido...</h3>
-							<div class="p-d-flex p-ai-end">
-								<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
-								<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
-								<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
-								<p:skeleton shape="circle" size="5rem" />
-							</div>
-						</p:sidebar>
+						
 					</h:form>
 				</div>
 
 				<od:data id="orderComponent"
-					order="#{budgetEditingController.budget}" />
+					order="#{orderEditingController.order}" />
 
 				<div class="card">
 					<div class="p-grid">
@@ -145,7 +111,7 @@
 						<div class="p-col-2">
 							<h:form>
 								<p:commandButton icon="pi pi-search-plus"
-									action="#{budgetEditingController.showCustomerData}"
+									action="#{viewOrderIncompleteCustomerData.view(orderEditingController.order)}"
 									process="@this" update="@none" title="Visualizar cliente"
 									styleClass="rounded-button ui-button-success "
 									onstart="PF('sideBarForLoadingCustomer').show()"
@@ -168,27 +134,27 @@
 							<div class="p-field p-col-12 p-md-6">
 								<label for="cName">Código - Nome</label>
 								<p:inputText id="cName" type="text" readonly="true"
-									value="#{budgetEditingController.budget.customerOnOrder.code} - #{budgetEditingController.budget.customerOnOrder.name}" />
+									value="#{orderEditingController.order.customerOnOrder.code} - #{orderEditingController.order.customerOnOrder.name}" />
 							</div>
 
 							<div class="p-field p-col-12 p-md-6">
 								<label for="cCnpj">CNPJ</label>
 								<p:inputText id="cCnpj" type="text" readonly="true"
-									value="#{budgetEditingController.budget.customerOnOrder.cnpj}" />
+									value="#{orderEditingController.order.customerOnOrder.cnpj}" />
 							</div>
 							<div class="p-field p-col-12">
 								<label for="cAddress">Endereço</label>
 								<p:inputText id="cAddress" type="text" readonly="true"
-									value="#{budgetEditingController.budget.customerOnOrder.address.street} - #{budgetEditingController.budget.customerOnOrder.address.district}, #{budgetEditingController.budget.customerOnOrder.address.city} - #{budgetEditingController.budget.customerOnOrder.address.state}" />
+									value="#{orderEditingController.order.customerOnOrder.address.street} - #{orderEditingController.order.customerOnOrder.address.district}, #{orderEditingController.order.customerOnOrder.address.city} - #{orderEditingController.order.customerOnOrder.address.state}" />
 							</div>
 						</div>
 					</p:outputPanel>
 				</div>
 
-				<ic:itemDtableComponent budget="#{budgetEditingController.budget}"
-					handleProductSearchResultAction="#{budgetEditingController.handleProductResult}"
+				<ic:itemDtableComponent
+					handleProductSearchResultAction="#{productHanlderTest.handle}"
 					handleItemImportAction="#{budgetEditingController.handleItemImportReturn}"
-					itemComponentController="#{budgetEditingController.dtableController}"
+					itemComponentController="#{orderEditingController.itemComponent}"
 					totalComponent="panelTotals" renderDiscountButton="false"
 					block="false" />
 
@@ -214,8 +180,8 @@
 										thousandSeparator="." />
 								</div>
 								<p:remoteCommand
-									autoRun="#{budgetEditingController.budget.stValue eq null}"
-									action="#{orderCommonBehaviorHelperImpl.sumStValue(budgetEditingController.budget)}"
+									autoRun="#{orderEditingController.order.stValue eq null}"
+									action="#{orderCommonBehaviorHelperImpl.sumStValue(orderEditingController.order)}"
 									update="stT" process="@this" />
 								<div class="p-field p-col-12 p-md-3">
 									<p:outputLabel for="grossV"

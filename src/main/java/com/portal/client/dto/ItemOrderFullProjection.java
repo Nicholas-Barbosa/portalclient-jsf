@@ -22,7 +22,7 @@ public class ItemOrderFullProjection extends Item {
 	private static final long serialVersionUID = -5778391426573612460L;
 
 	@JsonbCreator
-	public static Item ofJsonb(@JsonbProperty("st_value") BigDecimal stValue,
+	public static ItemOrderFullProjection ofJsonb(@JsonbProperty("st_value") BigDecimal stValue,
 			@JsonbProperty("unit_gross_value") BigDecimal totalGrossValue,
 			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("total_price") BigDecimal totalValue,
 			@JsonbProperty("multiple") int multple, @JsonbProperty("description_product_type") String line,
@@ -41,8 +41,15 @@ public class ItemOrderFullProjection extends Item {
 				.withUnitGrossValue(value.getUnitGrossValueWithoutDiscount())
 				.withUnitStValue(value.getUnitStValueWithoutDiscount())
 				.withUnitValue(value.getUnitValueWithoutDiscount()).withImage(image).build();
-		return new Item(product, value);
+		return new ItemOrderFullProjection(product, value);
 
 	}
+
+	public ItemOrderFullProjection(Product product, ItemValue value) {
+		super(product, value);
+		// TODO Auto-generated constructor stub
+	}
+	
+	
 
 }

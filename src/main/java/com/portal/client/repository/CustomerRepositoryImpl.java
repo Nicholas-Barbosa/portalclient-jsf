@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
-import com.portal.client.dto.NoPageCustomerResponseDTO;
+import com.portal.client.dto.CustomerWrapper;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
@@ -59,7 +59,7 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
 		ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
 		return Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients/{code}/loja/{codeStore}"),
-				serverAPI.getToken(), serverAPI.getTokenPrefix(), NoPageCustomerResponseDTO.class, null, pathParams,
+				serverAPI.getToken(), serverAPI.getTokenPrefix(), CustomerWrapper.class, null, pathParams,
 				MediaType.APPLICATION_JSON).getClients().get(0));
 
 	}

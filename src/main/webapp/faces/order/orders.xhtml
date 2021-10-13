@@ -2,7 +2,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" template="../../WEB-INF/template.xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 	<ui:define name="head">
@@ -57,7 +58,12 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
 								<h:outputText value="#{order.customerName}" />
 							</p:column>
-							
+							<p:column>
+								<p:linkButton outcome="edit"
+									includeViewParams="true" icon="pi pi-star">
+									<f:param name="orderID" value="#{order.code}" />
+								</p:linkButton>
+							</p:column>
 						</p:dataTable>
 
 					</h:form>
