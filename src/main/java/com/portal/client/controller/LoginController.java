@@ -6,7 +6,7 @@ import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.ProcessingException;
 
-import com.portal.client.dto.LoginForm;
+import com.portal.client.dto.LoginProtheusForm;
 import com.portal.client.repository.AuthenticationRepository;
 import com.portal.client.service.ResourceBundleService;
 import com.portal.client.util.jsf.FacesUtils;
@@ -22,7 +22,7 @@ public class LoginController {
 
 	private final AuthenticationRepository authenticationRepository;
 	private final ResourceBundleService resourceBundleService;
-	private LoginForm loginForm;
+	private LoginProtheusForm loginForm;
 	private String headerDlgMessage;
 	private String previousPage;
 	private ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper;
@@ -34,7 +34,7 @@ public class LoginController {
 		this.authenticationRepository = authenticationRepository;
 		this.resourceBundleService = resourceBundleService;
 		this.headerDlgMessage = this.resourceBundleService.getMessage("auteticando_usuario");
-		this.loginForm = new LoginForm();
+		this.loginForm = new LoginProtheusForm();
 		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 	}
 
@@ -42,6 +42,7 @@ public class LoginController {
 		try {
 			this.authenticationRepository.login(loginForm);
 			FacesUtils.addHeaderForResponse("ok", true);
+			FacesUtils.info(null, "Autenticado com sucesso.", "Ambiente: " + loginForm.getCompanyEnv(), null);
 			return "NEW_ORDER";
 		} catch (NotAuthorizedException e) {
 			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null);
@@ -53,11 +54,11 @@ public class LoginController {
 
 	}
 
-	public LoginForm getLoginForm() {
+	public LoginProtheusForm getLoginForm() {
 		return loginForm;
 	}
 
-	public void setLoginForm(LoginForm loginForm) {
+	public void setLoginForm(LoginProtheusForm loginForm) {
 		this.loginForm = loginForm;
 	}
 

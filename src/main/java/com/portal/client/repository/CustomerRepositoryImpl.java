@@ -14,8 +14,7 @@ import com.portal.client.dto.CustomerWrapper;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
-import com.portal.client.security.APIManager;
-import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.api.helper.APIHelper;
 
 @ApplicationScoped
 public class CustomerRepositoryImpl extends OptionalEmptyRepository implements CustomerRepository {
@@ -25,17 +24,17 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 	 */
 	private static final long serialVersionUID = -8042300828676622038L;
 	private final TokenedRestClient restClient;
-	private final APIManager apiManager;
+	private final APIHelper protheusApiHelper;
 
 	public CustomerRepositoryImpl() {
 		this(null, null);
 	}
 
 	@Inject
-	public CustomerRepositoryImpl(TokenedRestClient restClient, APIManager endpointBuilder) {
+	public CustomerRepositoryImpl(TokenedRestClient restClient, APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
-		this.apiManager = endpointBuilder;
+		this.protheusApiHelper = protheusApiHelper;
 	}
 
 	@Override
@@ -44,9 +43,8 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
 		queryParms.put("pageSize", pageSize);
-		ServerAPI api = apiManager.getAPI("ORCAMENTO_API");
-		CustomerPageDTO customerPage = restClient.get(apiManager.buildEndpoint("ORCAMENTO_API", "client"),
-				api.getToken(), api.getTokenPrefix(), CustomerPageDTO.class, queryParms, null,
+		CustomerPageDTO customerPage = restClient.get(protheusApiHelper.buildEndpoint( "client"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParms, null,
 				MediaType.APPLICATION_JSON);
 		return customerPage;
 
@@ -57,9 +55,8 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		Map<String, Object> pathParams = getMapInstance();
 		pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
 		pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
-		ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
-		return Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients/{code}/loja/{codeStore}"),
-				serverAPI.getToken(), serverAPI.getTokenPrefix(), CustomerWrapper.class, null, pathParams,
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("clients/{code}/loja/{codeStore}"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerWrapper.class, null, pathParams,
 				MediaType.APPLICATION_JSON).getClients().get(0));
 
 	}
@@ -70,9 +67,8 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", name);
-		ServerAPI serverAPI = apiManager.getAPI("ORCAMENTO_API");
-		Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(apiManager.buildEndpoint(serverAPI, "clients"),
-				serverAPI.getToken(), serverAPI.getTokenPrefix(), CustomerPageDTO.class, queryParams, null,
+		Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(protheusApiHelper.buildEndpoint ("clients"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParams, null,
 				MediaType.APPLICATION_JSON));
 
 		return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();

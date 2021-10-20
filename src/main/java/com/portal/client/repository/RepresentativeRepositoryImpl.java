@@ -24,15 +24,15 @@ public class RepresentativeRepositoryImpl implements RepresentativeRepository, S
 	private TokenedRestClient restClient;
 
 	@Inject
-	private APIHelper orcamentoAPI;
+	private APIHelper protheusApiHelper;
 
 	@Override
 	public void getAdditionalData() {
 		// TODO Auto-generated method stub
-		RepresentativeData data = restClient.get(orcamentoAPI.buildEndpoint("representative"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), WrapperRepresentativeData.class, null, null, MediaType.APPLICATION_JSON)
-				.getData();
-		RepresentativeUser user = (RepresentativeUser) orcamentoAPI.getUser();
+		RepresentativeData data = restClient.get(protheusApiHelper.buildEndpoint("representative"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), WrapperRepresentativeData.class, null,
+				null, MediaType.APPLICATION_JSON).getData();
+		RepresentativeUser user = (RepresentativeUser) protheusApiHelper.getUser();
 		user.setCode(data.getCode());
 		user.setFantasyName(data.getFantasyname());
 		user.setName(data.getName());

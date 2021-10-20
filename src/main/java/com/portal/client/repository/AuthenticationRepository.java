@@ -1,8 +1,8 @@
 package com.portal.client.repository;
 
-import com.portal.client.dto.LoginForm;
+import com.portal.client.dto.LoginProtheusForm;
 
 public interface AuthenticationRepository {
 
-	void login(LoginForm login);
+	void login(LoginProtheusForm login);
 }

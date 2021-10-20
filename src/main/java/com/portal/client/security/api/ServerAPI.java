@@ -1,6 +1,8 @@
 package com.portal.client.security.api;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.portal.client.security.user.User;
 
@@ -11,24 +13,25 @@ public class ServerAPI implements Serializable {
 	 */
 	private static final long serialVersionUID = -5239012235740247278L;
 
-	private final String baseURL;
+	private final String baseUrl;
 	private final String loginEndpoint;
 	private String token;
 	private final String tokenPrefix;
 	private final User userData;
+	private final Map<String, Object> attributes;
 
-	public ServerAPI(User user, String basePath, String loginEndpoint, String token, String tokenPrefix) {
+	public ServerAPI(User user, String baseUrl, String loginEndpoint, String token, String tokenPrefix) {
 		super();
 		this.userData = user;
-		this.baseURL = basePath;
+		this.baseUrl = baseUrl;
 		this.loginEndpoint = loginEndpoint;
 		this.token = token;
 		this.tokenPrefix = tokenPrefix;
-
+		attributes = new HashMap<>();
 	}
 
-	public String getBasePath() {
-		return baseURL;
+	public String getBaseUrl() {
+		return baseUrl;
 	}
 
 	public String getLoginEndpoint() {
@@ -47,5 +50,11 @@ public class ServerAPI implements Serializable {
 		return userData;
 	}
 
+	public void setAttribute(String key, Object data) {
+		attributes.put(key, data);
+	}
 
+	public Object getAttribute(String key) {
+		return attributes.get(key);
+	}
 }

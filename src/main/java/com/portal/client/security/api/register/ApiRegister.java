@@ -1,8 +1,15 @@
 package com.portal.client.security.api.register;
 
-public interface ApiRegister {
+import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.user.User;
 
-	ApiRegister token(String token);
-	ApiRegister tokenPrefix(String prefix);
-	String getUrl();
+public interface ApiRegister<R extends ApiRegister<R>> {
+
+	R token(String token);
+
+	R tokenPrefix(String prefix);
+
+	ServerAPI register();
+
+	R setUser(User user);
 }

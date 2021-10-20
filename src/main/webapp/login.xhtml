@@ -48,6 +48,17 @@
 						value="#{loginController.loginForm.password}" id="password" />
 					<p:message for="@previous" />
 				</div>
+				<div class="form-group">
+					<span>#{resourceBundleServiceImpl.getMessage('ambiente')}</span>
+					<p:selectOneMenu id="option"
+						value="#{loginController.loginForm.companyEnv}" required="true"
+						requiredMessage="Selecione o ambiente da API">
+						<f:selectItem itemLabel="Gauss" itemValue="GAUSS" />
+						<f:selectItem itemLabel="NSG" itemValue="NSG" />
+					</p:selectOneMenu>
+					<p:message for="@previous" />
+				</div>
+
 				<p:commandButton value="LOGIN"
 					action="#{loginController.authenticate}"
 					onstart="PF('dlgLoading').show();startLogin();" process="@form"
@@ -74,7 +85,8 @@
 				</div>
 			</div>
 		</p:dialog>
-		<p:dialog widgetVar="redirectingUser" modal="true" closable="false" header="#{resourceBundleServiceImpl.getMessage('aguarde')}">
+		<p:dialog widgetVar="redirectingUser" modal="true" closable="false"
+			header="#{resourceBundleServiceImpl.getMessage('aguarde')}">
 			<p:staticMessage severity="info"
 				summary="#{resourceBundleServiceImpl.getMessage('usuario_encontrado')}"
 				detail="#{resourceBundleServiceImpl.getMessage('redirecionando')}"

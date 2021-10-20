@@ -14,6 +14,7 @@ import com.portal.client.dto.OrderToPersist;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
 import com.portal.client.repository.aop.OrderBadRequestJoinPointCut;
+import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.vo.Order;
 
@@ -21,21 +22,21 @@ import com.portal.client.vo.Order;
 public class OrderRepositoryImpl extends OptionalEmptyRepository implements OrderRepository {
 
 	private TokenedRestClient restClient;
-	private ProtheusAPIHelper orcamentoAPI;
+	private APIHelper protheusApiHelper;
 
 	@Inject
-	public OrderRepositoryImpl(TokenedRestClient restClient, ProtheusAPIHelper orcamentoAPI) {
+	public OrderRepositoryImpl(TokenedRestClient restClient, ProtheusAPIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
-		this.orcamentoAPI = orcamentoAPI;
+		this.protheusApiHelper = protheusApiHelper;
 	}
 
 	@Override
 	@OrderBadRequestJoinPointCut
 	public void persist(Order order) {
 		OrderToPersist transientOrder = OrderToPersist.of(order);
-		OrderPersisted managedOrder = restClient.post(orcamentoAPI.buildEndpoint("orders"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), OrderPersisted.class, null, null, transientOrder,
+		OrderPersisted managedOrder = restClient.post(protheusApiHelper.buildEndpoint("orders"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), OrderPersisted.class, null, null, transientOrder,
 				MediaType.APPLICATION_JSON);
 		order.setCode(managedOrder.getCode());
 
@@ -44,15 +45,15 @@ public class OrderRepositoryImpl extends OptionalEmptyRepository implements Orde
 	@Override
 	public Optional<OrderSemiProjectionPage> findAll(int page, int pageSize) {
 		Map<String, Object> queryParams = Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC");
-		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("orders"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), OrderSemiProjectionPage.class, queryParams, null, "application/json"));
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), OrderSemiProjectionPage.class, queryParams, null, "application/json"));
 	}
 
 	@Override
 	public Optional<OrderFullProjection> findByCode(String code) {
 		// TODO Auto-generated method stub
-		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("orders/{code}"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), OrderFullProjection.class, null, Map.of("code", code),
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders/{code}"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), OrderFullProjection.class, null, Map.of("code", code),
 				"application/json"));
 	}
 

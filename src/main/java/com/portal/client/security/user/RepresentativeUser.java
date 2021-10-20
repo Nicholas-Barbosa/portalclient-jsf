@@ -47,9 +47,9 @@ public class RepresentativeUser extends User {
 	public void setType(RepresentativeType type) {
 		this.type = type;
 	}
-	
+
 	public static enum RepresentativeType {
-		CARROS("C"), MOTOS("M"), AGRICOLA("A");
+		CARROS("C"), MOTOS("M"), AGRICOLA("A"), INTERNO("U");
 
 		private final String type;
 
@@ -69,8 +69,10 @@ public class RepresentativeUser extends User {
 				return RepresentativeType.CARROS;
 			case "M":
 				return RepresentativeType.MOTOS;
+			case "U":
+				return RepresentativeType.INTERNO;
 			default:
-				throw new IllegalArgumentException("Arg0-" + acronym + " not supported!");
+				throw new IllegalArgumentException("RepresentativeType Arg0-" + acronym + " not supported!");
 			}
 		}
 	}

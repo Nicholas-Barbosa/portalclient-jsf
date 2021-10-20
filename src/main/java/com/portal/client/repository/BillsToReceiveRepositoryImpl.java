@@ -10,19 +10,18 @@ import javax.ws.rs.core.MediaType;
 import com.portal.client.dto.FinancialBondsPage;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
-import com.portal.client.security.APIManager;
-import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.api.helper.APIHelper;
 
 public class BillsToReceiveRepositoryImpl extends OptionalEmptyRepository implements BillsToReceiveRepository {
 
 	private TokenedRestClient restClient;
-	private APIManager apiManager;
-
+	private APIHelper protheusApiHelper;
+	
 	@Inject
-	public BillsToReceiveRepositoryImpl(TokenedRestClient restClient, APIManager endpointBuilder) {
+	public BillsToReceiveRepositoryImpl(TokenedRestClient restClient, APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
-		this.apiManager = endpointBuilder;
+		this.protheusApiHelper = protheusApiHelper;
 	}
 
 	@Override
@@ -31,9 +30,8 @@ public class BillsToReceiveRepositoryImpl extends OptionalEmptyRepository implem
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
-		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		return Optional.of(restClient.get(apiManager.buildEndpoint(server, "titles"), server.getToken(),
-				server.getTokenPrefix(), FinancialBondsPage.class, queryParams, null, MediaType.APPLICATION_JSON));
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("titles"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), FinancialBondsPage.class, queryParams, null, MediaType.APPLICATION_JSON));
 
 	}
 
@@ -44,9 +42,8 @@ public class BillsToReceiveRepositoryImpl extends OptionalEmptyRepository implem
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
 
-		ServerAPI server = apiManager.getAPI("ORCAMENTO_API");
-		return Optional.of(restClient.get(apiManager.buildEndpoint(server, "titles/{code}/loja/{store}"),
-				server.getToken(), server.getTokenPrefix(), FinancialBondsPage.class, queryParams,
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("titles/{code}/loja/{store}"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), FinancialBondsPage.class, queryParams,
 				Map.of("code", code, "store", store), MediaType.APPLICATION_JSON));
 
 	}

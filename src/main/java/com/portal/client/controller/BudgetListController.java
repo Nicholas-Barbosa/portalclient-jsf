@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.ProcessingException;
 
 import org.primefaces.event.data.PageEvent;
 
@@ -36,8 +37,11 @@ public class BudgetListController implements Serializable {
 	public void loadBudgets(int page) {
 		if (budgets == null)
 			this.budgets = new BudgetLazyDataModel();
-		LazyPopulatorUtils.populate(budgets, buService.findAll(page, 15));
-
+		try {
+			LazyPopulatorUtils.populate(budgets, buService.findAll(page, 15));
+		} catch (ProcessingException e) {
+			System.out.println("exception " + e);
+		}
 	}
 
 	public void onPage(PageEvent page) {

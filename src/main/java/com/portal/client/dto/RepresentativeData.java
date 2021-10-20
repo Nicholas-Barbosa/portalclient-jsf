@@ -11,12 +11,10 @@ public class RepresentativeData {
 	private RepresentativeType type;
 
 	@JsonbCreator
-	public RepresentativeData(@JsonbProperty("name") String name, @JsonbProperty("fantasy_name") String fantasyname,
-			@JsonbProperty("email") String email, @JsonbProperty("code") String code,
-			@JsonbProperty("type") String type) {
+	public RepresentativeData(@JsonbProperty(value = "name") String name, @JsonbProperty("email") String email,
+			@JsonbProperty("code") String code, @JsonbProperty("type") String type) {
 		super();
 		this.name = name;
-		this.fantasyname = fantasyname;
 		this.email = email;
 		this.code = code;
 		this.type = RepresentativeType.fromAcronym(type);
@@ -41,5 +39,10 @@ public class RepresentativeData {
 
 	public RepresentativeType getType() {
 		return type;
+	}
+
+	@JsonbProperty("fantasy_name")
+	public void setFantasyname(String fantasyname) {
+		this.fantasyname = fantasyname;
 	}
 }

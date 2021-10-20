@@ -25,7 +25,7 @@ import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
-import com.portal.client.security.api.helper.ProtheusAPIHelper;
+import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Customer404Error;
@@ -42,7 +42,7 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	private static final long serialVersionUID = -1758905240244736233L;
 	private final TokenedRestClient restClient;
 	private final JsonbService jsonbService;
-	private ProtheusAPIHelper orcamentoAPI;
+	private APIHelper protheusApiHelper;
 
 	public BudgetRepositoryImpl() {
 		this(null, null, null);
@@ -50,34 +50,34 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 
 	@Inject
 	public BudgetRepositoryImpl(TokenedRestClient restClient, JsonbService jsonbService,
-			ProtheusAPIHelper orcamentoAPI) {
+			APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
 		this.jsonbService = jsonbService;
-		this.orcamentoAPI = orcamentoAPI;
+		this.protheusApiHelper = protheusApiHelper;
 	}
 
 	@Override
 	public Page<Budget> findAll(int page, int pageSize) {
-		StringBuilder endpointURL = new StringBuilder(orcamentoAPI.getBasePath());
+		StringBuilder endpointURL = new StringBuilder(protheusApiHelper.getBaseUrl());
 		endpointURL.append("/budgets");
-		return restClient.get(endpointURL.toString(), orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(),
+		return restClient.get(endpointURL.toString(), protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(),
 				BudgetPage.class, Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC"), null,
 				MediaType.APPLICATION_JSON);
 	}
 
 	@Override
 	public void save(Budget budget) {
-		BudgetSavedResponse response = restClient.post(orcamentoAPI.buildEndpoint("budgets"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), BudgetSavedResponse.class, null, null,
+		BudgetSavedResponse response = restClient.post(protheusApiHelper.buildEndpoint("budgets"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), BudgetSavedResponse.class, null, null,
 				BudgetToSaveJsonSerializable.of(budget), MediaType.APPLICATION_JSON);
 		budget.setCode(response.getCode());
 	}
 
 	@Override
 	public Optional<BudgetFullProjection> findByCode(String code) {
-		return Optional.of(restClient.get(orcamentoAPI.buildEndpoint("budgets/{code}"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), BudgetFullProjection.class,null,Map.of("code",code), MediaType.APPLICATION_JSON));
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("budgets/{code}"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), BudgetFullProjection.class,null,Map.of("code",code), MediaType.APPLICATION_JSON));
 
 	}
 
@@ -87,8 +87,8 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 
 		FormToEstimateBudget toEstimate = new FormToEstimateBudget(customerCode, customerStore, items);
 		try {
-			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(orcamentoAPI.buildEndpoint("estimate"),
-					orcamentoAPI.getToken(), orcamentoAPI.getPrefixToken(), BudgetEstimatedResultBuilder.class, null,
+			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(protheusApiHelper.buildEndpoint("estimate"),
+					protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), BudgetEstimatedResultBuilder.class, null,
 					null, toEstimate, "application/json");
 			return budgetBuilder.build();
 		} catch (NotFoundException e) {
@@ -123,8 +123,8 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	@Override
 	public void update(Budget budget) {
 		BudgetToUpdateDTO toUpdate = new BudgetToUpdateDTO(budget);
-		restClient.put(orcamentoAPI.buildEndpoint("budgets/{id}"), orcamentoAPI.getToken(),
-				orcamentoAPI.getPrefixToken(), String.class, null, Map.of("id", budget.getCode()), toUpdate,
+		restClient.put(protheusApiHelper.buildEndpoint("budgets/{id}"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), String.class, null, Map.of("id", budget.getCode()), toUpdate,
 				"application/json");
 	}
 }

@@ -55,15 +55,15 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 	}
 
 	@Override
-	public String getPrefixToken() {
+	public String getTokenPrefix() {
 		// TODO Auto-generated method stub
 		return orcamentoAPI.getTokenPrefix();
 	}
 
 	@Override
-	public String getBasePath() {
+	public String getBaseUrl() {
 		// TODO Auto-generated method stub
-		return orcamentoAPI.getBasePath();
+		return orcamentoAPI.getBaseUrl();
 	}
 
 	@Override

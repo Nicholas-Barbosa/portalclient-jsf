@@ -5,12 +5,9 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Properties;
 
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.ApplicationScoped;
 
-@Singleton
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@ApplicationScoped
 public class ConfigPropertyResolver {
 
 	private Properties properties;
@@ -24,7 +21,7 @@ public class ConfigPropertyResolver {
 		String property = properties.getProperty(key);
 		if (property != null)
 			return property;
-		throw new IllegalArgumentException("Key not found in config.properties");
+		throw new IllegalArgumentException("Key:" + key + " not found in config.properties");
 	}
 
 	public String getProperty(String key, Object... params) {

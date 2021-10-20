@@ -19,11 +19,10 @@ public class NotFound404OptionalEmptyAspect {
 		try {
 			return joinpoint.proceed();
 		} catch (ProcessingException e) {
-			if (e.getCause() instanceof NotFoundException
-					|| e.getCause() instanceof NotFoundException && isOptional(joinpoint))
+			if (e.getCause() instanceof NotFoundException && isOptional(joinpoint))
 				return Optional.empty();
 			throw e;
-		} 
+		}
 	}
 
 	private boolean isOptional(InvocationContext joinpoint) {

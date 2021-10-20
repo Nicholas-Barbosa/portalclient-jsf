@@ -7,11 +7,11 @@ public interface APIHelper {
 
 	String getToken();
 
-	String getPrefixToken();
+	String getTokenPrefix();
 
 	String buildEndpoint(String endpoint);
 
-	String getBasePath();
+	String getBaseUrl();
 	
 	ServerAPI getSourceAPI();
 

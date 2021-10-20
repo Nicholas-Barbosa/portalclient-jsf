@@ -3,7 +3,7 @@ package com.portal.client.dto;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class LoginGssResponseDTO {
+public class LoginProtheusEndpointResponse {
 
 	private String accessToken;
 
@@ -13,12 +13,12 @@ public class LoginGssResponseDTO {
 	private String tokenType;
 	private Long expireIn;
 
-	public LoginGssResponseDTO() {
+	public LoginProtheusEndpointResponse() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@JsonbCreator
-	public LoginGssResponseDTO(@JsonbProperty("access_token") String accessToken,
+	public LoginProtheusEndpointResponse(@JsonbProperty("access_token") String accessToken,
 			@JsonbProperty("refresh_token") String refreshToken, @JsonbProperty("scope") String scope,
 			@JsonbProperty("token_type") String tokenType, @JsonbProperty("expires_in") Long expireIn) {
 		super();

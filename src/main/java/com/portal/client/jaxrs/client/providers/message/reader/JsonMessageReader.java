@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
+import javax.json.bind.JsonbConfig;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.MediaType;
@@ -19,10 +20,9 @@ public class JsonMessageReader implements MessageBodyReader<Object> {
 
 	private final Jsonb jsonReader;
 
-
 	public JsonMessageReader() {
 		super();
-		this.jsonReader = JsonbBuilder.create();
+		this.jsonReader = JsonbBuilder.create(getConfig());
 	}
 
 	@Override
@@ -38,6 +38,10 @@ public class JsonMessageReader implements MessageBodyReader<Object> {
 		} catch (Exception e) {
 			throw new ProcessingException("Error while deserializing Object or covariant: " + type.getName(), e);
 		}
+	}
+
+	public JsonbConfig getConfig() {
+		return new JsonbConfig().setProperty("ALLOW_JSONB_CREATOR_OPTIONAL_PARAMS", true);
 	}
 
 }

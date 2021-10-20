@@ -2,12 +2,15 @@ package com.portal.client.dto;
 
 import javax.validation.constraints.NotEmpty;
 
-public class LoginForm {
+import com.portal.client.security.api.ProtheusCompanyApiEnv;
+
+public class LoginProtheusForm {
 
 	@NotEmpty
 	private String username;
 	@NotEmpty
 	private String password;
+	private ProtheusCompanyApiEnv companyEnv;
 
 	public String getUsername() {
 		return username;
@@ -25,4 +28,11 @@ public class LoginForm {
 		this.password = password;
 	}
 
+	public ProtheusCompanyApiEnv getCompanyEnv() {
+		return companyEnv;
+	}
+
+	public void setCompanyEnv(ProtheusCompanyApiEnv companyEnv) {
+		this.companyEnv = companyEnv;
+	}
 }

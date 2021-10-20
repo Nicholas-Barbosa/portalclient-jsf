@@ -69,11 +69,11 @@ public class APIManager implements Serializable {
 	}
 
 	public String buildEndpoint(String serverKey, String endpoint) {
-		return new StringBuilder(getAPI(serverKey).getBasePath()).append("/" + endpoint).toString();
+		return new StringBuilder(getAPI(serverKey).getBaseUrl()).append("/" + endpoint).toString();
 	}
 
 	public String buildEndpoint(ServerAPI serverAPI, String endpoint) {
-		return new StringBuilder(serverAPI.getBasePath()).append("/" + endpoint).toString();
+		return new StringBuilder(serverAPI.getBaseUrl()).append("/" + endpoint).toString();
 	}
 
 	/**
