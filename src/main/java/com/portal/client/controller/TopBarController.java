@@ -35,7 +35,7 @@ public class TopBarController implements Serializable {
 	public void afterDI() {
 		this.image = protheusApiHelper.getSourceAPI().getAttribute("companyEnv").equals(ProtheusCompanyApiEnv.GAUSS)
 				? "Webp.net-resizeimage-gausslg.png"
-				: "LOGOMARCA NSG.webp";
+				: "NSG.png";
 	}
 
 	public void loadUserData() {

@@ -3,8 +3,8 @@ package com.portal.client.security.api.register;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.controller.ProtheusApiUrlHandler;
 import com.portal.client.security.APIManager;
+import com.portal.client.security.api.ProtheusApiEnviromentHandler;
 import com.portal.client.security.api.ProtheusCompanyApiEnv;
 import com.portal.client.security.api.ServerAPI;
 import com.portal.client.security.user.RepresentativeUser;
@@ -16,10 +16,10 @@ public class ProtheusApiRegisterImpl implements ProtheusApiRegister {
 	private RepresentativeUser user;
 	private ProtheusCompanyApiEnv companyEnv;
 	private APIManager apisManger;
-	private ProtheusApiUrlHandler protheusApiHandler;
+	private ProtheusApiEnviromentHandler protheusApiHandler;
 
 	@Inject
-	public ProtheusApiRegisterImpl(APIManager apisManger, ProtheusApiUrlHandler protheusApiHandler) {
+	public ProtheusApiRegisterImpl(APIManager apisManger, ProtheusApiEnviromentHandler protheusApiHandler) {
 		super();
 		this.apisManger = apisManger;
 		this.protheusApiHandler = protheusApiHandler;

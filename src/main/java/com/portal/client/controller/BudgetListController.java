@@ -5,7 +5,7 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.ProcessingException;
+import javax.ws.rs.NotFoundException;
 
 import org.primefaces.event.data.PageEvent;
 
@@ -14,6 +14,7 @@ import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.ui.lazy.datamodel.BudgetLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
+import com.portal.client.util.jsf.FacesUtils;
 
 @ViewScoped
 @Named
@@ -39,8 +40,10 @@ public class BudgetListController implements Serializable {
 			this.budgets = new BudgetLazyDataModel();
 		try {
 			LazyPopulatorUtils.populate(budgets, buService.findAll(page, 15));
-		} catch (ProcessingException e) {
-			System.out.println("exception " + e);
+			FacesUtils.addHeaderForResponse("isEmpty", false);
+		} catch (NotFoundException e) {
+			FacesUtils.addHeaderForResponse("isEmpty", true);
+			FacesUtils.executeScript("$('#contentNotFound').show();$('#contentFound').hide();");
 		}
 	}
 

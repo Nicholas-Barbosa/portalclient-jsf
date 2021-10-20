@@ -1,14 +1,13 @@
-package com.portal.client.controller;
+package com.portal.client.security.api;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.security.api.ProtheusCompanyApiEnv;
 
 @ApplicationScoped
-public class ProtheusApiUrlHandler {
+public class ProtheusApiEnviromentHandler {
 
 	@Inject
 	private ConfigPropertyResolver propertiesResolver;

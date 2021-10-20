@@ -15,13 +15,13 @@ import com.portal.client.repository.aop.NotFoundOptionalEmptyJoinPointCut;
 public class NotFound404OptionalEmptyAspect {
 
 	@AroundInvoke
-	public Object aroundInvoke(InvocationContext joinpoint) throws Exception {
+	public Object aroundInvoke(InvocationContext joinpoint) throws Throwable {
 		try {
 			return joinpoint.proceed();
 		} catch (ProcessingException e) {
 			if (e.getCause() instanceof NotFoundException && isOptional(joinpoint))
 				return Optional.empty();
-			throw e;
+			throw e.getCause();
 		}
 	}
 
