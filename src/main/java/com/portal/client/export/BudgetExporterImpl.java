@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import com.portal.client.dto.BudgetJasperForm;
 import com.portal.client.export.jasper.BudgetJasperData;
 import com.portal.client.export.jasper.BudgetReport;
-import com.portal.client.security.api.helper.OrcamentoAPIHelper;
+import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.vo.Budget;
 
 public class BudgetExporterImpl implements BudgetExporter, Serializable {
@@ -26,7 +26,7 @@ public class BudgetExporterImpl implements BudgetExporter, Serializable {
 	private OrderJsonHandler jsonHandler;
 
 	@Inject
-	private OrcamentoAPIHelper orcamentoAPI;
+	private ProtheusAPIHelper orcamentoAPI;
 
 	@Override
 	public byte[] export(Budget budget, OrderExportType type) {

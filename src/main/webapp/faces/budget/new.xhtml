@@ -46,7 +46,7 @@
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
 								action="#{newBudgetOrderController.newBudget}"
-								update="customerForm itemsComponent:panelItems budgetTotals">
+								update="customerForm itemsComponent:panelItems">
 								<p:confirm type="popup"
 									header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
 									message="#{resourceBundleServiceImpl.getMessage('restaurar_budget_form')}"
@@ -68,7 +68,7 @@
 								icon="pi pi-eye"
 								action="#{customerDetailShowController.show(newBudgetOrderController.budget.customerOnOrder)}" />
 
-						
+
 						</p:toolbarGroup>
 					</p:toolbar>
 					<p:sticky target="tb" />
@@ -140,49 +140,12 @@
 					</div>
 				</h:form>
 			</div>
-
-			<ic:itemDtableComponent
-				handleProductSearchResultAction="#{newBudgetOrderController.handleProductResult}"
-				handleItemImportAction="#{newBudgetOrderController.handleItemImportReturn}"
-				itemComponentController="#{newBudgetOrderController.dtItemsController}"
-				totalComponent="budgetTotals" renderDiscountButton="true"
-				id="itemsComponent" />
-
-
-			<div class="p-col-12 p-shadow-24" id="totals">
-				<div class="card ">
-					<h:form id="budgetTotals">
-						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="liquidV"
-									value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
-								<p:inputNumber id="liquidV"
-									value="#{newBudgetOrderController.budget.liquidValue}"
-									symbol="R$ " symbolPosition="p" readonly="true"
-									decimalSeparator="," thousandSeparator="." />
-							</div>
-							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="stT"
-									value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
-								<p:inputNumber id="stT"
-									value="#{newBudgetOrderController.budget.stValue}" symbol="R$ "
-									symbolPosition="p" readonly="true" decimalSeparator=","
-									thousandSeparator="." />
-							</div>
-							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="grossV"
-									value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
-								<p:inputNumber id="grossV"
-									value="#{newBudgetOrderController.budget.grossValue}"
-									symbol="R$ " symbolPosition="p" readonly="true"
-									decimalSeparator="," thousandSeparator="." />
-							</div>
-						</div>
-						<p:autoUpdate on="eventAddItem" />
-					</h:form>
-				</div>
+			<div>
+				<ic:itemDtableComponent order="#{newBudgetOrderController.budget}"
+					renderDiscountButton="true" id="itemsComponent" />
 
 			</div>
+			
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"
@@ -236,7 +199,7 @@
 
 			<p:remoteCommand name="cleanBudgetObj"
 				action="#{newBudgetOrderController.newBudget}" process="@this"
-				update="customerForm, :itemsComponent, budgetTotals" />
+				update="customerForm, :itemsComponent" />
 
 			<p:dialog widgetVar="dlgBudgetPersistForm" modal="true"
 				header="#{resourceBundleServiceImpl.getMessage('efetivar_orcamento')}"
@@ -286,7 +249,7 @@
 						<div class="box">
 							<p:commandButton value="OK"
 								action="#{newBudgetOrderController.newBudget}" process="@this"
-								update="customerForm, itemsComponent, budgetTotals"
+								update="customerForm, itemsComponent"
 								styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingBudget').hide()" />
 							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star"

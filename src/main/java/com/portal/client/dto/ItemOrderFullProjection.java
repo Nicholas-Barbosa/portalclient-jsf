@@ -1,6 +1,7 @@
 package com.portal.client.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
@@ -31,8 +32,8 @@ public class ItemOrderFullProjection extends Item {
 			@JsonbProperty("quantity") int quantity) {
 		ItemValue value = ItemValueBuilder.getInstance().withMultiple(multple).withQuantity(quantity)
 				.withTotalGrossValue(totalGrossValue).withUnitStValue(stValue).withUnitValue(unitValue)
-				.withTotalValue(totalValue).withUnitGrossValue(totalGrossValue.divide(new BigDecimal(quantity)))
-				.build();
+				.withTotalValue(totalValue)
+				.withUnitGrossValue(totalGrossValue.divide(new BigDecimal(quantity), RoundingMode.HALF_UP)).build();
 
 		ProductImage image = ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build();
 
@@ -49,7 +50,5 @@ public class ItemOrderFullProjection extends Item {
 		super(product, value);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
 
 }

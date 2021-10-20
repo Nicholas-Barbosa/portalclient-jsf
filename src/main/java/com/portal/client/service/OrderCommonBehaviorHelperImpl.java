@@ -63,24 +63,24 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	}
 
 	@Override
-	public void addItem(Order budget, Item item) {
-		if (item != null && budget.addItem(item)) {
-			if (budget.getGlobalDiscount() != null && !budget.getGlobalDiscount().equals(BigDecimal.ZERO)) {
-				itemService.applyGlobalDiscount(item, budget.getGlobalDiscount());
+	public void addItem(Order order, Item item) {
+		if (item != null && order.addItem(item)) {
+			if (order.getGlobalDiscount() != null && !order.getGlobalDiscount().equals(BigDecimal.ZERO)) {
+				itemService.applyGlobalDiscount(item, order.getGlobalDiscount());
 			}
 			ItemValue itemValue = item.getValue();
-			if (budget.getGrossValue() == null)
-				budget.setGrossValue(itemValue.getTotalGrossValue());
+			if (order.getGrossValue() == null)
+				order.setGrossValue(itemValue.getTotalGrossValue());
 			else
-				budget.setGrossValue(budget.getGrossValue().add(itemValue.getTotalGrossValue()));
-			if (budget.getLiquidValue() == null)
-				budget.setLiquidValue(itemValue.getTotalValue());
+				order.setGrossValue(order.getGrossValue().add(itemValue.getTotalGrossValue()));
+			if (order.getLiquidValue() == null)
+				order.setLiquidValue(itemValue.getTotalValue());
 			else
-				budget.setLiquidValue(budget.getLiquidValue().add(itemValue.getTotalValue()));
-			if (budget.getStValue() == null)
-				budget.setStValue(itemValue.getTotalStValue());
+				order.setLiquidValue(order.getLiquidValue().add(itemValue.getTotalValue()));
+			if (order.getStValue() == null)
+				order.setStValue(itemValue.getTotalStValue());
 			else
-				budget.setStValue(budget.getLiquidValue().add(itemValue.getTotalStValue()));
+				order.setStValue(order.getStValue().add(itemValue.getTotalStValue()));
 		}
 	}
 

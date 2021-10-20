@@ -23,7 +23,6 @@ public class ProductImageLoaderController {
 
 	public void loadImage(Product product) {
 		productService.loadImage(product);
-		System.out.println("Load image! " +product.getImage().getCurrentState());
 		FacesUtils.addHeaderForResponse("Image-State", product.getImage().getCurrentState());
 		if (product.getImage().getCurrentState() == ImageInfoState.NOT_FOUND) {
 			FacesUtils.error(null, "Imagem não encontrada para " + product.getCommercialCode(), null, "growl");

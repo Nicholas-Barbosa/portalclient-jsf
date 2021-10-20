@@ -59,7 +59,7 @@ public class NewBudgetOrderController implements Serializable {
 
 	private String cNameToSearch;
 
-	private DtableItemController dtItemsController;
+	private ItemOrderContainerController dtItemsController;
 
 	public NewBudgetOrderController() {
 		this(null, null, null, null, null, null, null);
@@ -69,7 +69,7 @@ public class NewBudgetOrderController implements Serializable {
 	public NewBudgetOrderController(BudgetCrudService budgetService, ClientErrorExceptionController responseController,
 			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
 			OrderCommonBehaviorHelper budgetRequestService, HttpSession session,
-			DtableItemController dtItemsController) {
+			ItemOrderContainerController dtItemsController) {
 		super();
 		this.budgetService = budgetService;
 		this.responseController = responseController;
@@ -177,7 +177,7 @@ public class NewBudgetOrderController implements Serializable {
 		this.cNameToSearch = cNameToSearch;
 	}
 
-	public DtableItemController getDtItemsController() {
+	public ItemOrderContainerController getDtItemsController() {
 		return dtItemsController;
 	}
 }

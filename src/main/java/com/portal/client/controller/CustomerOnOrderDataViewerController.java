@@ -1,9 +1,5 @@
 package com.portal.client.controller;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,7 +17,7 @@ import com.portal.client.vo.Order;
 
 @RequestScoped
 @Named
-public class ViewOrderIncompleteCustomerData {
+public class CustomerOnOrderDataViewerController {
 
 	private Order order;
 	private CustomerDetailShowController customerShow;
@@ -29,37 +25,45 @@ public class ViewOrderIncompleteCustomerData {
 	private ProcessingExceptionFacesMessageHelper processingMsgHelper;
 
 	@Inject
-	public ViewOrderIncompleteCustomerData(CustomerDetailShowController customerShow, CustomerService customerService,
-			ProcessingExceptionFacesMessageHelper processingMsgHelper) {
+	public CustomerOnOrderDataViewerController(CustomerDetailShowController customerShow,
+			CustomerService customerService, ProcessingExceptionFacesMessageHelper processingMsgHelper) {
 		super();
 		this.customerShow = customerShow;
 		this.customerService = customerService;
 		this.processingMsgHelper = processingMsgHelper;
 	}
 
-	public void view(Order order) {
+	public void view(Order order, String componentId) {
 		this.order = order;
 		if (!CustomerUtils.isNull(order.getCustomerOnOrder()))
-			this.loadAdditionalCustomerData();
+			this.load(componentId);
 		customerShow.show(order.getCustomerOnOrder());
 	}
 
-	private void loadAdditionalCustomerData() {
+	private void load(String componentId) {
 		try {
 			customerService
 					.findByCodeAndStore(new SearchCustomerByCodeAndStoreDTO(this.order.getCustomerOnOrder().getCode(),
 							this.order.getCustomerOnOrder().getStore()))
-					.ifPresentOrElse(this::populateCustomerData,
+					.ifPresentOrElse(c -> this.populateCustomerData(c, componentId),
 							() -> FacesUtils.error(null, "Cliente não encontrado", null, "growl"));
 		} catch (ProcessingException e) {
 			processingMsgHelper.displayMessage(e, null, "growl");
 		}
 	}
 
-	private void populateCustomerData(Customer customer) {
-		CustomerOnOrder newCustomer = new CustomerOnOrder(customer);
-		this.order.setCustomerOnOrder(newCustomer);
-		FacesUtils.ajaxUpdate("panelCustomer");
+	public void load(Order order, String componentId) {
+		this.order = order;
+		this.load(componentId);
 	}
 
+	private void populateCustomerData(Customer customer, String componentId) {
+		CustomerOnOrder newCustomer = new CustomerOnOrder(customer);
+		this.order.setCustomerOnOrder(newCustomer);
+		FacesUtils.ajaxUpdate(componentId);
+	}
+
+	public boolean isLoaded(CustomerOnOrder c) {
+		return !CustomerUtils.isNull(c);
+	}
 }

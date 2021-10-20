@@ -43,7 +43,7 @@
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
 								action="#{newOrderController.newOrder}"
-								update="customerForm itemsComponent:panelItems frmTotals"
+								update="customerForm itemsComponent:panelItems"
 								onclick="PF('blockItems').show()">
 								<p:confirm type="popup"
 									header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
@@ -136,47 +136,10 @@
 				</h:form>
 			</div>
 
-
-			<ic:itemDtableComponent
-				handleProductSearchResultAction="#{newOrderController.handleProductResult}"
-				handleItemImportAction="#{newOrderController.handleItemImportReturn}"
-				itemComponentController="#{newOrderController.dtItemsController}"
-				totalComponent="frmTotals" id="itemsComponent" />
-
-			<div class="p-col-12 p-shadow-24" id="totals">
-				<div class="card ">
-					<h:form id="frmTotals">
-						<div class="ui-fluid p-formgrid p-grid">
-							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="liquidV"
-									value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
-								<p:inputNumber id="liquidV"
-									value="#{newOrderController.order.liquidValue}" symbol="R$ "
-									symbolPosition="p" readonly="true" decimalSeparator=","
-									thousandSeparator="." />
-							</div>
-							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="stT"
-									value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
-								<p:inputNumber id="stT"
-									value="#{newOrderController.order.stValue}" symbol="R$ "
-									symbolPosition="p" readonly="true" decimalSeparator=","
-									thousandSeparator="." />
-							</div>
-							<div class="p-field p-col-12 p-md-3">
-								<p:outputLabel for="grossV"
-									value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
-								<p:inputNumber id="grossV"
-									value="#{newOrderController.order.grossValue}" symbol="R$ "
-									symbolPosition="p" readonly="true" decimalSeparator=","
-									thousandSeparator="." />
-							</div>
-						</div>
-						<p:autoUpdate on="eventAddItem" />
-					</h:form>
-				</div>
+			<div>
+				<ic:itemDtableComponent order="#{newOrderController.order}"
+					id="itemsComponent" />
 			</div>
-
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{resourceBundleServiceImpl.getMessage('busca_de_cliente')}"
@@ -221,8 +184,6 @@
 					</p:tabView>
 				</div>
 			</p:dialog>
-			<p:button value="Abrir" onclick="PF('dlgBadRequest').show()" />
-
 			<p:dialog header="Status" modal="true" closable="false"
 				widgetVar="persistingOrder" responsive="true">
 				<div id="statLoading">
@@ -248,7 +209,7 @@
 						<div class="box">
 							<p:commandButton value="OK"
 								action="#{newOrderController.newOrder}" process="@this"
-								update="customerForm, :itemsComponent, frmTotals"
+								update="customerForm, :itemsComponent"
 								styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingOrder').hide()" />
 							<p:commandButton value="Visualizar outros pedidos"

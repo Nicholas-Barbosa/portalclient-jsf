@@ -23,7 +23,7 @@ public class OrderEditingController implements Serializable{
 	private OrderCrudService orderService;
 
 	@Inject
-	private DtableItemController itemComponent;
+	private ItemOrderContainerController itemComponent;
 
 	private String orderID;
 
@@ -48,7 +48,7 @@ public class OrderEditingController implements Serializable{
 		return order;
 	}
 
-	public DtableItemController getItemComponent() {
+	public ItemOrderContainerController getItemComponent() {
 		return itemComponent;
 	}
 }

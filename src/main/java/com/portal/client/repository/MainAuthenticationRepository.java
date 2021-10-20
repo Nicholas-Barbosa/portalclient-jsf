@@ -47,7 +47,8 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		queryParams.put("grant_type", "password");
 		queryParams.put("password", loginForm.getPassword());
 		queryParams.put("username", loginForm.getUsername());
-		String currentEniviromentUrl = propertiesReader.getProperty("orcamento_api_url_teste");
+
+		String currentEniviromentUrl = propertiesReader.getProperty("protheus_api_url_teste");
 		String loginUrl = String.format("%s/%s", currentEniviromentUrl, "api/oauth2/v1/token");
 
 		LoginGssResponseDTO doPost = restClient.post(loginUrl, LoginGssResponseDTO.class, queryParams, null, null,
@@ -56,7 +57,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 				.withPassword(loginForm.getPassword().toCharArray()).build();
 		ServerAPI server = new ServerAPI(user, currentEniviromentUrl, "v1/token", doPost.getAccessToken(), "Bearer");
 
-		userPropertyHolder.registerAuthenticatedService("ORCAMENTO_API", server);
+		userPropertyHolder.registerAuthenticatedService("PROTHEUS_API", server);
 		loginForm = null;
 	}
 

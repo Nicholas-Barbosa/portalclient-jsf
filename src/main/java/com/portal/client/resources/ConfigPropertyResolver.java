@@ -2,6 +2,7 @@ package com.portal.client.resources;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.MessageFormat;
 import java.util.Properties;
 
 import javax.ejb.Singleton;
@@ -24,6 +25,10 @@ public class ConfigPropertyResolver {
 		if (property != null)
 			return property;
 		throw new IllegalArgumentException("Key not found in config.properties");
+	}
+
+	public String getProperty(String key, Object... params) {
+		return MessageFormat.format(this.getProperty(key), params);
 	}
 
 	private void loadProperties() {

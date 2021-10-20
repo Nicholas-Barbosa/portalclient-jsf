@@ -10,7 +10,7 @@ import com.portal.client.security.api.ServerAPI;
 import com.portal.client.security.user.RepresentativeUser;
 
 @SessionScoped
-public class OrcamentoAPIHelper implements Serializable, APIHelper {
+public class ProtheusAPIHelper implements Serializable, APIHelper {
 
 	/**
 	 * 
@@ -18,15 +18,15 @@ public class OrcamentoAPIHelper implements Serializable, APIHelper {
 	private static final long serialVersionUID = 6759109065591573681L;
 
 	private ServerAPI orcamentoAPI;
-	private final String orcamentoAPIKey = "ORCAMENTO_API";
+	private final String orcamentoAPIKey = "PROTHEUS_API";
 	private APIManager apiManager;
 
-	public OrcamentoAPIHelper() {
+	public ProtheusAPIHelper() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
-	public OrcamentoAPIHelper(APIManager apiManager) {
+	public ProtheusAPIHelper(APIManager apiManager) {
 		super();
 		this.orcamentoAPI = apiManager.getAPI(orcamentoAPIKey);
 		this.apiManager = apiManager;

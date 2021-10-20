@@ -14,6 +14,7 @@ import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.repository.BudgetRepository;
+import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Page;
 
@@ -27,10 +28,13 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	private BudgetRepository budgetRepository;
 
+	private OrderCommonBehaviorHelper orderHelper;
+
 	@Inject
-	public BudgetCrudServiceImpl(BudgetRepository budgetRepository) {
+	public BudgetCrudServiceImpl(BudgetRepository budgetRepository, OrderCommonBehaviorHelper orderHelper) {
 		super();
 		this.budgetRepository = budgetRepository;
+		this.orderHelper = orderHelper;
 	}
 
 	@Override
@@ -49,7 +53,9 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	@Override
 	public Optional<BudgetFullProjection> findByCode(String code) {
-		return budgetRepository.findByCode(code);
+		Optional<BudgetFullProjection> maybe = budgetRepository.findByCode(code);
+		maybe.ifPresent(budget -> orderHelper.sumStValue(budget));
+		return maybe;
 	}
 
 	@Override

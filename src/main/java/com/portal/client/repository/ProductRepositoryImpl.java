@@ -23,7 +23,7 @@ import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.dto.ProductToFindStock;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
-import com.portal.client.security.api.helper.OrcamentoAPIHelper;
+import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.vo.Product;
 
 @ApplicationScoped
@@ -32,10 +32,10 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 	private static final long serialVersionUID = 4463669170628763803L;
 
 	private TokenedRestClient restClient;
-	private OrcamentoAPIHelper orcamentoAPI;
+	private ProtheusAPIHelper orcamentoAPI;
 
 	@Inject
-	public ProductRepositoryImpl(TokenedRestClient restClient, OrcamentoAPIHelper orcamentoAPI) {
+	public ProductRepositoryImpl(TokenedRestClient restClient, ProtheusAPIHelper orcamentoAPI) {
 		super();
 		this.restClient = restClient;
 		this.orcamentoAPI = orcamentoAPI;

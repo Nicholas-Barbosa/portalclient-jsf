@@ -36,11 +36,10 @@ public class ItemBudgetProjection extends Item implements Serializable {
 			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
 			@JsonbProperty("multiple") int multiple, @JsonbProperty("description") String description) {
 		BigDecimal quantityBgDecimal = new BigDecimal(quantity);
-
 		ItemValue value = ItemValueBuilder.getInstance().withGlobalDiscount(BigDecimal.ZERO)
 				.withLineDiscount(lineDiscount).withQuantity(quantity)
 				.withUnitGrossValue(grossValue.divide(quantityBgDecimal, RoundingMode.HALF_UP))
-				.withUnitStValue(stValue.divide(quantityBgDecimal)).withTotalValue(totalValue).withUnitValue(unitValue)
+				.withUnitStValue(stValue.divide(quantityBgDecimal,RoundingMode.HALF_UP)).withTotalValue(totalValue).withUnitValue(unitValue)
 				.withTotalStValue(stValue).withMultiple(multiple).withTotalGrossValue(grossValue).build();
 
 		ProductImage pImage = ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build();

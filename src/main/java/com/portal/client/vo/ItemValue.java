@@ -17,9 +17,7 @@ public class ItemValue extends ProductValue {
 
 	public ItemValue(ProductValue pValue) {
 		super(pValue);
-		valuesWithNoDisc.put("unitStValue", pValue.getUnitStValue());
-		valuesWithNoDisc.put("unitValue", pValue.getUnitValue());
-		valuesWithNoDisc.put("unitGrossValue", pValue.getUnitGrossValue());
+		this.setValuesWithoutDiscounts(pValue.getUnitStValue(), pValue.getUnitValue(), pValue.getUnitGrossValue());
 		this.totalDiscount = BigDecimal.ZERO;
 		this.budgetGlobalDiscount = BigDecimal.ZERO;
 		this.lineDiscount = BigDecimal.ZERO;
@@ -41,9 +39,7 @@ public class ItemValue extends ProductValue {
 	private final void getValuesWithoutDiscount() {
 		if (budgetGlobalDiscount == null || budgetGlobalDiscount.equals(BigDecimal.ZERO) && lineDiscount == null
 				|| lineDiscount.equals(BigDecimal.ZERO)) {
-			valuesWithNoDisc.put("unitStValue", super.getUnitStValue());
-			valuesWithNoDisc.put("unitValue", super.getUnitValue());
-			valuesWithNoDisc.put("unitGrossValue", super.getUnitGrossValue());
+			this.setValuesWithoutDiscounts(super.getUnitStValue(), super.getUnitValue(), super.getUnitGrossValue());
 		} else {
 			if (!budgetGlobalDiscount.equals(BigDecimal.ZERO)) {
 				BigDecimal unitValue = MathUtils.subtractValueByPercentage(budgetGlobalDiscount, super.getUnitValue());
@@ -51,9 +47,14 @@ public class ItemValue extends ProductValue {
 						super.getUnitStValue());
 				BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(budgetGlobalDiscount,
 						super.getUnitGrossValue());
-				valuesWithNoDisc.put("unitStValue", unitStValue);
-				valuesWithNoDisc.put("unitValue", unitValue);
-				valuesWithNoDisc.put("unitGrossValue", unitGrossValue);
+				this.setValuesWithoutDiscounts(unitStValue, unitValue, unitGrossValue);
+
+			} else {
+				BigDecimal unitStValue = MathUtils.subtractValueByPercentage(lineDiscount, super.getUnitStValue());
+				BigDecimal unitValue = MathUtils.subtractValueByPercentage(lineDiscount, super.getUnitValue());
+				BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(lineDiscount,
+						super.getUnitGrossValue());
+				this.setValuesWithoutDiscounts(unitStValue, unitValue, unitGrossValue);
 			}
 			if (!lineDiscount.equals(BigDecimal.ZERO)) {
 				BigDecimal unitValue = MathUtils.subtractValueByPercentage(lineDiscount,
@@ -62,12 +63,18 @@ public class ItemValue extends ProductValue {
 						valuesWithNoDisc.get("unitStValue"));
 				BigDecimal unitGrossValue = MathUtils.subtractValueByPercentage(lineDiscount,
 						valuesWithNoDisc.get("unitGrossValue"));
-				valuesWithNoDisc.put("unitStValue", unitStValue);
-				valuesWithNoDisc.put("unitValue", unitValue);
-				valuesWithNoDisc.put("unitGrossValue", unitGrossValue);
+				setValuesWithoutDiscounts(unitStValue, unitValue, unitGrossValue);
+
 			}
 
 		}
+	}
+
+	private final void setValuesWithoutDiscounts(BigDecimal unitStValue, BigDecimal unitValue,
+			BigDecimal unitGrossValue) {
+		valuesWithNoDisc.put("unitStValue", unitStValue);
+		valuesWithNoDisc.put("unitValue", unitValue);
+		valuesWithNoDisc.put("unitGrossValue", unitGrossValue);
 	}
 
 	public BigDecimal getBudgetGlobalDiscount() {

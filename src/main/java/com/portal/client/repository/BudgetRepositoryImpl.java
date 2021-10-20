@@ -25,7 +25,7 @@ import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
-import com.portal.client.security.api.helper.OrcamentoAPIHelper;
+import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Customer404Error;
@@ -42,7 +42,7 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	private static final long serialVersionUID = -1758905240244736233L;
 	private final TokenedRestClient restClient;
 	private final JsonbService jsonbService;
-	private OrcamentoAPIHelper orcamentoAPI;
+	private ProtheusAPIHelper orcamentoAPI;
 
 	public BudgetRepositoryImpl() {
 		this(null, null, null);
@@ -50,7 +50,7 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 
 	@Inject
 	public BudgetRepositoryImpl(TokenedRestClient restClient, JsonbService jsonbService,
-			OrcamentoAPIHelper orcamentoAPI) {
+			ProtheusAPIHelper orcamentoAPI) {
 		super();
 		this.restClient = restClient;
 		this.jsonbService = jsonbService;

@@ -3,22 +3,28 @@ package com.portal.client.controller;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import javax.enterprise.context.Dependent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
+import org.primefaces.event.SelectEvent;
 
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.Product;
 
-@Dependent
-public class DtableItemController implements Serializable {
+@ViewScoped
+@Named
+public class ItemOrderContainerController implements Serializable {
 
 	/**
 	 * 
@@ -27,7 +33,7 @@ public class DtableItemController implements Serializable {
 	private List<Item> itemsToRemove;
 
 	@Inject
-	private OrderCommonBehaviorHelper helper;
+	private OrderCommonBehaviorHelper orderHelper;
 
 	@Inject
 	private OrderItemQuantityCalculator itemQuantityCalculator;
@@ -38,12 +44,26 @@ public class DtableItemController implements Serializable {
 
 	private int onRowItemQuantity;
 
-	public DtableItemController() {
+	public ItemOrderContainerController() {
 		itemsToRemove = new ArrayList<>();
+	}
+
+	public void handleItemImportReturn(SelectEvent<Budget> event) {
+		this.orderHelper.merge(this.order, event.getObject());
+		FacesUtils.ajaxUpdate("panelTotals");
+	}
+
+	public void handleProductResult(SelectEvent<Optional<Product>> event) {
+		event.getObject().ifPresentOrElse(p -> {
+			orderHelper.addItem(order, Item.product(p));
+			FacesUtils.ajaxUpdate("dtItems", "totals");
+		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
+
 	}
 
 	public void onRowItemEdit(RowEditEvent<Item> event) {
 		try {
+			
 			itemQuantityCalculator.calc(order, event.getObject(), onRowItemQuantity);
 		} catch (ItemQuantityNotAllowed e) {
 			FacesUtils.error(null, e.getMessage(), null);
@@ -52,15 +72,18 @@ public class DtableItemController implements Serializable {
 	}
 
 	public void removeItem(Item item) {
-		helper.removeItem(order, item);
+		orderHelper.removeItem(order, item);
 		itemsToRemove.remove(item);
 		item = null;
 	}
 
 	public void removeItems() {
-		helper.removeItems(order, itemsToRemove);
+		orderHelper.removeItems(order, itemsToRemove);
+		String message = itemsToRemove.size() == 1
+				? "Item " + itemsToRemove.get(0).getProduct().getCommercialCode() + " removido"
+				: itemsToRemove.size() + " itens removidos.";
 		itemsToRemove.clear();
-		FacesUtils.info(null, "Itens removidos", null, "growl");
+		FacesUtils.info(null, message, null, "growl");
 	}
 
 	public boolean hasSelectedItems() {

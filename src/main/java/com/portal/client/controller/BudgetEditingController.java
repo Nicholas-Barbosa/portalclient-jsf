@@ -55,7 +55,7 @@ public class BudgetEditingController implements Serializable {
 
 	private BudgetExporterShowController exporterShow;
 
-	private DtableItemController dtableController;
+	private ItemOrderContainerController dtableController;
 
 	private Budget budget;
 
@@ -68,7 +68,7 @@ public class BudgetEditingController implements Serializable {
 			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
 			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper,
 			OrderCrudService orderService, BudgetExporterShowController exporterShow,
-			DtableItemController dtableController, OrderBadRequestShowController orderBadRequestShowController) {
+			ItemOrderContainerController dtableController, OrderBadRequestShowController orderBadRequestShowController) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
@@ -100,8 +100,7 @@ public class BudgetEditingController implements Serializable {
 	}
 
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
-		this.orderHelper.merge(this.getBudget(), event.getObject());
-		FacesUtils.ajaxUpdate("panelTotals");
+	
 	}
 
 	public void saveToOrder() {
@@ -179,7 +178,7 @@ public class BudgetEditingController implements Serializable {
 		return savedOrder;
 	}
 
-	public DtableItemController getDtableController() {
+	public ItemOrderContainerController getDtableController() {
 		return dtableController;
 	}
 

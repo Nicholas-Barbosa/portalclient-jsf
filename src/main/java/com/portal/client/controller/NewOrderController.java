@@ -1,8 +1,6 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 
 import javax.annotation.PostConstruct;
@@ -28,8 +26,6 @@ import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;
-import com.portal.client.vo.builder.ItemValueBuilder;
-import com.portal.client.vo.builder.ProductBuilder;
 
 @Named
 @ViewScoped
@@ -52,7 +48,7 @@ public class NewOrderController implements Serializable {
 	private OrderItemQuantityCalculator ordemQuantityCalculator;
 
 	@Inject
-	private DtableItemController dtItemsController;
+	private ItemOrderContainerController dtItemsController;
 
 	@Inject
 	private OrderBadRequestShowController orderBadRequestShowController;
@@ -138,7 +134,7 @@ public class NewOrderController implements Serializable {
 		this.onRowItemQuantity = onRowItemQuantity;
 	}
 
-	public DtableItemController getDtItemsController() {
+	public ItemOrderContainerController getDtItemsController() {
 		return dtItemsController;
 	}
 

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:o="http://java.sun.com/jsf/composite/components/order">
+<h:head>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="order"
+		shortDescription="Order mutable object to call getters methods"
+		type="com.portal.client.vo.Order" required="true" />
+	<composite:attribute name="title" default="Pedido"
+		type="java.lang.String" />
+</composite:interface>
+
+<composite:implementation>
+
+	<div id="#{cc.clientId}">
+		<div class="card">
+			<h5>#{cc.attrs.title}</h5>
+			<p:outputPanel deferred="true" deferredMode="visible"
+				id="orderContainer">
+				<div class="ui-fluid p-formgrid p-grid">
+					<div class="p-field p-col-12 p-md-6">
+						<label for="bCode">Código</label>
+						<p:inputText id="bCode" type="text" readonly="true"
+							value="#{cc.attrs.order.code}" />
+					</div>
+					<div class="p-field p-col-12 p-md-6">
+						<label for="createdAt">Criado em</label>
+						<p:inputText id="createdAt" type="text" readonly="true"
+							value="#{cc.attrs.order.createdAt}">
+							<f:convertDateTime locale="pt_BR" type="localDate"
+								dateStyle="full" />
+						</p:inputText>
+					</div>
+					<div class="p-field p-col-12 p-md-6">
+						<label for="oPNum">N°Pedido representante</label>
+						<p:inputText id="oPNum" type="text"
+							value="#{cc.attrs.order.repNumOrder}" />
+					</div>
+					<div class="p-field p-col-12 p-md-6">
+						<label for="ocNum">N°Pedido cliente</label>
+						<p:inputText id="ocNum" type="text"
+							value="#{cc.attrs.order.customerNumOrder}" />
+					</div>
+					<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+						<p:outputLabel for="mensagem" value="Mensagem" />
+						<p:inputTextarea id="mensagem" rows="4" maxlength="250"
+							value="#{cc.attrs.order.message}" />
+					</div>
+
+				</div>
+			</p:outputPanel>
+		</div>
+
+		<div class="card">
+			<o:customerPanel order="#{cc.attrs.order}" />
+		</div>
+		<div>
+			<o:itemsPanel order="#{cc.attrs.order}" />
+		</div>
+	</div>
+</composite:implementation>
+
+</html>

@@ -14,17 +14,17 @@ import com.portal.client.dto.OrderToPersist;
 import com.portal.client.jaxrs.client.TokenedRestClient;
 import com.portal.client.repository.aop.OptionalEmptyRepository;
 import com.portal.client.repository.aop.OrderBadRequestJoinPointCut;
-import com.portal.client.security.api.helper.OrcamentoAPIHelper;
+import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
 public class OrderRepositoryImpl extends OptionalEmptyRepository implements OrderRepository {
 
 	private TokenedRestClient restClient;
-	private OrcamentoAPIHelper orcamentoAPI;
+	private ProtheusAPIHelper orcamentoAPI;
 
 	@Inject
-	public OrderRepositoryImpl(TokenedRestClient restClient, OrcamentoAPIHelper orcamentoAPI) {
+	public OrderRepositoryImpl(TokenedRestClient restClient, ProtheusAPIHelper orcamentoAPI) {
 		super();
 		this.restClient = restClient;
 		this.orcamentoAPI = orcamentoAPI;
