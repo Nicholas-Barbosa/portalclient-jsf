@@ -8,8 +8,9 @@
 	<div class="layout-topbar">
 		<div class="layout-topbar-wrapper">
 			<div class="layout-topbar-left">
-				<h:link id="logolink" styleClass="layout-topbar-logo">
-					<p:graphicImage name="#{topBarController.image}" library="image" />
+				<h:link id="logolink">
+					<p:graphicImage name="#{topBarController.image}" library="image"
+						style="#{topBarController.currentLogoCss}" />
 				</h:link>
 			</div>
 			<div class="layout-topbar-right">
@@ -33,8 +34,7 @@
 					</a>
 						<ul>
 							<li><a href="#"> <i class="pi pi-user"></i> <span><p:outputLabel
-											value="#{topBarController.user.name}" id="user-label" />
-								</span>
+											value="#{topBarController.user.name}" id="user-label" /> </span>
 							</a></li>
 							<li onclick="logout()"><a href="#"> <i
 									class="topbar-icon pi pi-power-off"> </i><span>Sair</span>
@@ -54,6 +54,8 @@
 					oncomplete="$('#loadingUser').hide();$('#avatar').show();"
 					update="user-label" />
 			</div>
+
+			
 		</div>
 	</div>
 

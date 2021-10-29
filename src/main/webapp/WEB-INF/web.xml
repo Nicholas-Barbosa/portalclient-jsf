@@ -37,6 +37,7 @@
 		<param-name>primefaces.SUBMIT</param-name>
 		<param-value>partial</param-value>
 	</context-param>
+
 	<servlet>
 		<servlet-name>FacesServlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
@@ -55,7 +56,7 @@
 				and 9999. Defaults to 150.
 			</description>
 			<param-name>threshold</param-name>
-			<param-value>150</param-value>
+			<param-value>600</param-value>
 		</init-param>
 		<init-param>
 			<description>The mimetypes which needs to be compressed. Must be a

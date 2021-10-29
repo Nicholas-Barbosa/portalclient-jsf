@@ -25,7 +25,7 @@ public class BudgetEstimatedResultBuilder extends BaseBudgetJsonBuilder {
 		CustomerOnOrder customerOnOrder = new CustomerOnOrder(super.getCustomerCode(), super.getCustomerStore(), null,
 				null, null, null, null, null, null);
 		Budget baseBudget = new Budget(null, null, customerOnOrder, super.getGrossValue(), super.getLiquidValue(),
-				super.getStValue(), BigDecimal.ZERO, super.getItems(), super.getMessage(), null);
+				super.getStValue(), BigDecimal.ZERO, super.getItems(), super.getMessage(), null,null);
 		return baseBudget;
 	}
 

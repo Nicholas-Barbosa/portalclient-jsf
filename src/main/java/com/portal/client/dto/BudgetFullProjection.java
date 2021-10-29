@@ -37,7 +37,7 @@ public class BudgetFullProjection extends Budget {
 			BigDecimal stValue, BigDecimal liquidValue, BigDecimal grossValue, List<Item> items, String message,
 			BigDecimal globalDiscount, LocalDate createdAt) {
 		super(code, customerNumOrder, repNumOrder, customer, grossValue, liquidValue, stValue, globalDiscount, items,
-				message, createdAt);
+				message, createdAt,null);
 
 	}
 

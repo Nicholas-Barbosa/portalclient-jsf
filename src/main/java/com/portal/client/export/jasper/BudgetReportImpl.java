@@ -11,7 +11,7 @@ import javax.ejb.TransactionAttributeType;
 
 import com.portal.client.dto.BudgetJasperForm;
 import com.portal.client.export.OrderExportType;
-import com.portal.client.security.user.RepresentativeUser.RepresentativeType;
+import com.portal.client.security.user.RepresentativeUser.SaleType;
 
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -49,7 +49,7 @@ public class BudgetReportImpl implements BudgetReport {
 		}
 	}
 
-	private String getLogo(RepresentativeType type) {
+	private String getLogo(SaleType type) {
 		try {
 			switch (type) {
 			case AGRICOLA:
@@ -67,7 +67,7 @@ public class BudgetReportImpl implements BudgetReport {
 		}
 	}
 
-	private String getTitle(RepresentativeType type) {
+	private String getTitle(SaleType type) {
 		try {
 			String title = "Gauss Indústria %s";
 			switch (type) {
@@ -86,7 +86,7 @@ public class BudgetReportImpl implements BudgetReport {
 		}
 	}
 
-	public Map<String, Object> configureLayout(RepresentativeType type) {
+	public Map<String, Object> configureLayout(SaleType type) {
 		Map<String, Object> params = new HashMap<>();
 
 		params.put("logoGaussPath", getLogo(type));

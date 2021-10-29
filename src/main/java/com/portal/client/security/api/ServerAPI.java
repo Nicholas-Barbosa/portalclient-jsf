@@ -17,7 +17,7 @@ public class ServerAPI implements Serializable {
 	private final String loginEndpoint;
 	private String token;
 	private final String tokenPrefix;
-	private final User userData;
+	private User userData;
 	private final Map<String, Object> attributes;
 
 	public ServerAPI(User user, String baseUrl, String loginEndpoint, String token, String tokenPrefix) {
@@ -48,6 +48,10 @@ public class ServerAPI implements Serializable {
 
 	public User getUserData() {
 		return userData;
+	}
+
+	public void setUser(User user) {
+		this.userData = user;
 	}
 
 	public void setAttribute(String key, Object data) {

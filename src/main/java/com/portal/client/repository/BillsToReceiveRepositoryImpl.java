@@ -7,9 +7,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import com.nicholas.jaxrsclient.TokenedRestClient;
+import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.FinancialBondsPage;
-import com.portal.client.jaxrs.client.TokenedRestClient;
-import com.portal.client.repository.aop.OptionalEmptyRepository;
 import com.portal.client.security.api.helper.APIHelper;
 
 public class BillsToReceiveRepositoryImpl extends OptionalEmptyRepository implements BillsToReceiveRepository {

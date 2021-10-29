@@ -1,4 +1,4 @@
-package com.portal.client.repository.aop;
+package com.portal.client.cdi.aop.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

@@ -1,4 +1,4 @@
-package com.portal.client.repository.aop.aspect;
+package com.portal.client.cdi.aop.aspect;
 
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -6,9 +6,9 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.ws.rs.BadRequestException;
 
+import com.portal.client.cdi.aop.annotations.OrderBadRequestJoinPointCut;
 import com.portal.client.dto.OrderBadRequestData;
 import com.portal.client.repository.OrderBadRequestExcpetion;
-import com.portal.client.repository.aop.OrderBadRequestJoinPointCut;
 import com.portal.client.service.jsonb.JsonbService;
 
 @Interceptor

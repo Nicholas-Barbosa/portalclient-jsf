@@ -1,4 +1,4 @@
-package com.portal.client.jaxrs.client.aop;
+package com.portal.client.cdi.aop.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 import javax.interceptor.InterceptorBinding;
 
 @InterceptorBinding
+@Target({ElementType.TYPE,ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface IllegalResponsePointCutJoinPoint {
+public @interface OrderBadRequestJoinPointCut {
 
 }

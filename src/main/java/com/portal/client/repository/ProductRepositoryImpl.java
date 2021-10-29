@@ -15,14 +15,14 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import com.nicholas.jaxrsclient.TokenedRestClient;
+import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductStock;
 import com.portal.client.dto.ProductStockWrapper;
 import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.dto.ProductToFindStock;
-import com.portal.client.jaxrs.client.TokenedRestClient;
-import com.portal.client.repository.aop.OptionalEmptyRepository;
 import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.vo.Product;
 

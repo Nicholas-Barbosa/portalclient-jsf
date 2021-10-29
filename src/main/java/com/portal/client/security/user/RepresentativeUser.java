@@ -7,10 +7,10 @@ public class RepresentativeUser extends User {
 	 */
 	private static final long serialVersionUID = 4333174724267823064L;
 	private String code, fantasyName;
-	private RepresentativeType type;
+	private SaleType type;
 
 	public RepresentativeUser(String code, String fantasyName, String name, String username, String email,
-			char[] password, RepresentativeType type) {
+			char[] password, SaleType type) {
 		super(name, username, email, password);
 		this.code = code;
 		this.fantasyName = fantasyName;
@@ -39,21 +39,21 @@ public class RepresentativeUser extends User {
 		return super.isDataComplete() && code != null && fantasyName != null;
 	}
 
-	public RepresentativeType getType() {
+	public SaleType getType() {
 		// TODO Auto-generated method stub
 		return type;
 	}
 
-	public void setType(RepresentativeType type) {
+	public void setType(SaleType type) {
 		this.type = type;
 	}
 
-	public static enum RepresentativeType {
+	public static enum SaleType {
 		CARROS("C"), MOTOS("M"), AGRICOLA("A"), INTERNO("U");
 
 		private final String type;
 
-		private RepresentativeType(String type) {
+		private SaleType(String type) {
 			this.type = type;
 		}
 
@@ -61,18 +61,19 @@ public class RepresentativeUser extends User {
 			return type;
 		}
 
-		public static RepresentativeType fromAcronym(String acronym) {
+		public static SaleType fromAcronym(String acronym) {
 			switch (acronym) {
 			case "A":
-				return RepresentativeType.AGRICOLA;
+				return SaleType.AGRICOLA;
 			case "C":
-				return RepresentativeType.CARROS;
+				return SaleType.CARROS;
 			case "M":
-				return RepresentativeType.MOTOS;
+				return SaleType.MOTOS;
 			case "U":
-				return RepresentativeType.INTERNO;
+				return SaleType.INTERNO;
 			default:
-				throw new IllegalArgumentException("RepresentativeType Arg0-" + acronym + " not supported!");
+//				throw new IllegalArgumentException("RepresentativeType Arg0-" + acronym + " not supported!");
+				return SaleType.INTERNO;
 			}
 		}
 	}

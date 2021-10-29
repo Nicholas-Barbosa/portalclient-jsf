@@ -47,7 +47,7 @@
 							</p:ajax>
 							<p:sidebar widgetVar="topSidebar" position="top"
 								baseZIndex="10000">
-								<h4>Adicionando produto ao orçamento e calculando totais...</h4>
+								<h4>Adicionando produto e calculando totais...</h4>
 							</p:sidebar>
 						</p:commandButton>
 						<p:commandButton
@@ -114,7 +114,6 @@
 						<p:skeleton width="4rem" height="2rem" />
 					</div>
 				</div>
-
 				<p:dataTable var="item" value="#{cc.attrs.order.items}" id="dtItems"
 					widgetVar="dtItems" editable="true" scrollable="true" size="small"
 					filterDelay="100"
@@ -411,7 +410,7 @@
 							symbol="R$ " symbolPosition="p" readonly="true"
 							decimalSeparator="," thousandSeparator="." />
 					</div>
-					
+
 					<div class="p-field p-col-12 p-md-3">
 						<p:outputLabel for="grossV"
 							value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />

@@ -1,15 +1,16 @@
 package com.portal.client.controller;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.ProcessingException;
 
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.data.PageEvent;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
@@ -19,6 +20,8 @@ import org.primefaces.model.map.Marker;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.FinancialBondsPage;
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.ProductPriceListWrapper.ProductPriceList;
+import com.portal.client.service.ProductPriceListService;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BillsToReceiveService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
@@ -27,9 +30,14 @@ import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
-@RequestScoped
+@ViewScoped
 @Named
-public class CustomerDetailController {
+public class CustomerDetailController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3901260370961743998L;
 
 	private ZipCodeService zipCodeService;
 
@@ -43,37 +51,53 @@ public class CustomerDetailController {
 
 	private LazyBehaviorDataModel<FinacialBondsDTO> titles;
 
+	private List<ProductPriceList> productsPriceList;
+
 	private ProcessingExceptionFacesMessageHelper externalExcpetionHelper;
-	
+
+	private ProductPriceListService productPriceListService;
+
+	public CustomerDetailController() {
+		// TODO Auto-generated constructor stub
+	}
 	
 	@Inject
 	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,
-			BillsToReceiveService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper) {
+			BillsToReceiveService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper,
+			ProductPriceListService productPriceListService) {
 		super();
 		this.zipCodeService = zipCodeService;
 		this.bondsService = bondsService;
 		currentLatLng = "-25.504460, -49.331579";
 		customer = (Customer) session.getAttribute("customer_to_detail");
 		this.externalExcpetionHelper = externalExcpetionHelper;
+		this.productPriceListService = productPriceListService;
+	}
+
+	public void loadProductsPriceList() {
+		if (productsPriceList == null)
+			productPriceListService.find(customer.getCode(), customer.getStore()).ifPresentOrElse(lista -> {
+				System.out.println("size " + lista.size());
+				this.productsPriceList = lista;
+				FacesUtils.ajaxUpdate("formList:dtList");
+				FacesUtils.executeScript("$('#content').show()");
+			}, () -> FacesUtils.executeScript("$('#notFound').show()"));
+		;
 	}
 
 	public void loadGMap() {
 		if (gMap == null) {
 			gMap = new DefaultMapModel();
-				zipCodeService.find(customer.getZipCode()).ifPresentOrElse(c -> {
-					Marker marker = new Marker(new LatLng(c.getLat(), c.getLng()), customer.getName());
-					gMap.addOverlay(marker);
-					currentLatLng = c.getLat() + ", " + c.getLng();
-				}, () -> {
-					FacesUtils.error(null, "CEP não encontrado", customer.getZipCode()
-							+ " não encontrado. O mapa será centralizado usando parâmetros de lat e lng padrões.");
-					PrimeFaces.current().ajax().update("growl");
-				});
+			zipCodeService.find(customer.getZipCode()).ifPresentOrElse(c -> {
+				Marker marker = new Marker(new LatLng(c.getLat(), c.getLng()), customer.getName());
+				gMap.addOverlay(marker);
+				currentLatLng = c.getLat() + ", " + c.getLng();
+			}, () -> {
+				FacesUtils.error(null, "CEP não encontrado", customer.getZipCode()
+						+ " não encontrado. O mapa será centralizado usando parâmetros de lat e lng padrões.");
+				PrimeFaces.current().ajax().update("growl");
+			});
 		}
-	}
-
-	public void onBondsPage(PageEvent event) {
-
 	}
 
 	public void loadFinancialBonds(int page) {
@@ -112,4 +136,7 @@ public class CustomerDetailController {
 		return titles;
 	}
 
+	public List<ProductPriceList> getProductsPriceList() {
+		return productsPriceList;
+	}
 }

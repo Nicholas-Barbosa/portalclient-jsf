@@ -5,9 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
-	xmlns:o="http://java.sun.com/jsf/composite/components/order"
-	xmlns:customer="http://java.sun.com/jsf/composite/components/customer">
+	xmlns:o="http://java.sun.com/jsf/composite/components/order">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -45,7 +43,7 @@
 			<h:form>
 				<p:remoteCommand autoRun="true"
 					action="#{orderEditingController.find}" process="@this"
-					oncomplete="$('#divLoading').hide();$('#content').show();"
+					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems()"
 					update="orderContainer" />
 			</h:form>
 
@@ -101,7 +99,8 @@
 
 					</h:form>
 				</div>-->
-				<o:panel order="#{orderEditingController.order}" id="orderContainer"/>
+				<o:editPanel order="#{orderEditingController.order}"
+					id="orderContainer" />
 
 			</div>
 		</f:view>

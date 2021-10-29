@@ -24,7 +24,7 @@ public class BudgetSemiProjection extends BaseBudgetJsonBuilder {
 		CustomerOnOrder customer = new CustomerOnOrder(super.getCustomerCode(), super.getCustomerStore(), null, null,
 				null, null, null, null, null);
 		Budget budget = new Budget(super.getIdCode(), null, null, customer, null, super.getLiquidValue(),
-				super.getStValue(), null, null, null, super.getCreatedAt());
+				super.getStValue(), null, null, null, super.getCreatedAt(),null);
 		return budget;
 	}
 

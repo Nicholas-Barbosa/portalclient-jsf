@@ -31,11 +31,26 @@ public class TopBarController implements Serializable {
 	private String image;
 	private User user;
 
+	private static final String nsgLogoCss = "width:5.5vw;height:9.5vh;border-radius:50%";
+	private static final String cdgLogoCss = "";
+	private String currentLogoCss;
+
 	@PostConstruct
 	public void afterDI() {
-		this.image = protheusApiHelper.getSourceAPI().getAttribute("companyEnv").equals(ProtheusCompanyApiEnv.GAUSS)
-				? "Webp.net-resizeimage-gausslg.png"
-				: "NSG.png";
+		this.loadImgLogoCss();
+
+	}
+
+	public void loadImgLogoCss() {
+		switch ((ProtheusCompanyApiEnv) protheusApiHelper.getSourceAPI().getAttribute("companyEnv")) {
+		case NSG:
+			this.image = "NSG.png";
+			this.currentLogoCss = nsgLogoCss;
+			break;
+		case CDG:
+			this.image = "Webp.net-resizeimage-gausslg.png";
+			break;
+		}
 	}
 
 	public void loadUserData() {
@@ -55,5 +70,9 @@ public class TopBarController implements Serializable {
 
 	public String getImage() {
 		return image;
+	}
+
+	public String getCurrentLogoCss() {
+		return currentLogoCss;
 	}
 }

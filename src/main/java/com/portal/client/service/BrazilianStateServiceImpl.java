@@ -13,8 +13,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 
+import com.nicholas.jaxrsclient.RestClient;
 import com.portal.client.dto.BrazilianState;
-import com.portal.client.jaxrs.client.RestClient;
 
 @ApplicationScoped
 @Named

@@ -77,7 +77,7 @@
 		<dependency>
 			<groupId>org.omnifaces</groupId>
 			<artifactId>omnifaces</artifactId>
-			<version>3.11.1</version>
+			<version>3.11.2</version>
 		</dependency>
 	</dependencies>
 

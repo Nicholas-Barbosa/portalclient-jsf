@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.portal.client.dto.CustomerOnOrder;
+import com.portal.client.security.user.RepresentativeUser;
 
 public class Order {
 
@@ -18,13 +19,14 @@ public class Order {
 	private String message;
 	private List<Item> items;
 	private LocalDate createdAt;
+	private RepresentativeUser representative;
 
 	public Order() {
 	}
 
 	public Order(String code, String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder,
 			BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount,
-			String message, List<Item> items, LocalDate createdAt) {
+			String message, List<Item> items, LocalDate createdAt, RepresentativeUser representative) {
 		super();
 		this.code = code;
 		this.customerNumOrder = customerNumOrder;
@@ -37,12 +39,13 @@ public class Order {
 		this.message = message;
 		this.items = items;
 		this.createdAt = createdAt;
+		this.representative = representative;
 	}
 
 	public Order(Order order) {
 		this(order.code, order.customerNumOrder, order.repNumOrder, order.customerOnOrder, order.grossValue,
 				order.liquidValue, order.stValue, order.globalDiscount, order.message, new ArrayList<>(order.items),
-				order.createdAt);
+				order.createdAt, order.representative);
 	}
 
 	public String getCode() {
@@ -144,6 +147,14 @@ public class Order {
 
 	public void setCreatedAt(LocalDate createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public RepresentativeUser getRepresentative() {
+		return representative;
+	}
+
+	public void setRepresentative(RepresentativeUser representative) {
+		this.representative = representative;
 	}
 
 	public boolean removeItems(List<Item> itemsToCompareAndRemove) {

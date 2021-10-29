@@ -1,12 +1,12 @@
 package com.portal.client.security.user.builder;
 
 import com.portal.client.security.user.RepresentativeUser;
-import com.portal.client.security.user.RepresentativeUser.RepresentativeType;
+import com.portal.client.security.user.RepresentativeUser.SaleType;
 
 public class RepresentativeUserBuilder extends UserBuilder {
 
 	private String code, fantasyName;
-	private RepresentativeType type;
+	private SaleType type;
 
 	public static RepresentativeUserBuilder getInstance() {
 		return new RepresentativeUserBuilder();
@@ -22,7 +22,7 @@ public class RepresentativeUserBuilder extends UserBuilder {
 		return this;
 	}
 
-	public RepresentativeUserBuilder withType(RepresentativeType type) {
+	public RepresentativeUserBuilder withType(SaleType type) {
 		this.type = type;
 		return this;
 	}

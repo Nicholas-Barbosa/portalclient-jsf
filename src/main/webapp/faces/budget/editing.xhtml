@@ -5,9 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
-	xmlns:od="http://java.sun.com/jsf/composite/components/order"
-	xmlns:customer="http://java.sun.com/jsf/composite/components/customer">
+	xmlns:o="http://java.sun.com/jsf/composite/components/order">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -45,7 +43,7 @@
 				<p:remoteCommand autoRun="true"
 					action="#{budgetEditingController.searchBudget}" process="@this"
 					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
-					update="orderComponent:data,customerComponent:panelCustomer,itemContainerComponent:panelTotals" />
+					update="budgetContainer" />
 			</h:form>
 
 			<div class="card" id="divLoading">
@@ -69,6 +67,7 @@
 			<div id="content" style="display: none">
 				<div class="card">
 					<p:commandButton id="dynaButton" type="button" icon="pi pi-bars" />
+
 					<h:form prependId="false">
 						<p:menu overlay="true" trigger="dynaButton" my="left top"
 							at="left bottom">
@@ -76,7 +75,7 @@
 								<p:menuitem value="Confirmar"
 									action="#{budgetEditingController.confirmBudgetEditing}"
 									ajax="true" icon="pi pi-check"
-									process="@this,orderComponent:oPNum,orderComponent:ocNum,orderComponent:mensagem"
+									process="@this,budgetContainer:editableOrderInputComponents"
 									onstart="PF('sidebarForLoadingEditing').show()"
 									oncomplete="PF('sidebarForLoadingEditing').hide()" />
 
@@ -85,7 +84,8 @@
 
 								<p:menuitem value="Efetivar para pedido"
 									action="#{budgetEditingController.saveToOrder}" ajax="true"
-									icon="pi pi-star" process="@this,orderComponent:oPNum,orderComponent:ocNum,orderComponent:mensagem"
+									icon="pi pi-star"
+									process="@this,budgetContainer:editableOrderInputComponents"
 									onstart="PF('sidebarForSavingBudgetToOrder').show()"
 									oncomplete="PF('sidebarForSavingBudgetToOrder').hide()" />
 							</p:submenu>
@@ -134,22 +134,9 @@
 						</p:sidebar>
 					</h:form>
 				</div>
+				<o:editPanel order="#{budgetEditingController.budget}"
+					id="budgetContainer" title="Orçamento" />
 
-				<div>
-					<od:data id="orderComponent"
-						order="#{budgetEditingController.budget}" />
-				</div>
-
-				<div>
-					<customer:onOrder order="#{budgetEditingController.budget}"
-						id="customerComponent" />
-				</div>
-
-				<div>
-					<ic:itemDtableComponent order="#{budgetEditingController.budget}"
-						renderDiscountButton="false"
-						block="false" id="itemContainerComponent"/>
-				</div>
 
 			</div>
 		</f:view>

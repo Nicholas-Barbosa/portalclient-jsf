@@ -15,12 +15,14 @@
 	<composite:attribute name="order"
 		shortDescription="Order mutable object to call getters methods"
 		type="com.portal.client.vo.Order" required="true" />
+	<composite:attribute name="title" type="java.lang.String"
+		default="Pedido" />
 </composite:interface>
 
 <composite:implementation>
 
 	<div class="card">
-		<h5>Orçamento</h5>
+		<h5>#{cc.attrs.title}</h5>
 		<p:outputPanel deferred="true" deferredMode="visible" id="data">
 			<div class="ui-fluid p-formgrid p-grid">
 				<div class="p-field p-col-12 p-md-6">

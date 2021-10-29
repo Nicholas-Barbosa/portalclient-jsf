@@ -28,7 +28,7 @@ public class ProductTechDataShowController {
 			Map<String, Object> dialogOptions = Map.of("modal", true, "responsive", true, "onHide", "alert('close')",
 					"contentWidth", "50vw", "contentHeight", "45vh", "closable", false, "showEffect", "fold",
 					"hideEffect", "blind");
-			FacesUtils.openViewOnDialog(dialogOptions, "/face/productTechData");
+			FacesUtils.openViewOnDialog(dialogOptions, "/faces/productTechData");
 			return;
 		}
 		throw new IllegalArgumentException("Product arg cannot be null!");

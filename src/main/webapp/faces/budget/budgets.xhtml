@@ -30,11 +30,13 @@
 						<p:remoteCommand action="#{budgetListController.loadBudgets(1)}"
 							process="@this" autoRun="true"
 							oncomplete="$('#divLoading').hide();$('#divListContent').show();
-							if(xhr.getResponseHeader('isEmpty')==false)
+							if(xhr.getResponseHeader('isEmpty')=='false')
 							updateBudgets();" />
+
 						<p:remoteCommand name="updateBudgets" update="dtBudgets"
 							action="@none" process="@none"
 							oncomplete="editScrollBodyMaxHeight('dtBudgets','90vh')" />
+
 
 						<p:dataTable id="dtBudgets" widgetVar="dtBudgets" var="budget"
 							value="#{budgetListController.budgets}" paginator="true"
@@ -43,6 +45,7 @@
 							<p:ajax event="page" listener="#{budgetListController.onPage}"
 								onstart="$('#divLoading').show();$('#divListContent').hide();"
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
+
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('orcamento')}">
 								<h:outputText value="#{budget.code}" />

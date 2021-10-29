@@ -1,20 +1,20 @@
 package com.portal.client.dto;
 
 import com.portal.client.export.jasper.BudgetJasperData;
-import com.portal.client.security.user.RepresentativeUser.RepresentativeType;
+import com.portal.client.security.user.RepresentativeUser.SaleType;
 
 public class BudgetJasperForm {
 
-	private RepresentativeType sellertype;
+	private SaleType sellertype;
 	private BudgetJasperData data;
 
-	public BudgetJasperForm(RepresentativeType sellertype, BudgetJasperData data) {
+	public BudgetJasperForm(SaleType sellertype, BudgetJasperData data) {
 		super();
 		this.sellertype = sellertype;
 		this.data = data;
 	}
 
-	public RepresentativeType getSellertype() {
+	public SaleType getSellertype() {
 		return sellertype;
 	}
 

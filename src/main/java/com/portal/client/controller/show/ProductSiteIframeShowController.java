@@ -18,7 +18,7 @@ public class ProductSiteIframeShowController implements ShowController<String> {
 		Map<String, Object> options = Map.of("modal", true, "responsive", true, "contentWidth", "87vw", "contentHeight",
 				"85vh");
 		Map<String, List<String>> queryParams = Map.of("url", List.of(p));
-		FacesUtils.openViewOnDialog(options, "/face/productSiteIframe", queryParams);
+		FacesUtils.openViewOnDialog(options, "/faces/productSiteIframe", queryParams);
 	}
 
 }

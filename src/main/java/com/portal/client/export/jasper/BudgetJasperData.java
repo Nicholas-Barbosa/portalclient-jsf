@@ -30,8 +30,11 @@ public class BudgetJasperData implements Serializable {
 
 	private String message;
 
+	private String representative;
+
 	public BudgetJasperData(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
-			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items, String message) {
+			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items, String message,
+			String representative) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
@@ -39,6 +42,7 @@ public class BudgetJasperData implements Serializable {
 		this.customerReportDTO = customerReportDTO;
 		this.items = new HashSet<>(items);
 		this.message = message;
+		this.representative = representative;
 	}
 
 	public BudgetJasperData(Order order) {
@@ -49,6 +53,7 @@ public class BudgetJasperData implements Serializable {
 		this.items = order.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
 				Set::add, Set::addAll);
 		this.message = order.getMessage();
+		
 	}
 
 	public static long getSerialversionuid() {
@@ -77,6 +82,10 @@ public class BudgetJasperData implements Serializable {
 
 	public String getMessage() {
 		return message;
+	}
+
+	public String getRepresentative() {
+		return representative;
 	}
 
 	public static class CustomerJasperReportDTO implements Serializable {

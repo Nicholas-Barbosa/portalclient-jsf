@@ -21,7 +21,7 @@ public class ProtheusApiEnviromentHandler {
 	}
 
 	public String getUrl(ProtheusCompanyApiEnv comEnv) {
-		if (enviroment.equals("prod") && comEnv == ProtheusCompanyApiEnv.GAUSS) {
+		if (enviroment.equals("prod") && comEnv == ProtheusCompanyApiEnv.CDG) {
 			return propertiesResolver.getProperty(configProtheusUrlProdKey, "9990");
 		}
 		String baseUrl = propertiesResolver.getProperty(

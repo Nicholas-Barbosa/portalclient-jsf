@@ -18,14 +18,14 @@ public class BudgetExporterController {
 	private boolean order;
 	private Budget budgetToExport;
 	private HttpSession httpSession;
-	private BudgetExporter orderExporter;
+	private BudgetExporter budgetExporter;
 	private OrderExporterForm exportForm;
 
 	@Inject
 	public BudgetExporterController(HttpSession httpSession, BudgetExporter orderExporter) {
 		super();
 		this.httpSession = httpSession;
-		this.orderExporter = orderExporter;
+		this.budgetExporter = orderExporter;
 		this.exportForm = new OrderExporterForm();
 	}
 
@@ -35,7 +35,7 @@ public class BudgetExporterController {
 
 	public void export() {
 		budgetToExport = (Budget) httpSession.getAttribute("budget-toexport");
-		byte[] streams = orderExporter.export(budgetToExport, exportForm.getType());
+		byte[] streams = budgetExporter.export(budgetToExport, exportForm.getType());
 		exportForm.checkFileExtension();
 		FacesUtils.prepareResponseForDownloadOfStreams(getFileName(), streams, getFileType().getType());
 	}

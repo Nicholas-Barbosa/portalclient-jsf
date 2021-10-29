@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.client.cdi.aop.annotations.OrderRepresentativeSetterJoinPointCut;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ItemToFindPrice;
@@ -30,11 +31,15 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	private OrderCommonBehaviorHelper orderHelper;
 
+	private OrderRprensentativeSetter orderRepSetter;
+
 	@Inject
-	public BudgetCrudServiceImpl(BudgetRepository budgetRepository, OrderCommonBehaviorHelper orderHelper) {
+	public BudgetCrudServiceImpl(BudgetRepository budgetRepository, OrderCommonBehaviorHelper orderHelper,
+			OrderRprensentativeSetter authorSetter) {
 		super();
 		this.budgetRepository = budgetRepository;
 		this.orderHelper = orderHelper;
+		this.orderRepSetter = authorSetter;
 	}
 
 	@Override
@@ -43,6 +48,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	}
 
+	@OrderRepresentativeSetterJoinPointCut
 	@Override
 	public void save(Budget budget, CustomerRepresentativeOrderForm ordersForm) {
 		checkBudgetState(budget);
@@ -54,7 +60,10 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	@Override
 	public Optional<BudgetFullProjection> findByCode(String code) {
 		Optional<BudgetFullProjection> maybe = budgetRepository.findByCode(code);
-		maybe.ifPresent(budget -> orderHelper.sumStValue(budget));
+		maybe.ifPresent(budget -> {
+			orderHelper.sumStValue(budget);
+			orderRepSetter.setAutor(budget);
+		});
 		return maybe;
 	}
 

@@ -8,9 +8,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import com.nicholas.jaxrsclient.RestClient;
 import com.portal.client.dto.LoginProtheusEndpointResponse;
 import com.portal.client.dto.LoginProtheusForm;
-import com.portal.client.jaxrs.client.RestClient;
 import com.portal.client.security.api.ProtheusApiEnviromentHandler;
 import com.portal.client.security.api.register.ProtheusApiRegister;
 import com.portal.client.security.user.RepresentativeUser;

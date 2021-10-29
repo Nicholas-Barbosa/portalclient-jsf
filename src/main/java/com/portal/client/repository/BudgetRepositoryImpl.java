@@ -13,6 +13,8 @@ import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
+import com.nicholas.jaxrsclient.TokenedRestClient;
+import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.BudgetEstimatedResultBuilder;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
@@ -23,8 +25,6 @@ import com.portal.client.dto.FormToEstimateBudget;
 import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
-import com.portal.client.jaxrs.client.TokenedRestClient;
-import com.portal.client.repository.aop.OptionalEmptyRepository;
 import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;

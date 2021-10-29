@@ -7,13 +7,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
+import com.nicholas.jaxrsclient.TokenedRestClient;
+import com.portal.client.cdi.aop.OptionalEmptyRepository;
+import com.portal.client.cdi.aop.annotations.OrderBadRequestJoinPointCut;
 import com.portal.client.dto.OrderFullProjection;
 import com.portal.client.dto.OrderPersisted;
 import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.dto.OrderToPersist;
-import com.portal.client.jaxrs.client.TokenedRestClient;
-import com.portal.client.repository.aop.OptionalEmptyRepository;
-import com.portal.client.repository.aop.OrderBadRequestJoinPointCut;
 import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.vo.Order;

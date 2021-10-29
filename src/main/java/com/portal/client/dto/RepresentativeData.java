@@ -3,12 +3,12 @@ package com.portal.client.dto;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.security.user.RepresentativeUser.RepresentativeType;
+import com.portal.client.security.user.RepresentativeUser.SaleType;
 
 public class RepresentativeData {
 
 	private String name, fantasyname, email, code;
-	private RepresentativeType type;
+	private SaleType type;
 
 	@JsonbCreator
 	public RepresentativeData(@JsonbProperty(value = "name") String name, @JsonbProperty("email") String email,
@@ -17,7 +17,7 @@ public class RepresentativeData {
 		this.name = name;
 		this.email = email;
 		this.code = code;
-		this.type = RepresentativeType.fromAcronym(type);
+		this.type = SaleType.fromAcronym(type);
 	}
 
 	public String getName() {
@@ -37,7 +37,7 @@ public class RepresentativeData {
 
 	}
 
-	public RepresentativeType getType() {
+	public SaleType getType() {
 		return type;
 	}
 

@@ -30,7 +30,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 	font-weight: bold;
 }
 </style>
-	
+
 </h:head>
 
 <h:body styleClass="#{userStylePreferences.inputStyleClass}">
@@ -246,6 +246,75 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 					</div>
 				</h:form>
+			</p:tab>
+			<p:tab title="Tabelas">
+				<div id="content">
+					<h:form>
+						<p:remoteCommand autoRun="true"
+							action="#{customerDetailController.loadProductsPriceList}"
+							process="@this"
+							onstart="$('#divLoading').show();$('#content').hide()"
+							oncomplete="$('#divLoading').hide();" update="dtList" />
+						<p:dataTable value="#{customerDetailController.productsPriceList}"
+							var="list" rows="5" paginator="true" id="dtList">
+							<p:column groupRow="true">
+								<h:outputText style="vertical-align: middle; margin-left: .5rem"
+									value="#{list.code}" />
+							</p:column>
+							<p:column field="product.commercialCode" headerText="Código" />
+							<p:column field="product.description" headerText="Produto" />
+							<p:column field="product.line" headerText="Linha" />
+							<p:column headerText="Valor" filterable="false">
+								<h:outputText value="#{list.product.value.unitValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="ST" filterable="false">
+								<h:outputText value="#{list.product.value.unitStValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Bruto"
+								filterable="false">
+								<h:outputText value="#{list.product.value.unitGrossValue}">
+									<f:convertNumber currencySymbol="R$" type="currency"
+										locale="pt_BR" />
+								</h:outputText>
+							</p:column>
+						</p:dataTable>
+					</h:form>
+				</div>
+				<div id="notFound" class="exception-body notfound"
+					style="display: none">
+					<div class="exception-card">
+						<h1>
+							<span>NENHUM</span> REGISTRO ENCONTRADO
+						</h1>
+						<p:graphicImage name="images/pages/asset-404.svg"
+							library="rain-layout" />
+						<span>Tente novamente com outra palavra-chave</span>
+					</div>
+				</div>
+
+				<div id="divLoading" style="display: none">
+					<h5>Loading...</h5>
+					<p:dataTable var="product"
+						value="#{dataTableSkeletonObjects.getSkeleton(10)}">
+						<p:column headerText="Código">
+							<p:skeleton />
+						</p:column>
+						<p:column headerText="Valor unitário">
+							<p:skeleton />
+						</p:column>
+						<p:column headerText="ST">
+							<p:skeleton />
+						</p:column>
+
+					</p:dataTable>
+
+				</div>
 			</p:tab>
 		</p:tabView>
 

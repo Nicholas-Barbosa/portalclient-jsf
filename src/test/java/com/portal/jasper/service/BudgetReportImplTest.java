@@ -17,7 +17,7 @@ import com.portal.client.export.jasper.BudgetReport;
 import com.portal.client.export.jasper.BudgetReportImpl;
 import com.portal.client.export.jasper.BudgetJasperData.CustomerJasperReportDTO;
 import com.portal.client.export.jasper.BudgetJasperData.OrderItemJasper;
-import com.portal.client.security.user.RepresentativeUser.RepresentativeType;
+import com.portal.client.security.user.RepresentativeUser.SaleType;
 
 class BudgetReportImplTest {
 
@@ -29,9 +29,9 @@ class BudgetReportImplTest {
 		BudgetJasperData budgetDTO = new BudgetJasperData(new BigDecimal(12.99), new BigDecimal(20.98),
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373", "ddd"),
-				Set.of(item), "Mensagem");
+				Set.of(item), "Mensagem","Nicholas");
 		BudgetReport budgetReport = new BudgetReportImpl(new JasperService());
-		byte[] bytes = budgetReport.export(new BudgetJasperForm(RepresentativeType.MOTOS, budgetDTO),
+		byte[] bytes = budgetReport.export(new BudgetJasperForm(SaleType.MOTOS, budgetDTO),
 				OrderExportType.PDF);
 		System.out.println("lenght " + bytes.length);
 		try (OutputStream out = new BufferedOutputStream(
@@ -47,9 +47,9 @@ class BudgetReportImplTest {
 		BudgetJasperData budgetDTO = new BudgetJasperData(new BigDecimal(12.99), new BigDecimal(20.98),
 				new BigDecimal(49.530000000000001136868377216160297393798828125),
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich", "ddd"), Set.of(item),
-				"Message");
+				"Message","Nicholas");
 		BudgetReport budgetReport = new BudgetReportImpl(new JasperService());
-		byte[] bytes = budgetReport.export(new BudgetJasperForm(RepresentativeType.MOTOS, budgetDTO),
+		byte[] bytes = budgetReport.export(new BudgetJasperForm(SaleType.MOTOS, budgetDTO),
 				OrderExportType.EXCEL);
 
 	}
