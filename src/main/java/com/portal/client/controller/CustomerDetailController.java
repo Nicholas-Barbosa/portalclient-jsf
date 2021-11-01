@@ -20,7 +20,7 @@ import org.primefaces.model.map.Marker;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.FinancialBondsPage;
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
-import com.portal.client.dto.ProductPriceListWrapper.ProductPriceList;
+import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
 import com.portal.client.service.ProductPriceListService;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BillsToReceiveService;
@@ -51,7 +51,7 @@ public class CustomerDetailController implements Serializable {
 
 	private LazyBehaviorDataModel<FinacialBondsDTO> titles;
 
-	private List<ProductPriceList> productsPriceList;
+	private List<ProductPriceTable> productsPriceList;
 
 	private ProcessingExceptionFacesMessageHelper externalExcpetionHelper;
 
@@ -136,7 +136,7 @@ public class CustomerDetailController implements Serializable {
 		return titles;
 	}
 
-	public List<ProductPriceList> getProductsPriceList() {
+	public List<ProductPriceTable> getProductsPriceList() {
 		return productsPriceList;
 	}
 }

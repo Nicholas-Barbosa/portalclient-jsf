@@ -7,7 +7,7 @@ import java.io.InputStream;
 import org.junit.jupiter.api.Test;
 
 import com.portal.client.dto.ItemXlsxFileLayout;
-import com.portal.client.service.microsoft.excel.reader.XssfReaderImpl;
+import com.portal.client.microsoft.excel.reader.XssfReaderImpl;
 
 class ItemImportServiceImplTest {
 

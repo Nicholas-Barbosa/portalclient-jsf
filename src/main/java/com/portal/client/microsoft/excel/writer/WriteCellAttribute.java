@@ -1,4 +1,4 @@
-package com.portal.client.service.microsoft.excel.writer;
+package com.portal.client.microsoft.excel.writer;
 
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.portal.client.service.microsoft.excel.CellAttribute;
+import com.portal.client.microsoft.excel.CellAttribute;
 
 public class WriteCellAttribute extends CellAttribute {
 

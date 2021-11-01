@@ -115,39 +115,10 @@ public class FacesUtils {
 
 	public static void prepareResponseForDownloadOfStreams(String fileName, byte[] streams, String contentType) {
 
-		switch (contentType) {
-		case "application/pdf":
-			downloadPdf(fileName, streams);
-			break;
-		case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
-			downloadExcel(fileName, streams);
-			break;
-		}
-	}
-
-	private static void downloadPdf(String fileName, byte[] streams) {
 		FacesContext currentInstance = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = currentInstance.getExternalContext();
 
-		externalContext.setResponseContentType("application/pdf");
-		externalContext.setResponseContentLength(streams.length);
-		externalContext.setResponseHeader("Content-Disposition",
-				String.format("%s;%s=%s", "attachment", "filename", fileName));
-		try (OutputStream outputStream = new BufferedOutputStream(externalContext.getResponseOutputStream())) {
-			outputStream.write(streams);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			currentInstance.responseComplete();
-		}
-
-	}
-
-	private static void downloadExcel(String fileName, byte[] streams) {
-		FacesContext currentInstance = FacesContext.getCurrentInstance();
-		ExternalContext externalContext = currentInstance.getExternalContext();
-
-		externalContext.setResponseContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		externalContext.setResponseContentType(contentType);
 		externalContext.setResponseContentLength(streams.length);
 		externalContext.setResponseHeader("Content-Disposition",
 				String.format("%s;%s=%s", "attachment", "filename", fileName));

@@ -25,7 +25,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	private static final long serialVersionUID = -6233748924596132481L;
 	private RestClient restClient;
 	private ProtheusApiRegister protheusRegister;
-	private ProtheusApiEnviromentHandler protheusApiUrlHandler;
+	private ProtheusApiEnviromentHandler protheusApiEnv;
 
 	@Inject
 	public MainAuthenticationRepository(RestClient restClient, ProtheusApiRegister protheusRegister,
@@ -33,7 +33,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		super();
 		this.restClient = restClient;
 		this.protheusRegister = protheusRegister;
-		this.protheusApiUrlHandler = protheusApiUrlHandler;
+		this.protheusApiEnv = protheusApiUrlHandler;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 		queryParams.put("grant_type", "password");
 		queryParams.put("password", loginForm.getPassword());
 		queryParams.put("username", loginForm.getUsername());
-		String currentEniviromentUrl = protheusApiUrlHandler.getUrl(loginForm.getCompanyEnv());
+		String currentEniviromentUrl = protheusApiEnv.getUrl(loginForm.getCompanyEnv());
 		String loginUrl = String.format("%s/%s", currentEniviromentUrl, "api/oauth2/v1/token");
 		LoginProtheusEndpointResponse loginResponse = restClient.post(loginUrl, LoginProtheusEndpointResponse.class,
 				queryParams, null, null, MediaType.APPLICATION_JSON);

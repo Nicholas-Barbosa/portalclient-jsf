@@ -6,11 +6,11 @@ import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductImage;
 import com.portal.client.vo.ProductTechDetail;
 
-public class ProductProductPriceList extends Product {
+public class ProductProductPriceTable extends Product {
 
 	private BigDecimal originPrice;
 
-	public ProductProductPriceList(String code, String commercialCode, String applicability, String description, String line,
+	public ProductProductPriceTable(String code, String commercialCode, String applicability, String description, String line,
 			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image, ProductValue price,
 			ProductTechDetail productTechDetail, BigDecimal originPrice) {
 		super(code, commercialCode, applicability, description, line, acronymLine, stock, commercialBlock, image, price,

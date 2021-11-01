@@ -1,10 +1,10 @@
-package com.portal.client.service.microsoft.excel.reader;
+package com.portal.client.microsoft.excel.reader;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import com.portal.client.service.microsoft.excel.RowObject;
+import com.portal.client.microsoft.excel.RowObject;
 
 public interface XssfReader {
 

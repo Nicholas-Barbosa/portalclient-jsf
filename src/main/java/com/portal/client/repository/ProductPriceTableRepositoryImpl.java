@@ -10,12 +10,12 @@ import javax.inject.Inject;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
 import com.portal.client.cdi.aop.OptionalEmptyRepository;
-import com.portal.client.dto.ProductPriceListWrapper;
-import com.portal.client.dto.ProductPriceListWrapper.ProductPriceList;
+import com.portal.client.dto.ProductPriceTabletWrapper;
+import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
 import com.portal.client.security.api.helper.ProtheusAPIHelper;
 
 @ApplicationScoped
-public class ProductPriceListRepositoryImpl extends OptionalEmptyRepository implements ProductPriceListRepository {
+public class ProductPriceTableRepositoryImpl extends OptionalEmptyRepository implements ProductPriceTableRepository {
 
 	@Inject
 	private TokenedRestClient restClient;
@@ -24,12 +24,12 @@ public class ProductPriceListRepositoryImpl extends OptionalEmptyRepository impl
 	private ProtheusAPIHelper protheusApi;
 
 	@Override
-	public Optional<List<ProductPriceList>> find(String customerCode, String customerStore) {
+	public Optional<List<ProductPriceTable>> find(String customerCode, String customerStore) {
 		// TODO Auto-generated method stub
 		return Optional
 				.of(Arrays.asList(restClient
 						.get(protheusApi.buildEndpoint("tables/{customer}/loja/{store}"), protheusApi.getToken(),
-								protheusApi.getTokenPrefix(), ProductPriceListWrapper.class, null,
+								protheusApi.getTokenPrefix(), ProductPriceTabletWrapper.class, null,
 								Map.of("customer", customerCode, "store", customerStore), "application/json")
 						.getList()));
 	}

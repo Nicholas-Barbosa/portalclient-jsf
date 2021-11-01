@@ -1,4 +1,4 @@
-package com.portal.client.service.microsoft.excel.writer;
+package com.portal.client.microsoft.excel.writer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,15 +12,15 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.portal.client.service.microsoft.excel.RowObject;
+import com.portal.client.microsoft.excel.RowObject;
 
 @ApplicationScoped
 public class XssfWriterImpl implements XssfWriter {
 
 	@Override
-	public byte[] write(List<RowObject> rowObjects) {
+	public byte[] write(String sheetName, List<RowObject> rowObjects) {
 		XSSFWorkbook workbook = new XSSFWorkbook();
-		XSSFSheet sheet = workbook.createSheet("conferência-cálculos");
+		XSSFSheet sheet = workbook.createSheet(sheetName);
 		rowObjects.forEach(rowObject -> {
 			XSSFRow row = sheet.createRow(rowObject.getOffset());
 			rowObject.getCellAttributes().parallelStream().map(c -> (WriteCellAttribute) c)

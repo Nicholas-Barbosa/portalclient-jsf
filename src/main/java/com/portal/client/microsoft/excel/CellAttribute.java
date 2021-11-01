@@ -1,4 +1,4 @@
-package com.portal.client.service.microsoft.excel;
+package com.portal.client.microsoft.excel;
 
 public class CellAttribute {
 
