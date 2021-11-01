@@ -12,7 +12,7 @@ public class OrderRprensentativeSetter {
 	private APIHelper protheusApi;
 
 	public void setAutor(Order order) {
-		order.setRepresentative((RepresentativeUser) protheusApi.getSourceAPI().getUserData());
+//		order.setRepresentative((RepresentativeUser) protheusApi.getSourceAPI().getUserData());
 
 	}
 }

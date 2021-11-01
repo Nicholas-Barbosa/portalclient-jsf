@@ -251,34 +251,43 @@ body .ui-panelgrid .ui-panelgrid-cell {
 				<div id="content">
 					<h:form>
 						<p:remoteCommand autoRun="true"
-							action="#{customerDetailController.loadProductsPriceList}"
+							action="#{customerDetailController.loadProductsPriceTable}"
 							process="@this"
 							onstart="$('#divLoading').show();$('#content').hide()"
 							oncomplete="$('#divLoading').hide();" update="dtList" />
+
+						<div class="p-d-flex p-jc-between">
+							<div>
+								<h5>Exportar</h5>
+								<p:commandButton value="XLSX" styleClass="p-mr-2 p-mb-2"
+									action="#{customerDetailController.exportProductPriceTable}"
+									ajax="false" />
+							</div>
+
+						</div>
 						<p:dataTable value="#{customerDetailController.productsPriceList}"
-							var="list" rows="5" paginator="true" id="dtList">
+							var="table" rows="5" paginator="true" id="dtList">
 							<p:column groupRow="true">
 								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{list.code}" />
+									value="#{table.code}" />
 							</p:column>
 							<p:column field="product.commercialCode" headerText="Código" />
 							<p:column field="product.description" headerText="Produto" />
 							<p:column field="product.line" headerText="Linha" />
 							<p:column headerText="Valor" filterable="false">
-								<h:outputText value="#{list.product.value.unitValue}">
+								<h:outputText value="#{table.product.value.unitValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
 							<p:column headerText="ST" filterable="false">
-								<h:outputText value="#{list.product.value.unitStValue}">
+								<h:outputText value="#{table.product.value.unitStValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Bruto"
-								filterable="false">
-								<h:outputText value="#{list.product.value.unitGrossValue}">
+							<p:column headerText="Bruto" filterable="false">
+								<h:outputText value="#{table.product.value.unitGrossValue}">
 									<f:convertNumber currencySymbol="R$" type="currency"
 										locale="pt_BR" />
 								</h:outputText>

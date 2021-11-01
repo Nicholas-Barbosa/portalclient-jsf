@@ -129,4 +129,11 @@ public class ProductValue {
 		this.multiple = multiple;
 	}
 
+	@Override
+	public String toString() {
+		return "ProductValue [unitStValue=" + unitStValue + ", unitValue=" + unitValue + ", unitGrossValue="
+				+ unitGrossValue + ", totalStValue=" + totalStValue + ", totalValue=" + totalValue
+				+ ", totalGrossValue=" + totalGrossValue + ", quantity=" + quantity + ", multiple=" + multiple + "]";
+	}
+
 }

@@ -27,8 +27,7 @@ public class XssfWriterImpl implements XssfWriter {
 					.forEach(w -> this.createCell(w, row));
 		});
 
-		try {
-			OutputStream out = new ByteArrayOutputStream();
+		try (OutputStream out = new ByteArrayOutputStream()) {
 			workbook.write(out);
 			workbook.close();
 			return ((ByteArrayOutputStream) out).toByteArray();
@@ -39,14 +38,18 @@ public class XssfWriterImpl implements XssfWriter {
 	}
 
 	private void createCell(WriteCellAttribute attribute, XSSFRow row) {
-		Cell cell = row.createCell(attribute.getCellOffset());
-		switch (attribute.getCellType()) {
-		case NUMERIC:
-			cell.setCellValue((Double) attribute.getValue());
-			break;
-		default:
-			cell.setCellValue(attribute.getValue() + "");
-			break;
+		try {
+			Cell cell = row.createCell(attribute.getCellOffset());
+			switch (attribute.getCellType()) {
+			case NUMERIC:
+				cell.setCellValue((Double) attribute.getValue());
+				break;
+			default:
+				cell.setCellValue(attribute.getValue() + "");
+				break;
+			}
+		} catch (NullPointerException | IndexOutOfBoundsException e) {
+			System.out.println("Null pointer ou index para " + row + " attribute " + attribute);
 		}
 	}
 }

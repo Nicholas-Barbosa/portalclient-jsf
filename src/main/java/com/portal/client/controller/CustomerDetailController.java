@@ -21,6 +21,8 @@ import com.portal.client.dto.Customer;
 import com.portal.client.dto.FinancialBondsPage;
 import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
 import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
+import com.portal.client.export.OrderExportType;
+import com.portal.client.export.ProductPriceTableExporter;
 import com.portal.client.service.ProductPriceListService;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.service.crud.BillsToReceiveService;
@@ -57,10 +59,13 @@ public class CustomerDetailController implements Serializable {
 
 	private ProductPriceListService productPriceListService;
 
+	@Inject
+	private ProductPriceTableExporter tableExporter;
+
 	public CustomerDetailController() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Inject
 	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,
 			BillsToReceiveService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper,
@@ -74,10 +79,14 @@ public class CustomerDetailController implements Serializable {
 		this.productPriceListService = productPriceListService;
 	}
 
-	public void loadProductsPriceList() {
+	public void exportProductPriceTable() {
+		FacesUtils.prepareResponseForDownloadOfStreams("tabelaPreços.xlsx",
+				tableExporter.toExcel(customer.getCode(), productsPriceList), OrderExportType.EXCEL.getType());
+	}
+
+	public void loadProductsPriceTable() {
 		if (productsPriceList == null)
 			productPriceListService.find(customer.getCode(), customer.getStore()).ifPresentOrElse(lista -> {
-				System.out.println("size " + lista.size());
 				this.productsPriceList = lista;
 				FacesUtils.ajaxUpdate("formList:dtList");
 				FacesUtils.executeScript("$('#content').show()");

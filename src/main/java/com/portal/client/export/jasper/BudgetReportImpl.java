@@ -78,7 +78,7 @@ public class BudgetReportImpl implements BudgetReport {
 			case CARROS:
 				return String.format(title, "Autopeças");
 			default:
-				throw new IllegalArgumentException("log does not exists!");
+				throw new IllegalArgumentException(type+" not recongnized");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
