@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+<h:head>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="customerCode" type="java.lang.String"
+		required="true" />
+	<composite:attribute name="customerStore" type="java.lang.String"
+		required="true" />
+</composite:interface>
+
+<composite:implementation>
+	<div jsf:id="#{cc.clientId}">
+		<h:form>
+			<p:remoteCommand name="findTable"
+				action="#{priceTableComponentController.find()}"
+				autoRun="true" />
+
+			<div id="found">
+				<div class="p-d-flex p-jc-between">
+					<div>
+						<h5>Exportar</h5>
+						<p:commandButton value="XLSX" styleClass="p-mr-2 p-mb-2"
+							action="#{priceTableComponentController.export}" ajax="false"
+							process="@this" />
+					</div>
+
+				</div>
+				<p:button value="Carregar tabela" process="@this"
+					onclick="findTable()" />
+				<p:dataTable value="#{priceTableComponentController.tables}"
+					var="table" rows="5" paginator="true" id="dtList">
+					<p:column groupRow="true">
+						<h:outputText style="vertical-align: middle; margin-left: .5rem"
+							value="#{table.code}" />
+					</p:column>
+					<p:column field="product.commercialCode" headerText="Código" />
+					<p:column field="product.description" headerText="Produto" />
+					<p:column field="product.line" headerText="Linha" />
+					<p:column headerText="Valor" filterable="false">
+						<h:outputText value="#{table.product.value.unitValue}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="ST" filterable="false">
+						<h:outputText value="#{table.product.value.unitStValue}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Bruto" filterable="false">
+						<h:outputText value="#{table.product.value.unitGrossValue}">
+							<f:convertNumber currencySymbol="R$" type="currency"
+								locale="pt_BR" />
+						</h:outputText>
+					</p:column>
+				</p:dataTable>
+			</div>
+			<div id="not-found" class="exception-body notfound"
+				style="display: none">
+				<div class="exception-card">
+					<h1>
+						<span>NENHUM</span> REGISTRO ENCONTRADO
+					</h1>
+					<p:graphicImage name="images/pages/asset-404.svg"
+						library="rain-layout" />
+					<span>Tente novamente com outra palavra-chave</span>
+				</div>
+			</div>
+
+			<div id="loading" style="display: none">
+				<h5>Loading...</h5>
+				<p:dataTable value="#{dataTableSkeletonObjects.getSkeleton(10)}">
+					<p:column headerText="Código">
+						<p:skeleton />
+					</p:column>
+					<p:column headerText="Produto">
+						<p:skeleton />
+					</p:column>
+					<p:column headerText="Linha">
+						<p:skeleton />
+					</p:column>
+					<p:column headerText="Valor">
+						<p:skeleton />
+					</p:column>
+				</p:dataTable>
+			</div>
+
+		</h:form>
+	</div>
+</composite:implementation>
+
+</html>

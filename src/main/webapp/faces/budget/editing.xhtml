@@ -5,7 +5,8 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:o="http://java.sun.com/jsf/composite/components/order">
+	xmlns:o="http://java.sun.com/jsf/composite/components/order"
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -43,7 +44,7 @@
 				<p:remoteCommand autoRun="true"
 					action="#{budgetEditingController.searchBudget}" process="@this"
 					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
-					update="budgetContainer" />
+					update=":editPanel" />
 			</h:form>
 
 			<div class="card" id="divLoading">
@@ -75,7 +76,7 @@
 								<p:menuitem value="Confirmar"
 									action="#{budgetEditingController.confirmBudgetEditing}"
 									ajax="true" icon="pi pi-check"
-									process="@this,budgetContainer:editableOrderInputComponents"
+									process="@this,editPanel:editableOrderInputComponents"
 									onstart="PF('sidebarForLoadingEditing').show()"
 									oncomplete="PF('sidebarForLoadingEditing').hide()" />
 
@@ -85,7 +86,7 @@
 								<p:menuitem value="Efetivar para pedido"
 									action="#{budgetEditingController.saveToOrder}" ajax="true"
 									icon="pi pi-star"
-									process="@this,budgetContainer:editableOrderInputComponents"
+									process="@this,editPanel:editableOrderInputComponents"
 									onstart="PF('sidebarForSavingBudgetToOrder').show()"
 									oncomplete="PF('sidebarForSavingBudgetToOrder').hide()" />
 							</p:submenu>
@@ -135,7 +136,8 @@
 					</h:form>
 				</div>
 				<o:editPanel order="#{budgetEditingController.budget}"
-					id="budgetContainer" title="Orçamento" />
+					id="editPanel" title="Orçamento" />
+
 
 
 			</div>

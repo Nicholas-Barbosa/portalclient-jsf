@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" lang="en">
+	xmlns:p="http://primefaces.org/ui" lang="en"
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
 
 <h:head>
 	<f:facet name="first">
@@ -80,61 +81,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 				</p:panelGrid>
 			</p:tab>
-			<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
-
-				<p:panelGrid columns="4"
-					columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-					layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-					style="border:0px none; background-color:transparent;">
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('limite')}" />
-					<p:inputText value="#{customerDetailController.customer.financialInfo.limit}"
-						readonly="true">
-						<f:convertNumber currencySymbol="R$" locale="pt_BR"
-							type="currency" />
-					</p:inputText>
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('risco')}" />
-					<p:inputText value="#{customerDetailController.customer.financialInfo.risk}"
-						readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('ultima_compra')}" />
-					<p:inputText
-						value="#{customerDetailController.customer.financialInfo.lastPurchase}"
-						readonly="true">
-						<f:convertDateTime locale="pt_BR" type="localDateTime" />
-					</p:inputText>
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}" />
-					<p:inputText
-						value="#{customerDetailController.customer.financialInfo.paymentTerms}"
-						readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('tabela')}" />
-					<p:inputText value="#{customerDetailController.customer.financialInfo.table}"
-						readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
-					<p:inputText value="#{customerDetailController.customer.financialInfo.discount}"
-						readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('desconto')}2" />
-					<p:inputText value="#{customerDetailController.customer.financialInfo.discount2}"
-						readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('desconto')}3" />
-					<p:inputText value="#{customerDetailController.customer.financialInfo.discount3}"
-						readonly="true" />
-				</p:panelGrid>
-
-			</p:tab>
+			
 			<p:tab
 				title="#{resourceBundleServiceImpl.getMessage('geolocalizacao')}">
 				<h:form>
@@ -176,154 +123,13 @@ body .ui-panelgrid .ui-panelgrid-cell {
 			</p:tab>
 			<p:tab
 				title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
-				<h:form>
-					<p:remoteCommand name="loadTitles"
-						action="#{customerDetailController.loadFinancialBonds(1)}"
-						autoRun="true" update="dtBonds" onstart="showSkeleton()"
-						oncomplete="hideSkeleton();" />
-
-					<div id="dtBonds" style="display: none">
-						<p:dataTable id="dtBonds" var="title"
-							value="#{customerDetailController.titles}" paginator="true"
-							rows="10" paginatorPosition="bottom" lazy="true">
-							<p:ajax event="page"
-								listener="#{customerDetailController.onBondsPage}" />
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
-								<h:outputText value="#{title.docNumber}" />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
-
-								<h:outputText value="#{title.customerName}" />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
-								<h:outputText value="#{title.sale}">
-									<f:convertNumber locale="pt_BR" currencySymbol="R$"
-										type="currency" />
-								</h:outputText>
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
-								<h:outputText value="#{title.dueDate}">
-									<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
-										type="localDateTime" />
-								</h:outputText>
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('situacao')}">
-								<h:outputText value="#{title.situation}" />
-							</p:column>
-						</p:dataTable>
-					</div>
-
-					<div id="divLoading" style="display: none">
-						<h5>Loading...</h5>
-						<p:dataTable var="product"
-							value="#{dataTableSkeletonObjects.getSkeleton(10)}">
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
-								<p:skeleton />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
-								<p:skeleton />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
-								<p:skeleton />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
-								<p:skeleton />
-							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('situacao')}">
-								<p:skeleton />
-							</p:column>
-						</p:dataTable>
-
-					</div>
-				</h:form>
+				
 			</p:tab>
 			<p:tab title="Tabelas">
-				<div id="content">
-					<h:form>
-						<p:remoteCommand autoRun="true"
-							action="#{customerDetailController.loadProductsPriceTable}"
-							process="@this"
-							onstart="$('#divLoading').show();$('#content').hide()"
-							oncomplete="$('#divLoading').hide();" update="dtList" />
-
-						<div class="p-d-flex p-jc-between">
-							<div>
-								<h5>Exportar</h5>
-								<p:commandButton value="XLSX" styleClass="p-mr-2 p-mb-2"
-									action="#{customerDetailController.exportProductPriceTable}"
-									ajax="false" />
-							</div>
-
-						</div>
-						<p:dataTable value="#{customerDetailController.productsPriceList}"
-							var="table" rows="5" paginator="true" id="dtList">
-							<p:column groupRow="true">
-								<h:outputText style="vertical-align: middle; margin-left: .5rem"
-									value="#{table.code}" />
-							</p:column>
-							<p:column field="product.commercialCode" headerText="Código" />
-							<p:column field="product.description" headerText="Produto" />
-							<p:column field="product.line" headerText="Linha" />
-							<p:column headerText="Valor" filterable="false">
-								<h:outputText value="#{table.product.value.unitValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="ST" filterable="false">
-								<h:outputText value="#{table.product.value.unitStValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="Bruto" filterable="false">
-								<h:outputText value="#{table.product.value.unitGrossValue}">
-									<f:convertNumber currencySymbol="R$" type="currency"
-										locale="pt_BR" />
-								</h:outputText>
-							</p:column>
-						</p:dataTable>
-					</h:form>
-				</div>
-				<div id="notFound" class="exception-body notfound"
-					style="display: none">
-					<div class="exception-card">
-						<h1>
-							<span>NENHUM</span> REGISTRO ENCONTRADO
-						</h1>
-						<p:graphicImage name="images/pages/asset-404.svg"
-							library="rain-layout" />
-						<span>Tente novamente com outra palavra-chave</span>
-					</div>
-				</div>
-
-				<div id="divLoading" style="display: none">
-					<h5>Loading...</h5>
-					<p:dataTable var="product"
-						value="#{dataTableSkeletonObjects.getSkeleton(10)}">
-						<p:column headerText="Código">
-							<p:skeleton />
-						</p:column>
-						<p:column headerText="Valor unitário">
-							<p:skeleton />
-						</p:column>
-						<p:column headerText="ST">
-							<p:skeleton />
-						</p:column>
-
-					</p:dataTable>
-
-				</div>
+				<p:button onclick="findTable()" />
+				<c:priceTable
+					customerCode="#{customerDetailController.customer.code}"
+					customerStore="#{customerDetailController.customer.store}" />
 			</p:tab>
 		</p:tabView>
 

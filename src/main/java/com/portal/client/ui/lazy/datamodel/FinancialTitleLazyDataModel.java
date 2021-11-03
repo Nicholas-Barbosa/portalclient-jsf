@@ -8,7 +8,7 @@ import java.util.Map;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 
-import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.OpenPaymentsPage.FinacialBondsDTO;
 
 public class FinancialTitleLazyDataModel extends LazyBehaviorDataModel<FinacialBondsDTO> {
 

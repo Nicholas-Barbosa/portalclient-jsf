@@ -2,8 +2,6 @@ package com.portal.client.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,36 +9,36 @@ import java.util.Set;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.OpenPaymentsPage.OpenPaymentDto;
 import com.portal.client.dto.helper.StringToDateParser;
 
-public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
+public class OpenPaymentsPage extends BasePageDTO<OpenPaymentDto> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 926845547155848707L;
-	private Set<FinacialBondsDTO> financialBonds;
+	private Set<OpenPaymentDto> openPayments;
 
 	@JsonbCreator
-	public FinancialBondsPage(@JsonbProperty("total_items") int totalItems,
-			@JsonbProperty("total_page") int totalPage, @JsonbProperty("page_size") int pageSize,
-			@JsonbProperty("page") int page, @JsonbProperty("titles") Set<FinacialBondsDTO> titles) {
+	public OpenPaymentsPage(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPage,
+			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
+			@JsonbProperty("titles") Set<OpenPaymentDto> payments) {
 		super(page, pageSize, totalItems, totalPage);
-		this.financialBonds = titles;
+		this.openPayments = payments;
 	}
 
-	public Set<FinacialBondsDTO> getFinancialBonds() {
-		return new HashSet<>(financialBonds);
+	public Set<OpenPaymentDto> getOpenPaymentDtos() {
+		return new HashSet<>(openPayments);
 	}
 
 	@Override
-	public Collection<FinacialBondsDTO> getContent() {
+	public Collection<OpenPaymentDto> getContent() {
 		// TODO Auto-generated method stub
-		return this.getFinancialBonds();
+		return this.getOpenPaymentDtos();
 	}
 
-	public static class FinacialBondsDTO {
+	public static class OpenPaymentDto {
 		private BigDecimal sale;
 		private String docNumber;
 		private String customerName;
@@ -48,7 +46,7 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 		private String situation;
 
 		@JsonbCreator
-		public FinacialBondsDTO(@JsonbProperty("sale") BigDecimal sale, @JsonbProperty("doc_number") String docNumber,
+		public OpenPaymentDto(@JsonbProperty("sale") BigDecimal sale, @JsonbProperty("doc_number") String docNumber,
 				@JsonbProperty("client_name") String customerName, @JsonbProperty("due_date") String date,
 				@JsonbProperty("situation") String situation) {
 			super();
@@ -56,7 +54,7 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 			this.docNumber = docNumber;
 			this.customerName = customerName;
 			this.situation = situation;
-			this.dueDate =  StringToDateParser.convert(date);
+			this.dueDate = StringToDateParser.convert(date);
 		}
 
 		public BigDecimal getSale() {
@@ -79,8 +77,6 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 			return situation;
 		}
 
-	
-
 		@Override
 		public int hashCode() {
 			final int prime = 31;
@@ -98,7 +94,7 @@ public class FinancialBondsPage extends BasePageDTO<FinacialBondsDTO> {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			FinacialBondsDTO other = (FinacialBondsDTO) obj;
+			OpenPaymentDto other = (OpenPaymentDto) obj;
 			if (dueDate == null) {
 				if (other.dueDate != null)
 					return false;

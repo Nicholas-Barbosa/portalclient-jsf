@@ -18,14 +18,14 @@ import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
 import com.portal.client.dto.Customer;
-import com.portal.client.dto.FinancialBondsPage;
-import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.OpenPaymentsPage;
+import com.portal.client.dto.OpenPaymentsPage.FinacialBondsDTO;
 import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
 import com.portal.client.export.OrderExportType;
 import com.portal.client.export.ProductPriceTableExporter;
-import com.portal.client.service.ProductPriceListService;
+import com.portal.client.service.ProductPriceTableService;
 import com.portal.client.service.ZipCodeService;
-import com.portal.client.service.crud.BillsToReceiveService;
+import com.portal.client.service.crud.OpenPaymentService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
@@ -34,7 +34,7 @@ import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
 @ViewScoped
 @Named
-public class CustomerDetailController implements Serializable {
+public class CustomerDetailComponentController implements Serializable {
 
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class CustomerDetailController implements Serializable {
 
 	private ZipCodeService zipCodeService;
 
-	private BillsToReceiveService bondsService;
+	private OpenPaymentService bondsService;
 
 	private Customer customer;
 
@@ -57,19 +57,19 @@ public class CustomerDetailController implements Serializable {
 
 	private ProcessingExceptionFacesMessageHelper externalExcpetionHelper;
 
-	private ProductPriceListService productPriceListService;
+	private ProductPriceTableService productPriceListService;
 
 	@Inject
 	private ProductPriceTableExporter tableExporter;
 
-	public CustomerDetailController() {
+	public CustomerDetailComponentController() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
-	public CustomerDetailController(HttpSession session, ZipCodeService zipCodeService,
-			BillsToReceiveService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper,
-			ProductPriceListService productPriceListService) {
+	public CustomerDetailComponentController(HttpSession session, ZipCodeService zipCodeService,
+			OpenPaymentService bondsService, ProcessingExceptionFacesMessageHelper externalExcpetionHelper,
+			ProductPriceTableService productPriceListService) {
 		super();
 		this.zipCodeService = zipCodeService;
 		this.bondsService = bondsService;
@@ -115,7 +115,7 @@ public class CustomerDetailController implements Serializable {
 			titles = new FinancialTitleLazyDataModel();
 		if (customer.getCode() != null)
 			try {
-				Optional<FinancialBondsPage> optional = bondsService.findByCustomerCodeStore(page, 10,
+				Optional<OpenPaymentsPage> optional = bondsService.findByCustomerCodeStore(page, 10,
 						customer.getCode(), customer.getStore());
 				optional.ifPresentOrElse(f -> {
 					LazyPopulatorUtils.populate(titles, f);

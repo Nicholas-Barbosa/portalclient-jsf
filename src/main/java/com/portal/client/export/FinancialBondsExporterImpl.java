@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.OpenPaymentsPage.FinacialBondsDTO;
 import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;

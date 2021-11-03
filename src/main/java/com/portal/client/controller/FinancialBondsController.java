@@ -9,10 +9,10 @@ import javax.inject.Named;
 
 import org.primefaces.event.data.PageEvent;
 
-import com.portal.client.dto.FinancialBondsPage;
-import com.portal.client.dto.FinancialBondsPage.FinacialBondsDTO;
+import com.portal.client.dto.OpenPaymentsPage;
+import com.portal.client.dto.OpenPaymentsPage.FinacialBondsDTO;
 import com.portal.client.export.FinancialBondsExporter;
-import com.portal.client.service.crud.BillsToReceiveService;
+import com.portal.client.service.crud.OpenPaymentService;
 import com.portal.client.ui.lazy.datamodel.FinancialTitleLazyDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
@@ -27,14 +27,14 @@ public class FinancialBondsController implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -3811638445093267666L;
-	private BillsToReceiveService bondsService;
+	private OpenPaymentService bondsService;
 	private LazyBehaviorDataModel<FinacialBondsDTO> titles;
 	private ProcessingExceptionFacesMessageHelper prossExcpetionShowMsg;
 	private FinancialBondsExporter exporter;
 	private int recordsToExport;
 
 	@Inject
-	public FinancialBondsController(BillsToReceiveService fiTitleService,
+	public FinancialBondsController(OpenPaymentService fiTitleService,
 			ProcessingExceptionFacesMessageHelper externalExceptionHelper, FinancialBondsExporter exporter) {
 		super();
 		this.bondsService = fiTitleService;
@@ -56,7 +56,7 @@ public class FinancialBondsController implements Serializable {
 		if (titles == null)
 			titles = new FinancialTitleLazyDataModel();
 
-		Optional<FinancialBondsPage> optional = bondsService.find(page, 15);
+		Optional<OpenPaymentsPage> optional = bondsService.find(page, 15);
 		optional.ifPresentOrElse(f -> {
 			LazyPopulatorUtils.populate(titles, f);
 			FacesUtils.executeScript("$('#noBillsFound').hide();$('#content').show()");

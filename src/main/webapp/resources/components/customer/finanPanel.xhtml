@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="customer" required="true" />
+
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+
+		<p:panelGrid columns="4"
+			columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+			layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+			style="border:0px none; background-color:transparent;">
+
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('limite')}" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.limit}"
+				readonly="true">
+				<f:convertNumber currencySymbol="R$" locale="pt_BR" type="currency" />
+			</p:inputText>
+
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('risco')}" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.risk}"
+				readonly="true" />
+
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('ultima_compra')}" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.lastPurchase}"
+				readonly="true">
+				<f:convertDateTime locale="pt_BR" type="localDateTime" />
+			</p:inputText>
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.paymentTerms}"
+				readonly="true" />
+
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('tabela')}" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.table}"
+				readonly="true" />
+
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.discount}"
+				readonly="true" />
+
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('desconto')}2" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.discount2}"
+				readonly="true" />
+
+			<p:outputLabel for="@next"
+				value="#{resourceBundleServiceImpl.getMessage('desconto')}3" />
+			<p:inputText value="#{cc.attrs.customer.financialInfo.discount3}"
+				readonly="true" />
+		</p:panelGrid>
+
+	</div>
+</composite:implementation>
+
+</html>

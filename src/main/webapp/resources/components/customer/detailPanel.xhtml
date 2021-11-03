@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
+<h:head>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="customer" required="true" />
+
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<p:tabView dynamic="true" cache="true">
+			<p:tab title="#{resourceBundleServiceImpl.getMessage('cliente')}"
+				effect="fade" effectDuration="fast">
+
+
+				<p:panelGrid columns="4" layout="flex"
+					columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+					styleClass="customPanelGrid" contentStyleClass="ui-fluid">
+
+					<p:outputLabel for="@next"
+						value="#{resourceBundleServiceImpl.getMessage('nome')}" />
+					<p:inputText value="#{cc.attrs.customer.name}" readonly="true" />
+
+					<p:outputLabel for="@next"
+						value="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}" />
+					<p:inputText value="#{cc.attrs.customer.fantasyName}"
+						readonly="true" />
+
+					<p:outputLabel for="@next" value="CNPJ" />
+					<p:inputText value="#{cc.attrs.customer.cnpj}" readonly="true" />
+
+					<p:outputLabel for="@next"
+						value="#{resourceBundleServiceImpl.getMessage('codigo')}" />
+					<p:inputText value="#{cc.attrs.customer.code}" readonly="true" />
+
+					<p:outputLabel for="@next" value="Email" />
+					<p:inputText value="#{cc.attrs.customer.contact.email}"
+						readonly="true" />
+
+					<p:outputLabel for="@next" value="Email2" />
+					<p:inputText value="#{cc.attrs.customer.contact.email2}"
+						readonly="true" />
+
+					<p:outputLabel for="@next"
+						value="#{resourceBundleServiceImpl.getMessage('bloqueado')}" />
+					<p:inputText value="#{cc.attrs.customer.blocked}" readonly="true" />
+
+				</p:panelGrid>
+			</p:tab>
+			<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
+				<c:finanPanel customer="#{cc.attrs.customer}" />
+			</p:tab>
+			<p:tab
+				title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
+				<c:openPaymentsPanel customer="#{cc.attrs.customer}" />
+			</p:tab>
+		</p:tabView>
+
+	</div>
+</composite:implementation>
+
+</html>

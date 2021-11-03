@@ -10,7 +10,7 @@ import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
 import com.portal.client.repository.ProductPriceTableRepository;
 
 @ApplicationScoped
-public class ProductPriceListServiceImpl implements ProductPriceListService {
+public class ProductPriceTableServiceImpl implements ProductPriceTableService {
 
 	@Inject
 	private ProductPriceTableRepository repository;
