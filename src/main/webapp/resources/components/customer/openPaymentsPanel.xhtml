@@ -5,7 +5,6 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
 <h:head>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
@@ -19,19 +18,20 @@
 </composite:interface>
 
 <composite:implementation>
-	<div jsf:id="#{cc.clientId}">
+	<div id="#{cc.clientId}">
+		<p:growl id="growl" showDetail="true" globalOnly="true"
+			widgetVar="growl" skipDetailIfEqualsSummary="true" />
 		<h:form>
-			<p:remoteCommand name="findPayments"
+			<p:remoteCommand name="findPayments" autoRun="true"
 				action="#{openPaymentsComponentController.findPayments(1,cc.attrs.customer.code,cc.attrs.customer.store)}"
-				autoRun="true" update="dtBonds" onstart="showSkeleton()"
-				oncomplete="hideSkeleton();" />
+				update="dtPayments" onstart="showSkeleton()"
+				oncomplete="hideSkeleton()" />
 
-			<div id="content" style="display: none">
-				<p:dataTable id="dtPayments" var="payment"
-					value="#{customerDetailController.titles}" paginator="true"
-					rows="10" paginatorPosition="bottom" lazy="true">
+			<div id="openPaymentsPanel-content">
+				<p:dataTable id="dtPayments" var="payment" paginator="true"
+					rows="10" paginatorPosition="bottom" lazy="true" reflow="true">
 					<p:ajax event="page"
-						listener="#{customerDetailController.onBondsPage}" />
+						listener="#{openPaymentsComponentController.findPayments(1,cc.attrs.customer.code,cc.attrs.customer.store)}" />
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
 						<h:outputText value="#{title.docNumber}" />
@@ -62,10 +62,10 @@
 				</p:dataTable>
 			</div>
 
-			<div id="divLoading" style="display: none">
+			<div id="openPaymentsPanel-div-loading" style="display: none">
 				<h5>Loading...</h5>
 				<p:dataTable var="product"
-					value="#{dataTableSkeletonObjects.getSkeleton(10)}">
+					value="#{dataTableSkeletonObjects.getSkeleton(10)}" reflow="true">
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
 						<p:skeleton />
@@ -91,6 +91,17 @@
 			</div>
 		</h:form>
 	</div>
+
+	<script>
+		function showSkeleton() {
+			$('#openPaymentsPanel-div-loading').show();
+			$('#openPaymentsPanel-content').hide();
+		}
+		function hideSkeleton() {
+			$('#openPaymentsPanel-div-loading').hide();
+			$('#openPaymentsPanel-content').show();
+		}
+	</script>
 </composite:implementation>
 
 </html>
