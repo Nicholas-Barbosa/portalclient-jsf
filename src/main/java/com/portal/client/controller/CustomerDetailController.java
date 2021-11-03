@@ -97,6 +97,7 @@ public class CustomerDetailController implements Serializable {
 	public void loadGMap() {
 		if (gMap == null) {
 			gMap = new DefaultMapModel();
+			System.out.println("CEP " +customer.getZipCode());
 			zipCodeService.find(customer.getZipCode()).ifPresentOrElse(c -> {
 				Marker marker = new Marker(new LatLng(c.getLat(), c.getLng()), customer.getName());
 				gMap.addOverlay(marker);

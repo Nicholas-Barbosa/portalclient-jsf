@@ -112,7 +112,7 @@
 								value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 								for="pTerms" />
 							<p:inputText
-								value="#{newBudgetOrderController.budget.customerOnOrder.paymentTerms}"
+								value="#{newBudgetOrderController.budget.customerOnOrder.financialInfo.paymentTerms}"
 								readonly="true" id="pTerms" />
 						</div>
 
@@ -145,7 +145,7 @@
 					renderDiscountButton="true" id="itemsComponent" />
 
 			</div>
-			
+
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"
@@ -249,8 +249,7 @@
 						<div class="box">
 							<p:commandButton value="OK"
 								action="#{newBudgetOrderController.newBudget}" process="@this"
-								update="customerForm, itemsComponent"
-								styleClass="p-mr-2 p-mb-2"
+								update="customerForm, itemsComponent" styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingBudget').hide()" />
 							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star"
 								outcome="/faces/budget/budgets" styleClass="p-mb-2" />

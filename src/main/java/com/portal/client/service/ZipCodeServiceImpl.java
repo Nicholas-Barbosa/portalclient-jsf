@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.RestClient;
 import com.nicholas.jaxrsclient.diqualifier.Simple;
+import com.portal.client.cdi.aop.annotations.NotFoundOptionalEmptyJoinPointCut;
 import com.portal.client.pojo.ZipCode;
 import com.portal.client.resources.ConfigPropertyResolver;
 
@@ -34,6 +35,7 @@ public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 	}
 
 	@Override
+	@NotFoundOptionalEmptyJoinPointCut
 	public Optional<ZipCode> find(String cep) {
 		// TODO Auto-generated method stub
 		try {

@@ -129,37 +129,37 @@ public class Customer implements Serializable {
 		return address.getState();
 	}
 
-	public Double getLimit() {
-		return financialInfo.getLimit();
-	}
-
-	public LocalDateTime getLastPurchase() {
-		return financialInfo.getLastPurchase();
-	}
-
-	public String getPaymentTerms() {
-		return financialInfo.getPaymentTerms();
-	}
-
-	public Character getRisk() {
-		return financialInfo.getRisk();
-	}
-
-	public String getTable() {
-		return financialInfo.getTable();
-	}
-
-	public float getDiscount() {
-		return financialInfo.getDiscount();
-	}
-
-	public float getDiscount2() {
-		return financialInfo.getDiscount2();
-	}
-
-	public float getDiscount3() {
-		return financialInfo.getDiscount3();
-	}
+//	public Double getLimit() {
+//		return financialInfo.getLimit();
+//	}
+//
+//	public LocalDateTime getLastPurchase() {
+//		return financialInfo.getLastPurchase();
+//	}
+//
+//	public String getPaymentTerms() {
+//		return financialInfo.getPaymentTerms();
+//	}
+//
+//	public Character getRisk() {
+//		return financialInfo.getRisk();
+//	}
+//
+//	public String getTable() {
+//		return financialInfo.getTable();
+//	}
+//
+//	public float getDiscount() {
+//		return financialInfo.getDiscount();
+//	}
+//
+//	public float getDiscount2() {
+//		return financialInfo.getDiscount2();
+//	}
+//
+//	public float getDiscount3() {
+//		return financialInfo.getDiscount3();
+//	}
 
 	public String getEmail() {
 		return contact.getEmail();

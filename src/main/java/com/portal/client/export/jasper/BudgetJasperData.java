@@ -53,7 +53,7 @@ public class BudgetJasperData implements Serializable {
 		this.items = order.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
 				Set::add, Set::addAll);
 		this.message = order.getMessage();
-		
+
 	}
 
 	public static long getSerialversionuid() {
@@ -118,7 +118,7 @@ public class BudgetJasperData implements Serializable {
 			this.address = customer.getStreet();
 			this.state = customer.getState();
 			this.cgc = customer.getCnpj();
-			this.paymentTerms = customer.getPaymentTerms();
+			this.paymentTerms = customer.getFinancialInfo().getPaymentTerms();
 		}
 
 		public String getName() {

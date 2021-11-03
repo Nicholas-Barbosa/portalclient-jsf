@@ -89,7 +89,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('limite')}" />
-					<p:inputText value="#{customerDetailController.customer.limit}"
+					<p:inputText value="#{customerDetailController.customer.financialInfo.limit}"
 						readonly="true">
 						<f:convertNumber currencySymbol="R$" locale="pt_BR"
 							type="currency" />
@@ -97,40 +97,40 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('risco')}" />
-					<p:inputText value="#{customerDetailController.customer.risk}"
+					<p:inputText value="#{customerDetailController.customer.financialInfo.risk}"
 						readonly="true" />
 
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('ultima_compra')}" />
 					<p:inputText
-						value="#{customerDetailController.customer.lastPurchase}"
+						value="#{customerDetailController.customer.financialInfo.lastPurchase}"
 						readonly="true">
 						<f:convertDateTime locale="pt_BR" type="localDateTime" />
 					</p:inputText>
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}" />
 					<p:inputText
-						value="#{customerDetailController.customer.paymentTerms}"
+						value="#{customerDetailController.customer.financialInfo.paymentTerms}"
 						readonly="true" />
 
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('tabela')}" />
-					<p:inputText value="#{customerDetailController.customer.table}"
+					<p:inputText value="#{customerDetailController.customer.financialInfo.table}"
 						readonly="true" />
 
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
-					<p:inputText value="#{customerDetailController.customer.discount}"
+					<p:inputText value="#{customerDetailController.customer.financialInfo.discount}"
 						readonly="true" />
 
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('desconto')}2" />
-					<p:inputText value="#{customerDetailController.customer.discount2}"
+					<p:inputText value="#{customerDetailController.customer.financialInfo.discount2}"
 						readonly="true" />
 
 					<p:outputLabel for="@next"
 						value="#{resourceBundleServiceImpl.getMessage('desconto')}3" />
-					<p:inputText value="#{customerDetailController.customer.discount3}"
+					<p:inputText value="#{customerDetailController.customer.financialInfo.discount3}"
 						readonly="true" />
 				</p:panelGrid>
 
