@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
 import com.portal.client.service.ProductPriceTableService;
+import com.portal.client.util.jsf.FacesUtils;
 
 @ViewScoped
 @Named
@@ -24,9 +25,15 @@ public class PriceTableComponentController implements Serializable {
 
 	private List<ProductPriceTable> tables;
 
-	public void find() {
-		System.out.println("Find!");
-		
+	public void find(String customerCode, String customerStore) {
+		service.find(customerCode, customerStore).ifPresentOrElse(collection -> {
+			this.tables = collection;
+			System.out.println("Achou!");
+			FacesUtils.addHeaderForResponse("foundTable", true);
+//			FacesUtils.executeScript(
+//					"$('");
+		}, () -> FacesUtils.addHeaderForResponse("foundTable", false));
+
 	}
 
 	public void export() {

@@ -65,6 +65,10 @@
 				title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
 				<c:openPaymentsPanel customer="#{cc.attrs.customer}" />
 			</p:tab>
+			<p:tab title="Tabela de preços">
+				<c:priceTable customerCode="#{cc.attrs.customer.code}"
+					customerStore="#{cc.attrs.customer.store}" />
+			</p:tab>
 		</p:tabView>
 
 	</div>

@@ -20,13 +20,21 @@
 </composite:interface>
 
 <composite:implementation>
-	<div jsf:id="#{cc.clientId}">
+	<div id="#{cc.clientId}">
 		<h:form>
 			<p:remoteCommand name="findTable"
-				action="#{priceTableComponentController.find()}"
-				autoRun="true" />
+				action="#{priceTableComponentController.find(cc.attrs.customerCode,cc.attrs.customerStore)}"
+				autoRun="true" process="@this" update="tables"
+				onstart="$('#priceTableComponent-loading').show();"
+				oncomplete="$('#priceTableComponent-loading').hide();
+				if(xhr.getResponseHeader('foundTable')=='true'){
+				$('#priceTableComponent-content').show();$('#priceTableComponent-not-found').hide();
+				return;
+				}
+				$('#priceTableComponent-content').hide();$('#priceTableComponent-not-found').show();
+				" />
 
-			<div id="found">
+			<div id="priceTableComponent-content" style="display: none">
 				<div class="p-d-flex p-jc-between">
 					<div>
 						<h5>Exportar</h5>
@@ -36,10 +44,8 @@
 					</div>
 
 				</div>
-				<p:button value="Carregar tabela" process="@this"
-					onclick="findTable()" />
 				<p:dataTable value="#{priceTableComponentController.tables}"
-					var="table" rows="5" paginator="true" id="dtList">
+					var="table" rows="5" paginator="true" id="tables">
 					<p:column groupRow="true">
 						<h:outputText style="vertical-align: middle; margin-left: .5rem"
 							value="#{table.code}" />
@@ -67,8 +73,8 @@
 					</p:column>
 				</p:dataTable>
 			</div>
-			<div id="not-found" class="exception-body notfound"
-				style="display: none">
+			<div id="priceTableComponent-not-found"
+				class="exception-body notfound" style="display: none">
 				<div class="exception-card">
 					<h1>
 						<span>NENHUM</span> REGISTRO ENCONTRADO
@@ -79,8 +85,8 @@
 				</div>
 			</div>
 
-			<div id="loading" style="display: none">
-				<h5>Loading...</h5>
+			<div id="priceTableComponent-loading" style="display: none">
+				<h5>Buscando...</h5>
 				<p:dataTable value="#{dataTableSkeletonObjects.getSkeleton(10)}">
 					<p:column headerText="Código">
 						<p:skeleton />
