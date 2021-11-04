@@ -91,23 +91,23 @@ body .ui-panelgrid .ui-panelgrid-cell {
 						style="border:0px none; background-color:transparent;">
 
 						<p:outputLabel for="@next" value="CEP" />
-						<p:inputText value="#{customerDetailController.customer.zipCode}"
+						<p:inputText value="#{cc.attrs.customer.zipCode}"
 							readonly="true" />
 
 						<p:outputLabel for="@next"
 							value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
-						<p:inputText value="#{customerDetailController.customer.street}"
+						<p:inputText value="#{ccc.attrs.customer.street}"
 							readonly="true" />
 
 						<p:outputLabel for="@next"
 							value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
-						<p:inputText value="#{customerDetailController.customer.district}"
+						<p:inputText value="#{cc.attrs.customer.district}"
 							readonly="true" />
 
 						<p:outputLabel for="@next"
 							value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
 						<p:inputText
-							value="#{customerDetailController.customer.city}, #{customerDetailController.customer.state}"
+							value="#{cc.attrs.customer.city}, #{cc.attrs.customer.state}"
 							readonly="true" />
 						<p:row styleClass="my-heading-row" style="font-weight: bold">
 								Maps #{customerDetailController.currentLatLng}

@@ -13,8 +13,6 @@
 		<h:outputScript name="dataTable.js" library="javascript" />
 		<h:outputStylesheet name="item-row-expansion.css" library="css" />
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
-
-
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('orcamento_message')}</ui:define>
@@ -138,10 +136,12 @@
 				<o:editPanel order="#{budgetEditingController.budget}"
 					id="editPanel" title="Orçamento" />
 
-
-
 			</div>
+		
 		</f:view>
+		<script type="text/javascript"
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3OLz2OAPNufe4j9t5vF6AS879LDUzAvw"
+			async="async" defer="defer"></script>
 	</ui:define>
 
 </ui:composition>

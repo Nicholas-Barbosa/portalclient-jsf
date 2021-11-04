@@ -58,6 +58,47 @@
 
 				</p:panelGrid>
 			</p:tab>
+			<p:tab
+				title="#{resourceBundleServiceImpl.getMessage('geolocalizacao')}">
+				<h:form>
+					<p:panelGrid columns="4" layout="flex"
+						columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+						styleClass="customPanelGrid" contentStyleClass="ui-fluid">
+						<p:outputLabel for="@next" value="CEP" />
+						<p:inputText value="#{cc.attrs.customer.zipCode}" readonly="true" />
+
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+						<p:inputText value="#{cc.attrs.customer.street}" readonly="true" />
+
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
+						<p:inputText value="#{cc.attrs.customer.district}" readonly="true" />
+
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
+						<p:inputText
+							value="#{cc.attrs.customer.city}, #{cc.attrs.customer.state}"
+							readonly="true" />
+						<div class="p-d-flex p-flex-column">
+							<div class="p-mb-2">
+								<p:gmap center="#{gMapController.currentLatLng}" zoom="12"
+									type="road" style="width:50vw;height:35vh"
+									model="#{gMapController.gMap}" id="gMap" widgetVar="gMap" />
+
+							</div>
+							<div class="p-mb-2">
+								<small>#{gMapController.currentLatLng}</small>
+							</div>
+						</div>
+					</p:panelGrid>
+					<p:remoteCommand name="loadMap"
+						action="#{gMapController.loadGMap(cc.attrs.customer.address.zipCode,cc.attrs.customer.name)}"
+						process="@this" autoRun="true" update="gMap" />
+					<p:commandButton value="Atualizar mapa" process="@this"
+						update="gMap" />
+				</h:form>
+			</p:tab>
 			<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
 				<c:finanPanel customer="#{cc.attrs.customer}" />
 			</p:tab>
@@ -72,6 +113,8 @@
 		</p:tabView>
 
 	</div>
+
+
 </composite:implementation>
 
 </html>
