@@ -1,6 +1,6 @@
 package com.portal.client.dto;
 
-import com.portal.client.export.OrderExportType;
+import com.portal.client.service.export.OrderExportType;
 
 public class OrderExporterForm {
 

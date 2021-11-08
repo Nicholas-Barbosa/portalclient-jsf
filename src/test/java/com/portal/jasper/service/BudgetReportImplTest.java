@@ -10,14 +10,14 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import com.portal.client.dto.BudgetJasperForm;
-import com.portal.client.export.OrderExportType;
-import com.portal.client.export.jasper.JasperService;
-import com.portal.client.export.jasper.BudgetJasperData;
-import com.portal.client.export.jasper.BudgetReport;
-import com.portal.client.export.jasper.BudgetReportImpl;
-import com.portal.client.export.jasper.BudgetJasperData.CustomerJasperReportDTO;
-import com.portal.client.export.jasper.BudgetJasperData.OrderItemJasper;
 import com.portal.client.security.user.RepresentativeUser.SaleType;
+import com.portal.client.service.export.OrderExportType;
+import com.portal.client.service.export.jasper.BudgetJasperData;
+import com.portal.client.service.export.jasper.BudgetReport;
+import com.portal.client.service.export.jasper.BudgetReportImpl;
+import com.portal.client.service.export.jasper.JasperService;
+import com.portal.client.service.export.jasper.BudgetJasperData.CustomerJasperReportDTO;
+import com.portal.client.service.export.jasper.BudgetJasperData.OrderItemJasper;
 
 class BudgetReportImplTest {
 
@@ -31,7 +31,7 @@ class BudgetReportImplTest {
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "82828373", "ddd"),
 				Set.of(item), "Mensagem","Nicholas");
 		BudgetReport budgetReport = new BudgetReportImpl(new JasperService());
-		byte[] bytes = budgetReport.export(new BudgetJasperForm(SaleType.MOTOS, budgetDTO),
+		byte[] bytes = budgetReport.process(new BudgetJasperForm(SaleType.MOTOS, budgetDTO),
 				OrderExportType.PDF);
 		System.out.println("lenght " + bytes.length);
 		try (OutputStream out = new BufferedOutputStream(
@@ -49,7 +49,7 @@ class BudgetReportImplTest {
 				new CustomerJasperReportDTO("Nicholas", "Hawaii", "Pipeline", "Hawaii", "nich", "ddd"), Set.of(item),
 				"Message","Nicholas");
 		BudgetReport budgetReport = new BudgetReportImpl(new JasperService());
-		byte[] bytes = budgetReport.export(new BudgetJasperForm(SaleType.MOTOS, budgetDTO),
+		byte[] bytes = budgetReport.process(new BudgetJasperForm(SaleType.MOTOS, budgetDTO),
 				OrderExportType.EXCEL);
 
 	}

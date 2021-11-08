@@ -1,4 +1,4 @@
-package com.portal.client.export;
+package com.portal.client.service.export;
 
 import java.util.List;
 

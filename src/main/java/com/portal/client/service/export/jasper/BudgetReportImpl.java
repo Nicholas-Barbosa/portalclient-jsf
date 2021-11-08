@@ -1,4 +1,4 @@
-package com.portal.client.export.jasper;
+package com.portal.client.service.export.jasper;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -10,7 +10,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import com.portal.client.dto.BudgetJasperForm;
-import com.portal.client.export.OrderExportType;
 import com.portal.client.security.user.RepresentativeUser.SaleType;
 
 import net.sf.jasperreports.engine.JRParameter;
@@ -33,7 +32,7 @@ public class BudgetReportImpl implements BudgetReport {
 	}
 
 	@Override
-	public byte[] export(BudgetJasperForm form, OrderExportType type) {
+	public byte[] process(BudgetJasperForm form, JasperReportType type) {
 		BudgetJasperData data = form.getData();
 		Map<String, Object> params = this.configureLayout(form.getSellertype());
 		params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
@@ -41,7 +40,6 @@ public class BudgetReportImpl implements BudgetReport {
 		switch (type) {
 		case PDF:
 			return reportService.exportToPdf(getClass().getResourceAsStream("/report/budget.jasper"), params, data);
-
 		case EXCEL:
 			return reportService.exportToExcel(getClass().getResourceAsStream("/report/budget.jasper"), params, data);
 		default:

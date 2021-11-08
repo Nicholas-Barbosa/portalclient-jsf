@@ -1,7 +1,7 @@
 package com.portal.client.dto;
 
-import com.portal.client.export.jasper.BudgetJasperData;
 import com.portal.client.security.user.RepresentativeUser.SaleType;
+import com.portal.client.service.export.jasper.BudgetJasperData;
 
 public class BudgetJasperForm {
 

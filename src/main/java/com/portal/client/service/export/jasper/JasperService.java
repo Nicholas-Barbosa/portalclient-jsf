@@ -1,4 +1,4 @@
-package com.portal.client.export.jasper;
+package com.portal.client.service.export.jasper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

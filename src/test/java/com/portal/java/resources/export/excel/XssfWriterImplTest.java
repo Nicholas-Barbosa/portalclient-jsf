@@ -32,7 +32,7 @@ class XssfWriterImplTest {
 		RowObject row2 = new RowObject(1, attributesForRow2);
 
 		XssfWriter writer = new XssfWriterImpl();
-		byte[] streams = writer.write(List.of(row1, row2));
+		byte[] streams = writer.write("sheet1",List.of(row1, row2));
 		try (OutputStream out = new BufferedOutputStream(
 				new FileOutputStream("C:\\Users\\nicho\\OneDrive\\Documentos\\testing_excel-poi\\writing.xlsx"))) {
 			out.write(streams);

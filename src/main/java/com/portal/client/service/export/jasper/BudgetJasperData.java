@@ -1,4 +1,4 @@
-package com.portal.client.export.jasper;
+package com.portal.client.service.export.jasper;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -53,6 +53,7 @@ public class BudgetJasperData implements Serializable {
 		this.items = order.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
 				Set::add, Set::addAll);
 		this.message = order.getMessage();
+		
 
 	}
 
@@ -88,6 +89,9 @@ public class BudgetJasperData implements Serializable {
 		return representative;
 	}
 
+	public void setRepresentative(String representative) {
+		this.representative = representative;
+	}
 	public static class CustomerJasperReportDTO implements Serializable {
 		/**
 		 * 

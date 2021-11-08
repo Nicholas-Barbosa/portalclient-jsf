@@ -2,7 +2,7 @@ package com.portal.client.dto;
 
 import javax.validation.constraints.NotBlank;
 
-import com.portal.client.export.OrderExportType;
+import com.portal.client.service.export.OrderExportType;
 
 public class DownloadStreamsForm {
 

@@ -1,4 +1,4 @@
-package com.portal.client.export;
+package com.portal.client.service.export;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -20,14 +20,14 @@ import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
-public class OrderExcelCalculusConference {
+public class OrderExcelCalculationCheck {
 
 	@Inject
 	private XssfWriter xssfWriter;
 
 	private final Map<String, Integer> columnsPositions = new ConcurrentHashMap<>();
 
-	public OrderExcelCalculusConference() {
+	public OrderExcelCalculationCheck() {
 		this.intiColumnsPositions();
 	}
 
