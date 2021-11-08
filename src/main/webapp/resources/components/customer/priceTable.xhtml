@@ -41,10 +41,7 @@
 						<p:commandButton value="XLSX" styleClass="p-mr-2 p-mb-2"
 							action="#{priceTableComponentController.export(cc.attrs.customerCode)}"
 							process="@this" ajax="false" />
-						<p:commandButton value="client side">
-							<p:dataExporter type="xlsxstream" target="tables"
-								fileName="products" />
-						</p:commandButton>
+
 					</div>
 
 				</div>

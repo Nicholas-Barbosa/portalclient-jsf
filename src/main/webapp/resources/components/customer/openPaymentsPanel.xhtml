@@ -34,23 +34,23 @@
 						listener="#{openPaymentsComponentController.findPayments(1,cc.attrs.customer.code,cc.attrs.customer.store)}" />
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
-						<h:outputText value="#{title.docNumber}" />
+						<h:outputText value="#{payment.docNumber}" />
 					</p:column>
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
 
-						<h:outputText value="#{title.customerName}" />
+						<h:outputText value="#{payment.customerName}" />
 					</p:column>
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('venda')}">
-						<h:outputText value="#{title.sale}">
+						<h:outputText value="#{payment.sale}">
 							<f:convertNumber locale="pt_BR" currencySymbol="R$"
 								type="currency" />
 						</h:outputText>
 					</p:column>
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
-						<h:outputText value="#{title.dueDate}">
+						<h:outputText value="#{payment.dueDate}">
 							<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
 								type="localDateTime" />
 						</h:outputText>

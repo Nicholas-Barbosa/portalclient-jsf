@@ -37,9 +37,8 @@ public class XssfWriterImpl implements XssfWriter {
 		return null;
 	}
 
-	private void createCell(WriteCellAttribute attribute, XSSFRow row) {
+	private synchronized void createCell(WriteCellAttribute attribute, XSSFRow row) {
 		try {
-			System.out.println("Criando cell num " + attribute.getCellOffset() + " para row " + row.getRowNum());
 			Cell cell = row.createCell(attribute.getCellOffset());
 			switch (attribute.getCellType()) {
 			case NUMERIC:
@@ -50,7 +49,7 @@ public class XssfWriterImpl implements XssfWriter {
 				break;
 			}
 		} catch (NullPointerException | IndexOutOfBoundsException e) {
-			System.out.println("Null pointer ou index para " + row + " attribute " + attribute);
+			System.out.println(e+" para " + row.getRowNum() + " attribute " + attribute);
 		}
 	}
 }
