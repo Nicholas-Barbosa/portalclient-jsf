@@ -39,6 +39,7 @@ public class XssfWriterImpl implements XssfWriter {
 
 	private void createCell(WriteCellAttribute attribute, XSSFRow row) {
 		try {
+			System.out.println("Criando cell num " + attribute.getCellOffset() + " para row " + row.getRowNum());
 			Cell cell = row.createCell(attribute.getCellOffset());
 			switch (attribute.getCellType()) {
 			case NUMERIC:

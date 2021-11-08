@@ -6,7 +6,7 @@
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
-	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer">
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -62,11 +62,9 @@
 								action="#{budgetExporterShowController.show(newBudgetOrderController.budget)}"
 								process="@this" />
 
-
-							<p:commandButton
+							<p:button
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
-								icon="pi pi-eye"
-								action="#{customerDetailShowController.show(newBudgetOrderController.budget.customerOnOrder)}" />
+								icon="pi pi-eye" onclick="PF('dlgCustomerDetails').show()" />
 
 
 						</p:toolbarGroup>
@@ -76,7 +74,7 @@
 			</div>
 
 			<div class="card">
-				
+
 				<h:form id="customerForm">
 					<div class="ui-fluid p-formgrid p-grid">
 						<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
@@ -172,7 +170,8 @@
 											<p:commandButton icon="pi pi-search"
 												action="#{customerSearchShowController.show(newBudgetOrderController.cNameToSearch)}">
 												<p:ajax event="dialogReturn"
-													listener="#{newBudgetOrderController.handleCustomerResult}" />
+													listener="#{newBudgetOrderController.handleCustomerResult}"
+													update=":customerDetailComponent" />
 											</p:commandButton>
 										</div>
 
@@ -184,7 +183,7 @@
 						</p:tab>
 
 						<p:tab title="PROSPECT">
-							<cstomer:prospectForm order="#{newBudgetOrderController.budget}"
+							<c:prospectForm order="#{newBudgetOrderController.budget}"
 								update=":customerForm,budgetToolsForm"
 								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 						</p:tab>
@@ -262,6 +261,13 @@
 			<p:sidebar widgetVar="topSidebar" position="top" baseZIndex="10000">
 				<h4>Adicionado produto ao orçamento e calculando totais...</h4>
 			</p:sidebar>
+			<p:dialog header="Cliente" modal="true"
+				widgetVar="dlgCustomerDetails" responsive="true"
+				style="max-width:60vw;">
+				<c:detailPanel id="customerDetailComponent"
+					customer="#{newBudgetOrderController.budget.customerOnOrder}" />
+
+			</p:dialog>
 			<style type="text/css">
 .cheap {
 	background-color: #ff9999 !important;
@@ -299,6 +305,10 @@ body .ui-panelgrid .ui-panelgrid-cell {
 				}
 				//	]]>
 			</script>
+
+			<script type="text/javascript"
+				src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3OLz2OAPNufe4j9t5vF6AS879LDUzAvw"
+				async="async" defer="defer"></script>
 		</f:view>
 	</ui:define>
 

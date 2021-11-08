@@ -8,25 +8,25 @@ import java.util.Map;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 
-import com.portal.client.dto.OpenPaymentsPage.FinacialBondsDTO;
+import com.portal.client.dto.OpenPaymentsPage.OpenPaymentDto;
 
-public class FinancialTitleLazyDataModel extends LazyBehaviorDataModel<FinacialBondsDTO> {
+public class FinancialTitleLazyDataModel extends LazyBehaviorDataModel<OpenPaymentDto> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 8708926972142151243L;
 
-	private List<FinacialBondsDTO> titles;
+	private List<OpenPaymentDto> titles;
 
 	@Override
-	public List<FinacialBondsDTO> load(int first, int pageSize, Map<String, SortMeta> sortBy,
+	public List<OpenPaymentDto> load(int first, int pageSize, Map<String, SortMeta> sortBy,
 			Map<String, FilterMeta> filterBy) {
 		return titles;
 	}
 
 	@Override
-	public void addCollection(Collection<FinacialBondsDTO> list) {
+	public void addCollection(Collection<OpenPaymentDto> list) {
 		this.titles = new ArrayList<>(list);
 	}
 
@@ -37,7 +37,7 @@ public class FinancialTitleLazyDataModel extends LazyBehaviorDataModel<FinacialB
 	}
 
 	@Override
-	public Collection<FinacialBondsDTO> getCollection() {
+	public Collection<OpenPaymentDto> getCollection() {
 		return titles;
 	}
 
@@ -48,13 +48,13 @@ public class FinancialTitleLazyDataModel extends LazyBehaviorDataModel<FinacialB
 	}
 
 	@Override
-	public boolean removeObject(FinacialBondsDTO t) {
+	public boolean removeObject(OpenPaymentDto t) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean removeObjects(List<FinacialBondsDTO> t) {
+	public boolean removeObjects(List<OpenPaymentDto> t) {
 		// TODO Auto-generated method stub
 		return false;
 	}

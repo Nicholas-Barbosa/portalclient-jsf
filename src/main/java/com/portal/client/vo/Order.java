@@ -124,7 +124,7 @@ public class Order {
 		return items;
 	}
 
-	public boolean addItem(Item item) {
+	public synchronized boolean addItem(Item item) {
 		if (items == null) {
 			items = new ArrayList<>();
 		}

@@ -6,7 +6,7 @@
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
-	xmlns:cstomer="http://java.sun.com/jsf/composite/components/customer"
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer"
 	xmlns:order="http://java.sun.com/jsf/composite/components/order">
 
 	<ui:define name="head">
@@ -63,10 +63,9 @@
 								action="#{orderExportShowController.show(newOrderController.order)}"
 								process="@this" />-->
 
-							<p:commandButton
+							<p:button
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
-								icon="pi pi-eye"
-								action="#{customerDetailShowController.show(newOrderController.order.customerOnOrder)}" />
+								icon="pi pi-eye" onclick="PF('dlgCustomerDetails').show()" />
 
 
 						</p:toolbarGroup>
@@ -164,7 +163,7 @@
 												action="#{customerSearchShowController.show(newOrderController.cNameToSearch)}">
 												<p:ajax event="dialogReturn"
 													listener="#{newOrderController.handleCustomerResult}"
-													oncomplete="console.log('complete!')" />
+													update=":customerDetailComponent" />
 											</p:commandButton>
 										</div>
 
@@ -176,7 +175,7 @@
 						</p:tab>
 
 						<p:tab title="PROSPECT">
-							<cstomer:prospectForm order="#{newOrderController.order}"
+							<c:prospectForm order="#{newOrderController.order}"
 								update=":customerForm"
 								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 						</p:tab>
@@ -232,6 +231,12 @@
 				<h2>Exportar pedido</h2>
 
 			</p:sidebar>
+			<p:dialog header="Cliente" modal="true"
+				widgetVar="dlgCustomerDetails" responsive="true"
+				style="max-width:60vw;">
+				<c:detailPanel id="customerDetailComponent"
+					customer="#{newOrderController.order.customerOnOrder}" />
+			</p:dialog>
 			<style type="text/css">
 .cheap {
 	background-color: #ff9999 !important;
@@ -269,6 +274,9 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 				//	]]>
 			</script>
+			<script type="text/javascript"
+				src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3OLz2OAPNufe4j9t5vF6AS879LDUzAvw"
+				async="async" defer="defer"></script>
 		</f:view>
 	</ui:define>
 

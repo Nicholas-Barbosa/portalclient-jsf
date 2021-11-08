@@ -88,15 +88,14 @@
 
 							</div>
 							<div class="p-mb-2">
-								<small>#{gMapController.currentLatLng}</small>
+								<small>Coordernadas: #{gMapController.currentLatLng}</small>
 							</div>
 						</div>
 					</p:panelGrid>
 					<p:remoteCommand name="loadMap"
 						action="#{gMapController.loadGMap(cc.attrs.customer.address.zipCode,cc.attrs.customer.name)}"
 						process="@this" autoRun="true" update="gMap" />
-					<p:commandButton value="Atualizar mapa" process="@this"
-						update="gMap" />
+					
 				</h:form>
 			</p:tab>
 			<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">

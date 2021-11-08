@@ -7,7 +7,12 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
 import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
+import com.portal.client.export.OrderExportType;
+import com.portal.client.export.ProductPriceTableExporter;
 import com.portal.client.service.ProductPriceTableService;
 import com.portal.client.util.jsf.FacesUtils;
 
@@ -23,21 +28,25 @@ public class PriceTableComponentController implements Serializable {
 	@Inject
 	private ProductPriceTableService service;
 
+	@Inject
+	private ProductPriceTableExporter exporter;
+
 	private List<ProductPriceTable> tables;
 
+	private StreamedContent file;
+	
 	public void find(String customerCode, String customerStore) {
 		service.find(customerCode, customerStore).ifPresentOrElse(collection -> {
 			this.tables = collection;
 			System.out.println("Achou!");
 			FacesUtils.addHeaderForResponse("foundTable", true);
-//			FacesUtils.executeScript(
-//					"$('");
 		}, () -> FacesUtils.addHeaderForResponse("foundTable", false));
 
 	}
 
-	public void export() {
-
+	public void export(String customerCode) {
+		byte[] excel = exporter.toExcel(customerCode, tables);
+		FacesUtils.prepareResponseForDownloadOfStreams("tabelaPreços", excel, OrderExportType.EXCEL.getType());
 	}
 
 	public List<ProductPriceTable> getTables() {
