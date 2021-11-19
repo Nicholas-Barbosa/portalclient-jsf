@@ -1,6 +1,6 @@
 package com.portal.client.security.api.helper;
 
-import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.api.ApiData;
 import com.portal.client.security.user.User;
 
 public interface APIHelper {
@@ -13,7 +13,7 @@ public interface APIHelper {
 
 	String getBaseUrl();
 	
-	ServerAPI getSourceAPI();
+	ApiData getSourceAPI();
 
 	String getSourceAPIKey();
 	

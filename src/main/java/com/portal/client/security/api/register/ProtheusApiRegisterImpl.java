@@ -1,28 +1,28 @@
 package com.portal.client.security.api.register;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.portal.client.security.APIManager;
-import com.portal.client.security.api.ProtheusApiEnviromentHandler;
+import com.portal.client.security.api.ProtheusApiUrlResolver;
 import com.portal.client.security.api.ProtheusCompanyApiEnv;
-import com.portal.client.security.api.ServerAPI;
+import com.portal.client.security.api.APIsRepository;
+import com.portal.client.security.api.ApiData;
 import com.portal.client.security.user.RepresentativeUser;
 
-@ApplicationScoped
+@Dependent
 public class ProtheusApiRegisterImpl implements ProtheusApiRegister {
 
 	private String token, prefix;
 	private RepresentativeUser user;
 	private ProtheusCompanyApiEnv companyEnv;
-	private APIManager apisManger;
-	private ProtheusApiEnviromentHandler protheusApiHandler;
+	private APIsRepository apisManger;
+	private ProtheusApiUrlResolver urlResolver;
 
 	@Inject
-	public ProtheusApiRegisterImpl(APIManager apisManger, ProtheusApiEnviromentHandler protheusApiHandler) {
+	public ProtheusApiRegisterImpl(APIsRepository apisManger, ProtheusApiUrlResolver protheusApiHandler) {
 		super();
 		this.apisManger = apisManger;
-		this.protheusApiHandler = protheusApiHandler;
+		this.urlResolver = protheusApiHandler;
 	}
 
 	@Override
@@ -39,15 +39,14 @@ public class ProtheusApiRegisterImpl implements ProtheusApiRegister {
 
 	@Override
 	public ProtheusApiRegister companyEnv(ProtheusCompanyApiEnv companyEnv) {
-
 		this.companyEnv = companyEnv;
 		return this;
 	}
 
 	@Override
-	public ServerAPI register() {
+	public ApiData register() {
 		// TODO Auto-generated method stub
-		ServerAPI api = new ServerAPI(user, protheusApiHandler.getUrl(companyEnv), "v1/token", token, prefix);
+		ApiData api = new ApiData(user, urlResolver.getUrl(companyEnv), "v1/token", token, prefix);
 		api.setAttribute("companyEnv", companyEnv);
 		apisManger.registerAuthenticatedService("PROTHEUS_API", api);
 		return api;

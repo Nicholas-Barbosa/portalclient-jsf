@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import com.nicholas.jaxrsclient.RestClient;
 import com.portal.client.dto.LoginProtheusEndpointResponse;
 import com.portal.client.dto.LoginProtheusForm;
-import com.portal.client.security.api.ProtheusApiEnviromentHandler;
+import com.portal.client.security.api.ProtheusApiUrlResolver;
 import com.portal.client.security.api.register.ProtheusApiRegister;
 import com.portal.client.security.user.RepresentativeUser;
 import com.portal.client.security.user.builder.RepresentativeUserBuilder;
@@ -25,11 +25,11 @@ public class MainAuthenticationRepository implements AuthenticationRepository, S
 	private static final long serialVersionUID = -6233748924596132481L;
 	private RestClient restClient;
 	private ProtheusApiRegister protheusRegister;
-	private ProtheusApiEnviromentHandler protheusApiEnv;
+	private ProtheusApiUrlResolver protheusApiEnv;
 
 	@Inject
 	public MainAuthenticationRepository(RestClient restClient, ProtheusApiRegister protheusRegister,
-			ProtheusApiEnviromentHandler protheusApiUrlHandler) {
+			ProtheusApiUrlResolver protheusApiUrlHandler) {
 		super();
 		this.restClient = restClient;
 		this.protheusRegister = protheusRegister;

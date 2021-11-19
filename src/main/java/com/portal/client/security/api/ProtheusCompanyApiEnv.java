@@ -2,7 +2,7 @@ package com.portal.client.security.api;
 
 public enum ProtheusCompanyApiEnv {
 
-	CDG(8090), NSG(8094);
+	CDG(8090), NSG(8094),SPG(8096);
 
 	private final int port;
 

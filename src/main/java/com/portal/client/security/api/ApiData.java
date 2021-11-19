@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.portal.client.security.user.User;
 
-public class ServerAPI implements Serializable {
+public class ApiData implements Serializable {
 
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class ServerAPI implements Serializable {
 	private User userData;
 	private final Map<String, Object> attributes;
 
-	public ServerAPI(User user, String baseUrl, String loginEndpoint, String token, String tokenPrefix) {
+	public ApiData(User user, String baseUrl, String loginEndpoint, String token, String tokenPrefix) {
 		super();
 		this.userData = user;
 		this.baseUrl = baseUrl;
@@ -61,4 +61,11 @@ public class ServerAPI implements Serializable {
 	public Object getAttribute(String key) {
 		return attributes.get(key);
 	}
+
+	@Override
+	public String toString() {
+		return "ApiData [baseUrl=" + baseUrl + ", loginEndpoint=" + loginEndpoint + ", token=" + token
+				+ ", tokenPrefix=" + tokenPrefix + ", userData=" + userData + ", attributes=" + attributes + "]";
+	}
+
 }

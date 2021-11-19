@@ -1,4 +1,4 @@
-package com.portal.client.security;
+package com.portal.client.security.api;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -9,8 +9,6 @@ import javax.enterprise.context.SessionScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.portal.client.security.api.ServerAPI;
-
 /**
  * All ServerAPI which the current session client has been authenticated.
  * 
@@ -18,16 +16,16 @@ import com.portal.client.security.api.ServerAPI;
  *
  */
 @SessionScoped
-public class APIManager implements Serializable {
+public class APIsRepository implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6271296356737609480L;
 
-	private final Map<String, ServerAPI> authenticatedServices = new ConcurrentHashMap<>();
+	private final Map<String, ApiData> authenticatedServices = new ConcurrentHashMap<>();
 
-	private final Logger logger = LoggerFactory.getLogger(APIManager.class);
+	private final Logger logger = LoggerFactory.getLogger(APIsRepository.class);
 
 	/**
 	 * Register this service to the hash table.
@@ -35,7 +33,7 @@ public class APIManager implements Serializable {
 	 * @param key
 	 * @param service
 	 */
-	public void registerAuthenticatedService(String key, ServerAPI service) {
+	public void registerAuthenticatedService(String key, ApiData service) {
 		logger.debug("Registering server API with key " + key + " with token " + service.getToken());
 		this.authenticatedServices.putIfAbsent(key, service);
 	}
@@ -56,7 +54,7 @@ public class APIManager implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public ServerAPI getAPI(String key) {
+	public ApiData getAPI(String key) {
 		return this.authenticatedServices.get(key);
 	}
 
@@ -72,7 +70,7 @@ public class APIManager implements Serializable {
 		return new StringBuilder(getAPI(serverKey).getBaseUrl()).append("/" + endpoint).toString();
 	}
 
-	public String buildEndpoint(ServerAPI serverAPI, String endpoint) {
+	public String buildEndpoint(ApiData serverAPI, String endpoint) {
 		return new StringBuilder(serverAPI.getBaseUrl()).append("/" + endpoint).toString();
 	}
 

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import com.portal.client.resources.ConfigPropertyResolver;
 
 @ApplicationScoped
-public class ProtheusApiEnviromentHandler {
+public class ProtheusApiUrlResolver {
 
 	@Inject
 	private ConfigPropertyResolver propertiesResolver;
