@@ -1,4 +1,4 @@
-package com.portal.client.service.export.jasper;
+package com.portal.client.resources.export.jasper;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -8,9 +8,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BudgetJasperForm;
+import com.portal.client.resources.export.jasper.service.JasperReportType;
+import com.portal.client.resources.export.jasper.service.SimpleJasperServiceFactory;
 import com.portal.client.security.user.RepresentativeUser.SaleType;
-import com.portal.client.service.export.jasper.service.JasperReportType;
-import com.portal.client.service.export.jasper.service.SimpleJasperServiceFactory;
 
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;

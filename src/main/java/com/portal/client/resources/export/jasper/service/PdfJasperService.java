@@ -1,4 +1,4 @@
-package com.portal.client.service.export.jasper.service;
+package com.portal.client.resources.export.jasper.service;
 
 import java.io.InputStream;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.portal.client.service.export.jasper.service.annt.PDF;
+import com.portal.client.resources.export.jasper.service.annt.PDF;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;

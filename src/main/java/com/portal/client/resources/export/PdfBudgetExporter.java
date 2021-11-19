@@ -1,4 +1,4 @@
-package com.portal.client.service.export;
+package com.portal.client.resources.export;
 
 import java.io.Serializable;
 
@@ -6,10 +6,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.portal.client.dto.BudgetJasperForm;
+import com.portal.client.resources.export.jasper.BudgetJasperData;
+import com.portal.client.resources.export.jasper.BudgetReport;
+import com.portal.client.resources.export.jasper.service.JasperReportType;
 import com.portal.client.security.api.helper.ProtheusAPIHelper;
-import com.portal.client.service.export.jasper.BudgetJasperData;
-import com.portal.client.service.export.jasper.BudgetReport;
-import com.portal.client.service.export.jasper.service.JasperReportType;
 import com.portal.client.vo.Budget;
 
 @ApplicationScoped

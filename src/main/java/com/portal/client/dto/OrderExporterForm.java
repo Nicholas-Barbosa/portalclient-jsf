@@ -1,6 +1,6 @@
 package com.portal.client.dto;
 
-import com.portal.client.service.export.BudgetExportType;
+import com.portal.client.resources.export.BudgetExportType;
 
 public class OrderExporterForm {
 

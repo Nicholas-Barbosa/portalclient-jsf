@@ -1,4 +1,4 @@
-package com.portal.client.service.export.jasper;
+package com.portal.client.resources.export.jasper;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

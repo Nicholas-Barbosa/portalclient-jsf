@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.portal.ShrinkwrapDeploymentUtils;
+import com.portal.client.resources.export.jasper.service.JasperReportType;
+import com.portal.client.resources.export.jasper.service.SimpleJasperServiceFactory;
 
 @RunWith(Arquillian.class)
 public class SimpleJasperServiceFactoryTest {

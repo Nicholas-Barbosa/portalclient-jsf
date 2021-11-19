@@ -1,7 +1,7 @@
-package com.portal.client.service.export.jasper;
+package com.portal.client.resources.export.jasper;
 
 import com.portal.client.dto.BudgetJasperForm;
-import com.portal.client.service.export.jasper.service.JasperReportType;
+import com.portal.client.resources.export.jasper.service.JasperReportType;
 
 public interface BudgetReport {
 

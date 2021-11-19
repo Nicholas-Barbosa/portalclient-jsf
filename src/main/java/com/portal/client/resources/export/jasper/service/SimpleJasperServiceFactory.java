@@ -1,4 +1,4 @@
-package com.portal.client.service.export.jasper.service;
+package com.portal.client.resources.export.jasper.service;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
@@ -6,7 +6,7 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import com.portal.client.service.export.jasper.service.annt.PDF;
+import com.portal.client.resources.export.jasper.service.annt.PDF;
 
 @ApplicationScoped
 public class SimpleJasperServiceFactory {

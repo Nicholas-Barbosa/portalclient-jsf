@@ -1,4 +1,4 @@
-package com.portal.client.service.export;
+package com.portal.client.resources.export;
 
 public enum BudgetExportType {
 

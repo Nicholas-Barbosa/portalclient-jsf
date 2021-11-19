@@ -1,4 +1,4 @@
-package com.portal.client.service.export.jasper.service.annt;
+package com.portal.client.resources.export.jasper.service.annt;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.PARAMETER;
@@ -13,6 +13,6 @@ import javax.inject.Qualifier;
 @Qualifier
 @Retention(RUNTIME)
 @Target({ TYPE, FIELD, PARAMETER })
-public @interface Excel {
+public @interface PDF {
 
 }

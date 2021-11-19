@@ -6,8 +6,8 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import com.portal.client.dto.OrderExporterForm;
-import com.portal.client.service.export.BudgetExportType;
-import com.portal.client.service.export.SimpleBudgetExporterFactory;
+import com.portal.client.resources.export.BudgetExportType;
+import com.portal.client.resources.export.SimpleBudgetExporterFactory;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Budget;
 
