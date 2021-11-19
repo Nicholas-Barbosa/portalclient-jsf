@@ -1,12 +1,15 @@
 package com.portal.client.repository;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductTechDetailJson;
+import com.portal.client.dto.ProductToFind;
 import com.portal.client.vo.Product;
 
 public interface ProductRepository {
@@ -25,4 +28,7 @@ public interface ProductRepository {
 	ProductTechDetailJson findTechDetails(String commercialCode);
 
 	void findStock(Product... products);
+
+	BatchProductSearchDataWrapper batchProductSearch(String customerCode, String customerStore,
+			Set<ProductToFind> products);
 }

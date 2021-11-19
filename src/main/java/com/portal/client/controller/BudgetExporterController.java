@@ -6,8 +6,8 @@ import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
 import com.portal.client.dto.OrderExporterForm;
-import com.portal.client.service.export.BudgetExporter;
-import com.portal.client.service.export.OrderExportType;
+import com.portal.client.service.export.BudgetExportType;
+import com.portal.client.service.export.SimpleBudgetExporterFactory;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Budget;
 
@@ -18,14 +18,14 @@ public class BudgetExporterController {
 	private boolean order;
 	private Budget budgetToExport;
 	private HttpSession httpSession;
-	private BudgetExporter budgetExporter;
+	private SimpleBudgetExporterFactory budgetExporterFactory;
 	private OrderExporterForm exportForm;
 
 	@Inject
-	public BudgetExporterController(HttpSession httpSession, BudgetExporter orderExporter) {
+	public BudgetExporterController(HttpSession httpSession, SimpleBudgetExporterFactory budgetExporterFactory) {
 		super();
 		this.httpSession = httpSession;
-		this.budgetExporter = orderExporter;
+		this.budgetExporterFactory = budgetExporterFactory;
 		this.exportForm = new OrderExporterForm();
 	}
 
@@ -35,7 +35,7 @@ public class BudgetExporterController {
 
 	public void export() {
 		budgetToExport = (Budget) httpSession.getAttribute("budget-toexport");
-		byte[] streams = budgetExporter.export(budgetToExport, exportForm.getType());
+		byte[] streams = budgetExporterFactory.getExporter(exportForm.getType()).export(budgetToExport);
 		exportForm.checkFileExtension();
 		FacesUtils.prepareResponseForDownloadOfStreams(getFileName(), streams, getFileType().getType());
 	}
@@ -60,11 +60,11 @@ public class BudgetExporterController {
 		this.exportForm.setFileName(fileName);
 	}
 
-	public OrderExportType getFileType() {
+	public BudgetExportType getFileType() {
 		return exportForm.getType();
 	}
 
-	public void setFileType(OrderExportType type) {
+	public void setFileType(BudgetExportType type) {
 		this.exportForm.setType(type);
 	}
 

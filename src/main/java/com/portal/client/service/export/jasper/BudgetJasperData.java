@@ -8,8 +8,9 @@ import java.util.concurrent.ConcurrentSkipListSet;
 
 import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.vo.Item;
-import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductPriceData;
 
 public class BudgetJasperData implements Serializable {
 
@@ -26,14 +27,14 @@ public class BudgetJasperData implements Serializable {
 
 	private CustomerJasperReportDTO customerReportDTO;
 
-	private Set<OrderItemJasper> items;
+	private Set<BudgetItemJasperData> items;
 
 	private String message;
 
 	private String representative;
 
 	public BudgetJasperData(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
-			CustomerJasperReportDTO customerReportDTO, Set<OrderItemJasper> items, String message,
+			CustomerJasperReportDTO customerReportDTO, Set<BudgetItemJasperData> items, String message,
 			String representative) {
 		super();
 		this.liquidValue = liquidValue;
@@ -50,10 +51,9 @@ public class BudgetJasperData implements Serializable {
 		this.grossValue = order.getGrossValue();
 		this.stTotal = order.getStValue();
 		this.customerReportDTO = new CustomerJasperReportDTO(order.getCustomerOnOrder());
-		this.items = order.getItems().parallelStream().map(OrderItemJasper::new).collect(ConcurrentSkipListSet::new,
-				Set::add, Set::addAll);
+		this.items = order.getItems().parallelStream().map(BudgetItemJasperData::new)
+				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll);
 		this.message = order.getMessage();
-		
 
 	}
 
@@ -77,7 +77,7 @@ public class BudgetJasperData implements Serializable {
 		return customerReportDTO;
 	}
 
-	public Set<OrderItemJasper> getItems() {
+	public Set<BudgetItemJasperData> getItems() {
 		return items;
 	}
 
@@ -92,6 +92,7 @@ public class BudgetJasperData implements Serializable {
 	public void setRepresentative(String representative) {
 		this.representative = representative;
 	}
+
 	public static class CustomerJasperReportDTO implements Serializable {
 		/**
 		 * 
@@ -155,7 +156,7 @@ public class BudgetJasperData implements Serializable {
 
 	}
 
-	public static class OrderItemJasper implements Comparable<OrderItemJasper> {
+	public static class BudgetItemJasperData implements Comparable<BudgetItemJasperData> {
 
 		private String commercialCode;
 		private String description;
@@ -163,14 +164,13 @@ public class BudgetJasperData implements Serializable {
 		private BigDecimal unitValue;
 		private BigDecimal totalValue;
 		private BigDecimal totalStValue;
-		private BigDecimal discGlobal;
-		private BigDecimal lineDisc;
+		private float lineDisc;
 		private BigDecimal totalGrossValue;
 		private BigDecimal totalGrossValueWithoutDiscount;
 
-		public OrderItemJasper(String commercialCode, String description, int quantity, BigDecimal unitValue,
-				BigDecimal totalValue, BigDecimal totalStValue, BigDecimal discGlobal, BigDecimal lineDisc,
-				BigDecimal totalGrossValue, BigDecimal totalGrossValueWithoutDiscount) {
+		public BudgetItemJasperData(String commercialCode, String description, int quantity, BigDecimal unitValue,
+				BigDecimal totalValue, BigDecimal totalStValue, float lineDisc, BigDecimal totalGrossValue,
+				BigDecimal totalGrossValueWithoutDiscount) {
 			super();
 			this.commercialCode = commercialCode;
 			this.description = description;
@@ -178,27 +178,26 @@ public class BudgetJasperData implements Serializable {
 			this.unitValue = unitValue;
 			this.totalValue = totalValue;
 			this.totalStValue = totalStValue;
-			this.discGlobal = discGlobal;
 			this.lineDisc = lineDisc;
 			this.totalGrossValue = totalGrossValue;
 			this.totalGrossValueWithoutDiscount = totalGrossValueWithoutDiscount;
 
 		}
 
-		public OrderItemJasper(Item item) {
+		public BudgetItemJasperData(Item item) {
 			super();
-			this.commercialCode = item.getProduct().getCommercialCode();
-			this.description = item.getProduct().getDescription();
+			Product product = item.getProduct();
+			ProductPriceData priceData = product.getPriceData();
 
-			ItemValue values = item.getValue();
-			this.quantity = values.getQuantity();
-			this.unitValue = values.getUnitValueWithoutDiscount();
-			this.totalValue = item.getValue().getTotalValueWithoutDiscount();
-			this.totalStValue = values.getUnitStValueWithoutDiscount().multiply(new BigDecimal(this.quantity));
-			this.discGlobal = values.getBudgetGlobalDiscount();
-			this.totalGrossValue = values.getTotalGrossValue();
-			this.lineDisc = values.getLineDiscount();
-			this.totalGrossValueWithoutDiscount = values.getTotalGrossWithoutDiscount();
+			this.commercialCode = product.getCommercialCode();
+			this.description = product.getDescription();
+			this.quantity = priceData.getQuantity();
+			this.unitValue = priceData.getUnitValue();
+			this.totalValue = priceData.getTotalValue();
+			this.totalStValue = priceData.getTotalStValue();
+			this.totalGrossValue = priceData.getTotalGrossValue();
+			this.lineDisc = priceData.getDiscountData().getDiscount();
+			this.totalGrossValueWithoutDiscount = priceData.getTotalGrossValue();
 
 		}
 
@@ -226,11 +225,7 @@ public class BudgetJasperData implements Serializable {
 			return totalStValue;
 		}
 
-		public BigDecimal getDiscGlobal() {
-			return discGlobal;
-		}
-
-		public BigDecimal getLineDisc() {
+		public float getLineDisc() {
 			return lineDisc;
 		}
 
@@ -243,7 +238,7 @@ public class BudgetJasperData implements Serializable {
 		}
 
 		@Override
-		public int compareTo(OrderItemJasper o) {
+		public int compareTo(BudgetItemJasperData o) {
 			// TODO Auto-generated method stub
 			return this.commercialCode.compareToIgnoreCase(o.commercialCode);
 		}

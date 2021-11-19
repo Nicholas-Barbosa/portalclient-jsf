@@ -1,7 +1,6 @@
 package com.portal.client.service.crud;
 
 import java.util.Optional;
-import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -9,11 +8,8 @@ import javax.inject.Inject;
 import com.portal.client.cdi.aop.annotations.OrderRepresentativeSetterJoinPointCut;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
-import com.portal.client.dto.ItemToFindPrice;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.exception.CustomerNotFoundException;
-import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.repository.BudgetRepository;
 import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.vo.Budget;
@@ -63,6 +59,9 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 		maybe.ifPresent(budget -> {
 			orderHelper.sumStValue(budget);
 			orderRepSetter.setAutor(budget);
+//			budget.getItems().stream().map(Item::getPriceData).forEach(pData -> {
+//				ItemDiscounData data = ItemDiscountDataBuilder.getInstance().with
+//			});
 		});
 		return maybe;
 	}
@@ -77,12 +76,6 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 			throw new IllegalArgumentException("No items on budget!");
 		if (budgetRequest.getCustomerOnOrder() instanceof ProspectCustomerOnOrder)
 			throw new CustomerNotAllowed("Save customer is only for normal customer");
-	}
-
-	@Override
-	public Budget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> itemsToEstimate)
-			throws CustomerNotFoundException, ItemsNotFoundException {
-		return budgetRepository.estimate(customerCode, customerStore, itemsToEstimate);
 	}
 
 	@Override

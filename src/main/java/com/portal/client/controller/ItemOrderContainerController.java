@@ -55,7 +55,8 @@ public class ItemOrderContainerController implements Serializable {
 
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresentOrElse(p -> {
-			orderHelper.addItem(order, Item.product(p));
+			orderHelper.addItem(order, new Item(p));
+			System.out.println("");
 			FacesUtils.ajaxUpdate("dtItems", "totals");
 		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
 

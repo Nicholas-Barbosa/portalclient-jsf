@@ -2,20 +2,22 @@ package com.portal.client.vo.builder;
 
 import java.math.BigDecimal;
 
-import com.portal.client.dto.ProductValue;
 import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductDiscountData;
 import com.portal.client.vo.ProductImage;
+import com.portal.client.vo.ProductPriceData;
 import com.portal.client.vo.ProductTechDetail;
 
-public class ProductBuilder implements ContractProductBuilder {
+public class ProductBuilder implements ProductBuilderBehavior {
 
-	private String code, commercialCode, applicability, description, line, acronymLine;
-	private int quantity;
-	private boolean commercialBlock;
-	private ProductImage productImage;
-	private ProductTechDetail techDetail;
-	private Integer stock, multiple;
-	private BigDecimal unitStValue, unitValue, unitGrossValue;
+	protected String code, commercialCode, applicability, description, line, acronymLine;
+	protected int quantity;
+	protected boolean commercialBlock;
+	protected ProductImage productImage;
+	protected ProductTechDetail techDetail;
+	protected Integer stock, multiple;
+	protected BigDecimal unitStValue, unitValue, unitGrossValue;
+	protected ProductDiscountData discountData;
 
 	public static ProductBuilder getInstance() {
 		return new ProductBuilder();
@@ -65,7 +67,7 @@ public class ProductBuilder implements ContractProductBuilder {
 
 	@Override
 	public ProductBuilder withImage(ProductImage image) {
-	this.productImage = image;
+		this.productImage = image;
 		return this;
 	}
 
@@ -106,8 +108,14 @@ public class ProductBuilder implements ContractProductBuilder {
 	}
 
 	@Override
-	public ContractProductBuilder withStock(int stock) {
+	public ProductBuilderBehavior withStock(int stock) {
 		this.stock = stock;
+		return this;
+	}
+
+	@Override
+	public ProductBuilderBehavior withDiscountData(ProductDiscountData discount) {
+		this.discountData = discount;
 		return this;
 	}
 
@@ -117,8 +125,8 @@ public class ProductBuilder implements ContractProductBuilder {
 				productImage, this.buildValue(), techDetail);
 	}
 
-	public ProductValue buildValue() {
-		return new ProductValue(unitStValue, unitValue, unitGrossValue, quantity, multiple);
+	public ProductPriceData buildValue() {
+		return new ProductPriceData(unitStValue, unitValue, unitGrossValue, quantity, multiple, discountData);
 	}
 
 }

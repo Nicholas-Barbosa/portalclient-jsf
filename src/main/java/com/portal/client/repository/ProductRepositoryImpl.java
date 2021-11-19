@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -13,15 +14,19 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
 import com.portal.client.cdi.aop.OptionalEmptyRepository;
+import com.portal.client.dto.BatchProductSearchDataWrapper;
+import com.portal.client.dto.BatchProductSearchJsonPostForm;
 import com.portal.client.dto.ProductPage;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductStock;
 import com.portal.client.dto.ProductStockWrapper;
 import com.portal.client.dto.ProductTechDetailJson;
+import com.portal.client.dto.ProductToFind;
 import com.portal.client.dto.ProductToFindStock;
 import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.vo.Product;
@@ -128,6 +133,22 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 
 		});
 
+	}
+
+	@Override
+	public BatchProductSearchDataWrapper batchProductSearch(String customerCode, String customerStore,
+			Set<ProductToFind> products) {
+		BatchProductSearchJsonPostForm postForm = new BatchProductSearchJsonPostForm(customerCode, customerStore,
+				products);
+		try {
+			BatchProductSearchDataWrapper dataWrapper = restClient.post(protheusApiHelper.buildEndpoint("estimate"),
+					protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(),
+					BatchProductSearchDataWrapper.class, null, null, postForm, "application/json");
+			System.out.println("DataWrapper " + dataWrapper);
+		} catch (NotFoundException e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }

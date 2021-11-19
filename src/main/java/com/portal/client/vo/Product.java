@@ -5,8 +5,8 @@ import java.math.BigDecimal;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.ProductValue;
 import com.portal.client.vo.ProductImage.ImageInfoState;
+import com.portal.client.vo.builder.ProductDiscountDataBuilder;
 
 public class Product {
 
@@ -17,28 +17,30 @@ public class Product {
 	private final String line;
 	private final String acronymLine;
 	private Integer stock;
-	private final boolean commercialBlock;
+	private final Boolean commercialBlock;
 	private ProductImage image;
-	private final ProductValue value;
+	private final ProductPriceData priceData;
 	private ProductTechDetail productTechDetail;
 	private String link;
 
 	@JsonbCreator
-	public static Product ofJsonb(@JsonbProperty("application") String application,
-			@JsonbProperty("gross_price") BigDecimal grossPrice, @JsonbProperty("code") String code,
+	public static Product ofJsonb(@JsonbProperty("application") String application, @JsonbProperty("code") String code,
 			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
 			@JsonbProperty("multiple") int multiple, @JsonbProperty("commercial_block") String commercialBlock,
 			@JsonbProperty("commercial_code") String cCode, @JsonbProperty("st_value") BigDecimal stValue,
 			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("stock") int stock,
 			@JsonbProperty("description") String description,
 			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
-		ProductValue price = new ProductValue(stValue, unitValue, unitGrossValue, 1, multiple);
+		ProductDiscountData discountData = ProductDiscountDataBuilder.getInstance().withUnitGrossValue(unitGrossValue)
+				.withUnitStValue(stValue).withUnitValue(unitValue).withQuantity(1).build();
+		ProductPriceData price = new ProductPriceData(stValue, unitValue, unitGrossValue, 1, multiple, discountData);
+
 		return new Product(code, cCode, application, description, line, acronymLine, stock,
 				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price, null);
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image, ProductValue price,
+			String acronymLine, Integer stock, Boolean commercialBlock, ProductImage image, ProductPriceData price,
 			ProductTechDetail productTechDetail) {
 		super();
 		this.code = code;
@@ -50,27 +52,8 @@ public class Product {
 		this.stock = stock;
 		this.commercialBlock = commercialBlock;
 		this.image = image;
-		this.value = price;
+		this.priceData = price;
 		this.productTechDetail = productTechDetail;
-	}
-
-	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image, ProductValue price,
-			ProductTechDetail productTechDetail, String link) {
-		super();
-		this.code = code;
-		this.commercialCode = commercialCode;
-		this.applicability = applicability;
-		this.description = description;
-		this.line = line;
-		this.acronymLine = acronymLine;
-		this.stock = stock;
-		this.commercialBlock = commercialBlock;
-		this.image = image;
-		this.value = price;
-		this.productTechDetail = productTechDetail;
-		this.link = link;
-
 	}
 
 	public String getCode() {
@@ -105,7 +88,7 @@ public class Product {
 		this.stock = stock;
 	}
 
-	public boolean isCommercialBlock() {
+	public Boolean isCommercialBlock() {
 		return commercialBlock;
 	}
 
@@ -117,12 +100,8 @@ public class Product {
 		return image == null ? new byte[0] : image.getImageStreams();
 	}
 
-	public ProductValue getPrice() {
-		return value;
-	}
-
-	public ProductValue getValue() {
-		return value;
+	public ProductPriceData getPriceData() {
+		return priceData;
 	}
 
 	public void setImage(ProductImage productImage) {
@@ -177,6 +156,14 @@ public class Product {
 		} else if (!commercialCode.equals(other.commercialCode))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Product [code=" + code + ", commercialCode=" + commercialCode + ", applicability=" + applicability
+				+ ", description=" + description + ", line=" + line + ", acronymLine=" + acronymLine + ", stock="
+				+ stock + ", commercialBlock=" + commercialBlock + ", image=" + image + ", priceData=" + priceData
+				+ ", productTechDetail=" + productTechDetail + ", link=" + link + "]";
 	}
 
 }

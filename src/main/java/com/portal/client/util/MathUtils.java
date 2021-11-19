@@ -9,28 +9,8 @@ public class MathUtils {
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * unitValue * quantity
-	 * 
-	 * @param quantity
-	 * @param unitValue
-	 * @return
-	 */
-	public static BigDecimal calculateTotalValueOverQuantity(BigDecimal quantity, Number unitValue) {
-		return new BigDecimal(unitValue.doubleValue()).multiply(quantity);
-	}
-
-	/**
-	 * unitValue * quantity
-	 * 
-	 * @param quantity
-	 * @param unitValue
-	 * @return
-	 */
-	public static BigDecimal calculateTotalValueOverQuantity(int quantity, Number unitValue) {
-		return new BigDecimal(unitValue.doubleValue()).multiply(new BigDecimal(quantity));
-	}
-
+	
+	
 	public static BigDecimal findHwManyPercentsYCorrespondsOverX(Number y, Number x) {
 		BigDecimal ratioOfYOverX = new BigDecimal(y.doubleValue()).divide(new BigDecimal(x.doubleValue()));
 		return ratioOfYOverX.multiply(new BigDecimal(100));
@@ -59,5 +39,6 @@ public class MathUtils {
 				new BigDecimal(percentage.doubleValue()), value);
 		return value.add(percentageValueOverWhole);
 	}
+
 
 }

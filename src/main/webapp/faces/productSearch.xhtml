@@ -126,14 +126,14 @@ div.container {
 				<div class="p-field">
 					<h:form>
 						<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}<strong>(*
-								#{searchProductController.product.value.multiple})</strong>
+								#{searchProductController.product.priceData.multiple})</strong>
 						</p:outputLabel>
 						<p:spinner id="quantity"
 							value="#{searchProductController.newQuantity}"
-							stepFactor="#{searchProductController.product.value.multiple}"
+							stepFactor="#{searchProductController.product.priceData.multiple}"
 							onblur="calcQuantity()" />
 						<p:tooltip for="quantity" 
-							value="Entre com algum número múltiplo de #{searchProductController.product.value.multiple}" position="bottom"/>
+							value="Entre com algum número múltiplo de #{searchProductController.product.priceData.multiple}" position="bottom"/>
 						<p:remoteCommand name="calcQuantity" process="@this,quantity"
 							action="#{searchProductController.onQuantityChange}"
 							update="vLiquid,vGross,vSt" />
@@ -144,21 +144,21 @@ div.container {
 					<div class="p-field p-col">
 						<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
 						<p:inputNumber id="vLiquid"
-							value="#{searchProductController.product.value.totalValue}"
+							value="#{searchProductController.product.priceData.totalValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
 							thousandSeparator="." readonly="true" />
 					</div>
 					<div class="p-field p-col">
 						<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
 						<p:inputNumber id="vGross"
-							value="#{searchProductController.product.value.totalGrossValue}"
+							value="#{searchProductController.product.priceData.totalGrossValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
 							thousandSeparator="." readonly="true" />
 					</div>
 					<div class="p-field p-col">
 						<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
 						<p:inputNumber id="vSt"
-							value="#{searchProductController.product.value.totalStValue}"
+							value="#{searchProductController.product.priceData.totalStValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
 							thousandSeparator="." readonly="true" />
 					</div>

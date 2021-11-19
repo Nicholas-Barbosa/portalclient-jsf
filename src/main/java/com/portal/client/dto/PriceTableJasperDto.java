@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
+import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTable;
 
 public class PriceTableJasperDto {
 

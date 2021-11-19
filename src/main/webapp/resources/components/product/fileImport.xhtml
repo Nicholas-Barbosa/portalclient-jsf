@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
+	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+</h:head>
+
+<composite:interface>
+
+	<composite:attribute name="customerCode" required="true"
+		type="java.lang.String" />
+
+	<composite:attribute name="customerStore" required="true"
+		type="java.lang.String" />
+</composite:interface>
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<h:form prependId="false">
+			<p:wizard flowListener="#{productFileImportComponent.onFlowProcess}"
+				showNavBar="true" showStepStatus="true" onnext="console.log(event)">
+				<p:tab id="file" title="Arquivo">
+					<p:fileUpload mode="advanced" dragDropSupport="true"
+						allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
+						label="Escolher"
+						listener="#{productFileImportComponent.handleFileUpload}"
+						process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
+				</p:tab>
+				<p:tab id="setFileLayout" title="Layout do arquivo">
+					<p:panelGrid columns="4"
+						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+						style="border:0px none; background-color:transparent;"
+						id="pnFileLayout">
+						<p:outputLabel for="@next"
+							value="Posição de ínicio para lista de itens" />
+						<p:spinner
+							value="#{productFileImportComponent.fileLayout.initPosition}" />
+
+						<p:outputLabel for="@next"
+							value="Última posição para lista de itens" />
+						<p:spinner
+							value="#{productFileImportComponent.fileLayout.lastPosition}" />
+
+						<p:row style="font-weight: bold">
+           Posições das colunas/células relevantes ao produto
+        </p:row>
+
+						<p:outputLabel for="@next" value="Código" />
+						<p:spinner
+							value="#{productFileImportComponent.fileLayout.offSetCellForProductCode}" />
+
+						<p:outputLabel for="@next" value="Quantidade" />
+						<p:spinner
+							value="#{productFileImportComponent.fileLayout.offSetCellForProductQuantity}" />
+
+						<p:row>
+							<p:column styleClass="ui-grid-col-12">
+								<p:commandButton value="Examinar" styleClass="p-mr-2"
+									style="width: auto" process="pnFileLayout"
+									action="#{itemImportController.readFile}"
+									onstart="PF('dlgImporting').show()"
+									oncomplete="PF('dlgImporting').hide()" />
+
+							</p:column>
+						</p:row>
+					</p:panelGrid>
+				</p:tab>
+				<p:tab id="readProjection" title="Projeção">
+					<div>
+						<p:dataTable id="dtProjection" widgetVar="dtProjection"
+							value="#{productFileImportComponent.productsProjection}"
+							var="product" editable="true" editMode="cell" reflow="true"
+							scrollable="true" filterDelay="75" paginator="true"
+							paginatorPosition="bottom" paginatorAlwaysVisible="false"
+							rows="10">
+							<p:ajax event="cellEdit"
+								listener="#{itemImportController.onCellEdit}" update="growl" />
+							<p:column headerText="Produto" filterBy="#{product.code}"
+								id="columnCode">
+								<p:cellEditor>
+									<f:facet name="input">
+										<p:inputText value="#{product.code}" />
+									</f:facet>
+									<f:facet name="output">
+										<h:outputText value="#{product.code}" />
+									</f:facet>
+								</p:cellEditor>
+
+							</p:column>
+							<p:column headerText="Quantidade" id="columnQuantity">
+								<p:cellEditor>
+									<f:facet name="input">
+										<p:spinner value="#{product.quantity}" min="1" />
+									</f:facet>
+									<f:facet name="output">
+										<h:outputText value="#{product.quantity}" />
+									</f:facet>
+								</p:cellEditor>
+							</p:column>
+							<p:column style="width:3rem">
+								<p:commandButton icon="pi pi-times"
+									styleClass="rounded-button ui-button-danger"
+									action="#{itemImportController.removeItemXlsxProjection(item)}"
+									process="@this"
+									oncomplete="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();" />
+							</p:column>
+						</p:dataTable>
+					</div>
+				</p:tab>
+			</p:wizard>
+		</h:form>
+	</div>
+</composite:implementation>
+
+</html>

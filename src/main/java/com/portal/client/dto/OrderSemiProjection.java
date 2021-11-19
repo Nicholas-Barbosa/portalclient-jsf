@@ -8,18 +8,19 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class OrderSemiProjection extends OrderPersisted {
 
-	private String customerCode, customerStore, customerName;
+	private String customerCode, customerStore, customerName,invoice;
 	private LocalDate createdAt;
 
 	@JsonbCreator
 	public OrderSemiProjection(@JsonbProperty("order_code") String code,
 			@JsonbProperty("client_code") String customerCode, @JsonbProperty("store") String customerStore,
-			@JsonbProperty("cliente_name") String customerName, @JsonbProperty("creation_date") String createdAt) {
+			@JsonbProperty("cliente_name") String customerName, @JsonbProperty("creation_date") String createdAt,@JsonbProperty("invoice_key") String invoice) {
 		super(code);
 		this.customerCode = customerCode;
 		this.customerStore = customerStore;
 		this.customerName = customerName;
 		this.createdAt = convertToDate(createdAt);
+		this.invoice = invoice== null || invoice.isBlank() ? null : invoice;
 	}
 
 	private final LocalDate convertToDate(String str) {
@@ -40,6 +41,10 @@ public class OrderSemiProjection extends OrderPersisted {
 
 	public LocalDate getCreatedAt() {
 		return createdAt;
+	}
+	
+	public String getInvoice() {
+		return invoice;
 	}
 
 	@Override

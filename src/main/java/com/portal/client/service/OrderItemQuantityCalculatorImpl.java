@@ -8,8 +8,8 @@ import javax.inject.Inject;
 
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.vo.Item;
-import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.ProductPriceData;
 
 @ApplicationScoped
 public class OrderItemQuantityCalculatorImpl implements OrderItemQuantityCalculator, Serializable {
@@ -23,17 +23,18 @@ public class OrderItemQuantityCalculatorImpl implements OrderItemQuantityCalcula
 
 	@Override
 	public void calc(Order order, Item item, int quantity) throws ItemQuantityNotAllowed {
-		ItemValue itemValue = item.getValue();
+		ProductPriceData productPriceData = item.getProduct().getPriceData();
 
-		BigDecimal oldTotalValue = itemValue.getTotalValue();
-		BigDecimal oldTotalGrossValue = itemValue.getTotalGrossValue();
-		BigDecimal oldTotalStValue = itemValue.getTotalStValue();
+		BigDecimal oldTotalValue = productPriceData.getTotalValue();
+		BigDecimal oldTotalGrossValue = productPriceData.getTotalGrossValue();
+		BigDecimal oldTotalStValue = productPriceData.getTotalStValue();
 
 		itemService.calculateDueQuantity(item, quantity);
 
-		order.setGrossValue(order.getGrossValue().subtract(oldTotalGrossValue).add(itemValue.getTotalGrossValue()));
-		order.setLiquidValue(order.getLiquidValue().subtract(oldTotalValue).add(itemValue.getTotalValue()));
-		order.setStValue(order.getStValue().subtract(oldTotalStValue).add(itemValue.getTotalStValue()));
+		order.setGrossValue(
+				order.getGrossValue().subtract(oldTotalGrossValue).add(productPriceData.getTotalGrossValue()));
+		order.setLiquidValue(order.getLiquidValue().subtract(oldTotalValue).add(productPriceData.getTotalValue()));
+		order.setStValue(order.getStValue().subtract(oldTotalStValue).add(productPriceData.getTotalStValue()));
 
 	}
 

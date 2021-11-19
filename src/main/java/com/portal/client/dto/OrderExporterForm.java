@@ -1,11 +1,11 @@
 package com.portal.client.dto;
 
-import com.portal.client.service.export.OrderExportType;
+import com.portal.client.service.export.BudgetExportType;
 
 public class OrderExporterForm {
 
 	private String fileName;
-	private OrderExportType type;
+	private BudgetExportType type;
 
 	public String getFileName() {
 		return fileName;
@@ -15,11 +15,11 @@ public class OrderExporterForm {
 		this.fileName = fileName;
 	}
 
-	public OrderExportType getType() {
+	public BudgetExportType getType() {
 		return type;
 	}
 
-	public void setType(OrderExportType type) {
+	public void setType(BudgetExportType type) {
 		this.type = type;
 	}
 

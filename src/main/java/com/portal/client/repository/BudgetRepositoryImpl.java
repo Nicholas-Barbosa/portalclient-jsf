@@ -2,7 +2,6 @@ package com.portal.client.repository;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,21 +9,15 @@ import java.util.concurrent.Future;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
 import com.portal.client.cdi.aop.OptionalEmptyRepository;
-import com.portal.client.dto.BudgetEstimatedResultBuilder;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.BudgetToUpdateDTO;
-import com.portal.client.dto.FormToEstimateBudget;
-import com.portal.client.dto.ItemToFindPrice;
-import com.portal.client.exception.CustomerNotFoundException;
-import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.security.api.helper.APIHelper;
 import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;
@@ -49,8 +42,7 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	}
 
 	@Inject
-	public BudgetRepositoryImpl(TokenedRestClient restClient, JsonbService jsonbService,
-			APIHelper protheusApiHelper) {
+	public BudgetRepositoryImpl(TokenedRestClient restClient, JsonbService jsonbService, APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
 		this.jsonbService = jsonbService;
@@ -68,39 +60,21 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 
 	@Override
 	public void save(Budget budget) {
-		BudgetSavedResponse response = restClient.post(protheusApiHelper.buildEndpoint("budgets"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), BudgetSavedResponse.class, null, null,
+		BudgetSavedResponse response = restClient.post(protheusApiHelper.buildEndpoint("budgets"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), BudgetSavedResponse.class, null, null,
 				BudgetToSaveJsonSerializable.of(budget), MediaType.APPLICATION_JSON);
 		budget.setCode(response.getCode());
 	}
 
 	@Override
 	public Optional<BudgetFullProjection> findByCode(String code) {
-		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("budgets/{code}"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), BudgetFullProjection.class,null,Map.of("code",code), MediaType.APPLICATION_JSON));
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("budgets/{code}"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), BudgetFullProjection.class, null,
+				Map.of("code", code), MediaType.APPLICATION_JSON));
 
 	}
 
-	@Override
-	public Budget estimate(String customerCode, String customerStore, Set<ItemToFindPrice> items)
-			throws CustomerNotFoundException, ItemsNotFoundException {
-
-		FormToEstimateBudget toEstimate = new FormToEstimateBudget(customerCode, customerStore, items);
-		try {
-			BudgetEstimatedResultBuilder budgetBuilder = restClient.post(protheusApiHelper.buildEndpoint("estimate"),
-					protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), BudgetEstimatedResultBuilder.class, null,
-					null, toEstimate, "application/json");
-			return budgetBuilder.build();
-		} catch (NotFoundException e) {
-			Deseriaized404JsonEstimateEndpoint notFoundCause = deserializeJson404FromEstimateEndpoint(
-					e.getResponse().getEntity() + "");
-			if (notFoundCause.isOkWithCustomer())
-				throw new CustomerNotFoundException(notFoundCause.getCustomerError());
-			throw new ItemsNotFoundException(notFoundCause.getItemErrors());
-
-		}
-	}
-
+	
 	private Deseriaized404JsonEstimateEndpoint deserializeJson404FromEstimateEndpoint(String json) {
 		ExecutorService executor = null;
 		try {

@@ -20,7 +20,8 @@ public class Order {
 	private List<Item> items;
 	private LocalDate createdAt;
 	private RepresentativeUser representative;
-
+	private Invoice invoice;
+	
 	public Order() {
 	}
 
@@ -156,7 +157,15 @@ public class Order {
 	public void setRepresentative(RepresentativeUser representative) {
 		this.representative = representative;
 	}
+	
+	public Invoice getInvoice() {
+		return invoice;
+	}
 
+	public void setInvoice(Invoice invoice) {
+		this.invoice = invoice;
+	}
+	
 	public boolean removeItems(List<Item> itemsToCompareAndRemove) {
 		return items.removeAll(itemsToCompareAndRemove);
 	}

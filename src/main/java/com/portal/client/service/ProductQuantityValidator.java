@@ -1,9 +1,9 @@
 package com.portal.client.service;
 
-import com.portal.client.dto.ProductValue;
+import com.portal.client.vo.ProductPriceData;
 
 public interface ProductQuantityValidator {
 
-	boolean validate(ProductValue product);
+	boolean validate(ProductPriceData product);
 
 }

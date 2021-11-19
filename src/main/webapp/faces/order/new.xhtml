@@ -5,9 +5,8 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
 	xmlns:c="http://java.sun.com/jsf/composite/components/customer"
-	xmlns:order="http://java.sun.com/jsf/composite/components/order">
+	xmlns:o="http://java.sun.com/jsf/composite/components/order">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -136,7 +135,7 @@
 			</div>
 
 			<div>
-				<ic:itemDtableComponent order="#{newOrderController.order}"
+				<o:itemsPanel order="#{newOrderController.order}"
 					id="itemsComponent" />
 			</div>
 
@@ -232,10 +231,11 @@
 
 			</p:sidebar>
 			<p:dialog header="Cliente" modal="true"
-				widgetVar="dlgCustomerDetails" responsive="true"
-				style="max-width:60vw;">
-				<c:detailPanel id="customerDetailComponent"
-					customer="#{newOrderController.order.customerOnOrder}" />
+				widgetVar="dlgCustomerDetails" responsive="true">
+				<div style="max-width: 60vw; max-height: 70vh; overflow-y: auto">
+					<c:detailPanel id="customerDetailComponent"
+						customer="#{newOrderController.order.customerOnOrder}" />
+				</div>
 			</p:dialog>
 			<style type="text/css">
 .cheap {

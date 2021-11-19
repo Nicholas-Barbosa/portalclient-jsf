@@ -19,6 +19,6 @@ public class ItemBudgetToUpdateJsonSerializable extends ItemBudgetToSaveJsonSeri
 
 	@JsonbProperty("unit_gross_value")
 	public BigDecimal getUnitGrossValue() {
-		return super.getItem().getValue().getUnitGrossValue();
+		return super.getPriceData().getUnitGrossValue();
 	}
 }

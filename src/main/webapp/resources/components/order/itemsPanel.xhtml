@@ -4,7 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:composite="http://java.sun.com/jsf/composite">
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:product="http://java.sun.com/jsf/composite/components/product">
 <h:head>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
@@ -17,7 +18,7 @@
 		type="com.portal.client.vo.Order" />
 	<composite:attribute name="renderDiscountButton"
 		shortDescription="Conditionaly render menu button for discount"
-		type="java.lang.Boolean" default="true" />
+		type="java.lang.Boolean" default="false" />
 	<composite:attribute name="block"
 		shortDescription="Conditionaly activate UI Block"
 		type="java.lang.Boolean" default="true" />
@@ -50,15 +51,9 @@
 								<h4>Adicionando produto e calculando totais...</h4>
 							</p:sidebar>
 						</p:commandButton>
-						<p:commandButton
-							value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+						<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 							icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-							action="#{itemImportShowController.show(cc.attrs.order)}"
-							process="@this">
-							<p:ajax event="dialogReturn"
-								listener="#{itemOrderContainerController.handleItemImportReturn}"
-								update="@obs(newItem),#{cc.clientId}:panelTotals" />
-						</p:commandButton>
+							onclick="PF('dlgImportProducts').show();" />
 						<p:menuButton
 							value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 							rendered="#{cc.attrs.renderDiscountButton}" styleClass="p-mr-2">
@@ -114,6 +109,7 @@
 						<p:skeleton width="4rem" height="2rem" />
 					</div>
 				</div>
+				
 				<p:dataTable var="item" value="#{cc.attrs.order.items}" id="dtItems"
 					widgetVar="dtItems" editable="true" scrollable="true" size="small"
 					filterDelay="100"
@@ -160,17 +156,17 @@
 
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('quantidade')}"
-						sortBy="#{item.value.quantity}">
+						sortBy="#{item.product.priceData.quantity}">
 						<p:cellEditor>
 							<f:facet name="output">
-								<h:outputText value="#{item.value.quantity}" />
+								<h:outputText value="#{item.product.priceData.quantity}" />
 							</f:facet>
 							<f:facet name="input">
 								<p:spinner
 									value="#{itemOrderContainerController.onRowItemQuantity}"
 									style="width:100%" label="Quantidade" id="spnQ" />
 								<p:tooltip
-									value="Entre com um número múltiplo de #{item.value.multiple}"
+									value="Entre com um número múltiplo de #{item.product.priceData.multiple}"
 									for="spnQ" />
 							</f:facet>
 						</p:cellEditor>
@@ -178,67 +174,38 @@
 					</p:column>
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('valor_unitario')}"
-						sortBy="#{item.product.value.unitValue}">
-						<h:outputText value="#{item.product.value.unitValue}">
+						sortBy="#{item.product.priceData.unitValue}">
+						<h:outputText value="#{item.product.priceData.unitValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('valor')}"
-						sortBy="#{item.value.getTotalValueWithoutDiscount()}">
-						<h:outputText value="#{item.value.getTotalValueWithoutDiscount()}">
+						sortBy="#{item.product.priceData.totalValue}">
+						<h:outputText value="#{item.product.priceData.totalValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('total_st')}"
-						sortBy="#{item.value.getTotalStValueWithoutDiscount()}">
+						sortBy="#{item.product.priceData.totalStValue}">
 						<h:outputText
-							value="#{item.value.getTotalStValueWithoutDiscount()}">
+							value="#{item.product.priceData.totalStValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('valor_bruto')}"
-						sortBy="#{item.value.getTotalGrossWithoutDiscount()}">
-						<h:outputText value="#{item.value.getTotalGrossWithoutDiscount()}">
+						sortBy="#{item.product.priceData.totalGrossValue}">
+						<h:outputText value="#{item.product.priceData.totalGrossValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
-					<p:column
-						headerText="#{resourceBundleServiceImpl.getMessage('desc_linha')}"
-						sortBy="#{item.value.lineDiscount}">
-						<h:outputText value="#{item.value.lineDiscount}">
-							<f:convertNumber currencySymbol="R$" type="currency"
-								locale="pt_BR" />
-						</h:outputText>
-					</p:column>
-					<p:column
-						headerText="#{resourceBundleServiceImpl.getMessage('total_cm_desc')}"
-						sortBy="#{item.value.totalValue}">
-						<h:outputText value="#{item.value.totalValue}">
-							<f:convertNumber currencySymbol="R$" type="currency"
-								locale="pt_BR" />
-						</h:outputText>
-					</p:column>
-					<p:column headerText="ST" sortBy="#{item.value.totalStValue}">
-						<h:outputText value="#{item.value.totalStValue}">
-							<f:convertNumber currencySymbol="R$" type="currency"
-								locale="pt_BR" />
-						</h:outputText>
-					</p:column>
-					<p:column
-						headerText="#{resourceBundleServiceImpl.getMessage('bruto_cm_desc')}"
-						sortBy="#{item.value.totalGrossValue}">
-						<h:outputText value="#{item.value.totalGrossValue}">
-							<f:convertNumber currencySymbol="R$" type="currency"
-								locale="pt_BR" />
-						</h:outputText>
-					</p:column>
+					
 					<p:column style="width:4rem">
 						<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
 							saveTitle="Save Row" />
@@ -286,7 +253,7 @@
 								<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
 								<div class="p-text-normal p-mb-1">#{item.product.description}</div>
 								<div class="p-text-normal p-mb-1">Quantidade múltiplo de
-									#{item.value.multiple}</div>
+									#{item.product.priceData.multiple}</div>
 								<div id="div-stock-wrapper">
 									<div id="div-loading-stock-#{item.product.commercialCode}"
 										style="display: none">
@@ -434,6 +401,14 @@
 
 	</p:confirmDialog>
 
+	<p:dialog header="Importar produtos" modal="true"
+		widgetVar="dlgImportProducts">
+
+		<product:fileImport
+			customerCode="#{cc.attrs.order.customerOnOrder.code}"
+			customerStore="#{cc.attrs.order.customerOnOrder.store}" />
+
+	</p:dialog>
 
 
 </composite:implementation>

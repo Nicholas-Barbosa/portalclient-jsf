@@ -14,11 +14,11 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-import com.portal.client.dto.ItemXlsxFileLayout;
-import com.portal.client.dto.ItemXlsxProjection;
+import com.portal.client.dto.ProductXlsxFileReadLayout;
+import com.portal.client.dto.ProductXlsxFileReadProjection;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
-import com.portal.client.service.ItemImportService;
+import com.portal.client.service.ProductImporter;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.vo.Budget;
@@ -37,11 +37,11 @@ public class ItemImportController implements Serializable {
 
 	private boolean onDialog;
 
-	private ItemXlsxFileLayout itemFileLayout;
+	private ProductXlsxFileReadLayout itemFileLayout;
 
-	private List<ItemXlsxProjection> itemXlsxProjection;
+	private List<ProductXlsxFileReadProjection> itemXlsxProjection;
 
-	private ItemImportService itemImporter;
+	private ProductImporter itemImporter;
 
 	private Item404Error[] itemsNotFound;
 
@@ -50,10 +50,10 @@ public class ItemImportController implements Serializable {
 	private ProcessingExceptionFacesMessageHelper prossExceptionMessageShower;
 
 	@Inject
-	public ItemImportController(ItemImportService itemImporter,
+	public ItemImportController(ProductImporter itemImporter,
 			ProcessingExceptionFacesMessageHelper prossExceptionMessageShower) {
 		this.itemImporter = itemImporter;
-		this.itemFileLayout = new ItemXlsxFileLayout();
+		this.itemFileLayout = new ProductXlsxFileReadLayout();
 		this.itemFileLayout.setInitPosition(1);
 		this.itemFileLayout.setOffSetCellForProductCode(1);
 		this.itemFileLayout.setOffSetCellForProductQuantity(2);
@@ -114,7 +114,7 @@ public class ItemImportController implements Serializable {
 
 	}
 
-	public void removeItemXlsxProjection(ItemXlsxProjection item) {
+	public void removeItemXlsxProjection(ProductXlsxFileReadProjection item) {
 		if (this.itemXlsxProjection.remove(item)) {
 			if (itemXlsxProjection.size() == 0) {
 				PrimeFaces.current().executeScript("PF('dlgResult').hide()");
@@ -144,11 +144,11 @@ public class ItemImportController implements Serializable {
 		this.customerStore = customerStore;
 	}
 
-	public ItemXlsxFileLayout getItemFileLayout() {
+	public ProductXlsxFileReadLayout getItemFileLayout() {
 		return itemFileLayout;
 	}
 
-	public List<ItemXlsxProjection> getItemXlsxProjection() {
+	public List<ProductXlsxFileReadProjection> getItemXlsxProjection() {
 		return itemXlsxProjection;
 	}
 

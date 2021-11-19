@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:ic="http://java.sun.com/jsf/composite/components/item"
+	xmlns:o="http://java.sun.com/jsf/composite/components/order"
 	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
 
 	<ui:define name="head">
@@ -45,7 +45,7 @@
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
 								icon="pi pi-file" styleClass="p-mr-2"
-								action="#{newBudgetOrderController.newBudget}"
+								action="#{newBudgetController.newBudget}"
 								update="customerForm itemsComponent:panelItems">
 								<p:confirm type="popup"
 									header="#{resourceBundleServiceImpl.getMessage('confirmacao')}"
@@ -53,13 +53,13 @@
 									icon="pi pi-info-circle" />
 							</p:commandButton>
 
-							<p:commandButton action="#{newBudgetOrderController.validBudget}"
+							<p:commandButton action="#{newBudgetController.validBudget}"
 								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
 								icon="pi pi-check" styleClass="ui-button-success " />
 							<i class="pi pi-bars p-px-2" />
 							<p:commandButton title="Print" icon="pi pi-print"
 								styleClass="ui-button-success p-mr-2"
-								action="#{budgetExporterShowController.show(newBudgetOrderController.budget)}"
+								action="#{budgetExporterShowController.show(newBudgetController.budget)}"
 								process="@this" />
 
 							<p:button
@@ -82,11 +82,11 @@
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 							<div class="ui-inputgroup">
 								<p:inputText
-									value="#{newBudgetOrderController.budget.customerOnOrder.name}-#{newBudgetOrderController.budget.customerOnOrder.store}"
+									value="#{newBudgetController.budget.customerOnOrder.name}-#{newBudgetController.budget.customerOnOrder.store}"
 									readonly="true" />
 								<p:button icon="pi pi-search" styleClass="ui-button-warning"
 									onclick="PF('dlgSearchCustomer').show()"
-									disabled="#{not empty newBudgetOrderController.budget.items}"
+									disabled="#{not empty newBudgetController.budget.items}"
 									id="btnShowSearchCustomer">
 									<p:autoUpdate on="eventAddItem" />
 								</p:button>
@@ -96,14 +96,14 @@
 						<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 							<p:outputLabel value="CNPJ" for="cnpj" />
 							<p:inputMask
-								value="#{newBudgetOrderController.budget.customerOnOrder.cnpj}"
+								value="#{newBudgetController.budget.customerOnOrder.cnpj}"
 								readonly="true" id="cnpj" mask="99.999.999/9999-99" />
 						</div>
 						<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
 							<p:outputLabel for="endereco"
 								value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 							<p:inputText id="endereco"
-								value="#{newBudgetOrderController.budget.customerOnOrder.street}, #{newBudgetOrderController.budget.customerOnOrder.city} - #{newBudgetOrderController.budget.customerOnOrder.state}"
+								value="#{newBudgetController.budget.customerOnOrder.street}, #{newBudgetController.budget.customerOnOrder.city} - #{newBudgetController.budget.customerOnOrder.state}"
 								readonly="true" />
 						</div>
 						<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
@@ -111,17 +111,17 @@
 								value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 								for="pTerms" />
 							<p:inputText
-								value="#{newBudgetOrderController.budget.customerOnOrder.financialInfo.paymentTerms}"
+								value="#{newBudgetController.budget.customerOnOrder.financialInfo.paymentTerms}"
 								readonly="true" id="pTerms" />
 						</div>
 
 						<ui:fragment
-							rendered="#{newBudgetOrderController.budget.customerOnOrder.type eq 'PROSPECT'}">
+							rendered="#{newBudgetController.budget.customerOnOrder.type eq 'PROSPECT'}">
 
 							<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
 								<p:outputLabel value="Vendedor" for="sellerType" />
 								<p:inputText
-									value="#{newBudgetOrderController.budget.customerOnOrder.sellerType}"
+									value="#{newBudgetController.budget.customerOnOrder.sellerType}"
 									readonly="true" id="sellerType" />
 							</div>
 
@@ -129,7 +129,7 @@
 						<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
 							<p:outputLabel for="mensagem" value="Mensagem" />
 							<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-								value="#{newBudgetOrderController.budget.message}"
+								value="#{newBudgetController.budget.message}"
 								onchange="saveMessage();" />
 						</div>
 						<p:remoteCommand name="saveMessage" process="@this,@form:mensagem"
@@ -140,9 +140,8 @@
 				</h:form>
 			</div>
 			<div>
-
-				<ic:itemDtableComponent order="#{newBudgetOrderController.budget}"
-					renderDiscountButton="true" id="itemsComponent" />
+				<o:itemsPanel order="#{newBudgetController.budget}"
+					renderDiscountButton="false" id="itemsComponent" />
 
 			</div>
 
@@ -164,13 +163,13 @@
 									<div class="p-field">
 										<div class="ui-inputgroup">
 											<p:inputText type="text" placeholder="keyword"
-												value="#{newBudgetOrderController.cNameToSearch}"
-												required="true" id="cName" />
+												value="#{newBudgetController.cNameToSearch}" required="true"
+												id="cName" />
 
 											<p:commandButton icon="pi pi-search"
-												action="#{customerSearchShowController.show(newBudgetOrderController.cNameToSearch)}">
+												action="#{customerSearchShowController.show(newBudgetController.cNameToSearch)}">
 												<p:ajax event="dialogReturn"
-													listener="#{newBudgetOrderController.handleCustomerResult}"
+													listener="#{newBudgetController.handleCustomerResult}"
 													update=":customerDetailComponent" />
 											</p:commandButton>
 										</div>
@@ -183,7 +182,7 @@
 						</p:tab>
 
 						<p:tab title="PROSPECT">
-							<c:prospectForm order="#{newBudgetOrderController.budget}"
+							<c:prospectForm order="#{newBudgetController.budget}"
 								update=":customerForm,budgetToolsForm"
 								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
 						</p:tab>
@@ -199,7 +198,7 @@
 			</p:confirmPopup>
 
 			<p:remoteCommand name="cleanBudgetObj"
-				action="#{newBudgetOrderController.newBudget}" process="@this"
+				action="#{newBudgetController.newBudget}" process="@this"
 				update="customerForm, :itemsComponent" />
 
 			<p:dialog widgetVar="dlgBudgetPersistForm" modal="true"
@@ -210,16 +209,16 @@
 						<div class="p-field p-col">
 							<label for="pR">#{resourceBundleServiceImpl.getMessage('pedido_representante')}</label>
 							<p:inputText id="pR" type="text"
-								value="#{newBudgetOrderController.customerRepresentativeOrderForm.representativeOrder}" />
+								value="#{newBudgetController.customerRepresentativeOrderForm.representativeOrder}" />
 						</div>
 						<div class="p-field p-col">
 							<label for="pC">#{resourceBundleServiceImpl.getMessage('pedido_cliente')}</label>
 							<p:inputText id="pC" type="text"
-								value="#{newBudgetOrderController.customerRepresentativeOrderForm.customerOrder}" />
+								value="#{newBudgetController.customerRepresentativeOrderForm.customerOrder}" />
 						</div>
 					</div>
 					<p:commandButton icon="pi pi-check" styleClass="ui-button-success"
-						process="@this,@form" action="#{newBudgetOrderController.save}"
+						process="@this,@form" action="#{newBudgetController.save}"
 						onstart="PF('persistingBudget').show();PF('dlgBudgetPersistForm').hide();"
 						oncomplete="onCompletePersistBudget()" />
 				</h:form>
@@ -242,14 +241,14 @@
 					<div class="p-col">
 						<div class="box">
 							<p:staticMessage severity="info" summary="Salvo com sucesso!"
-								detail="Orçamento de número #{newBudgetOrderController.budget.code}"
+								detail="Orçamento de número #{newBudgetController.budget.code}"
 								style="width: 100%" id="successPersisted" />
 						</div>
 					</div>
 					<div class="p-col">
 						<div class="box">
 							<p:commandButton value="OK"
-								action="#{newBudgetOrderController.newBudget}" process="@this"
+								action="#{newBudgetController.newBudget}" process="@this"
 								update="customerForm, itemsComponent" styleClass="p-mr-2 p-mb-2"
 								oncomplete="PF('persistingBudget').hide()" />
 							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star"
@@ -262,10 +261,11 @@
 				<h4>Adicionado produto ao orçamento e calculando totais...</h4>
 			</p:sidebar>
 			<p:dialog header="Cliente" modal="true"
-				widgetVar="dlgCustomerDetails" responsive="true"
-				style="max-width:60vw;">
-				<c:detailPanel id="customerDetailComponent"
-					customer="#{newBudgetOrderController.budget.customerOnOrder}" />
+				widgetVar="dlgCustomerDetails" responsive="true">
+				<div style="max-width: 60vw; max-height: 70vh; overflow-y: auto">
+					<c:detailPanel id="customerDetailComponent"
+						customer="#{newBudgetController.budget.customerOnOrder}" />
+				</div>
 
 			</p:dialog>
 			<style type="text/css">

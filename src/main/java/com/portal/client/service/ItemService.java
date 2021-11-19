@@ -1,11 +1,5 @@
 package com.portal.client.service;
 
-import java.math.BigDecimal;
-import java.util.Collection;
-
-import javax.validation.constraints.NotNull;
-
-import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.vo.Item;
 
@@ -23,11 +17,11 @@ public interface ItemService {
 	 * 
 	 * @param item
 	 */
-	void applyGlobalDiscount(@NotNull Collection<? extends Item> items, BigDecimal discount);
-
-	void applyGlobalDiscount(Item items, BigDecimal discount);
-
-	void applyLineDiscount(@NotNull Collection<? extends Item> items, ItemLineDiscountForm itemLineDiscount);
+//	void applyGlobalDiscount(@NotNull Collection<? extends Item> items, BigDecimal discount);
+//
+//	void applyGlobalDiscount(Item items, BigDecimal discount);
+//
+//	void applyLineDiscount(@NotNull Collection<? extends Item> items, ItemLineDiscountForm itemLineDiscount);
 
 	boolean checkQuantityPolicies(Item item, int quantity);
 }

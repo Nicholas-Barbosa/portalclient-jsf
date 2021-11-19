@@ -4,32 +4,22 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import com.portal.client.dto.BudgetJasperForm;
 import com.portal.client.security.user.RepresentativeUser.SaleType;
+import com.portal.client.service.export.jasper.service.JasperReportType;
+import com.portal.client.service.export.jasper.service.SimpleJasperServiceFactory;
 
 import net.sf.jasperreports.engine.JRParameter;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
-@Singleton
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@ApplicationScoped
 public class BudgetReportImpl implements BudgetReport {
 
-	@EJB
-	private JasperService reportService;
-
-	public BudgetReportImpl() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public BudgetReportImpl(JasperService reportService) {
-		super();
-		this.reportService = reportService;
-	}
+	@Inject
+	private SimpleJasperServiceFactory factory;
 
 	@Override
 	public byte[] process(BudgetJasperForm form, JasperReportType type) {
@@ -37,14 +27,7 @@ public class BudgetReportImpl implements BudgetReport {
 		Map<String, Object> params = this.configureLayout(form.getSellertype());
 		params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
 		params.put("itemsCollection", new JRBeanCollectionDataSource(data.getItems()));
-		switch (type) {
-		case PDF:
-			return reportService.exportToPdf(getClass().getResourceAsStream("/report/budget.jasper"), params, data);
-		case EXCEL:
-			return reportService.exportToExcel(getClass().getResourceAsStream("/report/budget.jasper"), params, data);
-		default:
-			throw new IllegalArgumentException("Invalid type. Only PDF and EXCEL are supported by this service!");
-		}
+		return factory.getService(type).export(getClass().getResourceAsStream("/report/budget.jasper"), params, data);
 	}
 
 	private String getLogo(SaleType type) {
@@ -76,7 +59,7 @@ public class BudgetReportImpl implements BudgetReport {
 			case CARROS:
 				return String.format(title, "Autopeças");
 			default:
-				throw new IllegalArgumentException(type+" not recongnized");
+				throw new IllegalArgumentException(type + " not recongnized");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

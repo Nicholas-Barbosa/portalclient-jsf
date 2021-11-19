@@ -1,12 +1,9 @@
 package com.portal.client.service;
 
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 
 import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ItemLineDiscountForm;
-import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 
@@ -38,11 +35,11 @@ public interface OrderCommonBehaviorHelper {
 	 * @param budget
 	 * @param discount
 	 */
-	void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed;
+//	void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed;
 
 	void merge(Order mixedBudget, Order budgetToMix);
 
-	void lineDiscount(Order order, ItemLineDiscountForm form);
+//	void lineDiscount(Order order, ItemLineDiscountForm form);
 
 	void removeItems(Order order, List<Item> itemsToCompareAndRemove);
 

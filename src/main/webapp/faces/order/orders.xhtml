@@ -8,6 +8,13 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+		<style type="text/css">
+.invoiced {
+	background-color: #54a90a !important;
+	background-image: none !important;
+	color: #ffffff !important;
+}
+</style>
 	</ui:define>
 
 	<ui:define name="title">#{resourceBundleServiceImpl.getMessage('pedidos')}</ui:define>
@@ -37,14 +44,13 @@
 						<p:dataTable id="dtOrders" widgetVar="dtOrders" var="order"
 							value="#{ordersController.orders}" paginator="true"
 							paginatorPosition="bottom" rows="#{ordersController.pageSize}"
-							scrollable="true" lazy="true" reflow="true">
+							scrollable="true" lazy="true" reflow="true"
+							rowStyleClass="#{order.invoice !=null ? 'invoiced' : null}">
 							<p:ajax event="page" listener="#{ordersController.onPage}"
 								onstart="$('#divLoading').show();$('#divListContent').hide();"
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('pedido')}">
-								<h:outputText value="#{order.code}" />
-							</p:column>
+
+							<p:column field="code" sortable="false" filterable="false" />
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
 								<h:outputText value="#{order.createdAt}">
@@ -57,9 +63,10 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
 								<h:outputText value="#{order.customerName}" />
 							</p:column>
+							<p:column field="invoice" sortable="false" filterable="false" />
 							<p:column>
-								<p:linkButton outcome="edit"
-									includeViewParams="true" icon="pi pi-star">
+								<p:linkButton outcome="edit" includeViewParams="true"
+									icon="pi pi-star">
 									<f:param name="orderID" value="#{order.code}" />
 								</p:linkButton>
 							</p:column>

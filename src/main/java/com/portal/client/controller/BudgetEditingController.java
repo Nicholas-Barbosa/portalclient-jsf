@@ -55,8 +55,6 @@ public class BudgetEditingController implements Serializable {
 
 	private BudgetExporterShowController exporterShow;
 
-	private ItemOrderContainerController dtableController;
-
 	private Budget budget;
 
 	private String budgetIdToSearch;
@@ -68,7 +66,7 @@ public class BudgetEditingController implements Serializable {
 			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
 			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper,
 			OrderCrudService orderService, BudgetExporterShowController exporterShow,
-			ItemOrderContainerController dtableController, OrderBadRequestShowController orderBadRequestShowController) {
+			OrderBadRequestShowController orderBadRequestShowController) {
 		super();
 		this.budgetService = budgetService;
 		this.customerService = customerService;
@@ -77,14 +75,12 @@ public class BudgetEditingController implements Serializable {
 		this.orderHelper = orderHelper;
 		this.orderService = orderService;
 		this.exporterShow = exporterShow;
-		this.dtableController = dtableController;
 		this.orderBadRequestShowController = orderBadRequestShowController;
 	}
 
 	public void searchBudget() {
 		budgetService.findByCode(budgetIdToSearch).ifPresentOrElse(budget -> {
 			this.budget = budget;
-			this.dtableController.setOrder(budget);
 		}, () -> {
 			this.budget = null;
 			FacesUtils.error(null, "Orçamento não encontrado", null, "growl");
@@ -100,7 +96,7 @@ public class BudgetEditingController implements Serializable {
 	}
 
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
-	
+
 	}
 
 	public void saveToOrder() {
@@ -126,7 +122,7 @@ public class BudgetEditingController implements Serializable {
 
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresentOrElse(p -> {
-			orderHelper.addItem(this.getBudget(), Item.product(p));
+			orderHelper.addItem(this.getBudget(), new Item(p));
 			FacesUtils.ajaxUpdate("dtItems", "totals");
 		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
 
@@ -176,10 +172,6 @@ public class BudgetEditingController implements Serializable {
 
 	public Order getSavedOrder() {
 		return savedOrder;
-	}
-
-	public ItemOrderContainerController getDtableController() {
-		return dtableController;
 	}
 
 }

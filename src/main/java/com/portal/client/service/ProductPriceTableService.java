@@ -3,7 +3,7 @@ package com.portal.client.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
+import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTable;
 
 public interface ProductPriceTableService {
 

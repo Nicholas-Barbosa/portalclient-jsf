@@ -8,13 +8,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
-import com.portal.client.dto.ProductValue;
+import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTable;
 import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
 import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductPriceData;
 
 @ApplicationScoped
 public class ProductPriceTableExporterImpl implements ProductPriceTableExporter {
@@ -26,25 +26,27 @@ public class ProductPriceTableExporterImpl implements ProductPriceTableExporter 
 	public byte[] toExcel(String customerCode, List<ProductPriceTable> table) {
 		List<RowObject> rows = new ArrayList<>();
 		final AtomicInteger rowCounter = new AtomicInteger(3);
-		RowObject row1 = new RowObject(0, List.of(WriteCellAttributeBuilder.of(0, "Cliente")));
-		RowObject row2 = new RowObject(1, List.of(WriteCellAttributeBuilder.of(0, customerCode)));
-		RowObject header = new RowObject(2,
-				WriteCellAttributeBuilder.of(0, "Tabela", "Produto", "Descrição", "Linha", "Valor", "ST", "Bruto"));
-		rows.add(row1);
-		rows.add(row2);
-		rows.add(header);
+		RowObject customerHeader = new RowObject(0, WriteCellAttributeBuilder.of(0, "Cliente", "Tabela"));
+		RowObject customerDetails = new RowObject(1,
+				WriteCellAttributeBuilder.of(0, customerCode, table.get(0).getCode()));
+
+		RowObject headers = new RowObject(2,
+				WriteCellAttributeBuilder.of(0, "Produto", "Descrição", "Linha", "Valor", "ST", "Bruto","Aplicação"));
+		rows.add(customerHeader);
+		rows.add(customerDetails);
+		rows.add(headers);
 		rows.addAll(table.parallelStream().map(pTable -> {
 			Product product = pTable.getProduct();
-			ProductValue value = product.getValue();
+			ProductPriceData value = product.getPriceData();
 
 			List<WriteCellAttribute> attributes = new ArrayList<>();
-			attributes.add(WriteCellAttributeBuilder.of(0, pTable.getCode()));
-			attributes.add(WriteCellAttributeBuilder.of(1, product.getCommercialCode()));
-			attributes.add(WriteCellAttributeBuilder.of(2, product.getDescription()));
-			attributes.add(WriteCellAttributeBuilder.of(3, product.getLine()));
-			attributes.add(WriteCellAttributeBuilder.ofNumber(4, value.getUnitValue()));
-			attributes.add(WriteCellAttributeBuilder.ofNumber(5, value.getUnitStValue()));
-			attributes.add(WriteCellAttributeBuilder.ofNumber(6, value.getUnitGrossValue()));
+			attributes.add(WriteCellAttributeBuilder.of(0, product.getCommercialCode()));
+			attributes.add(WriteCellAttributeBuilder.of(1, product.getDescription()));
+			attributes.add(WriteCellAttributeBuilder.of(2, product.getLine()));
+			attributes.add(WriteCellAttributeBuilder.ofNumber(3, value.getUnitValue()));
+			attributes.add(WriteCellAttributeBuilder.ofNumber(4, value.getUnitStValue()));
+			attributes.add(WriteCellAttributeBuilder.ofNumber(5, value.getUnitGrossValue()));
+			attributes.add(WriteCellAttributeBuilder.of(6, product.getProductTechDetail().getApplication()));
 			return new RowObject(rowCounter.getAndIncrement(), attributes);
 		}).collect(CopyOnWriteArrayList::new, List::add, List::addAll));
 

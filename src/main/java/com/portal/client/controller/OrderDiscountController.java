@@ -14,10 +14,10 @@ import org.primefaces.PrimeFaces;
 
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.service.OrderCommonBehaviorHelper;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.Product;
 
 @ViewScoped
 @Named
@@ -29,8 +29,7 @@ public class OrderDiscountController implements Serializable {
 	private static final long serialVersionUID = -7518415601460334220L;
 	@Inject
 	private HttpSession httpSession;
-	@Inject
-	private OrderCommonBehaviorHelper orderHelper;
+
 	private Set<String> lines;
 	private Order order;
 	private int activeTab;
@@ -43,7 +42,7 @@ public class OrderDiscountController implements Serializable {
 
 	public void applyGlobalDiscount() {
 		try {
-			orderHelper.setDiscount(order, gloablDiscount);
+			// orderHelper.setDiscount(order, gloablDiscount);
 			this.removeFromSession();
 			closeDialog();
 		} catch (CustomerNotAllowed e) {
@@ -54,7 +53,7 @@ public class OrderDiscountController implements Serializable {
 
 	public void applyLineDiscount() {
 		this.removeFromSession();
-		orderHelper.lineDiscount(order, lineDiscountForm);
+		// orderHelper.lineDiscount(order, lineDiscountForm);
 		closeDialog();
 	}
 
@@ -68,7 +67,8 @@ public class OrderDiscountController implements Serializable {
 
 	public void loadCurrentItemLines() {
 		if (activeTab == 1 && lines == null)
-			this.lines = order.getItems().parallelStream().map(Item::getLine).collect(Collectors.toSet());
+			this.lines = order.getItems().parallelStream().map(Item::getProduct).map(Product::getLine)
+					.collect(Collectors.toSet());
 	}
 
 	private void closeDialog() {

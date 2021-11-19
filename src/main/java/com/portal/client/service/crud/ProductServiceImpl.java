@@ -18,6 +18,7 @@ import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.google.cloud.storage.BucketClient;
 import com.portal.client.repository.ProductRepository;
 import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductPriceData;
 import com.portal.client.vo.ProductImage.ImageInfoState;
 import com.portal.client.vo.ProductTechDetail;
 
@@ -59,6 +60,10 @@ public class ProductServiceImpl implements ProductService {
 				Product product = response.getProducts().get(0);
 				product.setImage(image, image == null ? ImageInfoState.NOT_FOUND
 						: image.length == 0 ? ImageInfoState.TIMEOUT_EXCPTION : ImageInfoState.FOUND);
+				ProductPriceData priceData = product.getPriceData();
+				priceData.setTotalGrossValue(priceData.getUnitGrossValue());
+				priceData.setTotalStValue(priceData.getUnitStValue());
+				priceData.setTotalValue(priceData.getUnitValue());
 				return Optional.of(product);
 			}
 			ftBlob.cancel(true);

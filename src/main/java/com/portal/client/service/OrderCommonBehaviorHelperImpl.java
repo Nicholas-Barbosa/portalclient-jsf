@@ -6,14 +6,11 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.client.dto.ItemLineDiscountForm;
-import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.vo.Item;
-import com.portal.client.vo.ItemValue;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.ProductPriceData;
 
 @ApplicationScoped
 @Named
@@ -23,21 +20,17 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	 * 
 	 */
 	private static final long serialVersionUID = 1508352396468403737L;
-	private ItemService itemService;
-
-	@Inject
-	public OrderCommonBehaviorHelperImpl(ItemService itemService) {
-		super();
-		this.itemService = itemService;
-	}
 
 	@Override
 	public void calculateTotals(Order budget) {
-		BigDecimal newGrossValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalGrossValue())
+		BigDecimal newGrossValue = budget.getItems().parallelStream().map(Item::getProduct)
+				.map(p -> p.getPriceData().getTotalGrossValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalValue())
+		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(Item::getProduct)
+				.map(p -> p.getPriceData().getTotalValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newStValue = budget.getItems().parallelStream().map(p -> p.getValue().getTotalStValue())
+		BigDecimal newStValue = budget.getItems().parallelStream().map(Item::getProduct)
+				.map(p -> p.getPriceData().getTotalStValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		budget.setGrossValue(newGrossValue);
 		budget.setLiquidValue(newLiquidValue);
@@ -48,10 +41,10 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	public void removeItem(Order budget, Item item) {
 		if (budget.removeItem(item)) {
 			sumStValue(budget);
-			ItemValue itemValue = item.getValue();
-			BigDecimal itemGrossValue = itemValue.getTotalGrossValue();
-			BigDecimal itemStValue = itemValue.getTotalStValue();
-			BigDecimal itemTValue = itemValue.getTotalValue();
+			ProductPriceData priceData = item.getProduct().getPriceData();
+			BigDecimal itemGrossValue = priceData.getTotalGrossValue();
+			BigDecimal itemStValue = priceData.getTotalStValue();
+			BigDecimal itemTValue = priceData.getTotalValue();
 			BigDecimal orderGrossValue = budget.getGrossValue().subtract(itemGrossValue);
 			BigDecimal orderStValue = budget.getStValue().subtract(itemStValue);
 			BigDecimal orderValue = budget.getLiquidValue().subtract(itemTValue);
@@ -65,34 +58,31 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	@Override
 	public void addItem(Order order, Item item) {
 		if (item != null && order.addItem(item)) {
-			if (order.getGlobalDiscount() != null && !order.getGlobalDiscount().equals(BigDecimal.ZERO)) {
-				itemService.applyGlobalDiscount(item, order.getGlobalDiscount());
-			}
-			ItemValue itemValue = item.getValue();
+			ProductPriceData priceData = item.getProduct().getPriceData();
 			if (order.getGrossValue() == null)
-				order.setGrossValue(itemValue.getTotalGrossValue());
+				order.setGrossValue(priceData.getTotalGrossValue());
 			else
-				order.setGrossValue(order.getGrossValue().add(itemValue.getTotalGrossValue()));
+				order.setGrossValue(order.getGrossValue().add(priceData.getTotalGrossValue()));
 			if (order.getLiquidValue() == null)
-				order.setLiquidValue(itemValue.getTotalValue());
+				order.setLiquidValue(priceData.getTotalValue());
 			else
-				order.setLiquidValue(order.getLiquidValue().add(itemValue.getTotalValue()));
+				order.setLiquidValue(order.getLiquidValue().add(priceData.getTotalValue()));
 			if (order.getStValue() == null)
-				order.setStValue(itemValue.getTotalStValue());
+				order.setStValue(priceData.getTotalStValue());
 			else
-				order.setStValue(order.getStValue().add(itemValue.getTotalStValue()));
+				order.setStValue(order.getStValue().add(priceData.getTotalStValue()));
 		}
 	}
 
-	@Override
-	public void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed {
-		budget.setGlobalDiscount(discount);
-		if (budget.getItems().size() > 0) {
-			itemService.applyGlobalDiscount(budget.getItems(), discount);
-			this.calculateTotals(budget);
-		}
-
-	}
+//	@Override
+//	public void setDiscount(Order budget, BigDecimal discount) throws CustomerNotAllowed {
+//		budget.setGlobalDiscount(discount);
+//		if (budget.getItems().size() > 0) {
+//			itemService.applyGlobalDiscount(budget.getItems(), discount);
+//			this.calculateTotals(budget);
+//		}
+//
+//	}
 
 	@Override
 	public void merge(Order mixedBudget, Order budgetToMix) {
@@ -105,11 +95,11 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 		});
 	}
 
-	@Override
-	public void lineDiscount(Order order, ItemLineDiscountForm form) {
-		this.itemService.applyLineDiscount(order.getItems(), form);
-		this.calculateTotals(order);
-	}
+//	@Override
+//	public void lineDiscount(Order order, ItemLineDiscountForm form) {
+//		this.itemService.applyLineDiscount(order.getItems(), form);
+//		this.calculateTotals(order);
+//	}
 
 	@Override
 	public void removeItems(Order order, List<Item> itemsToCompareAndRemove) {
@@ -125,8 +115,8 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 	@Override
 	public void sumStValue(Order order) {
 		if (order.getStValue() == null) {
-			BigDecimal stValue = order.getItems().stream().map(i -> i.getValue().getTotalStValue())
-					.reduce(BigDecimal.ZERO, (v1, v2) -> v1.add(v2));
+			BigDecimal stValue = order.getItems().stream().map(Item::getProduct)
+					.map(i -> i.getPriceData().getTotalStValue()).reduce(BigDecimal.ZERO, (v1, v2) -> v1.add(v2));
 			order.setStValue(stValue);
 		}
 

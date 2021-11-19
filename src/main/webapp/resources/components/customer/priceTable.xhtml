@@ -7,9 +7,7 @@
 	xmlns:composite="http://java.sun.com/jsf/composite"
 	xmlns:jsf="http://xmlns.jcp.org/jsf">
 <h:head>
-	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
-		library="rain-layout" />
-	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+
 </h:head>
 
 <composite:interface>
@@ -34,7 +32,8 @@
 				$('#priceTableComponent-content').hide();$('#priceTableComponent-not-found').show();
 				" />
 
-			<div id="priceTableComponent-content" style="display: none">
+			<div id="priceTableComponent-content" style="display: none"
+				>
 				<div class="p-d-flex p-jc-between">
 					<div>
 						<h5>Exportar</h5>
@@ -55,24 +54,38 @@
 					<p:column field="product.description" headerText="Produto" />
 					<p:column field="product.line" headerText="Linha" />
 					<p:column headerText="Valor" filterable="false">
-						<h:outputText value="#{table.product.value.unitValue}">
+						<h:outputText value="#{table.product.priceData.unitValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column headerText="ST" filterable="false">
-						<h:outputText value="#{table.product.value.unitStValue}">
+						<h:outputText value="#{table.product.priceData.unitStValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column headerText="Bruto" filterable="false">
-						<h:outputText value="#{table.product.value.unitGrossValue}">
+						<h:outputText value="#{table.product.priceData.unitGrossValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
+					<p:column style="2rem">
+						<p:button value="Aplicação"
+							rendered="#{table.product.productTechDetail.application != null}"
+							onclick="$('#product-application-text').text('#{table.product.productTechDetail.application}'); PF('productApplicationOverlay').show('#{component.clientId}');" />
+					</p:column>
 				</p:dataTable>
+				<p:overlayPanel widgetVar="productApplicationOverlay"
+					dismissable="false" showCloseIcon="true" dynamic="true"
+					style="max-width:350px">
+					<div id="product-application-wrapper-overlay">
+						<div class="p-text-bold" id="product-application-text">Clique
+							novamente em "Aplicação"</div>
+
+					</div>
+				</p:overlayPanel>
 			</div>
 			<div id="priceTableComponent-not-found"
 				class="exception-body notfound" style="display: none">
@@ -106,6 +119,7 @@
 
 		</h:form>
 	</div>
+
 </composite:implementation>
 
 </html>

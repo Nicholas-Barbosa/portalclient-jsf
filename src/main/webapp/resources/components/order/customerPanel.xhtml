@@ -71,18 +71,18 @@
 				style="font-size: 2rem"></i>
 		</div>
 
-		<p:remoteCommand
-			autoRun="#{customerOnOrderDataViewerController.isLoaded(cc.attributes.order.customerOnOrder) eq false}"
+		<p:remoteCommand autoRun="true"
 			onstart="$('#loadingCustomer').show();$('#customerContent').hide();"
 			oncomplete="$('#loadingCustomer').hide();$('#customerContent').show();"
-			action="#{customerOnOrderDataViewerController.load(cc.attributes.order,cc.clientId.concat(':panelCustomer'))}"
-			update="detailPanel" />
+			action="#{customerPanelController.load(cc.attributes.order,cc.clientId.concat(':panelCustomer'))}"
+			update="detailPanel" process="@this" />
 
-		<p:dialog header="Cliente" modal="true" widgetVar="detailPanel"
-			responsive="true" style="max-width:60vw;">
-			<c:detailPanel id="detailPanel"
-				customer="#{cc.attributes.order.customerOnOrder}" />
-
+		<p:dialog header="Clientec" modal="true" widgetVar="detailPanel"
+			responsive="true" >
+			<div style="max-width:60vw;max-height:70vh;overflow-y: auto">
+				<c:detailPanel id="detailPanel"
+					customer="#{cc.attributes.order.customerOnOrder}" />
+			</div>
 		</p:dialog>
 	</div>
 </composite:implementation>

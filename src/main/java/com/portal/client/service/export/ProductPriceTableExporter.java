@@ -2,7 +2,7 @@ package com.portal.client.service.export;
 
 import java.util.List;
 
-import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
+import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTable;
 
 public interface ProductPriceTableExporter {
 

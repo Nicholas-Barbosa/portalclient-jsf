@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.ProductPriceTabletWrapper.ProductPriceTable;
+import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTable;
 import com.portal.client.repository.ProductPriceTableRepository;
 
 @ApplicationScoped

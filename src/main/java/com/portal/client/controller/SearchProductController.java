@@ -46,7 +46,7 @@ public class SearchProductController implements Serializable {
 					this.product = product;
 					FacesUtils.ajaxUpdate("manage-product-content");
 					FacesUtils.executeScript("$('#footer').show()");
-					this.newQuantity = product.getValue().getQuantity();
+					this.newQuantity = product.getPriceData().getQuantity();
 				}, () -> {
 					FacesUtils.error(null, "Produto não localizado", null, "growl");
 					product = null;
@@ -55,7 +55,7 @@ public class SearchProductController implements Serializable {
 
 	public void onQuantityChange() {
 		if (product != null)
-			productCalculator.quantity(newQuantity, product.getValue());
+			productCalculator.quantity(newQuantity, product.getPriceData());
 	}
 
 	public void confirm() {
