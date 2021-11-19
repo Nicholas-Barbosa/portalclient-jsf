@@ -1,6 +1,7 @@
 package com.portal.client.resources.export;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import com.portal.client.resources.export.jasper.service.annt.PDF;
 public class SimpleBudgetExporterFactory {
 
 	@Inject
+	@Any
 	private Instance<BudgetExporter> instances;
 	private AnnotationLiteral<PDF> pdfQualifier = new AnnotationLiteral<PDF>() {
 		private static final long serialVersionUID = 3542596392005026580L;

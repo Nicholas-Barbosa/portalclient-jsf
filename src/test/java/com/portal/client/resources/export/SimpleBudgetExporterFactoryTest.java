@@ -1,6 +1,6 @@
 package com.portal.client.resources.export;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import javax.inject.Inject;
 
@@ -11,11 +11,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.portal.ShrinkwrapDeploymentUtils;
+import com.portal.client.microsoft.excel.writer.XssfWriterImpl;
 import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.resources.export.jasper.BudgetReportImpl;
-import com.portal.client.security.api.APIsRepository;
-import com.portal.client.security.api.ProtheusApiUrlResolver;
-import com.portal.client.security.api.register.ProtheusApiRegisterImpl;
 
 @RunWith(Arquillian.class)
 public class SimpleBudgetExporterFactoryTest {
@@ -25,10 +22,9 @@ public class SimpleBudgetExporterFactoryTest {
 
 	@Deployment
 	public static JavaArchive deployment() {
-		return ShrinkwrapDeploymentUtils.createdDeployment(SimpleBudgetExporterFactory.class, PdfBudgetExporter.class,
-				ExcelBudgetExporter.class, ExcelCalculationCheckBudgetExporter.class, BudgetReportImpl.class,
-				ConfigPropertyResolver.class, ProtheusApiRegisterImpl.class, APIsRepository.class,
-				ProtheusApiUrlResolver.class).addPackage("com.portal.client.service.export.jasper.service");
+		return ShrinkwrapDeploymentUtils
+				.createdDeployment(true, "com.portal.client.resources.export", "com.portal.client.security.api")
+				.addClass(ConfigPropertyResolver.class).addClass(XssfWriterImpl.class);
 	}
 
 	@Test
@@ -36,4 +32,18 @@ public class SimpleBudgetExporterFactoryTest {
 		assertNotNull(factory);
 	}
 
+	@Test
+	public void pdfExporter() {
+		assertNotNull(factory.getExporter(BudgetExportType.PDF));
+	}
+
+	@Test
+	public void excelExporter() {
+		assertNotNull(factory.getExporter(BudgetExportType.EXCEL));
+	}
+
+	@Test
+	public void calcExporter() {
+		assertNotNull(factory.getExporter(BudgetExportType.EXCEL_CALC_CONFERENCE));
+	}
 }
