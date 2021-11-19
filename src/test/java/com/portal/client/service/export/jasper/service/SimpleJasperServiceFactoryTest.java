@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.portal.ShrinkwrapDeploymentUtils;
+import com.portal.client.microsoft.excel.writer.XssfWriterImpl;
 import com.portal.client.resources.export.jasper.service.JasperReportType;
 import com.portal.client.resources.export.jasper.service.SimpleJasperServiceFactory;
 
@@ -20,7 +21,7 @@ public class SimpleJasperServiceFactoryTest {
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive jar = ShrinkwrapDeploymentUtils
-				.createdDeployment("com.portal.client.service.export.jasper.service");
+				.createdDeployment(true,"com.portal.client.resources","com.portal.client.security.api").addClass(XssfWriterImpl.class);
 //		System.out.println(jar.toString(true));
 		return jar;
 	}

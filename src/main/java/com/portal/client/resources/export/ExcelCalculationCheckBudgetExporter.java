@@ -22,17 +22,18 @@ import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPriceData;
 
 @ApplicationScoped
-public class OrderExcelCalculationCheckBudgetExporter {
+public class ExcelCalculationCheckBudgetExporter implements BudgetExporter{
 
 	@Inject
 	private XssfWriter xssfWriter;
 
 	private final Map<String, Integer> columnsPositions = new ConcurrentHashMap<>();
 
-	public OrderExcelCalculationCheckBudgetExporter() {
+	public ExcelCalculationCheckBudgetExporter() {
 		this.intiColumnsPositions();
 	}
 
+	@Override
 	public byte[] export(Budget budget) {
 		List<RowObject> rowObjects = new CopyOnWriteArrayList<>();
 		rowObjects.add(createRowForColumns());

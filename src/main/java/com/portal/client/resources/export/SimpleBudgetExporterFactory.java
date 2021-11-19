@@ -2,20 +2,32 @@ package com.portal.client.resources.export;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+
+import com.portal.client.resources.export.jasper.service.annt.Excel;
+import com.portal.client.resources.export.jasper.service.annt.PDF;
 
 @ApplicationScoped
 public class SimpleBudgetExporterFactory {
 
 	@Inject
 	private Instance<BudgetExporter> instances;
+	private AnnotationLiteral<PDF> pdfQualifier = new AnnotationLiteral<PDF>() {
+		private static final long serialVersionUID = 3542596392005026580L;
+	};
+	private AnnotationLiteral<Excel> excelQualifier = new AnnotationLiteral<Excel>() {
+		private static final long serialVersionUID = 3542596392005026580L;
+	};
 
 	public BudgetExporter getExporter(BudgetExportType type) {
 		switch (type) {
 		case PDF:
-			return null;
+			return instances.select(pdfQualifier).get();
+		case EXCEL:
+			return instances.select(excelQualifier).get();
 		default:
-			return null;
+			return instances.stream().filter(b -> b instanceof ExcelCalculationCheckBudgetExporter).findAny().get();
 		}
 	}
 }

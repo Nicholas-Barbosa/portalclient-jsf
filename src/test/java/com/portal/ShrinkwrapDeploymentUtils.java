@@ -11,9 +11,15 @@ public class ShrinkwrapDeploymentUtils {
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 		return jar;
 	}
-	
+
 	public static JavaArchive createdDeployment(String packageName) {
 		JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addPackage(packageName)
+				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+		return jar;
+	}
+
+	public static JavaArchive createdDeployment(boolean addSubPackages, String... packages) {
+		JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addPackages(addSubPackages, packages)
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 		return jar;
 	}

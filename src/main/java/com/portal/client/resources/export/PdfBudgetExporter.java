@@ -9,10 +9,12 @@ import com.portal.client.dto.BudgetJasperForm;
 import com.portal.client.resources.export.jasper.BudgetJasperData;
 import com.portal.client.resources.export.jasper.BudgetReport;
 import com.portal.client.resources.export.jasper.service.JasperReportType;
+import com.portal.client.resources.export.jasper.service.annt.PDF;
 import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.vo.Budget;
 
 @ApplicationScoped
+@PDF
 public class PdfBudgetExporter implements BudgetExporter, Serializable {
 
 	/**
