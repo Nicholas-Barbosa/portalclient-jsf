@@ -19,6 +19,7 @@ public class PdfJasperService implements JasperService {
 
 	@Override
 	public byte[] export(InputStream compiledReport, Map<String, Object> params, Object dataSource) {
+		System.out.println("PDF Jasper service");
 		try (compiledReport) {
 			JasperPrint filledDocument = JasperFillManager.fillReport(compiledReport, params,
 					new JRBeanCollectionDataSource(List.of(dataSource)));

@@ -1,6 +1,7 @@
 package com.portal.client.service.export.jasper.service;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import javax.inject.Inject;
 
@@ -12,7 +13,9 @@ import org.junit.runner.RunWith;
 
 import com.portal.ShrinkwrapDeploymentUtils;
 import com.portal.client.microsoft.excel.writer.XssfWriterImpl;
+import com.portal.client.resources.export.jasper.service.ExcelJasperService;
 import com.portal.client.resources.export.jasper.service.JasperReportType;
+import com.portal.client.resources.export.jasper.service.PdfJasperService;
 import com.portal.client.resources.export.jasper.service.SimpleJasperServiceFactory;
 
 @RunWith(Arquillian.class)
@@ -21,7 +24,8 @@ public class SimpleJasperServiceFactoryTest {
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive jar = ShrinkwrapDeploymentUtils
-				.createdDeployment(true,"com.portal.client.resources","com.portal.client.security.api").addClass(XssfWriterImpl.class);
+				.createdDeployment(true, "com.portal.client.resources", "com.portal.client.security.api")
+				.addClass(XssfWriterImpl.class);
 //		System.out.println(jar.toString(true));
 		return jar;
 	}
@@ -36,11 +40,11 @@ public class SimpleJasperServiceFactoryTest {
 
 	@Test
 	public void getPdfInstance() {
-		assertNotNull(factory.getService(JasperReportType.PDF));
+		assertTrue(factory.getService(JasperReportType.PDF) instanceof PdfJasperService);
 	}
 
 	@Test
 	public void getExcelInstance() {
-		assertNotNull(factory.getService(JasperReportType.PDF));
+		assertTrue(factory.getService(JasperReportType.EXCEL) instanceof ExcelJasperService);
 	}
 }

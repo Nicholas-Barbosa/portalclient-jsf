@@ -36,7 +36,8 @@ public class BudgetExporterController {
 	public void export() {
 		budgetToExport = (Budget) httpSession.getAttribute("budget-toexport");
 		byte[] streams = budgetExporterFactory.getExporter(exportForm.getType()).export(budgetToExport);
-		exportForm.checkFileExtension();
+//		System.out.println("Streams " +streams);
+//		exportForm.checkFileExtension();
 		FacesUtils.prepareResponseForDownloadOfStreams(getFileName(), streams, getFileType().getType());
 	}
 
