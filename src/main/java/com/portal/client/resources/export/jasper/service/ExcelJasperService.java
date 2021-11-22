@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.portal.client.resources.export.jasper.service.annt.Excel;
+import com.portal.client.cdi.qualifier.Excel;
 
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;

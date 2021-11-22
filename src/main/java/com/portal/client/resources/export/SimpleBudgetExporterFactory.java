@@ -6,8 +6,8 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import com.portal.client.resources.export.jasper.service.annt.Excel;
-import com.portal.client.resources.export.jasper.service.annt.PDF;
+import com.portal.client.cdi.qualifier.Excel;
+import com.portal.client.cdi.qualifier.PDF;
 
 @ApplicationScoped
 public class SimpleBudgetExporterFactory {
@@ -21,6 +21,9 @@ public class SimpleBudgetExporterFactory {
 	private AnnotationLiteral<Excel> excelQualifier = new AnnotationLiteral<Excel>() {
 		private static final long serialVersionUID = 3542596392005026580L;
 	};
+	private AnnotationLiteral<Excel> summaryQualifier = new AnnotationLiteral<Excel>() {
+		private static final long serialVersionUID = 3542596392005026580L;
+	};
 
 	public BudgetExporter getExporter(BudgetExportType type) {
 		switch (type) {
@@ -29,7 +32,7 @@ public class SimpleBudgetExporterFactory {
 		case EXCEL:
 			return instances.select(excelQualifier).get();
 		default:
-			return instances.stream().filter(b -> b instanceof ExcelCalculationCheckBudgetExporter).findAny().get();
+			return instances.select(summaryQualifier).get();
 		}
 	}
 }

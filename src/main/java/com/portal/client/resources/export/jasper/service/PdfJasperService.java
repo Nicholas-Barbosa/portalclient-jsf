@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.portal.client.resources.export.jasper.service.annt.PDF;
+import com.portal.client.cdi.qualifier.PDF;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;

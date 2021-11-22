@@ -6,8 +6,8 @@ import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 
-import com.portal.client.resources.export.jasper.service.annt.Excel;
-import com.portal.client.resources.export.jasper.service.annt.PDF;
+import com.portal.client.cdi.qualifier.Excel;
+import com.portal.client.cdi.qualifier.PDF;
 
 @ApplicationScoped
 public class SimpleJasperServiceFactory {

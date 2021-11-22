@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.portal.client.cdi.qualifier.Summary;
 import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
@@ -22,14 +23,15 @@ import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPriceData;
 
 @ApplicationScoped
-public class ExcelCalculationCheckBudgetExporter implements BudgetExporter{
+@Summary
+public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 
 	@Inject
 	private XssfWriter xssfWriter;
 
 	private final Map<String, Integer> columnsPositions = new ConcurrentHashMap<>();
 
-	public ExcelCalculationCheckBudgetExporter() {
+	public ExcelCalculationSummaryBudgetExporter() {
 		this.intiColumnsPositions();
 	}
 
@@ -60,28 +62,31 @@ public class ExcelCalculationCheckBudgetExporter implements BudgetExporter{
 		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueWithoutDiscount"),
 				priceData.getTotalGrossValue()));
 
-		BigDecimal lineDiscountValueOnTheTotal = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
-				BigDecimal.valueOf(priceData.getDiscountData().getDiscount()), priceData.getTotalGrossValue());
+		if (priceData.getDiscountData() != null) {
 
-		BigDecimal globalDiscountValueOnTheTotal = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
-				BigDecimal.valueOf(priceData.getDiscountData().getBudgetGlobalDiscount()),
-				priceData.getTotalGrossValue());
+			BigDecimal lineDiscountValueOnTheTotal = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
+					BigDecimal.valueOf(priceData.getDiscountData().getDiscount()), priceData.getTotalGrossValue());
 
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscount"),
-				priceData.getDiscountData().getBudgetGlobalDiscount()));
+			BigDecimal globalDiscountValueOnTheTotal = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
+					BigDecimal.valueOf(priceData.getDiscountData().getBudgetGlobalDiscount()),
+					priceData.getTotalGrossValue());
 
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscountValue"),
-				globalDiscountValueOnTheTotal));
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueAfterGlobalDiscount"),
-				MathUtils.addValueByPercentage(priceData.getDiscountData().getDiscount(),
-						priceData.getTotalGrossValue())));
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"),
-				priceData.getDiscountData().getDiscount()));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscount"),
+					priceData.getDiscountData().getBudgetGlobalDiscount()));
 
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscountValue"),
-				lineDiscountValueOnTheTotal));
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValue"),
-				priceData.getDiscountData().getTotalGrossValue()));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscountValue"),
+					globalDiscountValueOnTheTotal));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueAfterGlobalDiscount"),
+					MathUtils.addValueByPercentage(priceData.getDiscountData().getDiscount(),
+							priceData.getTotalGrossValue())));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"),
+					priceData.getDiscountData().getDiscount()));
+
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscountValue"),
+					lineDiscountValueOnTheTotal));
+			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValue"),
+					priceData.getDiscountData().getTotalGrossValue()));
+		}
 		return cells;
 	}
 
