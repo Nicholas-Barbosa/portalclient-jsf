@@ -3,9 +3,8 @@ package com.portal.client.controller;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.servlet.http.HttpSession;
 
-import com.portal.client.dto.OrderExporterForm;
+import com.portal.client.dto.BudgetExporterForm;
 import com.portal.client.resources.export.BudgetExportType;
 import com.portal.client.resources.export.SimpleBudgetExporterFactory;
 import com.portal.client.util.jsf.FacesUtils;
@@ -16,33 +15,24 @@ import com.portal.client.vo.Budget;
 public class BudgetExporterController {
 
 	private boolean order;
-	private Budget budgetToExport;
-	private HttpSession httpSession;
 	private SimpleBudgetExporterFactory budgetExporterFactory;
-	private OrderExporterForm exportForm;
+	private BudgetExporterForm exportForm;
 
 	@Inject
-	public BudgetExporterController(HttpSession httpSession, SimpleBudgetExporterFactory budgetExporterFactory) {
+	public BudgetExporterController(SimpleBudgetExporterFactory budgetExporterFactory) {
 		super();
-		this.httpSession = httpSession;
 		this.budgetExporterFactory = budgetExporterFactory;
-		this.exportForm = new OrderExporterForm();
+		this.exportForm = new BudgetExporterForm();
 	}
 
 	public void checkOrderToExport() {
 
 	}
 
-	public void export() {
-		budgetToExport = (Budget) httpSession.getAttribute("budget-toexport");
-		byte[] streams = budgetExporterFactory.getExporter(exportForm.getType()).export(budgetToExport);
-//		System.out.println("Streams " +streams);
-//		exportForm.checkFileExtension();
+	public void export(Budget budget) {
+		byte[] streams = budgetExporterFactory.getExporter(exportForm.getType()).export(budget);
+		exportForm.appendExtension();
 		FacesUtils.prepareResponseForDownloadOfStreams(getFileName(), streams, getFileType().getType());
-	}
-
-	public void close() {
-		httpSession.removeAttribute("budget-toexport");
 	}
 
 	public boolean isOrder() {
@@ -69,7 +59,7 @@ public class BudgetExporterController {
 		this.exportForm.setType(type);
 	}
 
-	public OrderExporterForm getExportForm() {
+	public BudgetExporterForm getExportForm() {
 		return exportForm;
 	}
 }

@@ -1,4 +1,4 @@
-package com.portal.client.resources.export.jasper;
+package com.portal.client.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;
@@ -158,8 +157,7 @@ public class BudgetJasperData implements Serializable {
 
 	public static class BudgetItemJasperData implements Comparable<BudgetItemJasperData> {
 
-		private String commercialCode;
-		private String description;
+		private String commercialCode, protheusCode, description,application;
 		private int quantity;
 		private BigDecimal unitValue;
 		private BigDecimal totalValue;
@@ -167,30 +165,19 @@ public class BudgetJasperData implements Serializable {
 		private float lineDisc;
 		private BigDecimal totalGrossValue;
 
-		public BudgetItemJasperData(String commercialCode, String description, int quantity, BigDecimal unitValue,
-				BigDecimal totalValue, BigDecimal totalStValue, float lineDisc, BigDecimal totalGrossValue) {
-			super();
-			this.commercialCode = commercialCode;
-			this.description = description;
-			this.quantity = quantity;
-			this.unitValue = unitValue;
-			this.totalValue = totalValue;
-			this.totalStValue = totalStValue;
-			this.totalGrossValue = totalGrossValue;
-
-		}
-
 		public BudgetItemJasperData(Item item) {
 			super();
 			Product product = item.getProduct();
 			ProductPriceData priceData = product.getPriceData();
 			this.commercialCode = product.getCommercialCode();
+			this.protheusCode = product.getCode();
 			this.description = product.getDescription();
 			this.quantity = priceData.getQuantity();
 			this.unitValue = priceData.getUnitValue();
 			this.totalValue = priceData.getTotalValue();
 			this.totalStValue = priceData.getTotalStValue();
 			this.totalGrossValue = priceData.getTotalGrossValue();
+			this.application = product.getProductTechDetail() == null ? null : product.getProductTechDetail().getApplication();
 
 		}
 
@@ -226,6 +213,13 @@ public class BudgetJasperData implements Serializable {
 			return totalGrossValue;
 		}
 
+		public String getProtheusCode() {
+			return protheusCode;
+		}
+
+		public String getApplication() {
+			return application;
+		}
 		@Override
 		public int compareTo(BudgetItemJasperData o) {
 			// TODO Auto-generated method stub

@@ -12,7 +12,7 @@ import com.portal.client.vo.Order;
 
 @ViewScoped
 @Named
-public class OrderEditingController implements Serializable{
+public class OrderEditingController implements Serializable {
 
 	/**
 	 * 
@@ -22,9 +22,6 @@ public class OrderEditingController implements Serializable{
 	@Inject
 	private OrderCrudService orderService;
 
-	@Inject
-	private ItemOrderContainerController itemComponent;
-
 	private String orderID;
 
 	private Order order;
@@ -32,8 +29,9 @@ public class OrderEditingController implements Serializable{
 	public void find() {
 		orderService.findByCode(orderID).ifPresentOrElse(o -> {
 			order = o;
-			itemComponent.setOrder(o);
-		}, () -> FacesUtils.error(null, "Pedido não encontrado", null, null));
+		}, () -> {
+			FacesUtils.error(null, "Pedido não encontrado", null, null);
+		});
 	}
 
 	public String getOrderID() {
@@ -48,7 +46,4 @@ public class OrderEditingController implements Serializable{
 		return order;
 	}
 
-	public ItemOrderContainerController getItemComponent() {
-		return itemComponent;
-	}
 }

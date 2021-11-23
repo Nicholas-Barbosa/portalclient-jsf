@@ -23,7 +23,6 @@ public class ExcelJasperService implements JasperService{
 
 	@Override
 	public byte[] export(InputStream compiledReport, Map<String, Object> params, Object dataSource) {
-		System.out.println("Excel jasper service");
 		try (compiledReport; ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			JasperPrint filledDocument = JasperFillManager.fillReport(compiledReport, params,
 					new JRBeanCollectionDataSource(List.of(dataSource)));

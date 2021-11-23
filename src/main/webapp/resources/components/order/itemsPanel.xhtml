@@ -5,7 +5,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:composite="http://java.sun.com/jsf/composite"
-	xmlns:product="http://java.sun.com/jsf/composite/components/product">
+	xmlns:product="http://java.sun.com/jsf/composite/components/product"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 <h:head>
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
@@ -51,9 +52,9 @@
 								<h4>Adicionando produto e calculando totais...</h4>
 							</p:sidebar>
 						</p:commandButton>
-						<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+						<!--  	<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 							icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-							onclick="PF('dlgImportProducts').show();" />
+							onclick="PF('dlgImportProducts').show();" />-->
 						<p:menuButton
 							value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 							rendered="#{cc.attrs.renderDiscountButton}" styleClass="p-mr-2">
@@ -109,7 +110,7 @@
 						<p:skeleton width="4rem" height="2rem" />
 					</div>
 				</div>
-				
+
 				<p:dataTable var="item" value="#{cc.attrs.order.items}" id="dtItems"
 					widgetVar="dtItems" editable="true" scrollable="true" size="small"
 					filterDelay="100"
@@ -191,8 +192,7 @@
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('total_st')}"
 						sortBy="#{item.product.priceData.totalStValue}">
-						<h:outputText
-							value="#{item.product.priceData.totalStValue}">
+						<h:outputText value="#{item.product.priceData.totalStValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
@@ -205,7 +205,7 @@
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
-					
+
 					<p:column style="width:4rem">
 						<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
 							saveTitle="Save Row" />
@@ -229,23 +229,21 @@
 									style="display: none">
 									<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
 								</div>
-								<div id="div-img-#{item.product.commercialCode}">
-									<h:form>
-										<p:graphicImage value="#{item.product.imageStreams}"
-											stream="false" styleClass="w3-round-xlarge product-image"
-											style="height: 8.2rem; width: 10rem" id="img"
-											alt="Imagem não encontrada"
-											rendered="#{item.product.image.currentState eq 'FOUND' || item.product.image.currentState eq 'NOT_FOUND'}" />
+								<div jsf:id="div-img">
+									<p:graphicImage value="#{item.product.imageStreams}"
+										stream="false" styleClass="w3-round-xlarge product-image"
+										style="height: 8.2rem; width: 10rem" id="img"
+										alt="Imagem não encontrada"
+										rendered="#{item.product.image.currentState eq 'FOUND' || item.product.image.currentState eq 'NOT_FOUND'}" />
 
-										<p:remoteCommand name="imageLoader" icon="pi pi-image"
-											action="#{productImageLoaderController.loadImage(item.product)}"
-											autoRun="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
-											update="@form" process="@this"
-											onstart="$('#div-img-loader-#{item.product.commercialCode}').show();$('#div-img-#{item.product.commercialCode}').hide();"
-											oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();"
-											async="true" />
+									<p:remoteCommand name="imageLoader" icon="pi pi-image"
+										action="#{productImageLoaderController.loadImage(item.product)}"
+										autoRun="#{item.product.image.currentState eq 'NOT_LOADED' || item.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
+										update="div-img" process="@this"
+										onstart="$('#div-img-loader-#{item.product.commercialCode}').show();$('#div-img-#{item.product.commercialCode}').hide();"
+										oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();"
+										async="true" />
 
-									</h:form>
 								</div>
 
 							</div>
@@ -260,23 +258,20 @@
 										Buscando estoque... <i class="pi pi-spin pi-spinner"
 											style="font-size: 3rem;" />
 									</div>
-									<div id="div-stock-content-#{item.product.commercialCode}">
-										<h:form>
-											<div class="p-text-normal p-text-uppercase"
-												style=" display: #{item.product.stock eq null ?'none':block};">
-												<span
-													class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
-													#{productStockMessageController.getMessage(item.product.stock)}
-												</span>
+									<div jsf:id="div-stock-content">
+										<div class="p-text-normal p-text-uppercase"
+											style=" display: #{item.product.stock eq null ?'none':block};">
+											<span
+												class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
+												#{productStockMessageController.getMessage(item.product.stock)}
+											</span>
 
-											</div>
-											<p:remoteCommand name="loadStock"
-												action="#{findProductStockController.find(item.product)}"
-												process="@this" update="@form"
-												autoRun="#{item.product.stock eq null}"
-												onstart="$('#div-stock-content-#{item.product.commercialCode}').hide();$('#div-loading-stock-#{item.product.commercialCode}').show();"
-												oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();" />
-										</h:form>
+										</div>
+										<p:remoteCommand name="loadStock"
+											action="#{findProductStockController.find(item.product)}"
+											process="@this" autoRun="#{item.product.stock eq null}"
+											onstart="$('#div-stock-content-#{item.product.commercialCode}').hide();$('#div-loading-stock-#{item.product.commercialCode}').show();"
+											oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();" update="div-stock-content"/>
 									</div>
 								</div>
 							</div>
@@ -287,49 +282,47 @@
 									style="font-size: 3rem;" />
 							</div>
 							<div class="p-col-6 product-tech-data"
-								id="product-tech-#{item.product.commercialCode}">
-								<h:form>
-									<p:panelGrid columns="4"
-										columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-										layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-										style="border:0px none; background-color:transparent;"
-										id="pnTechData"
-										rendered="#{item.product.productTechDetail != null}">
+								jsf:id="product-tech">
+								<p:panelGrid columns="4"
+									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+									style="border:0px none; background-color:transparent;"
+									id="pnTechData"
+									rendered="#{item.product.productTechDetail != null}">
 
-										<p:outputLabel for="@next" value="Aplicação:"
-											styleClass="p-text-bold" />
-										<p:outputLabel
-											value="#{item.product.productTechDetail.application}"
-											styleClass="label-r" />
+									<p:outputLabel for="@next" value="Aplicação:"
+										styleClass="p-text-bold" />
+									<p:outputLabel
+										value="#{item.product.productTechDetail.application}"
+										styleClass="label-r" />
 
-										<p:outputLabel for="@next" value="Substituições:"
-											styleClass="p-text-bold" />
-										<p:outputLabel
-											value="#{item.product.productTechDetail.productsReplaces}"
-											styleClass="label-r" />
+									<p:outputLabel for="@next" value="Substituições:"
+										styleClass="p-text-bold" />
+									<p:outputLabel
+										value="#{item.product.productTechDetail.productsReplaces}"
+										styleClass="label-r" />
 
-										<p:outputLabel for="@next" value="Peso bruto:"
-											styleClass="p-text-bold" />
-										<p:outputLabel
-											value="#{item.product.productTechDetail.grossWeight}"
-											styleClass="label-r" />
+									<p:outputLabel for="@next" value="Peso bruto:"
+										styleClass="p-text-bold" />
+									<p:outputLabel
+										value="#{item.product.productTechDetail.grossWeight}"
+										styleClass="label-r" />
 
-										<p:outputLabel for="@next" value="Dimensões da caixa:"
-											styleClass="p-text-bold" />
-										<p:outputLabel
-											value="#{item.product.productTechDetail.packageDimension}"
-											styleClass="label-r" />
-										<p:linkButton href="#{item.product.link}" value="Site"
-											icon="pi pi-external-link" target="_blank" />
-									</p:panelGrid>
-									<p:commandButton value="Dados técnicos"
-										rendered="#{item.product.productTechDetail eq null}"
-										icon="pi pi-th-large"
-										action="#{productTechDetailLoaderController.load(item.product)}"
-										onstart="$('#product-tech-loader-#{item.product.commercialCode}').show();$('#product-tech-#{item.product.commercialCode}').hide();"
-										oncomplete="$('#product-tech-loader-#{item.product.commercialCode}').hide();$('#product-tech-#{item.product.commercialCode}').show();"
-										update="@form" process="@this" async="true" />
-								</h:form>
+									<p:outputLabel for="@next" value="Dimensões da caixa:"
+										styleClass="p-text-bold" />
+									<p:outputLabel
+										value="#{item.product.productTechDetail.packageDimension}"
+										styleClass="label-r" />
+									<p:linkButton href="#{item.product.link}" value="Site"
+										icon="pi pi-external-link" target="_blank" />
+								</p:panelGrid>
+								<p:commandButton value="Dados técnicos"
+									rendered="#{item.product.productTechDetail eq null}"
+									icon="pi pi-th-large"
+									action="#{productTechDetailLoaderController.load(item.product)}"
+									onstart="$('#product-tech-loader-#{item.product.commercialCode}').show();$('#product-tech-#{item.product.commercialCode}').hide();"
+									oncomplete="$('#product-tech-loader-#{item.product.commercialCode}').hide();$('#product-tech-#{item.product.commercialCode}').show();"
+									process="@this" async="true" update="product-tech"/>
 
 							</div>
 						</div>

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.DoubleStream;
 
 import org.apache.poi.ss.usermodel.CellType;
 
@@ -58,21 +59,21 @@ public class WriteCellAttribute extends CellAttribute {
 
 		}
 
-		public static List<WriteCellAttribute> ofNumber(Integer startPosition, Number... value) {
+		public static List<WriteCellAttribute> ofNumber(Integer startPosition, double... values) {
 			final AtomicInteger cellPosition = new AtomicInteger(startPosition);
-			return Arrays.stream(value).parallel()
-					.map(v -> WriteCellAttributeBuilder.ofNumber(cellPosition.getAndIncrement(), v))
+			return DoubleStream.of(values).parallel()
+					.mapToObj(v -> WriteCellAttributeBuilder.ofNumber(cellPosition.getAndIncrement(), v))
 					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 
 		}
 
-		public static List<WriteCellAttribute> ofNumber(Number... value) {
+		public static List<WriteCellAttribute> ofNumber(double... value) {
 			return WriteCellAttributeBuilder.ofNumber(0, value);
 
 		}
 
-		public static WriteCellAttribute ofNumber(int position, Number value) {
-			return new WriteCellAttribute(position, numberFormat.format(value));
+		public static WriteCellAttribute ofNumber(int position, double value) {
+			return new WriteCellAttribute(position, value, CellType.NUMERIC);
 		}
 	}
 }

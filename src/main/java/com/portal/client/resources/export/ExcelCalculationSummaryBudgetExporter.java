@@ -1,6 +1,5 @@
 package com.portal.client.resources.export;
 
-import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute;
 import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
-import com.portal.client.util.MathUtils;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Product;
@@ -32,13 +30,13 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 	private final Map<String, Integer> columnsPositions = new ConcurrentHashMap<>();
 
 	public ExcelCalculationSummaryBudgetExporter() {
-		this.intiColumnsPositions();
+		this.initColumns();
 	}
 
 	@Override
 	public byte[] export(Budget budget) {
 		List<RowObject> rowObjects = new CopyOnWriteArrayList<>();
-		rowObjects.add(createRowForColumns());
+		rowObjects.add(createRowHeaders());
 
 		final AtomicInteger rowPos = new AtomicInteger(1);
 
@@ -52,51 +50,25 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 		Product product = item.getProduct();
 		ProductPriceData priceData = product.getPriceData();
 		List<WriteCellAttribute> cells = new LinkedList<>();
-		cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("productCode"), product.getCommercialCode()));
-		cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("line"), product.getLine()));
-		cells.add(WriteCellAttributeBuilder.of(columnsPositions.get("quantity"), priceData.getQuantity()));
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("unitValue"), priceData.getUnitValue()));
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalValue"), priceData.getTotalValue()));
-		cells.add(
-				WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalStValue"), priceData.getTotalStValue()));
-		cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueWithoutDiscount"),
-				priceData.getTotalGrossValue()));
+		addCellValue(cells, "productCode", product.getCommercialCode());
+		addCellValue(cells, "line", product.getLine());
+		addCellValue(cells, "quantity", priceData.getQuantity() + "");
+		addCellValue(cells, "unitValue", priceData.getUnitValue().doubleValue());
+		addCellValue(cells, "totalValue", priceData.getTotalValue().doubleValue());
+		addCellValue(cells, "totalStValue", priceData.getTotalStValue().doubleValue());
+		addCellValue(cells, "totalGrossValueWithoutDiscount", priceData.getTotalGrossValue().doubleValue());
+		createDiscountCells(cells, priceData);
 
-		if (priceData.getDiscountData() != null) {
-
-			BigDecimal lineDiscountValueOnTheTotal = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
-					BigDecimal.valueOf(priceData.getDiscountData().getDiscount()), priceData.getTotalGrossValue());
-
-			BigDecimal globalDiscountValueOnTheTotal = MathUtils.findHwMuchXPercentCorrespondsOverWholeValue(
-					BigDecimal.valueOf(priceData.getDiscountData().getBudgetGlobalDiscount()),
-					priceData.getTotalGrossValue());
-
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscount"),
-					priceData.getDiscountData().getBudgetGlobalDiscount()));
-
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("globalDiscountValue"),
-					globalDiscountValueOnTheTotal));
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValueAfterGlobalDiscount"),
-					MathUtils.addValueByPercentage(priceData.getDiscountData().getDiscount(),
-							priceData.getTotalGrossValue())));
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscount"),
-					priceData.getDiscountData().getDiscount()));
-
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("lineDiscountValue"),
-					lineDiscountValueOnTheTotal));
-			cells.add(WriteCellAttributeBuilder.ofNumber(columnsPositions.get("totalGrossValue"),
-					priceData.getDiscountData().getTotalGrossValue()));
-		}
 		return cells;
 	}
 
-	private RowObject createRowForColumns() {
+	private RowObject createRowHeaders() {
 		return new RowObject(0, WriteCellAttributeBuilder.of(0, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor",
 				"ST", "Preço", "Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$", "Preço Final"));
 
 	}
 
-	private void intiColumnsPositions() {
+	private void initColumns() {
 		columnsPositions.put("productCode", 0);
 		columnsPositions.put("line", 1);
 		columnsPositions.put("quantity", 2);
@@ -110,5 +82,20 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 		columnsPositions.put("lineDiscount", 10);
 		columnsPositions.put("lineDiscountValue", 11);
 		columnsPositions.put("totalGrossValue", 12);
+	}
+
+	private void createDiscountCells(List<WriteCellAttribute> cells, ProductPriceData data) {
+		this.addCellValue(cells, "globalDiscount", 0f);
+		this.addCellValue(cells, "globalDiscountValue", 0f);
+		this.addCellValue(cells, "totalGrossValueAfterGlobalDiscount", 0f);
+		this.addCellValue(cells, "lineDiscount", 0f);
+		this.addCellValue(cells, "lineDiscountValue", 0f);
+		this.addCellValue(cells, "totalGrossValue", data.getTotalGrossValue().doubleValue());
+	}
+
+	private void addCellValue(List<WriteCellAttribute> cells, String columnKey, Object value) {
+		int column = columnsPositions.get(columnKey);
+		cells.add(value instanceof Double ? WriteCellAttributeBuilder.ofNumber(column, (double) value)
+				: WriteCellAttributeBuilder.of(column, value));
 	}
 }

@@ -31,8 +31,7 @@ public class CustomerPanelController {
 
 	public void load(Order order, String componentId) {
 		try {
-
-			if (order.getCustomerOnOrder().getCnpj() == null)
+			if (order != null && order.getCustomerOnOrder().getCnpj() == null)
 				customerService
 						.findByCodeAndStore(new SearchCustomerByCodeAndStoreDTO(order.getCustomerOnOrder().getCode(),
 								order.getCustomerOnOrder().getStore()))

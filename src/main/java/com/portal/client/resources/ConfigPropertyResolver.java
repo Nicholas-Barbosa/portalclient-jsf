@@ -12,9 +12,12 @@ public class ConfigPropertyResolver {
 
 	private Properties properties;
 
+	private String profile;
+	
 	public ConfigPropertyResolver() {
 		properties = new Properties();
 		loadProperties();
+		this.profile = properties.getProperty("profile");
 	}
 
 	public String getProperty(String key) {
@@ -34,5 +37,9 @@ public class ConfigPropertyResolver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public String getProfile() {
+		return profile;
 	}
 }

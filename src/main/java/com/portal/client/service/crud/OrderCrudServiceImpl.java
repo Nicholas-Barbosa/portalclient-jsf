@@ -36,6 +36,7 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	public Optional<OrderFullProjection> findByCode(String code) {
 		Optional<OrderFullProjection> maybe = repository.findByCode(code);
 		maybe.ifPresent(orderHelper::sumStValue);
+		System.out.println(maybe);
 		return maybe;
 	}
 

@@ -6,7 +6,8 @@
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:o="http://java.sun.com/jsf/composite/components/order"
-	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer"
+	xmlns:b="http://java.sun.com/jsf/composite/components/budget">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -57,10 +58,9 @@
 								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
 								icon="pi pi-check" styleClass="ui-button-success " />
 							<i class="pi pi-bars p-px-2" />
-							<p:commandButton title="Print" icon="pi pi-print"
+							<p:button title="Print" icon="pi pi-print"
 								styleClass="ui-button-success p-mr-2"
-								action="#{budgetExporterShowController.show(newBudgetController.budget)}"
-								process="@this" />
+								onclick="PF('exportComponent').show();" />
 
 							<p:button
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
@@ -142,7 +142,6 @@
 			<div>
 				<o:itemsPanel order="#{newBudgetController.budget}"
 					renderDiscountButton="false" id="itemsComponent" />
-
 			</div>
 
 
@@ -267,6 +266,10 @@
 						customer="#{newBudgetController.budget.customerOnOrder}" />
 				</div>
 
+			</p:dialog>
+			<p:dialog widgetVar="exportComponent" modal="true" header="Exportar"
+				responsive="true">
+				<b:export budget="#{newBudgetController.budget}" />
 			</p:dialog>
 			<style type="text/css">
 .cheap {

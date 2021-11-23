@@ -31,7 +31,9 @@ public class ItemOrderFullProjection extends Item {
 				ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
 				ProductPriceBuilder.getInstance().withQuantity(1)
 						.withUnitGrossValue(totalGrossValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
-						.withUnitStValue(stValue).withUnitValue(unitValue).build(),
+						.withUnitStValue(stValue).withUnitValue(unitValue).withTotalGrossValue(totalGrossValue)
+						.withTotalStValue(stValue.multiply(BigDecimal.valueOf(quantity))).withTotalValue(totalValue)
+						.build(),
 				null));
 
 	}

@@ -71,20 +71,38 @@
 				style="font-size: 2rem"></i>
 		</div>
 
-		<p:remoteCommand autoRun="true"
-			onstart="$('#loadingCustomer').show();$('#customerContent').hide();"
-			oncomplete="$('#loadingCustomer').hide();$('#customerContent').show();"
+		<p:remoteCommand name="loadCustomer"
+			onstart="$('#loadingCustomer').show();$('#customerContent').hide();onStart()"
+			oncomplete="$('#loadingCustomer').hide();$('#customerContent').show();onComplete()"
 			action="#{customerPanelController.load(cc.attributes.order,cc.clientId.concat(':panelCustomer'))}"
-			update="detailPanel" process="@this" />
+			update="detailPanel" process="@this" async="true" />
 
-		<p:dialog header="Clientec" modal="true" widgetVar="detailPanel"
-			responsive="true" >
-			<div style="max-width:60vw;max-height:70vh;overflow-y: auto">
+		<p:dialog header="Cliente" modal="true" widgetVar="detailPanel"
+			responsive="true">
+			<div style="max-width: 60vw; max-height: 70vh; overflow-y: auto">
 				<c:detailPanel id="detailPanel"
 					customer="#{cc.attributes.order.customerOnOrder}" />
 			</div>
 		</p:dialog>
+		<p:dialog header="long-running task" modal="true"
+			widgetVar="dlgLongRunningTask" responsive="true" closable="false">
+			<div class="p-text-bold">A busca pelo cliente está demorando
+				mais do que o habitual. Por favor, aguarde!</div>
+		</p:dialog>
 	</div>
+	<script>
+		var loaded = false;
+		function onStart() {
+			setTimeout(function() {
+				if (loaded != true)
+					PF('dlgLongRunningTask').show();
+			}, 1500)
+		}
+		function onComplete() {
+			loaded = true;
+			PF('dlgLongRunningTask').hide();
+		}
+	</script>
 </composite:implementation>
 
 </html>

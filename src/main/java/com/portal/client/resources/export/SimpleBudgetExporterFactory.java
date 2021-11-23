@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import com.portal.client.cdi.qualifier.Excel;
 import com.portal.client.cdi.qualifier.PDF;
+import com.portal.client.cdi.qualifier.Summary;
 
 @ApplicationScoped
 public class SimpleBudgetExporterFactory {
@@ -21,7 +22,7 @@ public class SimpleBudgetExporterFactory {
 	private AnnotationLiteral<Excel> excelQualifier = new AnnotationLiteral<Excel>() {
 		private static final long serialVersionUID = 3542596392005026580L;
 	};
-	private AnnotationLiteral<Excel> summaryQualifier = new AnnotationLiteral<Excel>() {
+	private AnnotationLiteral<Summary> summaryQualifier = new AnnotationLiteral<Summary>() {
 		private static final long serialVersionUID = 3542596392005026580L;
 	};
 

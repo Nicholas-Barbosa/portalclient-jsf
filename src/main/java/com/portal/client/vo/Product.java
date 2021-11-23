@@ -32,7 +32,8 @@ public class Product {
 			@JsonbProperty("description") String description,
 			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
 		ProductDiscountData discountData = ProductDiscountDataBuilder.getInstance().withUnitGrossValue(unitGrossValue)
-				.withUnitStValue(stValue).withUnitValue(unitValue).withQuantity(1).build();
+				.withUnitStValue(stValue).withUnitValue(unitValue).withTotalValue(unitValue)
+				.withTotalGrossValue(unitGrossValue).withTotalStValue(stValue).build();
 		ProductPriceData price = new ProductPriceData(stValue, unitValue, unitGrossValue, 1, multiple, discountData);
 
 		return new Product(code, cCode, application, description, line, acronymLine, stock,

@@ -2,7 +2,7 @@ package com.portal.client.dto;
 
 import com.portal.client.resources.export.BudgetExportType;
 
-public class OrderExporterForm {
+public class BudgetExporterForm {
 
 	private String fileName;
 	private BudgetExportType type;
@@ -23,7 +23,7 @@ public class OrderExporterForm {
 		this.type = type;
 	}
 
-	public void checkFileExtension() {
+	public void appendExtension() {
 		fileName = fileName.strip();
 		int index = this.fileName.lastIndexOf(".");
 		if (index == -1) {

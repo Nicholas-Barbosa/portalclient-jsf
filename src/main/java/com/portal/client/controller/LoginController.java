@@ -42,7 +42,6 @@ public class LoginController {
 		try {
 			this.authenticationRepository.login(loginForm);
 			FacesUtils.addHeaderForResponse("ok", true);
-			FacesUtils.info(null, "Autenticado com sucesso.", "Ambiente: " + loginForm.getCompanyEnv(), null);
 			return "NEW_ORDER";
 		} catch (NotAuthorizedException e) {
 			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null);

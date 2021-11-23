@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	>
+
+<composite:interface>
+	<composite:attribute name="budget" required="true"
+		type="com.portal.client.vo.Budget" />
+	<composite:attribute name="fileName" type="java.lang.String" />
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<h:form>
+			<div class="ui-fluid">
+				<div class="p-field">
+					<div class="ui-inputgroup">
+						<p:inputText
+							placeholder="#{resourceBundleServiceImpl.getMessage('nome_arquivo')}"
+							value="#{budgetExporterController.fileName}" id="fileName" widgetVar="fileName"
+							
+							onfocus="PF('fileName').jq[0].value='#{cc.attrs.fileName}';" />
+						<div class="ui-inputgroup-addon" id="fileExtension">.xlsx</div>
+					</div>
+				</div>
+
+				<div class="p-field">
+					<p:outputLabel for="fileType"
+						value="#{resourceBundleServiceImpl.getMessage('tipo')}" />
+					<p:selectOneMenu id="fileType"
+						value="#{budgetExporterController.fileType}"
+						onchange="let index = event.target.options.selectedIndex;
+						let text=null;
+						 if(index==1)
+							text = '.pdf';
+						else
+							text = '.xlsx';
+						$('#fileExtension').text(text);
+						">
+						<f:selectItem itemLabel="Select One" itemValue=""
+							noSelectionOption="true" />
+						<f:selectItem itemLabel="PDF" itemValue="PDF" />
+						<f:selectItem itemLabel="Excel-xlsx(relatório)" itemValue="EXCEL" />
+						<f:selectItem itemLabel="Excel-xlsx(sumário de cálculos)"
+							itemValue="EXCEL_CALC_CONFERENCE" />
+					</p:selectOneMenu>
+				</div>
+
+				<p:commandButton icon="pi pi-download"
+					styleClass="ui-button-success" ajax="false"
+					action="#{budgetExporterController.export(cc.attrs.budget)}"
+					process="@form" />
+
+			</div>
+		</h:form>
+	</div>
+</composite:implementation>
+</html>

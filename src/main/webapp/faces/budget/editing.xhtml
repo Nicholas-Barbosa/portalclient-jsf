@@ -6,7 +6,8 @@
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:o="http://java.sun.com/jsf/composite/components/order"
-	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer"
+	xmlns:b="http://java.sun.com/jsf/composite/components/budget">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -41,7 +42,7 @@
 			<h:form>
 				<p:remoteCommand autoRun="true"
 					action="#{budgetEditingController.searchBudget}" process="@this"
-					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();"
+					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();loadCustomer();"
 					update=":editPanel" />
 			</h:form>
 
@@ -79,7 +80,7 @@
 									oncomplete="PF('sidebarForLoadingEditing').hide()" />
 
 								<p:menuitem value="Exportar" icon="pi pi-download"
-									action="#{budgetEditingController.export}" />
+									onclick="PF('exportComponent').show()" />
 
 								<p:menuitem value="Efetivar para pedido"
 									action="#{budgetEditingController.saveToOrder}" ajax="true"
@@ -137,8 +138,13 @@
 					id="editPanel" title="Orçamento" />
 
 			</div>
-		
+
 		</f:view>
+		<p:dialog widgetVar="exportComponent" modal="true"
+			header="Exportar orçamento" responsive="true">
+			<b:export budget="#{budgetEditingController.budget}" fileName="orcamento-#{budgetEditingController.budget.code}"/>
+		</p:dialog>
+
 		<script type="text/javascript"
 			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3OLz2OAPNufe4j9t5vF6AS879LDUzAvw"
 			async="async" defer="defer"></script>

@@ -23,7 +23,7 @@ public class XssfWriterImpl implements XssfWriter {
 		XSSFSheet sheet = workbook.createSheet(sheetName);
 		rowObjects.forEach(rowObject -> {
 			XSSFRow row = sheet.createRow(rowObject.getOffset());
-			rowObject.getCellAttributes().parallelStream().map(c -> (WriteCellAttribute) c)
+			rowObject.getCellAttributes().stream().map(c -> (WriteCellAttribute) c)
 					.forEach(w -> this.createCell(w, row));
 		});
 
@@ -37,19 +37,15 @@ public class XssfWriterImpl implements XssfWriter {
 		return null;
 	}
 
-	private synchronized void createCell(WriteCellAttribute attribute, XSSFRow row) {
-		try {
-			Cell cell = row.createCell(attribute.getCellOffset());
-			switch (attribute.getCellType()) {
-			case NUMERIC:
-				cell.setCellValue((Double) attribute.getValue());
-				break;
-			default:
-				cell.setCellValue(attribute.getValue() + "");
-				break;
-			}
-		} catch (NullPointerException | IndexOutOfBoundsException e) {
-			System.out.println(e+" para " + row.getRowNum() + " attribute " + attribute);
+	private void createCell(WriteCellAttribute attribute, XSSFRow row) {
+		Cell cell = row.createCell(attribute.getCellOffset());
+		switch (attribute.getCellType()) {
+		case NUMERIC:
+			cell.setCellValue((Double) attribute.getValue());
+			break;
+		default:
+			cell.setCellValue(attribute.getValue() + "");
+			break;
 		}
 	}
 }

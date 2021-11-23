@@ -31,7 +31,7 @@ public class ProductPriceTableExporterImpl implements ProductPriceTableExporter 
 				WriteCellAttributeBuilder.of(0, customerCode, table.get(0).getCode()));
 
 		RowObject headers = new RowObject(2,
-				WriteCellAttributeBuilder.of(0, "Produto", "Descrição", "Linha", "Valor", "ST", "Bruto","Aplicação"));
+				WriteCellAttributeBuilder.of(0, "Produto", "Descrição", "Linha", "Valor", "ST", "Bruto", "Aplicação"));
 		rows.add(customerHeader);
 		rows.add(customerDetails);
 		rows.add(headers);
@@ -43,9 +43,9 @@ public class ProductPriceTableExporterImpl implements ProductPriceTableExporter 
 			attributes.add(WriteCellAttributeBuilder.of(0, product.getCommercialCode()));
 			attributes.add(WriteCellAttributeBuilder.of(1, product.getDescription()));
 			attributes.add(WriteCellAttributeBuilder.of(2, product.getLine()));
-			attributes.add(WriteCellAttributeBuilder.ofNumber(3, value.getUnitValue()));
-			attributes.add(WriteCellAttributeBuilder.ofNumber(4, value.getUnitStValue()));
-			attributes.add(WriteCellAttributeBuilder.ofNumber(5, value.getUnitGrossValue()));
+			attributes.add(WriteCellAttributeBuilder.ofNumber(3, value.getUnitValue().doubleValue()));
+			attributes.add(WriteCellAttributeBuilder.ofNumber(4, value.getUnitStValue().doubleValue()));
+			attributes.add(WriteCellAttributeBuilder.ofNumber(5, value.getUnitGrossValue().doubleValue()));
 			attributes.add(WriteCellAttributeBuilder.of(6, product.getProductTechDetail().getApplication()));
 			return new RowObject(rowCounter.getAndIncrement(), attributes);
 		}).collect(CopyOnWriteArrayList::new, List::add, List::addAll));
