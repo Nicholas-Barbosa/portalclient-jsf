@@ -1,6 +1,5 @@
 package com.portal.client.service;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.FileInputStream;
@@ -18,6 +17,7 @@ import org.junit.runner.RunWith;
 
 import com.portal.ShrinkwrapDeploymentUtils;
 import com.portal.client.dto.XlsxProductFileReadLayout;
+import com.portal.client.exception.MismatchCellTypeExceptions;
 import com.portal.client.microsoft.excel.reader.XssfReaderImpl;
 
 @RunWith(Arquillian.class)
@@ -53,15 +53,12 @@ public class XlsxProductImporterTest {
 
 	@Test
 	@InSequence(2)
-	public void testExtractData() {
-		assertEquals(2, importer.extractData(layout).size());
-
+	public void shouldNotThrowMismatchCellTypeExceptions() {
+		assertNotNull(importer.extractData(layout));
+		
 	}
 
-	@Test
-	@InSequence(3)
-	public void shouldRun() {
 
-	}
+	
 
 }

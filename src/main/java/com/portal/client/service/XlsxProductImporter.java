@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.poi.ss.usermodel.CellType;
@@ -16,13 +14,13 @@ import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.dto.ProductFileReadLayout;
 import com.portal.client.dto.ProductImporterExtractedData;
 import com.portal.client.dto.XlsxProductFileReadLayout;
-import com.portal.client.exception.MismatchCellTypeException;
+import com.portal.client.exception.MismatchCellTypeExceptions;
+import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
 import com.portal.client.microsoft.excel.CellAttribute;
 import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.reader.XssfReader;
 import com.portal.client.regex.RegexUtils;
 
-@ApplicationScoped
 public class XlsxProductImporter extends ProductImporter {
 
 	@Inject
@@ -33,20 +31,31 @@ public class XlsxProductImporter extends ProductImporter {
 
 	@Override
 	List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout) {
+		XlsxProductFileReadLayout xlsxLayout = (XlsxProductFileReadLayout) layout;
 		try {
-			XlsxProductFileReadLayout xlsxLayout = (XlsxProductFileReadLayout) layout;
 			List<RowObject> rows = xssReader.read(xlsxLayout.getXlsxStreams(), xlsxLayout.getInitPosition(),
 					xlsxLayout.getLastPosition());
-			return rows.parallelStream()
-					.map(r -> this.of(r, xlsxLayout.getOffSetCellForProductCode(),
-							xlsxLayout.getOffSetCellForProductQuantity()))
-					.distinct().collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+			List<? extends Object> collectionObj = rows.parallelStream().map(r -> {
+				try {
+					return this.of(r, xlsxLayout.getOffSetCellForProductCode(),
+							xlsxLayout.getOffSetCellForProductQuantity());
+				} catch (MismatchCellTypeException e) {
+					return e;
+				}
+			}).distinct().collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 
+			if (collectionObj.parallelStream().anyMatch(o -> o instanceof MismatchCellTypeException)) {
+				throw new MismatchCellTypeExceptions(collectionObj.parallelStream()
+						.filter(o -> o instanceof MismatchCellTypeException).map(o -> (MismatchCellTypeException) o)
+						.collect(CopyOnWriteArrayList::new, List::add, List::addAll));
+			}
+			return collectionObj.parallelStream().filter(obj -> obj instanceof ProductImporterExtractedData)
+					.map(obj -> (ProductImporterExtractedData) obj)
+					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
+		return null;
 	}
 
 	@Override
@@ -76,8 +85,7 @@ public class XlsxProductImporter extends ProductImporter {
 
 		default:
 			try {
-				String quantityStr = RegexUtils.removeAllChars(((String) quantityObj));
-				System.out.println("Quantity str " + quantityStr);
+				String quantityStr = RegexUtils.removeAllChars((String) quantityObj);
 				return new ProductImporterExtractedData((String) codeCell.getValue(),
 						Double.valueOf(quantityStr).intValue());
 			} catch (NumberFormatException e) {
