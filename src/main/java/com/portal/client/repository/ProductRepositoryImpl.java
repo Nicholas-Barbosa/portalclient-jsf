@@ -28,26 +28,25 @@ import com.portal.client.dto.ProductStockWrapper;
 import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.dto.ProductToFind;
 import com.portal.client.dto.ProductToFindStock;
+import com.portal.client.exception.ProductsNotFoundException;
 import com.portal.client.security.api.helper.APIHelper;
+import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Product;
+import com.portal.client.vo.WrapperProduct404Error;
 
 @ApplicationScoped
 public class ProductRepositoryImpl extends OptionalEmptyRepository implements ProductRepository, Serializable {
 
 	private static final long serialVersionUID = 4463669170628763803L;
-
+	@Inject
 	private TokenedRestClient restClient;
+	@Inject
 	private APIHelper protheusApiHelper;
+	@Inject
+	private JsonbService jsonb;
 
 	public ProductRepositoryImpl() {
 		// TODO Auto-generated constructor stub
-	}
-
-	@Inject
-	public ProductRepositoryImpl(TokenedRestClient restClient, APIHelper orcamentoAPI) {
-		super();
-		this.restClient = restClient;
-		this.protheusApiHelper = orcamentoAPI;
 	}
 
 	@Override
@@ -150,9 +149,10 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 					BatchProductSearchDataWrapper.class, null, null, postForm, "application/json");
 			return dataWrapper;
 		} catch (NotFoundException e) {
-			// TODO: handle exception
+			WrapperProduct404Error wrapper = jsonb.fromJson((String) e.getResponse().getEntity(),
+					WrapperProduct404Error.class);
+			throw new ProductsNotFoundException(wrapper.getErrors());
 		}
-		return null;
 	}
 
 }

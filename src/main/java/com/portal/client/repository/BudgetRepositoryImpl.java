@@ -24,7 +24,7 @@ import com.portal.client.vo.Budget;
 import com.portal.client.vo.Customer404Error;
 import com.portal.client.vo.Deseriaized404JsonEstimateEndpoint;
 import com.portal.client.vo.Page;
-import com.portal.client.vo.WrapperItem404Error;
+import com.portal.client.vo.WrapperProduct404Error;
 
 @ApplicationScoped
 public class BudgetRepositoryImpl extends OptionalEmptyRepository implements BudgetRepository {
@@ -79,8 +79,8 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 		ExecutorService executor = null;
 		try {
 			executor = Executors.newFixedThreadPool(2);
-			Future<WrapperItem404Error> f = executor
-					.submit(() -> jsonbService.fromJson(json, WrapperItem404Error.class));
+			Future<WrapperProduct404Error> f = executor
+					.submit(() -> jsonbService.fromJson(json, WrapperProduct404Error.class));
 			Future<Customer404Error> fCustomer = executor
 					.submit(() -> jsonbService.fromJson(json, Customer404Error.class));
 			Deseriaized404JsonEstimateEndpoint deserialized = new Deseriaized404JsonEstimateEndpoint(

@@ -1,22 +1,22 @@
 package com.portal.client.vo;
 
-import com.portal.client.vo.WrapperItem404Error.Item404Error;
+import com.portal.client.vo.WrapperProduct404Error.Product404Error;
 
 public class Deseriaized404JsonEstimateEndpoint {
 
-	private Item404Error[] itemErrors;
+	private Product404Error[] itemErrors;
 	private Customer404Error customerError;
 	private boolean okWithItems;
 	private boolean okWithCustomer;
 
-	public Deseriaized404JsonEstimateEndpoint(Item404Error[] itemErrors, Customer404Error customerError) {
+	public Deseriaized404JsonEstimateEndpoint(Product404Error[] itemErrors, Customer404Error customerError) {
 		super();
 		this.itemErrors = itemErrors;
 		this.customerError = customerError;
 		checkBooleanFields();
 	}
 
-	public Item404Error[] getItemErrors() {
+	public Product404Error[] getItemErrors() {
 		return itemErrors;
 	}
 
