@@ -12,6 +12,7 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.portal.client.microsoft.excel.CellAttribute;
 import com.portal.client.microsoft.excel.RowObject;
 
 @ApplicationScoped
@@ -23,7 +24,7 @@ public class XssfWriterImpl implements XssfWriter {
 		XSSFSheet sheet = workbook.createSheet(sheetName);
 		rowObjects.forEach(rowObject -> {
 			XSSFRow row = sheet.createRow(rowObject.getOffset());
-			rowObject.getCellAttributes().stream().map(c -> (WriteCellAttribute) c)
+			rowObject.getCellAttributes().stream()
 					.forEach(w -> this.createCell(w, row));
 		});
 
@@ -37,7 +38,7 @@ public class XssfWriterImpl implements XssfWriter {
 		return null;
 	}
 
-	private void createCell(WriteCellAttribute attribute, XSSFRow row) {
+	private void createCell(CellAttribute attribute, XSSFRow row) {
 		Cell cell = row.createCell(attribute.getCellOffset());
 		switch (attribute.getCellType()) {
 		case NUMERIC:

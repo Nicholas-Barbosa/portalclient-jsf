@@ -37,7 +37,8 @@ public class Product {
 		ProductPriceData price = new ProductPriceData(stValue, unitValue, unitGrossValue, 1, multiple, discountData);
 
 		return new Product(code, cCode, application, description, line, acronymLine, stock,
-				commercialBlock.equalsIgnoreCase("Nao") ? false : true, null, price, null);
+				commercialBlock == null ? null : commercialBlock.equalsIgnoreCase("nao") ? false : true, null, price,
+				null);
 	}
 
 	public Product(String code, String commercialCode, String applicability, String description, String line,

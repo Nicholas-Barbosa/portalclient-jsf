@@ -39,6 +39,10 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 	private TokenedRestClient restClient;
 	private APIHelper protheusApiHelper;
 
+	public ProductRepositoryImpl() {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Inject
 	public ProductRepositoryImpl(TokenedRestClient restClient, APIHelper orcamentoAPI) {
 		super();
@@ -144,7 +148,7 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 			BatchProductSearchDataWrapper dataWrapper = restClient.post(protheusApiHelper.buildEndpoint("estimate"),
 					protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(),
 					BatchProductSearchDataWrapper.class, null, null, postForm, "application/json");
-			System.out.println("DataWrapper " + dataWrapper);
+			return dataWrapper;
 		} catch (NotFoundException e) {
 			// TODO: handle exception
 		}

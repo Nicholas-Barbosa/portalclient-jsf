@@ -1,7 +1,6 @@
 package com.portal.client.service;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -10,38 +9,33 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.BatchProductSearchDataWrapper.BatchProductData;
-import com.portal.client.dto.ProductXlsxFileReadProjection;
-import com.portal.client.dto.ProductToFind;
-import com.portal.client.dto.ProductXlsxFileReadLayout;
-import com.portal.client.exception.CustomerNotFoundException;
-import com.portal.client.exception.ItemsNotFoundException;
+import com.portal.client.dto.ProductFileReadLayout;
+import com.portal.client.dto.ProductImporterExtractedData;
+import com.portal.client.dto.XlsxProductFileReadLayout;
 import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.reader.XssfReader;
+import com.portal.client.service.crud.ProductService;
+import com.portal.client.vo.Product;
 
 @ApplicationScoped
-public class XlsxProductImporter implements ProductImporter, Serializable {
+public class XlsxProductImporter extends ProductImporter {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 8496725734748305921L;
+	@Inject
 	private XssfReader xssReader;
 
 	@Inject
-	public XlsxProductImporter(XssfReader xssReader) {
-		super();
-		this.xssReader = xssReader;
-	}
+	private ProductService productService;
 
 	@Override
-	public List<ProductXlsxFileReadProjection> read(ProductXlsxFileReadLayout fileLayout) {
+	List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout) {
 		try {
-			List<RowObject> rows = xssReader.read(fileLayout.getXlsxStreams(), fileLayout.getInitPosition(),
-					fileLayout.getLastPosition());
+			XlsxProductFileReadLayout xlsxLayout = (XlsxProductFileReadLayout) layout;
+
+			List<RowObject> rows = xssReader.read(xlsxLayout.getXlsxStreams(), xlsxLayout.getInitPosition(),
+					xlsxLayout.getLastPosition());
 			return rows.parallelStream()
-					.map(r -> this.of(r, fileLayout.getOffSetCellForProductCode(),
-							fileLayout.getOffSetCellForProductQuantity()))
+					.map(r -> this.of(r, xlsxLayout.getOffSetCellForProductCode(),
+							xlsxLayout.getOffSetCellForProductQuantity()))
 					.distinct().collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 
 		} catch (IOException e) {
@@ -49,26 +43,20 @@ public class XlsxProductImporter implements ProductImporter, Serializable {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 
 	@Override
-	public BatchProductData performBatchSearch(List<ProductXlsxFileReadProjection> items, String customerCode,
-			String customerStore) throws CustomerNotFoundException, ItemsNotFoundException {
+	List<Product> parseData(List<ProductImporterExtractedData> datas) {
 		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
-	private ProductXlsxFileReadProjection of(RowObject row, int offsetForCode, int offSetForQuantity) {
+	private ProductImporterExtractedData of(RowObject row, int offsetForCode, int offSetForQuantity) {
 		Map<Integer, Object> attributes = row.getCellAttributes().stream()
 				.collect(Collectors.toMap(k -> k.getCellOffset(), v -> v.getValue()));
 		String code = (String) attributes.get(offsetForCode);
 		Double quantity = (Double) attributes.get(offSetForQuantity);
-		return new ProductXlsxFileReadProjection(code, quantity == null ? 0 : quantity.intValue());
+		return new ProductImporterExtractedData(code, quantity == null ? 0 : quantity.intValue());
 	}
-
-	private ProductToFind toItem(ProductXlsxFileReadProjection itemToConvert) {
-		return new ProductToFind(itemToConvert.getCode(), itemToConvert.getQuantity());
-	}
-
 }

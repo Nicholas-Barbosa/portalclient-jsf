@@ -10,8 +10,8 @@ import javax.inject.Named;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 
-import com.portal.client.dto.ProductXlsxFileReadLayout;
-import com.portal.client.dto.ProductXlsxFileReadProjection;
+import com.portal.client.dto.XlsxProductFileReadLayout;
+import com.portal.client.dto.ProductImporterExtractedData;
 import com.portal.client.service.ProductImporter;
 import com.portal.client.util.jsf.FacesUtils;
 
@@ -27,12 +27,12 @@ public class ProductFileImportComponent implements Serializable {
 	@Inject
 	private ProductImporter importer;
 
-	private ProductXlsxFileReadLayout fileLayout;
+	private XlsxProductFileReadLayout fileLayout;
 
-	private List<ProductXlsxFileReadProjection> productsProjection;
+	private List<ProductImporterExtractedData> productsProjection;
 
 	public ProductFileImportComponent() {
-		fileLayout = new ProductXlsxFileReadLayout();
+		fileLayout = new XlsxProductFileReadLayout();
 		fileLayout.setInitPosition(1);
 		fileLayout.setOffSetCellForProductCode(1);
 		fileLayout.setOffSetCellForProductQuantity(2);
@@ -52,9 +52,10 @@ public class ProductFileImportComponent implements Serializable {
 					: fileLayout.getLastPosition() == 1 ? 1 : fileLayout.getLastPosition() - 1);
 			this.fileLayout.setOffSetCellForProductCode(fileLayout.getOffSetCellForProductCode() - 1);
 			this.fileLayout.setOffSetCellForProductQuantity(fileLayout.getOffSetCellForProductQuantity() - 1);
-			this.productsProjection = importer.read(fileLayout);
-			System.out.println(productsProjection);
-			FacesUtils.ajaxUpdate("dtProjection");
+			importer.run(fileLayout);
+//			FacesUtils.ajaxUpdate("dtProjection");
+			FacesUtils.executeScript("PF('dlgLoading').hide()");
+			
 			return event.getNewStep();
 
 		default:
@@ -68,11 +69,11 @@ public class ProductFileImportComponent implements Serializable {
 		FacesUtils.info(null, "Sucesso", "Arquivo salvo para leitura", "growl");
 	}
 
-	public ProductXlsxFileReadLayout getFileLayout() {
+	public XlsxProductFileReadLayout getFileLayout() {
 		return fileLayout;
 	}
 
-	public List<ProductXlsxFileReadProjection> getProductsProjection() {
+	public List<ProductImporterExtractedData> getProductsProjection() {
 		return productsProjection;
 	}
 

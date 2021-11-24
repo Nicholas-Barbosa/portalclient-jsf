@@ -1,15 +1,13 @@
 package com.portal.client.dto;
 
-public class ProductXlsxFileReadLayout {
+public class XlsxProductFileReadLayout extends ProductFileReadLayout{
 
 	private int initPosition;
 	private int offSetCellForProductCode;
 	private int offSetCellForProductQuantity;
 	private int lastPosition;
 
-	private byte[] xlsxStreams;
-
-	public ProductXlsxFileReadLayout() {
+	public XlsxProductFileReadLayout() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -45,12 +43,6 @@ public class ProductXlsxFileReadLayout {
 		this.lastPosition = lastPosition;
 	}
 
-	public byte[] getXlsxStreams() {
-		return xlsxStreams;
-	}
-
-	public void setXlsxStreams(byte[] xlsxStreams) {
-		this.xlsxStreams = xlsxStreams;
-	}
+	
 
 }

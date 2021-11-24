@@ -23,13 +23,16 @@
 	<div id="#{cc.clientId}">
 		<h:form prependId="false">
 			<p:wizard flowListener="#{productFileImportComponent.onFlowProcess}"
-				showNavBar="true" showStepStatus="true" onnext="console.log(event)">
-				<p:tab id="file" title="Arquivo">
+				showNavBar="true" showStepStatus="true"
+				onnext="if(PF('importWizard').currentStep=='setFileLayout')PF('dlgLoading').show()"
+				widgetVar="importWizard" nextLabel="Próximo" backLabel="Voltar"  >
+				<p:tab id="file" title="Arquivo" >
 					<p:fileUpload mode="advanced" dragDropSupport="true"
 						allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
 						label="Escolher"
 						listener="#{productFileImportComponent.handleFileUpload}"
 						process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
+				
 				</p:tab>
 				<p:tab id="setFileLayout" title="Layout do arquivo">
 					<p:panelGrid columns="4"
@@ -59,19 +62,10 @@
 						<p:spinner
 							value="#{productFileImportComponent.fileLayout.offSetCellForProductQuantity}" />
 
-						<p:row>
-							<p:column styleClass="ui-grid-col-12">
-								<p:commandButton value="Examinar" styleClass="p-mr-2"
-									style="width: auto" process="pnFileLayout"
-									action="#{itemImportController.readFile}"
-									onstart="PF('dlgImporting').show()"
-									oncomplete="PF('dlgImporting').hide()" />
-
-							</p:column>
-						</p:row>
+						
 					</p:panelGrid>
 				</p:tab>
-				<p:tab id="readProjection" title="Projeção">
+				<p:tab id="readProjection" title="Projeção" >
 					<div>
 						<p:dataTable id="dtProjection" widgetVar="dtProjection"
 							value="#{productFileImportComponent.productsProjection}"
@@ -116,6 +110,15 @@
 			</p:wizard>
 		</h:form>
 	</div>
+	<p:dialog widgetVar="dlgLoading" closable="false"
+		responsive="true" >
+		<div class="p-grid p-flex-column">
+			<div class="p-col">Lendo arquivo...</div>
+			<div class="p-col">
+				<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+			</div>
+		</div>
+	</p:dialog>
 </composite:implementation>
 
 </html>

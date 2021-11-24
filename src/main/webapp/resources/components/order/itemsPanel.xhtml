@@ -36,7 +36,7 @@
 						<p:commandButton value="Novo" icon="pi pi-plus"
 							styleClass="ui-button-raised ui-button-success"
 							action="#{productSearchShowController.show(cc.attrs.order.customerOnOrder)}"
-							style="margin-right: .5rem">
+							style="margin-right: .5rem" title="Adicionar produto">
 
 							<f:attribute name="order" value="#{cc.attributes.order}" />
 
@@ -52,9 +52,9 @@
 								<h4>Adicionando produto e calculando totais...</h4>
 							</p:sidebar>
 						</p:commandButton>
-						<!--  	<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+						<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 							icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-							onclick="PF('dlgImportProducts').show();" />-->
+							onclick="PF('dlgImportProducts').show();" title="Importar produtos" />
 						<p:menuButton
 							value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 							rendered="#{cc.attrs.renderDiscountButton}" styleClass="p-mr-2">
@@ -81,7 +81,7 @@
 							styleClass="ui-button-danger"
 							disabled="#{itemOrderContainerController.disableDeleteProductsBtn()}"
 							process="@this"
-							update="@this,dtItems, #{cc.clientId}:panelTotals">
+							update="@this,dtItems, #{cc.clientId}:panelTotals" title="Excluir produtos selecionados">
 							<p:confirm header="Confirmar"
 								message="Deletar produtos selecionados?"
 								icon="pi pi-exclamation-triangle" />
@@ -271,7 +271,8 @@
 											action="#{findProductStockController.find(item.product)}"
 											process="@this" autoRun="#{item.product.stock eq null}"
 											onstart="$('#div-stock-content-#{item.product.commercialCode}').hide();$('#div-loading-stock-#{item.product.commercialCode}').show();"
-											oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();" update="div-stock-content"/>
+											oncomplete="$('#div-stock-content-#{item.product.commercialCode}').show();$('#div-loading-stock-#{item.product.commercialCode}').hide();"
+											update="div-stock-content" />
 									</div>
 								</div>
 							</div>
@@ -281,8 +282,7 @@
 								Buscando detalhes técnicos... <i class="pi pi-spin pi-spinner"
 									style="font-size: 3rem;" />
 							</div>
-							<div class="p-col-6 product-tech-data"
-								jsf:id="product-tech">
+							<div class="p-col-6 product-tech-data" jsf:id="product-tech">
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
@@ -322,7 +322,7 @@
 									action="#{productTechDetailLoaderController.load(item.product)}"
 									onstart="$('#product-tech-loader-#{item.product.commercialCode}').show();$('#product-tech-#{item.product.commercialCode}').hide();"
 									oncomplete="$('#product-tech-loader-#{item.product.commercialCode}').hide();$('#product-tech-#{item.product.commercialCode}').show();"
-									process="@this" async="true" update="product-tech"/>
+									process="@this" async="true" update="product-tech" />
 
 							</div>
 						</div>

@@ -30,7 +30,7 @@ public class XssfReaderImpl implements XssfReader {
 						IntStream cells = IntStream.range(0, row.getLastCellNum());
 						List<CellAttribute> cellAttributes = cells.mapToObj(c -> row.getCell(c))
 								.filter(x -> x != null).map(x -> {
-									return new CellAttribute(x.getColumnIndex(), this.getCellValue(x));
+									return new CellAttribute(x.getColumnIndex(), this.getCellValue(x),x.getCellType());
 								}).collect(CopyOnWriteArrayList::new, List::add, List::addAll);
 						return new RowObject(row.getRowNum(), cellAttributes);
 					}).collect(CopyOnWriteArrayList::new, List::add, List::addAll);

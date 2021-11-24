@@ -44,19 +44,7 @@
 			<artifactId>arquillian-junit-container</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- clip -->
-		<dependency>
-			<groupId>org.jboss.arquillian.container</groupId>
-			<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-			<version>1.0.0.CR9</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.weld</groupId>
-			<artifactId>weld-core</artifactId>
-			<version>2.3.5.Final</version>
-			<scope>test</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
@@ -96,6 +84,8 @@
 			<artifactId>omnifaces</artifactId>
 			<version>3.11.2</version>
 		</dependency>
+		
+
 	</dependencies>
 
 	<properties>
@@ -106,6 +96,48 @@
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 		<skipTests>true</skipTests>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>arquillian-payara-embedded</id>
+			<dependencies>
+				<dependency>
+					<groupId>fish.payara.arquillian</groupId>
+					<artifactId>arquillian-payara-server-4-embedded</artifactId>
+					<version>1.0.Beta2</version>
+					<scope>test</scope>
+				</dependency>
+
+				<!-- https://mvnrepository.com/artifact/fish.payara.extras/payara-embedded-all -->
+				<dependency>
+					<groupId>fish.payara.extras</groupId>
+					<artifactId>payara-embedded-all</artifactId>
+					<version>5.2021.9</version>
+					<scope>test</scope>
+				</dependency>
+
+			</dependencies>
+		</profile>
+
+		<profile>
+			<id>arquillian-weld-ee-embedded</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
+					<version>1.0.0.CR9</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.jboss.weld</groupId>
+					<artifactId>weld-core</artifactId>
+					<version>2.3.5.Final</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 	<build>
 		<finalName>portal</finalName>
 		<plugins>

@@ -2,16 +2,18 @@ package com.portal.client.service;
 
 import java.util.List;
 
-import com.portal.client.dto.BatchProductSearchDataWrapper.BatchProductData;
-import com.portal.client.dto.ProductXlsxFileReadLayout;
-import com.portal.client.dto.ProductXlsxFileReadProjection;
-import com.portal.client.exception.CustomerNotFoundException;
-import com.portal.client.exception.ItemsNotFoundException;
+import com.portal.client.dto.ProductFileReadLayout;
+import com.portal.client.dto.ProductImporterExtractedData;
+import com.portal.client.vo.Product;
 
-public interface ProductImporter {
+public abstract class ProductImporter {
 
-	List<ProductXlsxFileReadProjection> read(ProductXlsxFileReadLayout fileLayout);
+	public  List<Product> run(ProductFileReadLayout layout) {
+		return this.parseData(this.extractData(layout));
 
-	BatchProductData performBatchSearch(List<ProductXlsxFileReadProjection> items, String customerCode, String customerStore)
-			throws CustomerNotFoundException, ItemsNotFoundException;
+	}
+
+	abstract List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout);
+
+	abstract List<Product> parseData(List<ProductImporterExtractedData> datas);
 }

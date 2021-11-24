@@ -1,4 +1,4 @@
-activeProfiles=
+activeProfiles=arquillian-payara-embedded
 eclipse.preferences.version=1
 resolveWorkspaceProjects=true
 version=1

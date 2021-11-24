@@ -14,8 +14,8 @@ import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.file.UploadedFile;
 
-import com.portal.client.dto.ProductXlsxFileReadLayout;
-import com.portal.client.dto.ProductXlsxFileReadProjection;
+import com.portal.client.dto.XlsxProductFileReadLayout;
+import com.portal.client.dto.ProductImporterExtractedData;
 import com.portal.client.exception.CustomerNotFoundException;
 import com.portal.client.exception.ItemsNotFoundException;
 import com.portal.client.service.ProductImporter;
@@ -37,9 +37,9 @@ public class ItemImportController implements Serializable {
 
 	private boolean onDialog;
 
-	private ProductXlsxFileReadLayout itemFileLayout;
+	private XlsxProductFileReadLayout itemFileLayout;
 
-	private List<ProductXlsxFileReadProjection> itemXlsxProjection;
+	private List<ProductImporterExtractedData> itemXlsxProjection;
 
 	private ProductImporter itemImporter;
 
@@ -53,7 +53,7 @@ public class ItemImportController implements Serializable {
 	public ItemImportController(ProductImporter itemImporter,
 			ProcessingExceptionFacesMessageHelper prossExceptionMessageShower) {
 		this.itemImporter = itemImporter;
-		this.itemFileLayout = new ProductXlsxFileReadLayout();
+		this.itemFileLayout = new XlsxProductFileReadLayout();
 		this.itemFileLayout.setInitPosition(1);
 		this.itemFileLayout.setOffSetCellForProductCode(1);
 		this.itemFileLayout.setOffSetCellForProductQuantity(2);
@@ -114,7 +114,7 @@ public class ItemImportController implements Serializable {
 
 	}
 
-	public void removeItemXlsxProjection(ProductXlsxFileReadProjection item) {
+	public void removeItemXlsxProjection(ProductImporterExtractedData item) {
 		if (this.itemXlsxProjection.remove(item)) {
 			if (itemXlsxProjection.size() == 0) {
 				PrimeFaces.current().executeScript("PF('dlgResult').hide()");
@@ -144,11 +144,11 @@ public class ItemImportController implements Serializable {
 		this.customerStore = customerStore;
 	}
 
-	public ProductXlsxFileReadLayout getItemFileLayout() {
+	public XlsxProductFileReadLayout getItemFileLayout() {
 		return itemFileLayout;
 	}
 
-	public List<ProductXlsxFileReadProjection> getItemXlsxProjection() {
+	public List<ProductImporterExtractedData> getItemXlsxProjection() {
 		return itemXlsxProjection;
 	}
 

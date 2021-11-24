@@ -2,7 +2,7 @@ package com.portal.client.dto;
 
 import java.io.Serializable;
 
-public class ProductXlsxFileReadProjection implements Serializable{
+public class ProductImporterExtractedData implements Serializable{
 
 	/**
 	 * 
@@ -11,11 +11,11 @@ public class ProductXlsxFileReadProjection implements Serializable{
 	private String code;
 	private int quantity;
 
-	public ProductXlsxFileReadProjection() {
+	public ProductImporterExtractedData() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ProductXlsxFileReadProjection(String code, int quantity) {
+	public ProductImporterExtractedData(String code, int quantity) {
 		super();
 		this.code = code;
 		this.quantity = quantity;
@@ -39,7 +39,7 @@ public class ProductXlsxFileReadProjection implements Serializable{
 
 	@Override
 	public String toString() {
-		return "ItemXlsxProjection [code=" + code + ", quantity=" + quantity + "]";
+		return "ProductImporterExtractedData [code=" + code + ", quantity=" + quantity + "]";
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ProductXlsxFileReadProjection implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ProductXlsxFileReadProjection other = (ProductXlsxFileReadProjection) obj;
+		ProductImporterExtractedData other = (ProductImporterExtractedData) obj;
 		if (code == null) {
 			if (other.code != null)
 				return false;

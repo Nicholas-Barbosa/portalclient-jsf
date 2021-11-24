@@ -10,10 +10,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.poi.ss.usermodel.CellType;
+
 import com.portal.client.cdi.qualifier.Summary;
+import com.portal.client.microsoft.excel.CellAttribute;
+import com.portal.client.microsoft.excel.CellAttribute.CellAttributeBuilder;
 import com.portal.client.microsoft.excel.RowObject;
-import com.portal.client.microsoft.excel.writer.WriteCellAttribute;
-import com.portal.client.microsoft.excel.writer.WriteCellAttribute.WriteCellAttributeBuilder;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
@@ -46,10 +48,10 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 		return xssfWriter.write("conferência-cálculos", rowObjects);
 	}
 
-	private List<WriteCellAttribute> createPriceCells(Item item) {
+	private List<CellAttribute> createPriceCells(Item item) {
 		Product product = item.getProduct();
 		ProductPriceData priceData = product.getPriceData();
-		List<WriteCellAttribute> cells = new LinkedList<>();
+		List<CellAttribute> cells = new LinkedList<>();
 		addCellValue(cells, "productCode", product.getCommercialCode());
 		addCellValue(cells, "line", product.getLine());
 		addCellValue(cells, "quantity", priceData.getQuantity() + "");
@@ -63,8 +65,8 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 	}
 
 	private RowObject createRowHeaders() {
-		return new RowObject(0, WriteCellAttributeBuilder.of(0, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor",
-				"ST", "Preço", "Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$", "Preço Final"));
+		return new RowObject(0, CellAttributeBuilder.of(0, "Cd.Comercial", "Linha", "Quantidade", "unit", "valor", "ST",
+				"Preço", "Desc. Global %", "Desc R$", "Vlr.Liquido", "Desc. Linha %", "Desc R$", "Preço Final"));
 
 	}
 
@@ -84,7 +86,7 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 		columnsPositions.put("totalGrossValue", 12);
 	}
 
-	private void createDiscountCells(List<WriteCellAttribute> cells, ProductPriceData data) {
+	private void createDiscountCells(List<CellAttribute> cells, ProductPriceData data) {
 		this.addCellValue(cells, "globalDiscount", 0f);
 		this.addCellValue(cells, "globalDiscountValue", 0f);
 		this.addCellValue(cells, "totalGrossValueAfterGlobalDiscount", 0f);
@@ -93,9 +95,9 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 		this.addCellValue(cells, "totalGrossValue", data.getTotalGrossValue().doubleValue());
 	}
 
-	private void addCellValue(List<WriteCellAttribute> cells, String columnKey, Object value) {
+	private void addCellValue(List<CellAttribute> cells, String columnKey, Object value) {
 		int column = columnsPositions.get(columnKey);
-		cells.add(value instanceof Double ? WriteCellAttributeBuilder.ofNumber(column, (double) value)
-				: WriteCellAttributeBuilder.of(column, value));
+		cells.add(value instanceof Double ? CellAttributeBuilder.ofNumber(column, (double) value)
+				: CellAttributeBuilder.of(column, value, CellType.STRING));
 	}
 }
