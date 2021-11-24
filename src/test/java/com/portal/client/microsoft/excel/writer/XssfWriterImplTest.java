@@ -17,13 +17,7 @@ public class XssfWriterImplTest {
 
 	@Deployment
 	public static JavaArchive createDeployment() {
-//		File[] files = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeDependencies().resolve()
-//				.withTransitivity().asFile();
-//		System.out.println("files " + files.length);
 		JavaArchive jar = ShrinkwrapDeploymentUtils.createdDeployment(true, "com.portal.client.microsoft.excel");
-//		for (File file : files) {
-//			jar.addAsResource(file);
-//		}
 		System.out.println(jar.toString(true));
 		return jar;
 	}

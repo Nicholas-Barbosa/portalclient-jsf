@@ -1,4 +1,4 @@
-package com.portal.client.service.export.jasper.service;
+package com.portal.client.resources.export.jasper.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

@@ -2,6 +2,7 @@ package com.portal.client.dto;
 
 public class ProductFileReadLayout {
 
+	private String customerCode, customerStore;
 	private byte[] xlsxStreams;
 
 	public ProductFileReadLayout() {
@@ -16,4 +17,19 @@ public class ProductFileReadLayout {
 		this.xlsxStreams = xlsxStreams;
 	}
 
+	public String getCustomerCode() {
+		return customerCode;
+	}
+
+	public void setCustomerCode(String customerCode) {
+		this.customerCode = customerCode;
+	}
+
+	public String getCustomerStore() {
+		return customerStore;
+	}
+
+	public void setCustomerStore(String customerStore) {
+		this.customerStore = customerStore;
+	}
 }

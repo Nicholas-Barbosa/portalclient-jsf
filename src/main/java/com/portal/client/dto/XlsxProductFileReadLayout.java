@@ -1,11 +1,12 @@
 package com.portal.client.dto;
 
-public class XlsxProductFileReadLayout extends ProductFileReadLayout{
+public class XlsxProductFileReadLayout extends ProductFileReadLayout {
 
 	private int initPosition;
 	private int offSetCellForProductCode;
 	private int offSetCellForProductQuantity;
 	private int lastPosition;
+	
 
 	public XlsxProductFileReadLayout() {
 		// TODO Auto-generated constructor stub
@@ -44,5 +45,4 @@ public class XlsxProductFileReadLayout extends ProductFileReadLayout{
 	}
 
 	
-
 }

@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,15 +45,22 @@ public class XlsxProductImporterTest {
 		return ShrinkwrapDeploymentUtils.createdDeployment(XssfReaderImpl.class, XlsxProductImporter.class);
 	}
 
-	
 	@Test
+	@InSequence(1)
 	public void importerNotNull() {
 		assertNotNull(importer);
 	}
 
 	@Test
+	@InSequence(2)
 	public void testExtractData() {
 		assertEquals(2, importer.extractData(layout).size());
+
+	}
+
+	@Test
+	@InSequence(3)
+	public void shouldRun() {
 
 	}
 
