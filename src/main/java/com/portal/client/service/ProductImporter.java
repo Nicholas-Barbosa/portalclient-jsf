@@ -6,15 +6,10 @@ import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.dto.ProductFileReadLayout;
 import com.portal.client.dto.ProductImporterExtractedData;
 
-public abstract class ProductImporter {
+public interface ProductImporter {
 
-	public BatchProductSearchDataWrapper run(ProductFileReadLayout layout) {
-		return this.parseData(this.extractData(layout), layout.getCustomerCode(), layout.getCustomerStore());
+	List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout);
 
-	}
-
-	abstract List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout);
-
-	abstract BatchProductSearchDataWrapper parseData(List<ProductImporterExtractedData> datas, String customerCode,
+	BatchProductSearchDataWrapper parseData(List<ProductImporterExtractedData> datas, String customerCode,
 			String customerStore);
 }

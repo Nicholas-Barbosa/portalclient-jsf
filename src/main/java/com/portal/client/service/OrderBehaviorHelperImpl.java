@@ -4,17 +4,21 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 
+import com.portal.client.dto.BatchProductSearchDataWrapper;
+import com.portal.client.dto.BatchProductSearchDataWrapper.BatchProductSearchData;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPriceData;
 
 @ApplicationScoped
 @Named
-public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper, Serializable {
+public class OrderBehaviorHelperImpl implements OrderBehaviorHelper, Serializable {
 
 	/**
 	 * 
@@ -85,14 +89,13 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 //	}
 
 	@Override
-	public void merge(Order mixedBudget, Order budgetToMix) {
-		if (mixedBudget.getCode() == null & budgetToMix.getCode() != null)
-			mixedBudget.setCode(budgetToMix.getCode());
-		mixedBudget.setCreatedAt(budgetToMix.getCreatedAt());
-		mixedBudget.setGlobalDiscount(mixedBudget.getGlobalDiscount().add(budgetToMix.getGlobalDiscount()));
-		budgetToMix.getItems().stream().forEach(i -> {
-			this.addItem(mixedBudget, i);
-		});
+	public void merge(Order originObj, Order newObj) {
+		if (originObj.getCode() == null & newObj.getCode() != null)
+			originObj.setCode(newObj.getCode());
+		if (originObj.getCreatedAt() == null && newObj.getCreatedAt() != null)
+			originObj.setCreatedAt(newObj.getCreatedAt());
+		this.addItem(originObj, newObj.getItems());
+
 	}
 
 //	@Override
@@ -119,6 +122,47 @@ public class OrderCommonBehaviorHelperImpl implements OrderCommonBehaviorHelper,
 					.map(i -> i.getPriceData().getTotalStValue()).reduce(BigDecimal.ZERO, (v1, v2) -> v1.add(v2));
 			order.setStValue(stValue);
 		}
+
+	}
+
+	@Override
+	public void addProduct(Order order, Product product) {
+		this.addItem(order, new Item(product));
+
+	}
+
+	@Override
+	public void addProducts(Order order, BatchProductSearchDataWrapper wrapper) {
+		this.addProducts(order,
+				wrapper.getProducts().stream().map(BatchProductSearchData::getProduct).collect(Collectors.toList()));
+	}
+
+	@Override
+	public void addProducts(Order order, Collection<Product> products) {
+		products.parallelStream().map(Item::new).peek(i -> order.addItem(i))
+				.filter(i -> order.getItems().contains(i)).forEach(i -> {
+					synchronized (order) {
+						ProductPriceData priceData = i.getProduct().getPriceData();
+						BigDecimal oldStValue = order.getStValue();
+						BigDecimal oldValue = order.getLiquidValue();
+						BigDecimal oldGross = order.getGrossValue();
+						if (oldStValue != null) {
+							order.setStValue(oldStValue.add(priceData.getTotalStValue()));
+						} else
+							order.setStValue(priceData.getTotalStValue());
+
+						if (oldValue != null) {
+							order.setLiquidValue(oldValue.add(priceData.getTotalValue()));
+						} else {
+							order.setLiquidValue(priceData.getTotalValue());
+						}
+						if (oldGross != null) {
+							order.setGrossValue(oldGross.add(priceData.getTotalGrossValue()));
+						} else
+							order.setGrossValue(priceData.getTotalGrossValue());
+					}
+				});
+		;
 
 	}
 

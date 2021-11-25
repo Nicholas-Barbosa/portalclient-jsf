@@ -7,7 +7,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Order;
 
@@ -16,7 +16,7 @@ import com.portal.client.vo.Order;
 public class CustomerDynamicDialog implements ShowController<String> {
 
 	@Inject
-	private OrderCommonBehaviorHelper orderHelper;
+	private OrderBehaviorHelper orderHelper;
 
 	@Override
 	public void show(String p) {

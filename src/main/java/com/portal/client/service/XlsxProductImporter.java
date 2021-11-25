@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.poi.ss.usermodel.CellType;
@@ -13,6 +14,7 @@ import org.apache.poi.ss.usermodel.CellType;
 import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.dto.ProductFileReadLayout;
 import com.portal.client.dto.ProductImporterExtractedData;
+import com.portal.client.dto.ProductToFind;
 import com.portal.client.dto.XlsxProductFileReadLayout;
 import com.portal.client.exception.MismatchCellTypeExceptions;
 import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
@@ -20,17 +22,19 @@ import com.portal.client.microsoft.excel.CellAttribute;
 import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.reader.XssfReader;
 import com.portal.client.regex.RegexUtils;
+import com.portal.client.repository.ProductRepository;
 
-public class XlsxProductImporter extends ProductImporter {
+@ApplicationScoped
+public class XlsxProductImporter implements ProductImporter {
 
 	@Inject
 	private XssfReader xssReader;
 
-//	@Inject
-//	private ProductRepository productRepository;
+	@Inject
+	private ProductRepository productRepository;
 
 	@Override
-	List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout) {
+	public List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout) {
 		XlsxProductFileReadLayout xlsxLayout = (XlsxProductFileReadLayout) layout;
 		try {
 			List<RowObject> rows = xssReader.read(xlsxLayout.getXlsxStreams(), xlsxLayout.getInitPosition(),
@@ -59,14 +63,13 @@ public class XlsxProductImporter extends ProductImporter {
 	}
 
 	@Override
-	BatchProductSearchDataWrapper parseData(List<ProductImporterExtractedData> datas, String customerCode,
+	public BatchProductSearchDataWrapper parseData(List<ProductImporterExtractedData> datas, String customerCode,
 			String customerStore) {
 		// TODO Auto-generated method stub
-//		return productRepository.batchProductSearch(customerCode, customerStore,
-//				datas.stream()
-//						.map(extractedData -> new ProductToFind(extractedData.getCode(), extractedData.getQuantity()))
-//						.collect(Collectors.toSet()));
-		return null;
+		return productRepository.batchProductSearch(customerCode, customerStore,
+				datas.stream()
+						.map(extractedData -> new ProductToFind(extractedData.getCode(), extractedData.getQuantity()))
+						.collect(Collectors.toSet()));
 	}
 
 	private ProductImporterExtractedData of(RowObject row, int offsetForCode, int offSetForQuantity) {

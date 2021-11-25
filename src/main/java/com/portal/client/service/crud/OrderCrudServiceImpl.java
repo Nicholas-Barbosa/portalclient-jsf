@@ -9,7 +9,7 @@ import com.portal.client.dto.OrderFullProjection;
 import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.repository.OrderRepository;
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
@@ -19,7 +19,7 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	private OrderRepository repository;
 
 	@Inject
-	private OrderCommonBehaviorHelper orderHelper;
+	private OrderBehaviorHelper orderHelper;
 
 	@Override
 	public void persist(Order order) throws OrderBadRequestExcpetion {

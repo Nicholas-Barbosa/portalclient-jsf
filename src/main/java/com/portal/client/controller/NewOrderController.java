@@ -19,7 +19,7 @@ import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.repository.OrderBadRequestExcpetion;
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
@@ -39,7 +39,7 @@ public class NewOrderController implements Serializable {
 	private Order order;
 	private String cNameToSearch;
 	@Inject
-	private OrderCommonBehaviorHelper orderHelper;
+	private OrderBehaviorHelper orderHelper;
 	@Inject
 	private OrderCrudService orderCrudService;
 	@Inject

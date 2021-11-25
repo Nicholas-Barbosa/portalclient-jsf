@@ -18,7 +18,7 @@ import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.service.CustomerService;
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
@@ -47,7 +47,7 @@ public class BudgetEditingController implements Serializable {
 
 	private CustomerDetailShowController customerShow;
 
-	private OrderCommonBehaviorHelper orderHelper;
+	private OrderBehaviorHelper orderHelper;
 
 	private OrderCrudService orderService;
 
@@ -64,7 +64,7 @@ public class BudgetEditingController implements Serializable {
 	@Inject
 	public BudgetEditingController(BudgetCrudService budgetService, CustomerService customerService,
 			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
-			CustomerDetailShowController customerShow, OrderCommonBehaviorHelper orderHelper,
+			CustomerDetailShowController customerShow, OrderBehaviorHelper orderHelper,
 			OrderCrudService orderService, BudgetExporterShowController exporterShow,
 			OrderBadRequestShowController orderBadRequestShowController) {
 		super();

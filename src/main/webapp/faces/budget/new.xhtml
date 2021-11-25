@@ -15,7 +15,7 @@
 		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"></link>
 		<h:outputStylesheet name="item-row-expansion.css" library="css" />
 		<h:outputScript name="dataTable.js" library="javascript" />
-
+		<h:outputScript name="productFileImport.js" library="javascript" />
 	</ui:define>
 
 	<ui:define name="title">
@@ -143,7 +143,6 @@
 				<o:itemsPanel order="#{newBudgetController.budget}"
 					renderDiscountButton="false" id="itemsComponent" />
 			</div>
-
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"

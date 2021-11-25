@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.portal.client.dto.ProspectCustomerForm;
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.ZipCodeService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Order;
@@ -24,7 +24,7 @@ public class ProspectCustomerFormController implements Serializable {
 	private ZipCodeService zipCodeService;
 
 	@Inject
-	private OrderCommonBehaviorHelper orderHelper;
+	private OrderBehaviorHelper orderHelper;
 
 	private ProspectCustomerForm prospectCustomerForm;
 

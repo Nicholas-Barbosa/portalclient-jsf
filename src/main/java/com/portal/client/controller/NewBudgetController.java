@@ -19,7 +19,7 @@ import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.util.jsf.FacesUtils;
@@ -44,7 +44,7 @@ public class NewBudgetController implements Serializable {
 
 	private final ProcessingExceptionFacesMessageHelper prossExceptionMessageShower;
 
-	private final OrderCommonBehaviorHelper budgetBehaviorHelper;
+	private final OrderBehaviorHelper budgetBehaviorHelper;
 
 	private final HttpSession session;
 
@@ -65,7 +65,7 @@ public class NewBudgetController implements Serializable {
 	@Inject
 	public NewBudgetController(BudgetCrudService budgetService, ClientErrorExceptionController responseController,
 			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper, ProductService productService,
-			OrderCommonBehaviorHelper budgetRequestService, HttpSession session,
+			OrderBehaviorHelper budgetRequestService, HttpSession session,
 			ItemOrderContainerController dtItemsController) {
 		super();
 		this.budgetService = budgetService;
@@ -141,6 +141,7 @@ public class NewBudgetController implements Serializable {
 		budgetBehaviorHelper.setCustomer(budget, prosp);
 	}
 
+
 	public ClientErrorExceptionController getResponseController() {
 		return responseController;
 	}
@@ -172,4 +173,5 @@ public class NewBudgetController implements Serializable {
 	public ItemOrderContainerController getDtItemsController() {
 		return dtItemsController;
 	}
+
 }

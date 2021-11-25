@@ -11,7 +11,7 @@ import com.portal.client.dto.CustomerRepresentativeOrderForm;
 import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.repository.BudgetRepository;
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Page;
 
@@ -25,12 +25,12 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	private BudgetRepository budgetRepository;
 
-	private OrderCommonBehaviorHelper orderHelper;
+	private OrderBehaviorHelper orderHelper;
 
 	private OrderRprensentativeSetter orderRepSetter;
 
 	@Inject
-	public BudgetCrudServiceImpl(BudgetRepository budgetRepository, OrderCommonBehaviorHelper orderHelper,
+	public BudgetCrudServiceImpl(BudgetRepository budgetRepository, OrderBehaviorHelper orderHelper,
 			OrderRprensentativeSetter authorSetter) {
 		super();
 		this.budgetRepository = budgetRepository;

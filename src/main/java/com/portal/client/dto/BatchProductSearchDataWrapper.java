@@ -1,23 +1,29 @@
 package com.portal.client.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Set;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.vo.Product;
+import com.portal.client.vo.ProductImage.ImageInfoState;
+import com.portal.client.vo.builder.ProductImageBuilder;
+import com.portal.client.vo.builder.ProductPriceBuilder;
+
+import net.sf.jasperreports.crosstabs.type.CrosstabTotalPositionEnum;
 
 public class BatchProductSearchDataWrapper {
 
 	private BigDecimal liquidValue, grossValue;
-	private Set<BatchProductData> products;
+	private Set<BatchProductSearchData> products;
 
 	@JsonbCreator
 	public BatchProductSearchDataWrapper(@JsonbProperty("liquid_order_value") BigDecimal liquidValue,
 			@JsonbProperty("gross_order_value") BigDecimal grossValue,
 			@JsonbProperty("client_code") String customerCode,
-			@JsonbProperty("estimate") Set<BatchProductData> products) {
+			@JsonbProperty("estimate") Set<BatchProductSearchData> products) {
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
 		this.products = products;
@@ -31,7 +37,7 @@ public class BatchProductSearchDataWrapper {
 		return grossValue;
 	}
 
-	public Set<BatchProductData> getProducts() {
+	public Set<BatchProductSearchData> getProducts() {
 		return products;
 	}
 
@@ -41,12 +47,12 @@ public class BatchProductSearchDataWrapper {
 				+ ", products=" + products + "]";
 	}
 
-	public static class BatchProductData {
+	public static class BatchProductSearchData {
 
 		private Product product;
 
 		@JsonbCreator
-		public BatchProductData(@JsonbProperty("product_code") String productCode,
+		public BatchProductSearchData(@JsonbProperty("product_code") String productCode,
 				@JsonbProperty("commercial_code") String commercialCode,
 				@JsonbProperty("unit_gross_value") BigDecimal unitGross,
 				@JsonbProperty("total_gross_value") BigDecimal totalGross,
@@ -56,8 +62,14 @@ public class BatchProductSearchDataWrapper {
 				@JsonbProperty("st_value") BigDecimal totalStValue, @JsonbProperty("description") String description,
 				@JsonbProperty("multiple") int multiple, @JsonbProperty("product_type") String acronymLine,
 				@JsonbProperty("description_product_type") String line) {
-			this.product = Product.ofJsonb(null, productCode, line, acronymLine, multiple, null, commercialCode,
-					totalStValue, unitValue, stock, description, unitGross);
+			this.product = new Product(productCode, commercialCode, null, description, line, acronymLine, null, null,
+					ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
+					ProductPriceBuilder.getInstance().withQuantity(quantity).withMultiple(multiple)
+							.withUnitGrossValue(unitGross).withUnitValue(unitValue)
+							.withUnitStValue(totalStValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
+							.withTotalGrossValue(totalGross).withTotalStValue(totalStValue).withTotalValue(totalValue)
+							.build(),
+					null);
 
 		}
 
@@ -81,7 +93,7 @@ public class BatchProductSearchDataWrapper {
 				return false;
 			if (getClass() != obj.getClass())
 				return false;
-			BatchProductData other = (BatchProductData) obj;
+			BatchProductSearchData other = (BatchProductSearchData) obj;
 			if (product == null) {
 				if (other.product != null)
 					return false;

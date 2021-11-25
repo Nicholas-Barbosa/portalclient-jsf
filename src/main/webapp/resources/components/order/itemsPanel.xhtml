@@ -23,6 +23,7 @@
 	<composite:attribute name="block"
 		shortDescription="Conditionaly activate UI Block"
 		type="java.lang.Boolean" default="true" />
+
 </composite:interface>
 <composite:implementation>
 	<div class="card">
@@ -54,7 +55,8 @@
 						</p:commandButton>
 						<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 							icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
-							onclick="PF('dlgImportProducts').show();" title="Importar produtos" />
+							onclick="PF('dlgImportProducts').show();"
+							title="Importar produtos" />
 						<p:menuButton
 							value="#{resourceBundleServiceImpl.getMessage('descontos')}"
 							rendered="#{cc.attrs.renderDiscountButton}" styleClass="p-mr-2">
@@ -81,7 +83,8 @@
 							styleClass="ui-button-danger"
 							disabled="#{itemOrderContainerController.disableDeleteProductsBtn()}"
 							process="@this"
-							update="@this,dtItems, #{cc.clientId}:panelTotals" title="Excluir produtos selecionados">
+							update="@this,dtItems, #{cc.clientId}:panelTotals"
+							title="Excluir produtos selecionados">
 							<p:confirm header="Confirmar"
 								message="Deletar produtos selecionados?"
 								icon="pi pi-exclamation-triangle" />
@@ -355,6 +358,8 @@
 	<div class="card">
 		<p:outputPanel id="panelTotals" deferred="true" deferredMode="visible">
 			<h:form id="totals">
+				<p:remoteCommand name="updateTotals" process="@this" update="@form"
+					async="true" />
 				<div class="ui-fluid p-formgrid p-grid">
 					<div class="p-field p-col-12 p-md-3">
 						<p:outputLabel for="liquidV"
@@ -395,11 +400,14 @@
 	</p:confirmDialog>
 
 	<p:dialog header="Importar produtos" modal="true"
-		widgetVar="dlgImportProducts">
-
-		<product:fileImport
-			customerCode="#{cc.attrs.order.customerOnOrder.code}"
-			customerStore="#{cc.attrs.order.customerOnOrder.store}" />
+		widgetVar="dlgImportProducts" responsive="true">
+		<div style="max-width: 50vw; max-height: 60vh; overflow-y: auto">
+			<product:fileImport
+				customerCode="#{cc.attrs.order.customerOnOrder.code}"
+				customerStore="#{cc.attrs.order.customerOnOrder.store}"
+				observer="#{itemOrderContainerController}"
+				onConfirm="PF('dlgImportProducts').hide();updateDtItems();updateTotals();" />
+		</div>
 
 	</p:dialog>
 

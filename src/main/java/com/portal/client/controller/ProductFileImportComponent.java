@@ -1,6 +1,7 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.view.ViewScoped;
@@ -11,9 +12,13 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 
 import com.portal.client.dto.XlsxProductFileReadLayout;
+import com.portal.client.exception.MismatchCellTypeExceptions;
+import com.portal.client.exception.ProductsNotFoundException;
+import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
 import com.portal.client.dto.ProductImporterExtractedData;
 import com.portal.client.service.ProductImporter;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.WrapperProduct404Error.Product404Error;
 
 @ViewScoped
 @Named
@@ -29,13 +34,33 @@ public class ProductFileImportComponent implements Serializable {
 
 	private XlsxProductFileReadLayout fileLayout;
 
-	private List<ProductImporterExtractedData> productsProjection;
+	private List<ProductImporterExtractedData> extractedData;
+
+	private List<MismatchCellTypeException> mismatchCelltypeExceptions;
+
+	private Product404Error[] productsNotFound;
 
 	public ProductFileImportComponent() {
-		fileLayout = new XlsxProductFileReadLayout();
-		fileLayout.setInitPosition(1);
-		fileLayout.setOffSetCellForProductCode(1);
-		fileLayout.setOffSetCellForProductQuantity(2);
+		this.setDefaultFileLayoutPositions();
+
+	}
+
+	public void confirm(String customerCode, String customerStore, ProductFileImportObserver observer) {
+		try {
+			observer.onConfirm(importer.parseData(extractedData, customerCode, customerStore));
+			this.setDefaultFileLayoutPositions();
+			this.fileLayout.setXlsxStreams(null);
+			this.mismatchCelltypeExceptions = null;
+			this.extractedData = null;
+			if (productsNotFound != null) {
+				FacesUtils.addHeaderForResponse("products-not-found", true);
+			}
+		} catch (ProductsNotFoundException e) {
+			productsNotFound = e.getProducts();
+			extractedData.removeIf(p -> Arrays.stream(productsNotFound).parallel()
+					.anyMatch(pNotFound -> p.getCode().equals(pNotFound.getProductIdentity())));
+			this.confirm(customerCode, customerStore, observer);
+		}
 	}
 
 	public String onFlowProcess(FlowEvent event) {
@@ -43,25 +68,38 @@ public class ProductFileImportComponent implements Serializable {
 		case "setFileLayout":
 			if (this.fileLayout.getXlsxStreams() == null || this.fileLayout.getXlsxStreams().length == 0) {
 				FacesUtils.error(null, "Arquivo não detectado", "Realize o upload!", "growl");
-				return event.getOldStep();
+				return "file";
 			}
 			return event.getNewStep();
-		case "readProjection":
-			this.fileLayout.setInitPosition(fileLayout.getInitPosition() - 1);
-			this.fileLayout.setLastPosition(fileLayout.getLastPosition() == 0 ? 0
-					: fileLayout.getLastPosition() == 1 ? 1 : fileLayout.getLastPosition() - 1);
-			this.fileLayout.setOffSetCellForProductCode(fileLayout.getOffSetCellForProductCode() - 1);
-			this.fileLayout.setOffSetCellForProductQuantity(fileLayout.getOffSetCellForProductQuantity() - 1);
-			importer.run(fileLayout);
-//			FacesUtils.ajaxUpdate("dtProjection");
-			FacesUtils.executeScript("PF('dlgLoading').hide()");
-			
-			return event.getNewStep();
+		case "extractedData":
+			try {
+				this.fileLayout.setInitPosition(fileLayout.getInitPosition() - 1);
+				this.fileLayout.setLastPosition(fileLayout.getLastPosition() == 0 ? 0
+						: fileLayout.getLastPosition() == 1 ? 1 : fileLayout.getLastPosition() - 1);
+				this.fileLayout.setOffSetCellForProductCode(fileLayout.getOffSetCellForProductCode() - 1);
+				this.fileLayout.setOffSetCellForProductQuantity(fileLayout.getOffSetCellForProductQuantity() - 1);
+				extractedData = importer.extractData(fileLayout);
+				FacesUtils.executeScript("PF('dlgLoading').hide()");
+				return event.getNewStep();
+			} catch (MismatchCellTypeExceptions e) {
+				mismatchCelltypeExceptions = e.getExceptions();
+				FacesUtils
+						.executeScript("PF('dlgLoading').hide();PF('dlgMismatchExcpetions').show();updateMismatchs()");
+				fileLayout.setXlsxStreams(null);
+			}
+			return "file";
 
 		default:
 			return event.getNewStep();
 		}
 
+	}
+
+	private final void setDefaultFileLayoutPositions() {
+		fileLayout = new XlsxProductFileReadLayout();
+		fileLayout.setInitPosition(1);
+		fileLayout.setOffSetCellForProductCode(1);
+		fileLayout.setOffSetCellForProductQuantity(2);
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -73,8 +111,19 @@ public class ProductFileImportComponent implements Serializable {
 		return fileLayout;
 	}
 
-	public List<ProductImporterExtractedData> getProductsProjection() {
-		return productsProjection;
+	public List<ProductImporterExtractedData> getExtractedData() {
+		return extractedData;
 	}
 
+	public List<MismatchCellTypeException> getMismatchCelltypeExceptions() {
+		return mismatchCelltypeExceptions;
+	}
+
+	public Product404Error[] getProductsNotFound() {
+		return productsNotFound;
+	}
+	
+	public void setProductsNotFound(Product404Error[] productsNotFound) {
+		this.productsNotFound = productsNotFound;
+	}
 }

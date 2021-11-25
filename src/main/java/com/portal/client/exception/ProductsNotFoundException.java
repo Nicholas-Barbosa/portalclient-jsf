@@ -9,14 +9,14 @@ public class ProductsNotFoundException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = -393430901125351070L;
 
-	private Product404Error[] errors;
+	private Product404Error[] products;
 
-	public ProductsNotFoundException(Product404Error[] errors) {
+	public ProductsNotFoundException(Product404Error[] products) {
 		super();
-		this.errors = errors.clone();
+		this.products = products.clone();
 	}
 
-	public Product404Error[] getErrors() {
-		return errors.clone();
+	public Product404Error[] getProducts() {
+		return products.clone();
 	}
 }

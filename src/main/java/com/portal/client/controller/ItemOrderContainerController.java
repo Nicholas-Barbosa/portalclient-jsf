@@ -13,8 +13,9 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
+import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.exception.ItemQuantityNotAllowed;
-import com.portal.client.service.OrderCommonBehaviorHelper;
+import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Budget;
@@ -24,7 +25,7 @@ import com.portal.client.vo.Product;
 
 @ViewScoped
 @Named
-public class ItemOrderContainerController implements Serializable {
+public class ItemOrderContainerController implements Serializable, ProductFileImportObserver {
 
 	/**
 	 * 
@@ -33,7 +34,7 @@ public class ItemOrderContainerController implements Serializable {
 	private List<Item> itemsToRemove;
 
 	@Inject
-	private OrderCommonBehaviorHelper orderHelper;
+	private OrderBehaviorHelper orderHelper;
 
 	@Inject
 	private OrderItemQuantityCalculator itemQuantityCalculator;
@@ -48,6 +49,11 @@ public class ItemOrderContainerController implements Serializable {
 		itemsToRemove = new ArrayList<>();
 	}
 
+	@Override
+	public void onConfirm(BatchProductSearchDataWrapper wrapper) {
+		orderHelper.addProducts(order, wrapper);
+	}
+
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
 		this.orderHelper.merge(this.order, event.getObject());
 		FacesUtils.ajaxUpdate("panelTotals");
@@ -56,7 +62,6 @@ public class ItemOrderContainerController implements Serializable {
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresentOrElse(p -> {
 			orderHelper.addItem(order, new Item(p));
-			System.out.println("");
 			FacesUtils.ajaxUpdate("dtItems", "totals");
 		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
 
@@ -64,7 +69,7 @@ public class ItemOrderContainerController implements Serializable {
 
 	public void onRowItemEdit(RowEditEvent<Item> event) {
 		try {
-			
+
 			itemQuantityCalculator.calc(order, event.getObject(), onRowItemQuantity);
 		} catch (ItemQuantityNotAllowed e) {
 			FacesUtils.error(null, e.getMessage(), null);
@@ -136,4 +141,5 @@ public class ItemOrderContainerController implements Serializable {
 	public void setOnRowItemQuantity(int onRowItemQuantity) {
 		this.onRowItemQuantity = onRowItemQuantity;
 	}
+
 }

@@ -6,9 +6,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:composite="http://java.sun.com/jsf/composite">
 <h:head>
-	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
-		library="rain-layout" />
-	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+
 </h:head>
 
 <composite:interface>
@@ -18,6 +16,13 @@
 
 	<composite:attribute name="customerStore" required="true"
 		type="java.lang.String" />
+	<composite:attribute name="observer" required="true"
+		shortDescription="Observer to be notified by subejct ProductFileImportComponent"
+		type="com.portal.client.controller.ProductFileImportObserver" />
+
+	<composite:attribute name="onConfirm"
+		shortDescription="Javascript function to call when user confirm the import."
+		type="java.lang.String" />
 </composite:interface>
 <composite:implementation>
 	<div id="#{cc.clientId}">
@@ -25,14 +30,14 @@
 			<p:wizard flowListener="#{productFileImportComponent.onFlowProcess}"
 				showNavBar="true" showStepStatus="true"
 				onnext="if(PF('importWizard').currentStep=='setFileLayout')PF('dlgLoading').show()"
-				widgetVar="importWizard" nextLabel="Próximo" backLabel="Voltar"  >
-				<p:tab id="file" title="Arquivo" >
+				widgetVar="importWizard" nextLabel="Próximo" backLabel="Voltar"
+				id="importWizard">
+				<p:tab id="file" title="Arquivo">
 					<p:fileUpload mode="advanced" dragDropSupport="true"
 						allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
 						label="Escolher"
 						listener="#{productFileImportComponent.handleFileUpload}"
 						process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
-				
 				</p:tab>
 				<p:tab id="setFileLayout" title="Layout do arquivo">
 					<p:panelGrid columns="4"
@@ -62,60 +67,132 @@
 						<p:spinner
 							value="#{productFileImportComponent.fileLayout.offSetCellForProductQuantity}" />
 
-						
+
 					</p:panelGrid>
 				</p:tab>
-				<p:tab id="readProjection" title="Projeção" >
-					<div>
-						<p:dataTable id="dtProjection" widgetVar="dtProjection"
-							value="#{productFileImportComponent.productsProjection}"
-							var="product" editable="true" editMode="cell" reflow="true"
-							scrollable="true" filterDelay="75" paginator="true"
-							paginatorPosition="bottom" paginatorAlwaysVisible="false"
-							rows="10">
-							<p:ajax event="cellEdit"
-								listener="#{itemImportController.onCellEdit}" update="growl" />
-							<p:column headerText="Produto" filterBy="#{product.code}"
-								id="columnCode">
-								<p:cellEditor>
-									<f:facet name="input">
-										<p:inputText value="#{product.code}" />
-									</f:facet>
-									<f:facet name="output">
-										<h:outputText value="#{product.code}" />
-									</f:facet>
-								</p:cellEditor>
+				<p:tab id="extractedData" title="Dados extraídos">
+					<div class="p-d-flex p-flex-column">
+						<div class="p-mb-2">
+							<p:dataTable id="extractedDatas" widgetVar="extractedDatas"
+								value="#{productFileImportComponent.extractedData}"
+								var="product" editable="true" editMode="cell" reflow="true"
+								scrollable="true" filterDelay="75" paginator="true"
+								paginatorPosition="bottom" paginatorAlwaysVisible="false"
+								rows="10">
+								<f:facet name="header">
+									<p:button value="Redimensionar tabela"
+										styleClass="ui-button-help"
+										onclick="editScrollBodyMaxHeight('extractedDatas','35vh')" />
+								</f:facet>
+								<p:column headerText="Produto" filterBy="#{product.code}"
+									id="columnCode">
+									<p:cellEditor>
+										<f:facet name="input">
+											<p:inputText value="#{product.code}" />
+										</f:facet>
+										<f:facet name="output">
+											<h:outputText value="#{product.code}" />
+										</f:facet>
+									</p:cellEditor>
 
-							</p:column>
-							<p:column headerText="Quantidade" id="columnQuantity">
-								<p:cellEditor>
-									<f:facet name="input">
-										<p:spinner value="#{product.quantity}" min="1" />
-									</f:facet>
-									<f:facet name="output">
-										<h:outputText value="#{product.quantity}" />
-									</f:facet>
-								</p:cellEditor>
-							</p:column>
-							<p:column style="width:3rem">
-								<p:commandButton icon="pi pi-times"
-									styleClass="rounded-button ui-button-danger"
-									action="#{itemImportController.removeItemXlsxProjection(item)}"
-									process="@this"
-									oncomplete="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();" />
-							</p:column>
-						</p:dataTable>
+								</p:column>
+								<p:column headerText="Quantidade" id="columnQuantity">
+									<p:cellEditor>
+										<f:facet name="input">
+											<p:spinner value="#{product.quantity}" min="1" />
+										</f:facet>
+										<f:facet name="output">
+											<h:outputText value="#{product.quantity}" />
+										</f:facet>
+									</p:cellEditor>
+								</p:column>
+								<p:column style="width:3rem">
+									<p:commandButton icon="pi pi-times"
+										styleClass="rounded-button ui-button-danger"
+										action="#{itemImportController.removeItemXlsxProjection(item)}"
+										process="@this"
+										oncomplete="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();" />
+								</p:column>
+							</p:dataTable>
+						</div>
+						<div class="p-mb-2">
+							<div class="p-d-flex p-jc-between">
+								<div></div>
+								<div>
+									<p:commandButton value="Confirmar"
+										styleClass="ui-button-success" process="@this"
+										action="#{productFileImportComponent.confirm(cc.attrs.customerCode,cc.attrs.customerStore,cc.attrs.observer)}"
+										onstart="PF('dlgLoading').show(); $('#div-loading-text').text('Realizando busca em lote de produtos...')"
+										oncomplete="#{cc.attrs.onConfirm} backWizardToBegin();PF('dlgLoading').hide(); $('#div-loading-text').text('Realizando leitura do arquivo...');onConfirm(xhr)"
+										update="importWizard" />
+								</div>
+							</div>
+						</div>
 					</div>
 				</p:tab>
 			</p:wizard>
 		</h:form>
 	</div>
-	<p:dialog widgetVar="dlgLoading" closable="false"
-		responsive="true" >
+	<p:dialog widgetVar="dlgLoading" closable="false" responsive="true"
+		modal="true" appendTo="@(body)" header="Processando...">
 		<div class="p-grid p-flex-column">
-			<div class="p-col">Lendo arquivo...</div>
+			<div class="p-col" id="div-loading-text">Realizando leitura do
+				arquivo...</div>
 			<div class="p-col">
 				<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+			</div>
+		</div>
+	</p:dialog>
+	<p:dialog widgetVar="dlgMismatchExcpetions" responsive="true"
+		header="Erro" modal="true" appendTo="@(body)" style="max-width:40vw">
+		<div class="p-grid p-flex-column">
+			<div class="p-col">
+				<p:staticMessage severity="error" summary="Incompatibilidade"
+					detail="Foi detectado incompatibilidade no tipo das células a seguir."
+					style="width: 100%" />
+			</div>
+			<div class="p-col">
+				<h:form id="frm-mismatachs">
+					<p:remoteCommand name="updateMismatchs" process="@this"
+						update="@form:mismatchs" />
+					<p:dataTable id="mismatchs"
+						value="#{productFileImportComponent.mismatchCelltypeExceptions}"
+						var="mismatch">
+						<p:column field="rowNum" headerText="Linha" />
+						<p:column field="cell.cellOffset" headerText="Célula" />
+						<p:column field="expectedType" headerText="Tipo experado" />
+						<p:column field="cell.cellType" headerText="Tipo atual" />
+						<p:column field="cell.value" headerText="Valor" />
+						<p:column field="message" filterable="false" sortable="false"
+							headerText="Erro" />
+					</p:dataTable>
+				</h:form>
+			</div>
+		</div>
+	</p:dialog>
+
+	<p:dialog widgetVar="productsNotFound" header="Produtos não importados"
+		modal="true" responsive="true" appendTo="@(body)"
+		style="max-width:35vw" onHide="setNullProductsNotFound()">
+		<div class="p-grid p-flex-column">
+			<div class="p-col">
+				<p:staticMessage severity="warn" summary="Produtos não encontrados"
+					detail="Os seguintes produtos não foram encontrados, portanto não foram importados"
+					style="width: 100%" />
+			</div>
+			<div class="p-col">
+				<h:form id="frm-products-not-found">
+					<p:remoteCommand name="updateProductsNotFound" process="@this"
+						update="productsNotFound" async="true" />
+					<p:remoteCommand name="setNullProductsNotFound" process="@this"
+						action="#{productFileImportComponent.setProductsNotFound(null)}" />
+					<p:dataTable id="productsNotFound"
+						value="#{productFileImportComponent.productsNotFound}"
+						var="mismatch">
+						<p:column field="productIdentity" headerText="Produto" />
+
+					</p:dataTable>
+				</h:form>
 			</div>
 		</div>
 	</p:dialog>
