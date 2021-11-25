@@ -10,7 +10,7 @@ import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.dto.OpenPaymentsPage.OpenPaymentDto;
-import com.portal.client.dto.helper.StringToDateParser;
+import com.portal.client.dto.helper.StringToLocalDateParser;
 
 public class OpenPaymentsPage extends BasePageDTO<OpenPaymentDto> {
 
@@ -54,7 +54,7 @@ public class OpenPaymentsPage extends BasePageDTO<OpenPaymentDto> {
 			this.docNumber = docNumber;
 			this.customerName = customerName;
 			this.situation = situation;
-			this.dueDate = StringToDateParser.convert(date);
+			this.dueDate = StringToLocalDateParser.convert(date);
 		}
 
 		public BigDecimal getSale() {

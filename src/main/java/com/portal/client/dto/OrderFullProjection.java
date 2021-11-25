@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.helper.StringToDateParser;
+import com.portal.client.dto.helper.StringToLocalDateParser;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 
@@ -32,6 +32,6 @@ public class OrderFullProjection extends Order {
 
 		CustomerOnOrder customer = new CustomerOnOrder(customerCode, customerStore, null, null, null, null, null, null, null);
 		return new OrderFullProjection(code, null, null, customer, grossValue, value, null, null, null,
-				items.stream().map(i -> (Item) i).collect(Collectors.toList()), StringToDateParser.convert(createdAt));
+				items.stream().map(i -> (Item) i).collect(Collectors.toList()), StringToLocalDateParser.convert(createdAt));
 	}
 }

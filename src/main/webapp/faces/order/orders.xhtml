@@ -45,7 +45,7 @@
 							value="#{ordersController.orders}" paginator="true"
 							paginatorPosition="bottom" rows="#{ordersController.pageSize}"
 							scrollable="true" lazy="true" reflow="true"
-							rowStyleClass="#{order.invoice !=null ? 'invoiced' : null}">
+							rowStyleClass="#{order.invoice44Digits !=null ? 'invoiced' : null}">
 							<p:ajax event="page" listener="#{ordersController.onPage}"
 								onstart="$('#divLoading').show();$('#divListContent').hide();"
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
@@ -63,7 +63,19 @@
 								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
 								<h:outputText value="#{order.customerName}" />
 							</p:column>
-							<p:column field="invoice" sortable="false" filterable="false" />
+							<p:column field="invoiceNumber" sortable="false"
+								filterable="true" headerText="Número" />
+							<p:column field="invoiceSerie" sortable="false" filterable="true"
+								headerText="Série" />
+							<p:column field="invoice44Digits" sortable="false"
+								filterable="false" headerText="Chave" />
+							<p:column headerText="Criada em">
+								<h:outputText value="#{order.invoiceCreatedAt}"
+									rendered="#{order.invoiceCreatedAt !=null}">
+									<f:convertDateTime type="localDate" locale="pt_BR"
+										dateStyle="full" />
+								</h:outputText>
+							</p:column>
 							<p:column>
 								<p:linkButton outcome="edit" includeViewParams="true"
 									icon="pi pi-star">

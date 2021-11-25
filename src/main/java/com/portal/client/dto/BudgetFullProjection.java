@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.dto.helper.StringToDateParser;
+import com.portal.client.dto.helper.StringToLocalDateParser;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
 
@@ -29,7 +29,7 @@ public class BudgetFullProjection extends Budget {
 				null);
 		return new BudgetFullProjection(customerNumOrder, representativeOrder, customer, code, null, liquidValue,
 				grossValue, items.stream().map(BudgetFullProjection::castItem).collect(Collectors.toList()), message,
-				globalDiscount, StringToDateParser.convert(createdAt));
+				globalDiscount, StringToLocalDateParser.convert(createdAt));
 
 	}
 

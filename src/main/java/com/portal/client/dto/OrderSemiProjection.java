@@ -8,19 +8,25 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class OrderSemiProjection extends OrderPersisted {
 
-	private String customerCode, customerStore, customerName,invoice;
-	private LocalDate createdAt;
+	private String customerCode, customerStore, customerName, invoice44Digits, invoiceNumber, invoiceSerie;
+	private LocalDate createdAt, invoiceCreatedAt;
 
 	@JsonbCreator
 	public OrderSemiProjection(@JsonbProperty("order_code") String code,
 			@JsonbProperty("client_code") String customerCode, @JsonbProperty("store") String customerStore,
-			@JsonbProperty("cliente_name") String customerName, @JsonbProperty("creation_date") String createdAt,@JsonbProperty("invoice_key") String invoice) {
+			@JsonbProperty("cliente_name") String customerName, @JsonbProperty("creation_date") String createdAt,
+			@JsonbProperty("invoice_key") String invoiceDigits, @JsonbProperty("invoice_number") String invoiceNumber,
+			@JsonbProperty("invoice_series") String invoiceSerie,
+			@JsonbProperty("issuance_date") String invoiceCreatedAt) {
 		super(code);
 		this.customerCode = customerCode;
 		this.customerStore = customerStore;
 		this.customerName = customerName;
 		this.createdAt = convertToDate(createdAt);
-		this.invoice = invoice== null || invoice.isBlank() ? null : invoice;
+		this.invoice44Digits = invoiceDigits == null ? null : invoiceDigits.isBlank() ? null : invoiceDigits;
+		this.invoiceNumber = invoiceNumber;
+		this.invoiceSerie = invoiceSerie;
+		this.invoiceCreatedAt = invoiceCreatedAt != null ? convertToDate(createdAt) : null;
 	}
 
 	private final LocalDate convertToDate(String str) {
@@ -42,9 +48,21 @@ public class OrderSemiProjection extends OrderPersisted {
 	public LocalDate getCreatedAt() {
 		return createdAt;
 	}
-	
-	public String getInvoice() {
-		return invoice;
+
+	public String getInvoice44Digits() {
+		return invoice44Digits;
+	}
+
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public String getInvoiceSerie() {
+		return invoiceSerie;
+	}
+
+	public LocalDate getInvoiceCreatedAt() {
+		return invoiceCreatedAt;
 	}
 
 	@Override

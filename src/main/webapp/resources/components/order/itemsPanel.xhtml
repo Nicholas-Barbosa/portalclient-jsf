@@ -317,7 +317,7 @@
 										value="#{item.product.productTechDetail.packageDimension}"
 										styleClass="label-r" />
 									<p:linkButton href="#{item.product.link}" value="Site"
-										icon="pi pi-external-link" target="_blank" />
+										icon="pi pi-external-link" target="_blank" rendered="#{item.product.link != null}"/>
 								</p:panelGrid>
 								<p:commandButton value="Dados técnicos"
 									rendered="#{item.product.productTechDetail eq null}"

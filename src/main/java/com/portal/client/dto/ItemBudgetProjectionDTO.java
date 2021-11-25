@@ -12,6 +12,7 @@ import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductImage.ImageInfoState;
 import com.portal.client.vo.builder.ProductImageBuilder;
 import com.portal.client.vo.builder.ProductPriceBuilder;
+import com.portal.client.vo.builder.ProductTechDetailBuilder;
 
 public class ItemBudgetProjectionDTO extends Item implements Serializable {
 
@@ -27,7 +28,8 @@ public class ItemBudgetProjectionDTO extends Item implements Serializable {
 			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("quantity") int quantity,
 			@JsonbProperty("total_price") BigDecimal totalValue, @JsonbProperty("st_value") BigDecimal stValue,
 			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
-			@JsonbProperty("multiple") int multiple, @JsonbProperty("description") String description) {
+			@JsonbProperty("multiple") int multiple, @JsonbProperty("description") String description,
+			@JsonbProperty("application") String application) {
 		super(new Product(productCode, commercialCode, null, description, line, acronymLine, null, null,
 				ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
 				ProductPriceBuilder.getInstance()
@@ -36,7 +38,9 @@ public class ItemBudgetProjectionDTO extends Item implements Serializable {
 						.withUnitGrossValue(grossValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
 						.withQuantity(quantity).withTotalGrossValue(grossValue).withTotalStValue(stValue)
 						.withTotalValue(unitValue.multiply(BigDecimal.valueOf(quantity))).build(),
-				null));
+				application != null && !application.isBlank()
+						? ProductTechDetailBuilder.getInstance().withApplication(application).build()
+						: null));
 
 	}
 
