@@ -139,29 +139,28 @@ public class OrderBehaviorHelperImpl implements OrderBehaviorHelper, Serializabl
 
 	@Override
 	public void addProducts(Order order, Collection<Product> products) {
-		products.parallelStream().map(Item::new).peek(i -> order.addItem(i))
-				.filter(i -> order.getItems().contains(i)).forEach(i -> {
-					synchronized (order) {
-						ProductPriceData priceData = i.getProduct().getPriceData();
-						BigDecimal oldStValue = order.getStValue();
-						BigDecimal oldValue = order.getLiquidValue();
-						BigDecimal oldGross = order.getGrossValue();
-						if (oldStValue != null) {
-							order.setStValue(oldStValue.add(priceData.getTotalStValue()));
-						} else
-							order.setStValue(priceData.getTotalStValue());
+		products.parallelStream().map(Item::new).filter(i -> order.addItem(i)).forEach(i -> {
+			synchronized (order) {
+				ProductPriceData priceData = i.getProduct().getPriceData();
+				BigDecimal oldStValue = order.getStValue();
+				BigDecimal oldValue = order.getLiquidValue();
+				BigDecimal oldGross = order.getGrossValue();
+				if (oldStValue != null) {
+					order.setStValue(oldStValue.add(priceData.getTotalStValue()));
+				} else
+					order.setStValue(priceData.getTotalStValue());
 
-						if (oldValue != null) {
-							order.setLiquidValue(oldValue.add(priceData.getTotalValue()));
-						} else {
-							order.setLiquidValue(priceData.getTotalValue());
-						}
-						if (oldGross != null) {
-							order.setGrossValue(oldGross.add(priceData.getTotalGrossValue()));
-						} else
-							order.setGrossValue(priceData.getTotalGrossValue());
-					}
-				});
+				if (oldValue != null) {
+					order.setLiquidValue(oldValue.add(priceData.getTotalValue()));
+				} else {
+					order.setLiquidValue(priceData.getTotalValue());
+				}
+				if (oldGross != null) {
+					order.setGrossValue(oldGross.add(priceData.getTotalGrossValue()));
+				} else
+					order.setGrossValue(priceData.getTotalGrossValue());
+			}
+		});
 		;
 
 	}
