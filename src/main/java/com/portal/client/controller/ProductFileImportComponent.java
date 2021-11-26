@@ -14,6 +14,7 @@ import org.primefaces.event.FlowEvent;
 import com.portal.client.dto.XlsxProductFileReadLayout;
 import com.portal.client.exception.MismatchCellTypeExceptions;
 import com.portal.client.exception.ProductsNotFoundException;
+import com.portal.client.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
 import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
 import com.portal.client.dto.ProductImporterExtractedData;
 import com.portal.client.service.ProductImporter;
@@ -22,6 +23,7 @@ import com.portal.client.vo.WrapperProduct404Error.Product404Error;
 
 @ViewScoped
 @Named
+@NetworkExceptionJoinPointCut
 public class ProductFileImportComponent implements Serializable {
 
 	/**
@@ -122,7 +124,7 @@ public class ProductFileImportComponent implements Serializable {
 	public Product404Error[] getProductsNotFound() {
 		return productsNotFound;
 	}
-	
+
 	public void setProductsNotFound(Product404Error[] productsNotFound) {
 		this.productsNotFound = productsNotFound;
 	}

@@ -14,7 +14,7 @@ public class ProductProductPriceTable extends Product {
 	public ProductProductPriceTable(String code, String commercialCode, String applicability, String description, String line,
 			String acronymLine, Integer stock, boolean commercialBlock, ProductImage image, ProductPriceData price,
 			ProductTechDetail productTechDetail, BigDecimal originPrice) {
-		super(code, commercialCode, applicability, description, line, acronymLine, stock, commercialBlock, image, price,
+		super(code, commercialCode, description, line, acronymLine, stock, commercialBlock, image, price,
 				productTechDetail);
 		this.originPrice = originPrice;
 	}

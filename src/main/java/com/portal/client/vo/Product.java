@@ -7,12 +7,12 @@ import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.vo.ProductImage.ImageInfoState;
 import com.portal.client.vo.builder.ProductDiscountDataBuilder;
+import com.portal.client.vo.builder.ProductTechDetailBuilder;
 
 public class Product {
 
 	private final String code;
 	private final String commercialCode;
-	private final String applicability;
 	private final String description;
 	private final String line;
 	private final String acronymLine;
@@ -35,19 +35,20 @@ public class Product {
 				.withUnitStValue(stValue).withUnitValue(unitValue).withTotalValue(unitValue)
 				.withTotalGrossValue(unitGrossValue).withTotalStValue(stValue).build();
 		ProductPriceData price = new ProductPriceData(stValue, unitValue, unitGrossValue, 1, multiple, discountData);
-
-		return new Product(code, cCode, application, description, line, acronymLine, stock,
+		System.out.println("Application: " + application);
+		return new Product(code, cCode, description, line, acronymLine, stock,
 				commercialBlock == null ? null : commercialBlock.equalsIgnoreCase("nao") ? false : true, null, price,
-				null);
+				application != null && !application.isBlank()
+						? ProductTechDetailBuilder.getInstance().withApplication(application).build()
+						: null);
 	}
 
-	public Product(String code, String commercialCode, String applicability, String description, String line,
-			String acronymLine, Integer stock, Boolean commercialBlock, ProductImage image, ProductPriceData price,
+	public Product(String code, String commercialCode, String description, String line, String acronymLine,
+			Integer stock, Boolean commercialBlock, ProductImage image, ProductPriceData price,
 			ProductTechDetail productTechDetail) {
 		super();
 		this.code = code;
 		this.commercialCode = commercialCode;
-		this.applicability = applicability;
 		this.description = description;
 		this.line = line;
 		this.acronymLine = acronymLine;
@@ -64,10 +65,6 @@ public class Product {
 
 	public String getCommercialCode() {
 		return commercialCode;
-	}
-
-	public String getApplicability() {
-		return applicability;
 	}
 
 	public String getDescription() {
@@ -162,10 +159,10 @@ public class Product {
 
 	@Override
 	public String toString() {
-		return "Product [code=" + code + ", commercialCode=" + commercialCode + ", applicability=" + applicability
-				+ ", description=" + description + ", line=" + line + ", acronymLine=" + acronymLine + ", stock="
-				+ stock + ", commercialBlock=" + commercialBlock + ", image=" + image + ", priceData=" + priceData
-				+ ", productTechDetail=" + productTechDetail + ", link=" + link + "]";
+		return "Product [code=" + code + ", commercialCode=" + commercialCode + ", description=" + description
+				+ ", line=" + line + ", acronymLine=" + acronymLine + ", stock=" + stock + ", commercialBlock="
+				+ commercialBlock + ", image=" + image + ", priceData=" + priceData + ", productTechDetail="
+				+ productTechDetail + ", link=" + link + "]";
 	}
 
 }

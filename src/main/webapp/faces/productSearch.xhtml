@@ -113,11 +113,11 @@ div.container {
 						value="#{searchProductController.product.line}" readonly="true" />
 				</div>
 				<ui:fragment
-					rendered="#{!searchProductController.product.applicability.blank}">
+					rendered="#{searchProductController.product.productTechDetail.application != null}">
 					<div class="p-field">
 						<p:outputLabel for="aplicability">#{resourceBundleServiceImpl.getMessage('aplicacao')}</p:outputLabel>
 						<p:inputText id="aplicability"
-							value="#{searchProductController.product.applicability}"
+							value="#{searchProductController.product.productTechDetail.application}"
 							readonly="true" />
 
 					</div>
@@ -132,8 +132,9 @@ div.container {
 							value="#{searchProductController.newQuantity}"
 							stepFactor="#{searchProductController.product.priceData.multiple}"
 							onblur="calcQuantity()" />
-						<p:tooltip for="quantity" 
-							value="Entre com algum número múltiplo de #{searchProductController.product.priceData.multiple}" position="bottom"/>
+						<p:tooltip for="quantity"
+							value="Entre com algum número múltiplo de #{searchProductController.product.priceData.multiple}"
+							position="bottom" />
 						<p:remoteCommand name="calcQuantity" process="@this,quantity"
 							action="#{searchProductController.onQuantityChange}"
 							update="vLiquid,vGross,vSt" />

@@ -30,7 +30,7 @@ public class ItemBudgetProjectionDTO extends Item implements Serializable {
 			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
 			@JsonbProperty("multiple") int multiple, @JsonbProperty("description") String description,
 			@JsonbProperty("application") String application) {
-		super(new Product(productCode, commercialCode, null, description, line, acronymLine, null, null,
+		super(new Product(productCode, commercialCode, description, line, acronymLine, null, null,
 				ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
 				ProductPriceBuilder.getInstance()
 						.withUnitStValue(stValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))

@@ -10,7 +10,7 @@ import com.portal.client.vo.ProductTechDetail;
 
 public class ProductBuilder implements ProductBuilderBehavior {
 
-	protected String code, commercialCode, applicability, description, line, acronymLine;
+	protected String code, commercialCode, description, line, acronymLine;
 	protected int quantity;
 	protected boolean commercialBlock;
 	protected ProductImage productImage;
@@ -32,12 +32,6 @@ public class ProductBuilder implements ProductBuilderBehavior {
 	@Override
 	public ProductBuilder withCommercialCode(String commercialCode) {
 		this.commercialCode = commercialCode;
-		return this;
-	}
-
-	@Override
-	public ProductBuilder withApplicability(String applicability) {
-		this.applicability = applicability;
 		return this;
 	}
 
@@ -121,8 +115,8 @@ public class ProductBuilder implements ProductBuilderBehavior {
 
 	@Override
 	public Product build() {
-		return new Product(code, commercialCode, applicability, description, line, acronymLine, stock, commercialBlock,
-				productImage, this.buildValue(), techDetail);
+		return new Product(code, commercialCode, description, line, acronymLine, stock, commercialBlock, productImage,
+				this.buildValue(), techDetail);
 	}
 
 	public ProductPriceData buildValue() {

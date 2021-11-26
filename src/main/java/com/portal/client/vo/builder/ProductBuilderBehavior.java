@@ -12,7 +12,6 @@ public interface ProductBuilderBehavior {
 
 	ProductBuilderBehavior withCommercialCode(String commercialCode);
 
-	ProductBuilderBehavior withApplicability(String applicability);
 
 	ProductBuilderBehavior withLine(String line);
 

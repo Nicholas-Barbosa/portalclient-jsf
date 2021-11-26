@@ -9,8 +9,10 @@ import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductImage.ImageInfoState;
+import com.portal.client.vo.ProductTechDetail;
 import com.portal.client.vo.builder.ProductImageBuilder;
 import com.portal.client.vo.builder.ProductPriceBuilder;
+import com.portal.client.vo.builder.ProductTechDetailBuilder;
 
 import net.sf.jasperreports.crosstabs.type.CrosstabTotalPositionEnum;
 
@@ -61,15 +63,18 @@ public class BatchProductSearchDataWrapper {
 				@JsonbProperty("total_price") BigDecimal totalValue, @JsonbProperty("available_stock") int stock,
 				@JsonbProperty("st_value") BigDecimal totalStValue, @JsonbProperty("description") String description,
 				@JsonbProperty("multiple") int multiple, @JsonbProperty("product_type") String acronymLine,
-				@JsonbProperty("description_product_type") String line) {
-			this.product = new Product(productCode, commercialCode, null, description, line, acronymLine, null, null,
+				@JsonbProperty("description_product_type") String line,
+				@JsonbProperty("application") String application) {
+			this.product = new Product(productCode, commercialCode, description, line, acronymLine, null, null,
 					ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
 					ProductPriceBuilder.getInstance().withQuantity(quantity).withMultiple(multiple)
 							.withUnitGrossValue(unitGross).withUnitValue(unitValue)
 							.withUnitStValue(totalStValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
 							.withTotalGrossValue(totalGross).withTotalStValue(totalStValue).withTotalValue(totalValue)
 							.build(),
-					null);
+					application != null && !application.isBlank()
+							? ProductTechDetailBuilder.getInstance().withApplication(application).build()
+							: null);
 
 		}
 
