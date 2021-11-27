@@ -32,7 +32,7 @@
 			<h:form prependId="false">
 				<p:remoteCommand autoRun="true"
 					action="#{itemOrderContainerController.setOrder(cc.attrs.order)}" />
-				<p:toolbar styleClass="p-mb-4">
+				<p:toolbar styleClass="mb-4">
 					<p:toolbarGroup>
 						<p:commandButton value="Novo" icon="pi pi-plus"
 							styleClass="ui-button-raised ui-button-success"
@@ -54,12 +54,12 @@
 							</p:sidebar>
 						</p:commandButton>
 						<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
-							icon="pi pi-folder-open" styleClass="ui-button-success p-mr-2"
+							icon="pi pi-folder-open" styleClass="ui-button-success mr-2"
 							onclick="PF('dlgImportProducts').show();"
 							title="Importar produtos" />
 						<p:menuButton
 							value="#{resourceBundleServiceImpl.getMessage('descontos')}"
-							rendered="#{cc.attrs.renderDiscountButton}" styleClass="p-mr-2">
+							rendered="#{cc.attrs.renderDiscountButton}" styleClass="mr-2">
 							<p:menuitem
 								value="#{resourceBundleServiceImpl.getMessage('linha')}"
 								action="#{orderDiscountShowController.show(cc.attrs.order,1)}"
@@ -97,18 +97,18 @@
 					update="dtItems" onstart="$('#divUpdatingDtItems').show();"
 					oncomplete="$('#divUpdatingDtItems').hide();editScrollBodyMaxHeight('dtItems','40vh')" />
 
-				<div class="custom-skeleton p-p-4" id="divUpdatingDtItems"
+				<div class="custom-skeleton p-4" id="divUpdatingDtItems"
 					style="display: none">
-					<div class="p-d-flex p-mb-3">
-						<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+					<div class="flex mb-3">
+						<p:skeleton shape="circle" size="4rem" class="mr-2" />
 						<div>
-							<p:skeleton width="10rem" class="p-mb-2" />
-							<p:skeleton width="5rem" class="p-mb-2" />
+							<p:skeleton width="10rem" class="mb-2" />
+							<p:skeleton width="5rem" class="mb-2" />
 							<p:skeleton height=".5rem" />
 						</div>
 					</div>
 					<p:skeleton width="100%" height="150px" />
-					<div class="p-d-flex p-jc-between p-mt-3">
+					<div class="flex justify-content-between mt-3">
 						<p:skeleton width="4rem" height="2rem" />
 						<p:skeleton width="4rem" height="2rem" />
 					</div>
@@ -144,7 +144,7 @@
 
 					<p:column exportable="false" style="width:2rem">
 						<h:outputText value="#{index+1}"
-							styleClass="p-text-bold p-text-italic" />
+							styleClass="font-bold font-italic" />
 					</p:column>
 
 					<p:column selectionMode="multiple"></p:column>
@@ -216,7 +216,7 @@
 					</p:column>
 					<p:column>
 						<p:commandButton icon="pi pi-times"
-							styleClass="rounded-button ui-button-danger ui-button-flat p-mr-2 p-mb-2"
+							styleClass="rounded-button ui-button-danger ui-button-flat mr-2 mb-2"
 							title="Remover"
 							action="#{itemOrderContainerController.removeItem(item)}"
 							oncomplete="updateDtItems()"
@@ -225,8 +225,8 @@
 					</p:column>
 
 					<p:rowExpansion>
-						<div id="rowData" class="p-grid p-ml-3  p-mt-2">
-							<div id="div-img-wrraper" class="p-col-fixed"
+						<div id="rowData" class="grid ml-3  mt-2">
+							<div id="div-img-wrraper" class="col-fixed"
 								style="width: 12rem">
 								<div id="div-img-loader-#{item.product.commercialCode}"
 									style="display: none">
@@ -250,10 +250,10 @@
 								</div>
 
 							</div>
-							<div class="p-col-2">
-								<div class="p-text-bold p-mb-2">#{item.product.commercialCode}</div>
-								<div class="p-text-normal p-mb-1">#{item.product.description}</div>
-								<div class="p-text-normal p-mb-1">Quantidade múltiplo de
+							<div class="col-2">
+								<div class="font-bold mb-2">#{item.product.commercialCode}</div>
+								<div class="font-normal mb-1">#{item.product.description}</div>
+								<div class="font-normal mb-1">Quantidade múltiplo de
 									#{item.product.priceData.multiple}</div>
 								<div id="div-stock-wrapper">
 									<div id="div-loading-stock-#{item.product.commercialCode}"
@@ -262,7 +262,7 @@
 											style="font-size: 3rem;" />
 									</div>
 									<div jsf:id="div-stock-content">
-										<div class="p-text-normal p-text-uppercase"
+										<div class="font-normal uppercase"
 											style=" display: #{item.product.stock eq null ?'none':block};">
 											<span
 												class="#{item.product.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
@@ -279,13 +279,13 @@
 									</div>
 								</div>
 							</div>
-							<div class="p-col"
+							<div class="col"
 								id="product-tech-loader-#{item.product.commercialCode}"
 								style="display: none">
 								Buscando detalhes técnicos... <i class="pi pi-spin pi-spinner"
 									style="font-size: 3rem;" />
 							</div>
-							<div class="p-col-6 product-tech-data" jsf:id="product-tech">
+							<div class="col-6 product-tech-data" jsf:id="product-tech">
 								<p:panelGrid columns="4"
 									columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
 									layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
@@ -294,30 +294,31 @@
 									rendered="#{item.product.productTechDetail != null}">
 
 									<p:outputLabel for="@next" value="Aplicação:"
-										styleClass="p-text-bold" />
+										styleClass="font-bold" />
 									<p:outputLabel
 										value="#{item.product.productTechDetail.application}"
 										styleClass="label-r" />
 
 									<p:outputLabel for="@next" value="Substituições:"
-										styleClass="p-text-bold" />
+										styleClass="font-bold" />
 									<p:outputLabel
 										value="#{item.product.productTechDetail.productsReplaces}"
 										styleClass="label-r" />
 
 									<p:outputLabel for="@next" value="Peso bruto:"
-										styleClass="p-text-bold" />
+										styleClass="font-bold" />
 									<p:outputLabel
 										value="#{item.product.productTechDetail.grossWeight}"
 										styleClass="label-r" />
 
 									<p:outputLabel for="@next" value="Dimensões da caixa:"
-										styleClass="p-text-bold" />
+										styleClass="font-bold" />
 									<p:outputLabel
 										value="#{item.product.productTechDetail.packageDimension}"
 										styleClass="label-r" />
 									<p:linkButton href="#{item.product.link}" value="Site"
-										icon="pi pi-external-link" target="_blank" rendered="#{item.product.link != null}"/>
+										icon="pi pi-external-link" target="_blank"
+										rendered="#{item.product.link != null}" />
 								</p:panelGrid>
 								<p:commandButton value="Dados técnicos"
 									rendered="#{item.product.productTechDetail eq null}"
@@ -335,21 +336,21 @@
 			<p:sidebar widgetVar="expandingItem" modal="true" baseZIndex="1000"
 				position="bottom" showCloseIcon="false">
 				<h3 style="font-weight: normal">Expandindo item...</h3>
-				<div class="p-d-flex p-ai-end">
-					<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
-					<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
-					<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+				<div class="flex align-items-end 	align-items-end">
+					<p:skeleton shape="circle" size="2rem" class="mr-2" />
+					<p:skeleton shape="circle" size="3rem" class="mr-2" />
+					<p:skeleton shape="circle" size="4rem" class="mr-2" />
 					<p:skeleton shape="circle" size="5rem" />
 				</div>
 			</p:sidebar>
 
 			<p:blockUI block="panelItems" widgetVar="blockItems"
 				blocked="#{cc.attrs.block}">
-				<div class="p-grid p-flex-column">
-					<div class="p-col">
+				<div class="grid flex-column">
+					<div class="col">
 						<i class="pi pi-lock" style="font-size: 3rem" />
 					</div>
-					<div class="p-col">Nenhum cliente configurado</div>
+					<div class="col">Nenhum cliente configurado</div>
 
 				</div>
 			</p:blockUI>
@@ -360,28 +361,31 @@
 			<h:form id="totals">
 				<p:remoteCommand name="updateTotals" process="@this" update="@form"
 					async="true" />
-				<div class="ui-fluid p-formgrid p-grid">
-					<div class="p-field p-col-12 p-md-3">
+				<div class="ui-fluid formgrid grid">
+					<div class="field col-12 md:col-3">
 						<p:outputLabel for="liquidV"
 							value="#{resourceBundleServiceImpl.getMessage('total_sem_st')}" />
 						<p:inputNumber id="liquidV" value="#{cc.attrs.order.liquidValue}"
 							symbol="R$ " symbolPosition="p" readonly="true"
-							decimalSeparator="," thousandSeparator="." />
+							decimalSeparator="," thousandSeparator="."
+							styleClass="inputfield w-full" />
 					</div>
-					<div class="p-field p-col-12 p-md-3">
+					<div class="field col-12 md:col-3">
 						<p:outputLabel for="stT"
 							value="#{resourceBundleServiceImpl.getMessage('valor_st')}" />
 						<p:inputNumber id="stT" value="#{cc.attrs.order.stValue}"
 							symbol="R$ " symbolPosition="p" readonly="true"
-							decimalSeparator="," thousandSeparator="." />
+							decimalSeparator="," thousandSeparator="."
+							styleClass="inputfield w-full" />
 					</div>
 
-					<div class="p-field p-col-12 p-md-3">
+					<div class="field col-12 md:col-3">
 						<p:outputLabel for="grossV"
 							value="#{resourceBundleServiceImpl.getMessage('total_com_st')}" />
 						<p:inputNumber id="grossV" value="#{cc.attrs.order.grossValue}"
 							symbol="R$ " symbolPosition="p" readonly="true"
-							decimalSeparator="," thousandSeparator="." />
+							decimalSeparator="," thousandSeparator="."
+							styleClass="inputfield w-full" />
 					</div>
 				</div>
 				<p:autoUpdate on="eventAddItem" />

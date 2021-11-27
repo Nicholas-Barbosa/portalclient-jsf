@@ -24,7 +24,7 @@ public class NetworkExcpetionAspect implements Serializable {
 		try {
 			return joinpoint.proceed();
 		} catch (SocketTimeoutException e) {
-			System.out.println(e);
+			subject.notifyObservers(e);
 			throw e;
 		}
 	}

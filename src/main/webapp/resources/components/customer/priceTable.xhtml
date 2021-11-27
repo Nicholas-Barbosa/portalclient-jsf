@@ -34,10 +34,10 @@
 
 			<div id="priceTableComponent-content" style="display: none"
 				>
-				<div class="p-d-flex p-jc-between">
+				<div class="flex justify-content-between">
 					<div>
 						<h5>Exportar</h5>
-						<p:commandButton value="XLSX" styleClass="p-mr-2 p-mb-2"
+						<p:commandButton value="XLSX" styleClass="mr-2 mb-2"
 							action="#{priceTableComponentController.export(cc.attrs.customerCode)}"
 							process="@this" ajax="false" />
 
@@ -81,7 +81,7 @@
 					dismissable="false" showCloseIcon="true" dynamic="true"
 					style="max-width:350px">
 					<div id="product-application-wrapper-overlay">
-						<div class="p-text-bold" id="product-application-text">Clique
+						<div class="font-bold" id="product-application-text">Clique
 							novamente em "Aplicação"</div>
 
 					</div>

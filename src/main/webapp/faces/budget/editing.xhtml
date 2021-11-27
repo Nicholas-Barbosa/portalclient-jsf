@@ -48,17 +48,17 @@
 
 			<div class="card" id="divLoading">
 				Loading...
-				<div class="custom-skeleton p-p-4">
-					<div class="p-d-flex p-mb-3">
-						<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+				<div class="custom-skeleton p-4">
+					<div class="flex mb-3">
+						<p:skeleton shape="circle" size="4rem" class="mr-2" />
 						<div>
-							<p:skeleton width="10rem" class="p-mb-2" />
-							<p:skeleton width="5rem" class="p-mb-2" />
+							<p:skeleton width="10rem" class="mb-2" />
+							<p:skeleton width="5rem" class="mb-2" />
 							<p:skeleton height=".5rem" />
 						</div>
 					</div>
 					<p:skeleton width="100%" height="150px" />
-					<div class="p-d-flex p-jc-between p-mt-3">
+					<div class="flex justify-content-between mt-3">
 						<p:skeleton width="4rem" height="2rem" />
 						<p:skeleton width="4rem" height="2rem" />
 					</div>
@@ -92,8 +92,8 @@
 						</p:menu>
 						<p:dialog widgetVar="effectivedBudget" modal="true"
 							responsive="true" header="Pedido salvo">
-							<div class="p-grid p-flex-column">
-								<div class="p-col">
+							<div class="grid flex-column">
+								<div class="col">
 									<div class="box">
 										<p:staticMessage severity="info"
 											summary="Efetivado para pedido com sucesso!"
@@ -101,12 +101,12 @@
 											style="width: 100%" id="successPersisted" />
 									</div>
 								</div>
-								<div class="p-col">
+								<div class="col">
 									<div class="box">
 										<p:commandButton value="OK"
 											oncomplete="PF('effectivedBudget').hide()" />
 										<p:commandButton value="Visualizar outros pedidos"
-											styleClass="p-mb-2" action="orders?faces-redirect=true" />
+											styleClass="mb-2" action="orders?faces-redirect=true" />
 									</div>
 								</div>
 							</div>
@@ -114,10 +114,10 @@
 						<p:sidebar widgetVar="sidebarForLoadingEditing" position="top"
 							baseZIndex="10000" modal="true" showCloseIcon="false">
 							<h3 style="font-weight: normal">Alterando orçamento...</h3>
-							<div class="p-d-flex p-ai-end">
-								<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
-								<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
-								<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+							<div class="flex align-items-end">
+								<p:skeleton shape="circle" size="2rem" class="mr-2" />
+								<p:skeleton shape="circle" size="3rem" class="mr-2" />
+								<p:skeleton shape="circle" size="4rem" class="mr-2" />
 								<p:skeleton shape="circle" size="5rem" />
 							</div>
 						</p:sidebar>
@@ -125,10 +125,10 @@
 							position="top" baseZIndex="10000" modal="true"
 							showCloseIcon="false">
 							<h3 style="font-weight: normal">Efetivando pedido...</h3>
-							<div class="p-d-flex p-ai-end">
-								<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
-								<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
-								<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+							<div class="flex align-items-end">
+								<p:skeleton shape="circle" size="2rem" class="mr-2" />
+								<p:skeleton shape="circle" size="3rem" class="mr-2" />
+								<p:skeleton shape="circle" size="4rem" class="mr-2" />
 								<p:skeleton shape="circle" size="5rem" />
 							</div>
 						</p:sidebar>

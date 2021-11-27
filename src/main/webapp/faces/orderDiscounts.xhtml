@@ -39,20 +39,20 @@
 			<p:tab title="Global" id="tabGlob">
 				<h:form>
 					<div class="ui-fluid">
-						<div class="p-field">
+						<div class="field">
 							<p:outputLabel for="gDis"
 								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
 							<p:spinner id="gDis" stepFactor="0.25"
 								value="#{orderDiscountController.gloablDiscount}" min="0"
 								max="100" required="true" />
-							<small class="p-d-block">Aplicado para todos os produtos.</small>
+							<small class="block">Aplicado para todos os produtos.</small>
 							<p:message for="gDis" />
 						</div>
 					</div>
 					<p:commandButton
 						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
 						icon="pi pi-check"
-						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+						styleClass="ui-button-raised ui-button-success mr-2 mb-2"
 						process="@form"
 						action="#{orderDiscountController.applyGlobalDiscount}"
 						onstart="PF('block').show()"
@@ -76,13 +76,13 @@
 						<p:message for="lines" />
 					</div>
 					<div class="ui-fluid">
-						<div class="p-field">
+						<div class="field">
 							<p:outputLabel for="gDis"
 								value="#{resourceBundleServiceImpl.getMessage('desconto')}" />
 							<p:spinner id="gDis" stepFactor="0.25"
 								value="#{orderDiscountController.lineDiscountForm.discount}"
 								min="0" max="100" required="true" />
-							<small class="p-d-block">Aplicado para todos os produtos
+							<small class="block">Aplicado para todos os produtos
 								desta linha.</small>
 							<p:message for="gDis" />
 						</div>
@@ -90,7 +90,7 @@
 					<p:commandButton
 						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
 						icon="pi pi-check"
-						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+						styleClass="ui-button-raised ui-button-success mr-2 mb-2"
 						process="@form"
 						action="#{orderDiscountController.applyLineDiscount}"
 						onstart="PF('block').show()" />

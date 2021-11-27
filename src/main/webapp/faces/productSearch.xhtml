@@ -60,7 +60,7 @@ div.container {
 	<div class="card ">
 		<div class="ui-fluid">
 			<h:form>
-				<div class="p-field">
+				<div class="field">
 					<p:outputLabel for="code">#{resourceBundleServiceImpl.getMessage('codigo_comercial')}</p:outputLabel>
 					<div class="ui-inputgroup">
 						<p:inputText id="code"
@@ -81,7 +81,7 @@ div.container {
 				<i class="pi pi-spin pi-spinner"
 					style="font-size: 5rem; display: none" id="spinnerLoadingImage"></i>
 				<p:outputPanel id="imagePanel">
-					<div id="divProductImg" class="p-d-flex p-jc-center">
+					<div id="divProductImg" class="flex justify-content-center">
 						<p:graphicImage
 							value="#{searchProductController.product.imageStreams}"
 							styleClass="w3-round-xlarge" style="width:100%;max-width:300px;"
@@ -101,20 +101,20 @@ div.container {
 					</div>
 				</p:outputPanel>
 
-				<div class="p-field">
+				<div class="field">
 					<p:outputLabel for="name">#{resourceBundleServiceImpl.getMessage('descricao')}</p:outputLabel>
 					<p:inputTextarea id="name"
 						value="#{searchProductController.product.description}"
 						required="true" readonly="true" />
 				</div>
-				<div class="p-field">
+				<div class="field">
 					<p:outputLabel for="line">#{resourceBundleServiceImpl.getMessage('linha')}</p:outputLabel>
 					<p:inputText id="line"
 						value="#{searchProductController.product.line}" readonly="true" />
 				</div>
 				<ui:fragment
 					rendered="#{searchProductController.product.productTechDetail.application != null}">
-					<div class="p-field">
+					<div class="field">
 						<p:outputLabel for="aplicability">#{resourceBundleServiceImpl.getMessage('aplicacao')}</p:outputLabel>
 						<p:inputText id="aplicability"
 							value="#{searchProductController.product.productTechDetail.application}"
@@ -123,7 +123,7 @@ div.container {
 					</div>
 				</ui:fragment>
 
-				<div class="p-field">
+				<div class="field">
 					<h:form>
 						<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}<strong>(*
 								#{searchProductController.product.priceData.multiple})</strong>
@@ -141,27 +141,27 @@ div.container {
 					</h:form>
 				</div>
 
-				<div class="p-formgrid p-grid">
-					<div class="p-field p-col">
+				<div class="formgrid grid">
+					<div class="field col">
 						<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
 						<p:inputNumber id="vLiquid"
 							value="#{searchProductController.product.priceData.totalValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
-							thousandSeparator="." readonly="true" />
+							thousandSeparator="." readonly="true" styleClass="inputfield w-full"/>
 					</div>
-					<div class="p-field p-col">
+					<div class="field col">
 						<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
 						<p:inputNumber id="vGross"
 							value="#{searchProductController.product.priceData.totalGrossValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
-							thousandSeparator="." readonly="true" />
+							thousandSeparator="." readonly="true" styleClass="inputfield w-full"/>
 					</div>
-					<div class="p-field p-col">
+					<div class="field col">
 						<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
 						<p:inputNumber id="vSt"
 							value="#{searchProductController.product.priceData.totalStValue}"
 							symbol="R$ " symbolPosition="p" decimalSeparator=","
-							thousandSeparator="." readonly="true" />
+							thousandSeparator="." readonly="true" styleClass="inputfield w-full"/>
 					</div>
 				</div>
 
@@ -171,12 +171,12 @@ div.container {
 					<p:commandButton
 						value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
 						icon="pi pi-check"
-						styleClass="ui-button-raised ui-button-success p-mr-2 p-mb-2"
+						styleClass="ui-button-raised ui-button-success mr-2 mb-2"
 						action="#{searchProductController.confirm}" id="btnConfirm" />
 					<p:commandButton
 						value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
 						icon="pi pi-times" action="#{searchProductController.cancel}"
-						styleClass="ui-button-raised ui-button-danger p-mr-2 p-mb-2" />
+						styleClass="ui-button-raised ui-button-danger mr-2 mb-2" />
 					<p:commandButton value="Dados técnicos" process="@this"
 						action="#{productTechDataShowController.show(searchProductController.product)}"
 						icon="pi pi-info-circle" />

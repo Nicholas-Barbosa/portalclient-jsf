@@ -79,14 +79,14 @@
 						<p:inputText
 							value="#{cc.attrs.customer.city}, #{cc.attrs.customer.state}"
 							readonly="true" />
-						<div class="p-d-flex p-flex-column">
-							<div class="p-mb-2">
+						<div class="flex flex-column">
+							<div class="mb-2">
 								<p:gmap center="#{gMapController.currentLatLng}" zoom="12"
 									type="road" style="width:50vw;height:35vh"
 									model="#{gMapController.gMap}" id="gMap" widgetVar="gMap" />
 
 							</div>
-							<div class="p-mb-2">
+							<div class="mb-2">
 								<small>Coordernadas: #{gMapController.currentLatLng}</small>
 							</div>
 						</div>
@@ -94,7 +94,7 @@
 					<p:remoteCommand name="loadMap"
 						action="#{gMapController.loadGMap(cc.attrs.customer.address.zipCode,cc.attrs.customer.name)}"
 						process="@this" autoRun="true" update="gMap" />
-					
+
 				</h:form>
 			</p:tab>
 			<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">

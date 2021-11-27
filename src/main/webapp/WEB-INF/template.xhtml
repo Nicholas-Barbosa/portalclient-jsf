@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui" lang="pt_BR">
+	xmlns:p="http://primefaces.org/ui" lang="pt_BR"
+	xmlns:excp="http://java.sun.com/jsf/composite/components/exception">
 
 <h:head>
 	<f:facet name="first">
@@ -24,6 +25,7 @@
 	<h:outputScript name="dataTable.js" library="javascript" />
 	<h:outputStylesheet name="css/primeicons.css" library="rain-layout" />
 	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
+	<h:outputStylesheet name="primeflex-2.css" library="css" />
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
 	<h:outputStylesheet
@@ -67,7 +69,7 @@
 			widgetVar="idleDialog" modal="true" closable="false">
 			<h:outputText value="#{holdMessageView.label('tempo_limite_ocioso')}" />
 			<h:form>
-				<p:commandButton styleClass="ui-button-warning p-mr-2 p-mb-2"
+				<p:commandButton styleClass="ui-button-warning mr-2 mb-2"
 					icon="pi pi-arrow-right" action="#" process="@none" update="@none"
 					ajax="false" />
 			</h:form>
@@ -79,7 +81,7 @@
 			closable="false" responsive="true" resizable="true" width="20vw">
 			<div style="width: 30rem">Identificamos que você é um usuário
 				interno. Selecione o tipo de venda que deseja realizar.</div>
-			<div class="p-field p-col-12 p-md-4">
+			<div class="field col-12 md:col-4">
 				<h:form>
 					<p:selectOneMenu required="true"
 						value="#{internalRepresentativeTypeController.sellerType}">
@@ -96,6 +98,7 @@
 			</div>
 		</p:dialog>
 
+		<excp:network />
 
 	</div>
 

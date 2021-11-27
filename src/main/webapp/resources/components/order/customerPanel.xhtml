@@ -21,11 +21,11 @@
 
 <composite:implementation>
 	<div id="#{cc.clientId}">
-		<div class="p-grid">
-			<div class="p-col-2">
+		<div class="grid">
+			<div class="col-2">
 				<h5>Cliente</h5>
 			</div>
-			<div class="p-col-2">
+			<div class="col-2">
 				<h:form>
 					<p:commandButton icon="pi pi-search-plus"
 						title="Visualizar cliente"
@@ -45,23 +45,23 @@
 		<div id="customerContent">
 			<p:outputPanel deferred="true" deferredMode="visible"
 				id="panelCustomer">
-				<div class="ui-fluid p-formgrid p-grid">
+				<div class="ui-fluid formgrid grid">
 
-					<div class="p-field p-col-12 p-md-6">
+					<div class="field col-12 md:col-6">
 						<label for="cName">Código - Nome</label>
 						<p:inputText id="cName" type="text" readonly="true"
-							value="#{cc.attributes.order.customerOnOrder.code} - #{cc.attributes.order.customerOnOrder.name}" />
+							value="#{cc.attributes.order.customerOnOrder.code} - #{cc.attributes.order.customerOnOrder.name}" styleClass="inputfield w-full"/>
 					</div>
 
-					<div class="p-field p-col-12 p-md-6">
+					<div class="field col-12 md:col-6">
 						<label for="cCnpj">CNPJ</label>
 						<p:inputText id="cCnpj" type="text" readonly="true"
-							value="#{cc.attributes.order.customerOnOrder.cnpj}" />
+							value="#{cc.attributes.order.customerOnOrder.cnpj}" styleClass="inputfield w-full"/>
 					</div>
-					<div class="p-field p-col-12">
+					<div class="field col-12">
 						<label for="cAddress">Endereço</label>
 						<p:inputText id="cAddress" type="text" readonly="true"
-							value="#{cc.attributes.order.customerOnOrder.address.street} - #{cc.attributes.order.customerOnOrder.address.district}, #{cc.attributes.order.customerOnOrder.address.city} - #{cc.attributes.order.customerOnOrder.address.state}" />
+							value="#{cc.attributes.order.customerOnOrder.address.street} - #{cc.attributes.order.customerOnOrder.address.district}, #{cc.attributes.order.customerOnOrder.address.city} - #{cc.attributes.order.customerOnOrder.address.state}" styleClass="inputfield w-full"/>
 					</div>
 				</div>
 			</p:outputPanel>
@@ -86,7 +86,7 @@
 		</p:dialog>
 		<p:dialog header="long-running task" modal="true"
 			widgetVar="dlgLongRunningTask" responsive="true" closable="false">
-			<div class="p-text-bold">A busca pelo cliente está demorando
+			<div class="font-bold">A busca pelo cliente está demorando
 				mais do que o habitual. Por favor, aguarde!</div>
 		</p:dialog>
 	</div>

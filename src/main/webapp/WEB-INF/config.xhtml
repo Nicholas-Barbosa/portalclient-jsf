@@ -15,7 +15,7 @@
                 
                 <p:outputPanel id="lightdark-panel" styleClass="layout-config-section options">
                     <span class="section-name">Layout Mode</span>
-                    <div class="p-grid layout-config-options">
+                    <div class="grid layout-config-options">
                         <p:selectOneRadio layout="responsive" columns="2" value="#{userStylePreferences.darkMode}" onchange="PrimeFaces.RainConfigurator.changeLayout('#{userStylePreferences.layoutPrimaryColor}', '#{userStylePreferences.componentTheme}', event.target.value)"   >
                             <f:selectItem itemLabel="Light" itemValue="light" />
                             <f:selectItem itemLabel="Dark" itemValue="dark" />
@@ -27,7 +27,7 @@
 
                 <p:outputPanel id="menumodes-panel" styleClass="layout-config-section options">
                     <span class="section-name">Menu Mode</span>
-                    <div class="p-grid layout-config-options">
+                    <div class="grid layout-config-options">
                         <p:selectOneRadio layout="responsive" columns="2" value="#{userStylePreferences.menuMode}" onchange="PrimeFaces.RainConfigurator.changeMenuMode(event.target.value)" >
                             <f:selectItem itemLabel="Static" itemValue="layout-static layout-static-active" />
                             <f:selectItem itemLabel="Overlay" itemValue="layout-overlay" />
@@ -42,7 +42,7 @@
                 <p:outputPanel id="menuthemes-panel" styleClass="layout-config-section options">
                     <p:outputPanel id="menu-themes-panel" rendered="#{userStylePreferences.darkMode == 'light'}">
                         <span class="section-name">Menu Theme</span>
-                        <div class="p-grid layout-config-options" >
+                        <div class="grid layout-config-options" >
                             <p:selectOneRadio layout="responsive" columns="2" value="#{userStylePreferences.menuTheme}" onchange="PrimeFaces.RainConfigurator.changeSectionTheme(event.target.value , 'layout-menu')"  >
                                 <f:selectItem itemLabel="Light" itemValue="light" />
                                 <f:selectItem itemLabel="Dark" itemValue="dark" />
@@ -58,7 +58,7 @@
 
                 <p:outputPanel id="topbarthemes-panel" styleClass="layout-config-section options">
                     <span class="section-name">Topbar Theme</span>
-                    <div class="p-grid layout-config-options">
+                    <div class="grid layout-config-options">
                         <p:selectOneRadio layout="responsive" columns="2" value="#{userStylePreferences.topbarTheme}" onchange="PrimeFaces.RainConfigurator.changeSectionTheme(event.target.value , 'layout-topbar')"   >
                             <f:selectItem itemLabel="Light" itemValue="light" itemDisabled="#{userStylePreferences.darkMode != 'light'}"  />
                             <f:selectItem itemLabel="Dark" itemValue="dark" itemDisabled="#{userStylePreferences.darkMode == 'dim'}" />
@@ -71,7 +71,7 @@
 
                 <p:outputPanel id="profilemenu-panel" styleClass="layout-config-section options">
                     <span class="section-name">Profile Mode</span>
-                    <div class="p-grid layout-config-options">
+                    <div class="grid layout-config-options">
                         <p:selectOneRadio layout="responsive" columns="2" value="#{userStylePreferences.profileMode}">
                             <f:selectItem itemLabel="Popup" itemValue="popup" />
                             <f:selectItem itemLabel="Inline" itemValue="inline" />
@@ -82,7 +82,7 @@
 
                 <p:outputPanel id="outlined-panel" styleClass="layout-config-section options">
                     <span class="section-name">Form Type</span>
-                    <div class="p-grid layout-config-options">
+                    <div class="grid layout-config-options">
                         <p:selectOneRadio layout="responsive" columns="2" value="#{userStylePreferences.inputStyle}"
                         onchange="PrimeFaces.RainConfigurator.updateInputStyle(event.target.value)">
                             <f:selectItem itemLabel="Outlined" itemValue="outlined" />
@@ -94,9 +94,9 @@
 
                 <p:outputPanel id="primarycolors-panel" styleClass="layout-config-section colors">
                     <span class="section-name">Layout Colors</span>
-                    <div class="p-grid layout-config-colors">
+                    <div class="grid layout-config-colors">
                         <ui:repeat value="#{userStylePreferences.layoutPrimaryColors}" var="layoutPrimaryColor">
-                            <div class="p-col p-col-fixed">
+                            <div class="col col-fixed">
                                 <p:commandLink styleClass="layout-config-option"
                                     actionListener="#{userStylePreferences.setLayoutPrimaryColor(layoutPrimaryColor.file)}"
                                     onstart="PrimeFaces.RainConfigurator.beforeResourceChange()"
@@ -119,9 +119,9 @@
 
                 <p:outputPanel id="componentthemes-panel" styleClass="layout-config-section colors">
                     <span class="section-name">Component Colors</span>
-                    <div class="p-grid layout-config-colors">
+                    <div class="grid layout-config-colors">
                         <ui:repeat value="#{userStylePreferences.componentThemes}" var="componentTheme">
-                            <div class="p-col p-col-fixed">
+                            <div class="col col-fixed">
                                 <p:commandLink styleClass="layout-config-option"
                                     actionListener="#{userStylePreferences.setComponentTheme(componentTheme.file)}"
                                     update=":config-form:componentthemes-panel"

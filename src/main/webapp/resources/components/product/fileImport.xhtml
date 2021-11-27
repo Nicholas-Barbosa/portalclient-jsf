@@ -71,8 +71,8 @@
 					</p:panelGrid>
 				</p:tab>
 				<p:tab id="extractedData" title="Dados extraídos">
-					<div class="p-d-flex p-flex-column">
-						<div class="p-mb-2">
+					<div class="flex flex-column">
+						<div class="mb-2">
 							<p:dataTable id="extractedDatas" widgetVar="extractedDatas"
 								value="#{productFileImportComponent.extractedData}"
 								var="product" editable="true" editMode="cell" reflow="true"
@@ -115,8 +115,8 @@
 								</p:column>
 							</p:dataTable>
 						</div>
-						<div class="p-mb-2">
-							<div class="p-d-flex p-jc-between">
+						<div class="mb-2">
+							<div class="flex justify-content-between">
 								<div></div>
 								<div>
 									<p:commandButton value="Confirmar"
@@ -135,23 +135,23 @@
 	</div>
 	<p:dialog widgetVar="dlgLoading" closable="false" responsive="true"
 		modal="true" appendTo="@(body)" header="Processando...">
-		<div class="p-grid p-flex-column">
-			<div class="p-col" id="div-loading-text">Realizando leitura do
+		<div class="grid flex-column">
+			<div class="col" id="div-loading-text">Realizando leitura do
 				arquivo...</div>
-			<div class="p-col">
+			<div class="col">
 				<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
 			</div>
 		</div>
 	</p:dialog>
 	<p:dialog widgetVar="dlgMismatchExcpetions" responsive="true"
 		header="Erro" modal="true" appendTo="@(body)" style="max-width:40vw">
-		<div class="p-grid p-flex-column">
-			<div class="p-col">
+		<div class="grid flex-column">
+			<div class="col">
 				<p:staticMessage severity="error" summary="Incompatibilidade"
 					detail="Foi detectado incompatibilidade no tipo das células a seguir."
 					style="width: 100%" />
 			</div>
-			<div class="p-col">
+			<div class="col">
 				<h:form id="frm-mismatachs">
 					<p:remoteCommand name="updateMismatchs" process="@this"
 						update="@form:mismatchs" />
@@ -174,13 +174,13 @@
 	<p:dialog widgetVar="productsNotFound" header="Produtos não importados"
 		modal="true" responsive="true" appendTo="@(body)"
 		style="max-width:25vw" onHide="setNullProductsNotFound()">
-		<div class="p-grid p-flex-column">
-			<div class="p-col">
+		<div class="grid flex-column">
+			<div class="col">
 				<p:staticMessage severity="warn" summary="Produtos não encontrados"
 					detail="Os seguintes produtos não foram encontrados, portanto não foram importados"
 					style="width: 100%" />
 			</div>
-			<div class="p-col">
+			<div class="col">
 				<h:form id="frm-products-not-found">
 					<p:remoteCommand name="updateProductsNotFound" process="@this"
 						update="productsNotFound" async="true" />

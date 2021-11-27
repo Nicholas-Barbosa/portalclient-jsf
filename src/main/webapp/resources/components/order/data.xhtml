@@ -24,34 +24,34 @@
 	<div class="card">
 		<h5>#{cc.attrs.title}</h5>
 		<p:outputPanel deferred="true" deferredMode="visible" id="data">
-			<div class="ui-fluid p-formgrid p-grid">
-				<div class="p-field p-col-12 p-md-6">
+			<div class="ui-fluid formgrid grid">
+				<div class="field col-12 md:col-6">
 					<label for="bCode">Código</label>
 					<p:inputText id="bCode" type="text" readonly="true"
-						value="#{cc.attrs.order.code}" />
+						value="#{cc.attrs.order.code}" styleClass="inputfield w-full"/>
 				</div>
-				<div class="p-field p-col-12 p-md-6">
+				<div class="field col-12 md:col-6">
 					<label for="createdAt">Criado em</label>
 					<p:inputText id="createdAt" type="text" readonly="true"
-						value="#{cc.attrs.order.createdAt}">
+						value="#{cc.attrs.order.createdAt}" styleClass="inputfield w-full">
 						<f:convertDateTime locale="pt_BR" type="localDate"
 							dateStyle="full" />
 					</p:inputText>
 				</div>
-				<div class="p-field p-col-12 p-md-6">
+				<div class="field col-12 md:col-6">
 					<label for="oPNum">N°Pedido representante</label>
 					<p:inputText id="oPNum" type="text"
-						value="#{cc.attrs.order.repNumOrder}" />
+						value="#{cc.attrs.order.repNumOrder}" styleClass="inputfield w-full"/>
 				</div>
-				<div class="p-field p-col-12 p-md-6">
+				<div class="field col-12 md:col-6">
 					<label for="ocNum">N°Pedido cliente</label>
 					<p:inputText id="ocNum" type="text"
-						value="#{cc.attrs.order.customerNumOrder}" />
+						value="#{cc.attrs.order.customerNumOrder}" styleClass="inputfield w-full"/>
 				</div>
-				<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+				<div class="field col-12 xl:col-4 lg:col-5 md:col-12">
 					<p:outputLabel for="mensagem" value="Mensagem" />
 					<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-						value="#{cc.attrs.order.message}" />
+						value="#{cc.attrs.order.message}" styleClass="inputfield w-full"/>
 				</div>
 
 			</div>

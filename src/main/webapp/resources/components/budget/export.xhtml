@@ -17,18 +17,17 @@
 	<div id="#{cc.clientId}">
 		<h:form>
 			<div class="ui-fluid">
-				<div class="p-field">
+				<div class="field">
 					<div class="ui-inputgroup">
 						<p:inputText
 							placeholder="#{resourceBundleServiceImpl.getMessage('nome_arquivo')}"
 							value="#{budgetExporterController.fileName}" id="fileName" widgetVar="fileName"
-							
 							onfocus="PF('fileName').jq[0].value='#{cc.attrs.fileName}';" />
 						<div class="ui-inputgroup-addon" id="fileExtension">.xlsx</div>
 					</div>
 				</div>
 
-				<div class="p-field">
+				<div class="field">
 					<p:outputLabel for="fileType"
 						value="#{resourceBundleServiceImpl.getMessage('tipo')}" />
 					<p:selectOneMenu id="fileType"
@@ -40,7 +39,7 @@
 						else
 							text = '.xlsx';
 						$('#fileExtension').text(text);
-						">
+						" required="true">
 						<f:selectItem itemLabel="Select One" itemValue=""
 							noSelectionOption="true" />
 						<f:selectItem itemLabel="PDF" itemValue="PDF" />

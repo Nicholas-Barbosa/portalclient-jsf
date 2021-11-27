@@ -45,7 +45,7 @@
 						<p:toolbarGroup>
 							<p:commandButton
 								value="#{resourceBundleServiceImpl.getMessage('novo')}"
-								icon="pi pi-file" styleClass="p-mr-2"
+								icon="pi pi-file" styleClass="mr-2"
 								action="#{newBudgetController.newBudget}"
 								update="customerForm itemsComponent:panelItems">
 								<p:confirm type="popup"
@@ -57,9 +57,9 @@
 							<p:commandButton action="#{newBudgetController.validBudget}"
 								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
 								icon="pi pi-check" styleClass="ui-button-success " />
-							<i class="pi pi-bars p-px-2" />
+							<i class="pi pi-bars px-2" />
 							<p:button title="Print" icon="pi pi-print"
-								styleClass="ui-button-success p-mr-2"
+								styleClass="ui-button-success mr-2"
 								onclick="PF('exportComponent').show();" />
 
 							<p:button
@@ -74,16 +74,15 @@
 			</div>
 
 			<div class="card">
-
 				<h:form id="customerForm">
-					<div class="ui-fluid p-formgrid p-grid">
-						<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+					<div class="formgrid grid">
+						<div class="field col-12 xl:col-4 lg:col-5 md:col-12">
 							<p:outputLabel
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 							<div class="ui-inputgroup">
 								<p:inputText
 									value="#{newBudgetController.budget.customerOnOrder.name}-#{newBudgetController.budget.customerOnOrder.store}"
-									readonly="true" />
+									readonly="true" styleClass="inputfield w-full" />
 								<p:button icon="pi pi-search" styleClass="ui-button-warning"
 									onclick="PF('dlgSearchCustomer').show()"
 									disabled="#{not empty newBudgetController.budget.items}"
@@ -93,44 +92,45 @@
 							</div>
 						</div>
 
-						<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+						<div class="field col-12 xl:col-3 lg:col-2  md:col-12">
 							<p:outputLabel value="CNPJ" for="cnpj" />
 							<p:inputMask
 								value="#{newBudgetController.budget.customerOnOrder.cnpj}"
-								readonly="true" id="cnpj" mask="99.999.999/9999-99" />
+								readonly="true" id="cnpj" mask="99.999.999/9999-99"
+								styleClass="inputfield w-full" />
 						</div>
-						<div class="p-field p-col-12 p-xl-4 p-lg-4 p-md-12">
+						<div class="field col-12 xl:col-4 lg:col-4 md:col-12">
 							<p:outputLabel for="endereco"
 								value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 							<p:inputText id="endereco"
 								value="#{newBudgetController.budget.customerOnOrder.street}, #{newBudgetController.budget.customerOnOrder.city} - #{newBudgetController.budget.customerOnOrder.state}"
-								readonly="true" />
+								readonly="true" styleClass="inputfield w-full" />
 						</div>
-						<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+						<div class="field col-12 xl:col-3 lg:col-2  md:col-12">
 							<p:outputLabel
 								value="#{resourceBundleServiceImpl.getMessage('condicao_pagamento')}"
 								for="pTerms" />
 							<p:inputText
 								value="#{newBudgetController.budget.customerOnOrder.financialInfo.paymentTerms}"
-								readonly="true" id="pTerms" />
+								readonly="true" id="pTerms" styleClass="inputfield w-full" />
 						</div>
 
 						<ui:fragment
 							rendered="#{newBudgetController.budget.customerOnOrder.type eq 'PROSPECT'}">
 
-							<div class="p-field p-col-12 p-xl-3 p-lg-2  p-md-12">
+							<div class="field col-12 xl:col-3 lg:col-2  md:col-12">
 								<p:outputLabel value="Vendedor" for="sellerType" />
 								<p:inputText
 									value="#{newBudgetController.budget.customerOnOrder.sellerType}"
-									readonly="true" id="sellerType" />
+									readonly="true" id="sellerType" styleClass="inputfield w-full" />
 							</div>
 
 						</ui:fragment>
-						<div class="p-field p-col-12 p-xl-4 p-lg-5 p-md-12">
+						<div class="field col-12 xl:col-4 lg:col-5 md:col-12">
 							<p:outputLabel for="mensagem" value="Mensagem" />
 							<p:inputTextarea id="mensagem" rows="4" maxlength="250"
 								value="#{newBudgetController.budget.message}"
-								onchange="saveMessage();" />
+								onchange="saveMessage();" styleClass="inputfield w-full" />
 						</div>
 						<p:remoteCommand name="saveMessage" process="@this,@form:mensagem"
 							action="#{orderMessageMessageController.displayMessage}" />
@@ -143,6 +143,11 @@
 				<o:itemsPanel order="#{newBudgetController.budget}"
 					renderDiscountButton="false" id="itemsComponent" />
 			</div>
+
+
+
+			
+
 
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"
@@ -157,15 +162,15 @@
 							</h5>
 							<h:form>
 
-								<div class="p-formgroup-inline">
-									<div class="p-field">
+								<div class="formgroup-inline">
+									<div class="field">
 										<div class="ui-inputgroup">
 											<p:inputText type="text" placeholder="keyword"
 												value="#{newBudgetController.cNameToSearch}" required="true"
-												id="cName" />
+												id="cName" styleClass="inputfield"/>
 
 											<p:commandButton icon="pi pi-search"
-												action="#{customerSearchShowController.show(newBudgetController.cNameToSearch)}">
+												action="#{customerSearchShowController.show(newBudgetController.cNameToSearch)}" onclick="PF('dlgSearchCustomer').show()">
 												<p:ajax event="dialogReturn"
 													listener="#{newBudgetController.handleCustomerResult}"
 													update=":customerDetailComponent" />
@@ -203,13 +208,13 @@
 				header="#{resourceBundleServiceImpl.getMessage('efetivar_orcamento')}"
 				responsive="true">
 				<h:form>
-					<div class="ui-fluid p-formgrid p-grid">
-						<div class="p-field p-col">
+					<div class="ui-fluid formgrid grid">
+						<div class="field col">
 							<label for="pR">#{resourceBundleServiceImpl.getMessage('pedido_representante')}</label>
 							<p:inputText id="pR" type="text"
 								value="#{newBudgetController.customerRepresentativeOrderForm.representativeOrder}" />
 						</div>
-						<div class="p-field p-col">
+						<div class="field col">
 							<label for="pC">#{resourceBundleServiceImpl.getMessage('pedido_cliente')}</label>
 							<p:inputText id="pC" type="text"
 								value="#{newBudgetController.customerRepresentativeOrderForm.customerOrder}" />
@@ -225,32 +230,32 @@
 			<p:dialog header="Status" modal="true" closable="false"
 				widgetVar="persistingBudget" responsive="true">
 				<div id="statLoading">
-					<h5 class="p-mt-3">#{resourceBundleServiceImpl.getMessage('salvando_orcamento')}</h5>
-					<div class="p-d-flex p-ai-end">
-						<p:skeleton size="2rem" class="p-mr-2" />
-						<p:skeleton size="3rem" class="p-mr-2" />
-						<p:skeleton size="4rem" class="p-mr-2" />
+					<h5 class="mt-3">#{resourceBundleServiceImpl.getMessage('salvando_orcamento')}</h5>
+					<div class="flex align-items-end">
+						<p:skeleton size="2rem" class="mr-2" />
+						<p:skeleton size="3rem" class="mr-2" />
+						<p:skeleton size="4rem" class="mr-2" />
 						<p:skeleton size="5rem" />
 					</div>
 				</div>
 
-				<div id="statConluded" class="p-grid p-flex-column"
+				<div id="statConluded" class="grid flex-column"
 					style="display: none;">
-					<div class="p-col">
+					<div class="col">
 						<div class="box">
 							<p:staticMessage severity="info" summary="Salvo com sucesso!"
 								detail="Orçamento de número #{newBudgetController.budget.code}"
 								style="width: 100%" id="successPersisted" />
 						</div>
 					</div>
-					<div class="p-col">
+					<div class="col">
 						<div class="box">
 							<p:commandButton value="OK"
 								action="#{newBudgetController.newBudget}" process="@this"
-								update="customerForm, itemsComponent" styleClass="p-mr-2 p-mb-2"
+								update="customerForm, itemsComponent" styleClass="mr-2 mb-2"
 								oncomplete="PF('persistingBudget').hide()" />
 							<p:linkButton value="Visualizar outros pedidos" icon="pi pi-star"
-								outcome="/faces/budget/budgets" styleClass="p-mb-2" />
+								outcome="/faces/budget/budgets" styleClass="mb-2" />
 						</div>
 					</div>
 				</div>
