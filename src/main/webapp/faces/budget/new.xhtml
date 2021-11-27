@@ -143,12 +143,10 @@
 				<o:itemsPanel order="#{newBudgetController.budget}"
 					renderDiscountButton="false" id="itemsComponent" />
 			</div>
-
-
-
-			
-
-
+			<p:commandButton value="Lançar exception"
+				action="#{onNetworkExceptionController.throwScoketException}"
+				process="@this" />
+				
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"
 				positionType="absolute" responsive="true" blockScroll="true">
@@ -167,10 +165,11 @@
 										<div class="ui-inputgroup">
 											<p:inputText type="text" placeholder="keyword"
 												value="#{newBudgetController.cNameToSearch}" required="true"
-												id="cName" styleClass="inputfield"/>
+												id="cName" styleClass="inputfield" />
 
 											<p:commandButton icon="pi pi-search"
-												action="#{customerSearchShowController.show(newBudgetController.cNameToSearch)}" onclick="PF('dlgSearchCustomer').show()">
+												action="#{customerSearchShowController.show(newBudgetController.cNameToSearch)}"
+												onclick="PF('dlgSearchCustomer').show()">
 												<p:ajax event="dialogReturn"
 													listener="#{newBudgetController.handleCustomerResult}"
 													update=":customerDetailComponent" />

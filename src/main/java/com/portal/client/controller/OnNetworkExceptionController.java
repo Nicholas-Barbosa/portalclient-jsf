@@ -1,6 +1,7 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
+import java.net.SocketTimeoutException;
 import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
@@ -21,6 +22,11 @@ public class OnNetworkExceptionController implements NetworkExceptionObserver, S
 
 	private String clientIp;
 	private Locale clientLocale;
+
+	public void throwScoketException() throws SocketTimeoutException {
+		this.onException(new SocketTimeoutException());
+		throw new SocketTimeoutException();
+	}
 
 	@Override
 	public void onException(Exception e) {

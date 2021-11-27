@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+
+<composite:interface>
+	<composite:attribute name="ip" required="true" type="java.lang.String" />
+	<composite:attribute name="title" type="java.lang.String" />
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<div jsf:id="ipData" class="surface-section">
+			<div class="font-medium text-3xl text-900 mb-3">#{cc.attrs.title}</div>
+			<ul class="list-none p-0 m-0">
+				<li
+					class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+					<div class="text-500 w-6 md:w-2 font-medium">IP</div>
+					<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">#{ipGeolocationComponent.data.ip}</div>
+
+				</li>
+				<li
+					class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+					<div class="text-500 w-6 md:w-2 font-medium">País</div>
+					<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">#{ipGeolocationComponent.data.country}-#{ipGeolocationComponent.data.countryCode}</div>
+
+				</li>
+				<li
+					class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+					<div class="text-500 w-6 md:w-2 font-medium">Região</div>
+					<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">#{ipGeolocationComponent.data.region}-#{ipGeolocationComponent.data.regionName}</div>
+
+				</li>
+				<li
+					class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+					<div class="text-500 w-6 md:w-2 font-medium">Cidade</div>
+					<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">#{ipGeolocationComponent.data.city}</div>
+
+				</li>
+			</ul>
+			<h:form>
+				<p:commandButton value="Buscar ip"
+					actionListener="#{ipGeolocationComponent.findIp(cc.attrs.ip)}"
+					update="#{cc.clientId}:ipData" />
+			</h:form>
+		</div>
+	</div>
+
+
+</composite:implementation>
+
+</html>

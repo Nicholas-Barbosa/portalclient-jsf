@@ -56,4 +56,10 @@ public class IPGeoData {
 		return lon;
 	}
 
+	@Override
+	public String toString() {
+		return "IPGeoData [ip=" + ip + ", country=" + country + ", countryCode=" + countryCode + ", region=" + region
+				+ ", regionName=" + regionName + ", city=" + city + ", lat=" + lat + ", lon=" + lon + "]";
+	}
+
 }

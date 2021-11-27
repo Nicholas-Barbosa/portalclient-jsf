@@ -4,8 +4,10 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:composite="http://java.sun.com/jsf/composite">
-
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:ip="http://java.sun.com/jsf/composite/components/ip">
+<h:head>
+</h:head>
 
 <composite:interface>
 
@@ -14,7 +16,7 @@
 <composite:implementation>
 	<div id="#{cc.clientId}">
 		<p:ajaxExceptionHandler type="java.net.SocketTimeoutException"
-			update="exceptionDialog" onexception="PF('exceptionDialog').show()" />
+			update="exceptionDialog" onexception="PF('exceptionDialog').show();" />
 
 		<p:dialog id="exceptionDialog" header="Timeout"
 			widgetVar="exceptionDialog" responsive="true" modal="true">
@@ -24,71 +26,9 @@
 						detail="O servidor não respondeu a esta solicitação a tempo. Tente novamente mais tarde."
 						style="width: 100%" />
 				</div>
-				<div class="grid flex-column">IP:
-					#{onNetworkExceptionController.clientIp}
-					Locale:#{onNetworkExceptionController.clientLocale}</div>
-				<div class="surface-section">
-					<div class="font-medium text-3xl text-900 mb-3">Movie
-						Information</div>
-					<div class="text-500 mb-5">Morbi tristique blandit turpis. In
-						viverra ligula id nulla hendrerit rutrum.</div>
-					<ul class="list-none p-0 m-0">
-						<li
-							class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-							<div class="text-500 w-6 md:w-2 font-medium">Title</div>
-							<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">Heat</div>
-							<div class="w-6 md:w-2 flex justify-content-end">
-								<p:commandButton type="button" value="Edit" icon="pi pi-pencil"
-									styleClass="ui-button-flat" />
-							</div>
-						</li>
-						<li
-							class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-							<div class="text-500 w-6 md:w-2 font-medium">Genre</div>
-							<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-								<p:chip label="Crime" styleClass="mr-2" />
-								<p:chip label="Drama" styleClass="mr-2" />
-								<p:chip label="Thriller" />
-							</div>
-							<div class="w-6 md:w-2 flex justify-content-end">
-								<p:commandButton type="button" value="Edit" icon="pi pi-pencil"
-									styleClass="ui-button-flat" />
-							</div>
-						</li>
-						<li
-							class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-							<div class="text-500 w-6 md:w-2 font-medium">Director</div>
-							<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">Michael
-								Mann</div>
-							<div class="w-6 md:w-2 flex justify-content-end">
-								<p:commandButton type="button" value="Edit" icon="pi pi-pencil"
-									styleClass="ui-button-flat" />
-							</div>
-						</li>
-						<li
-							class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
-							<div class="text-500 w-6 md:w-2 font-medium">Actors</div>
-							<div class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">Robert
-								De Niro, Al Pacino</div>
-							<div class="w-6 md:w-2 flex justify-content-end">
-								<p:commandButton type="button" value="Edit" icon="pi pi-pencil"
-									styleClass="ui-button-flat" />
-							</div>
-						</li>
-						<li
-							class="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 surface-border flex-wrap">
-							<div class="text-500 w-6 md:w-2 font-medium">Plot</div>
-							<div
-								class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1 line-height-3">
-								A group of professional bank robbers start to feel the heat from
-								police when they unknowingly leave a clue at their latest heist.
-							</div>
-							<div class="w-6 md:w-2 flex justify-content-end">
-								<p:commandButton type="button" value="Edit" icon="pi pi-pencil"
-									styleClass="ui-button-flat" />
-							</div>
-						</li>
-					</ul>
+				<div class="col">
+					<ip:geo ip="#{onNetworkExceptionController.clientIp}" title="Requisição"/>
+					
 				</div>
 			</div>
 		</p:dialog>
