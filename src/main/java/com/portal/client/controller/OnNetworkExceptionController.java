@@ -21,7 +21,7 @@ public class OnNetworkExceptionController implements NetworkExceptionObserver, S
 	private static final long serialVersionUID = 5355380388116956853L;
 
 	private String clientIp;
-	private Locale clientLocale;
+	private String errorMessage;
 
 	public void throwScoketException() throws SocketTimeoutException {
 		this.onException(new SocketTimeoutException());
@@ -34,15 +34,16 @@ public class OnNetworkExceptionController implements NetworkExceptionObserver, S
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
 				.getRequest();
 		this.clientIp = request.getRemoteAddr();
-		this.clientLocale = request.getLocale();
-		System.out.println("clientLocale " + clientLocale);
+		this.errorMessage = e.getMessage().contains("connect")
+				? "Não foi possível estabelecer uma conexão com o servidor a tempo. Tente novamente"
+				: "O servidor não respondeu a esta requisição a tempo. Tente novamente mais tarde.";
 	}
 
 	public String getClientIp() {
 		return clientIp;
 	}
 
-	public Locale getClientLocale() {
-		return clientLocale;
+	public String getErrorMessage() {
+		return errorMessage;
 	}
 }

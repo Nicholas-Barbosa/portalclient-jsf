@@ -11,10 +11,11 @@
 <composite:interface>
 	<composite:attribute name="ip" required="true" type="java.lang.String" />
 	<composite:attribute name="title" type="java.lang.String" />
+
 </composite:interface>
 
 <composite:implementation>
-	<div id="#{cc.clientId}">
+	<div id="#{cc.clientId}" style="display: none; max-height: 20vh">
 		<div jsf:id="ipData" class="surface-section">
 			<div class="font-medium text-3xl text-900 mb-3">#{cc.attrs.title}</div>
 			<ul class="list-none p-0 m-0">
@@ -44,9 +45,10 @@
 				</li>
 			</ul>
 			<h:form>
-				<p:commandButton value="Buscar ip"
-					actionListener="#{ipGeolocationComponent.findIp(cc.attrs.ip)}"
-					update="#{cc.clientId}:ipData" />
+				<p:remoteCommand name="findIp"
+					action="#{ipGeolocationComponent.findIp(cc.attrs.ip)}"
+					update="#{cc.clientId}:ipData" process="@this" async="true"
+					oncomplete="let clientId = '#{cc.clientId}'; document.getElementById(clientId).style.display='block';" />
 			</h:form>
 		</div>
 	</div>

@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:excp="http://java.sun.com/jsf/composite/components/exception">
 
 <h:head>
 	<f:facet name="first">
@@ -14,8 +15,9 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 	</f:facet>
 	<title>FarAway - Login</title>
-	<h:outputStylesheet name="css/primeflex.min.css" library="rain-layout" />
-
+	<h:outputStylesheet name="primeflex-3.css" library="css" />
+	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+		library="rain-layout" />
 </h:head>
 
 <h:body styleClass="login-body">
@@ -23,78 +25,74 @@
 		<f:viewParam name="previousPage"
 			value="#{loginController.previousPage}"></f:viewParam>
 	</f:metadata>
-	<f:view locale="pt_BR">
 
-
-		<div class="login-image">
-			<p:graphicImage name="images/pages/bg-header-login.png"
-				library="rain-layout" />
-		</div>
-		<div class="login-card">
-			<h1>
-				FARAWAY<span>LOGIN</span>
-			</h1>
-			<span>#{holdMessageView.label('boas_vindas_login')} </span>
-			<h:form id="formLogin">
-				<div class="form-group">
-					<span>#{holdMessageView.label('usuario')}</span>
-					<p:inputText placeholder="name@example.com"
-						value="#{loginController.loginForm.username}" id="username" />
-					<p:message for="@previous" />
-				</div>
-				<div class="form-group">
-					<span>#{holdMessageView.label('senha')}</span>
-					<p:password placeholder="write your password..."
-						value="#{loginController.loginForm.password}" id="password" />
-					<p:message for="@previous" />
-				</div>
-				<div class="form-group">
-					<span>#{resourceBundleServiceImpl.getMessage('ambiente')}</span>
-					<p:selectOneMenu id="option"
-						value="#{loginController.loginForm.companyEnv}" required="true"
-						requiredMessage="Selecione o ambiente da API">
-						<f:selectItem itemLabel="CDG" itemValue="CDG" />
-						<f:selectItem itemLabel="NSG" itemValue="NSG" />
-					</p:selectOneMenu>
-					<p:message for="@previous" />
-				</div>
-
-				<p:commandButton value="LOGIN"
-					action="#{loginController.authenticate}"
-					onstart="PF('dlgLoading').show();startLogin();" process="@form"
-					update="@form messages dlgLoading"
-					oncomplete="PF('dlgLoading').hide();finishedLoginProcess=true;if(xhr.getResponseHeader('ok')=='true')PF('redirectingUser').show()"
-					ajax="true" />
-
-				<p:messages id="messages" showDetail="true" closable="true"
-					globalOnly="true" />
-			</h:form>
-		</div>
-
-		<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
-			widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"
-			modal="true" closable="false" draggable="false" id="dlgLoading">
-			<div class="grid-demo">
-				<div class="grid p-dir-col-rev">
-					<div class="col">
-
-						<i class="pi pi-spin pi-spinner" style="font-size: 5rem"> </i> <LABEL
-							id="counter"></LABEL>
-					</div>
-
-				</div>
-			</div>
-		</p:dialog>
-		<p:dialog widgetVar="redirectingUser" modal="true" closable="false"
-			header="#{resourceBundleServiceImpl.getMessage('aguarde')}">
-			<p:staticMessage severity="info"
-				summary="#{resourceBundleServiceImpl.getMessage('usuario_encontrado')}"
-				detail="#{resourceBundleServiceImpl.getMessage('redirecionando')}"
-				style="width: 100%" />
-		</p:dialog>
-		<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
+	<div class="login-image">
+		<p:graphicImage name="images/pages/bg-header-login.png"
 			library="rain-layout" />
-	</f:view>
+	</div>
+	<div class="login-card">
+		<h1>
+			FARAWAY<span>LOGIN</span>
+		</h1>
+		<span>#{holdMessageView.label('boas_vindas_login')} </span>
+		<h:form id="formLogin">
+			<div class="form-group">
+				<span>#{holdMessageView.label('usuario')}</span>
+				<p:inputText placeholder="name@example.com"
+					value="#{loginController.loginForm.username}" id="username" />
+				<p:message for="@previous" />
+			</div>
+			<div class="form-group">
+				<span>#{holdMessageView.label('senha')}</span>
+				<p:password placeholder="write your password..."
+					value="#{loginController.loginForm.password}" id="password" />
+				<p:message for="@previous" />
+			</div>
+			<div class="form-group">
+				<span>#{resourceBundleServiceImpl.getMessage('ambiente')}</span>
+				<p:selectOneMenu id="option"
+					value="#{loginController.loginForm.companyEnv}" required="true"
+					requiredMessage="Selecione o ambiente da API">
+					<f:selectItem itemLabel="CDG" itemValue="CDG" />
+					<f:selectItem itemLabel="NSG" itemValue="NSG" />
+				</p:selectOneMenu>
+				<p:message for="@previous" />
+			</div>
+
+			<p:commandButton value="LOGIN"
+				action="#{loginController.authenticate}"
+				onstart="PF('dlgLoading').show();startLogin();" process="@form"
+				update="@form messages dlgLoading"
+				oncomplete="PF('dlgLoading').hide();finishedLoginProcess=true;if(xhr.getResponseHeader('ok')=='true')PF('redirectingUser').show()"
+				ajax="true" />
+
+			<p:messages id="messages" showDetail="true" closable="true"
+				globalOnly="true" />
+		</h:form>
+	</div>
+
+	<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
+		widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"
+		modal="true" closable="false" draggable="false" id="dlgLoading">
+		<div class="grid-demo">
+			<div class="grid p-dir-col-rev">
+				<div class="col">
+
+					<i class="pi pi-spin pi-spinner" style="font-size: 5rem"> </i> <LABEL
+						id="counter"></LABEL>
+				</div>
+
+			</div>
+		</div>
+	</p:dialog>
+	<p:dialog widgetVar="redirectingUser" modal="true" closable="false"
+		header="#{resourceBundleServiceImpl.getMessage('aguarde')}">
+		<p:staticMessage severity="info"
+			summary="#{resourceBundleServiceImpl.getMessage('usuario_encontrado')}"
+			detail="#{resourceBundleServiceImpl.getMessage('redirecionando')}"
+			style="width: 100%" />
+	</p:dialog>
+	<excp:network />
 </h:body>
 <SCRIPT type="text/javascript">
 	var finishedLoginProcess = false;

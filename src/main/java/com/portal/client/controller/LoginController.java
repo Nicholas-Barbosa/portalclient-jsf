@@ -4,9 +4,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
-import javax.ws.rs.ProcessingException;
 
 import com.portal.client.dto.LoginProtheusForm;
+import com.portal.client.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
 import com.portal.client.repository.AuthenticationRepository;
 import com.portal.client.service.ResourceBundleService;
 import com.portal.client.util.jsf.FacesUtils;
@@ -14,6 +14,7 @@ import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
 @RequestScoped
 @Named
+@NetworkExceptionJoinPointCut
 public class LoginController {
 
 	/**
@@ -46,8 +47,6 @@ public class LoginController {
 		} catch (NotAuthorizedException e) {
 			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null);
 
-		} catch (ProcessingException e) {
-			processingExceptionMessageHelper.displayMessage(e, null);
 		}
 		return null;
 
