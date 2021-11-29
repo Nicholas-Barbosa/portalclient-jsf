@@ -8,7 +8,7 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class OrderSemiProjection extends OrderPersisted {
 
-	private String customerCode, customerStore, customerName, invoice44Digits, invoiceNumber, invoiceSerie;
+	private String customerCode, customerStore, customerName, invoice44Digits, invoiceNumber, invoiceSerie, status;
 	private LocalDate createdAt, invoiceCreatedAt;
 
 	@JsonbCreator
@@ -17,7 +17,7 @@ public class OrderSemiProjection extends OrderPersisted {
 			@JsonbProperty("cliente_name") String customerName, @JsonbProperty("creation_date") String createdAt,
 			@JsonbProperty("invoice_key") String invoiceDigits, @JsonbProperty("invoice_number") String invoiceNumber,
 			@JsonbProperty("invoice_series") String invoiceSerie,
-			@JsonbProperty("issuance_date") String invoiceCreatedAt) {
+			@JsonbProperty("issuance_date") String invoiceCreatedAt, @JsonbProperty("status") String status) {
 		super(code);
 		this.customerCode = customerCode;
 		this.customerStore = customerStore;
@@ -27,6 +27,7 @@ public class OrderSemiProjection extends OrderPersisted {
 		this.invoiceNumber = invoiceNumber;
 		this.invoiceSerie = invoiceSerie;
 		this.invoiceCreatedAt = invoiceCreatedAt != null ? convertToDate(createdAt) : null;
+		this.status = status;
 	}
 
 	private final LocalDate convertToDate(String str) {
@@ -63,6 +64,10 @@ public class OrderSemiProjection extends OrderPersisted {
 
 	public LocalDate getInvoiceCreatedAt() {
 		return invoiceCreatedAt;
+	}
+
+	public String getStatus() {
+		return status;
 	}
 
 	@Override

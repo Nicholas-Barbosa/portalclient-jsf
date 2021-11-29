@@ -16,7 +16,7 @@ public class OrderSemiProjectionPage implements Page<OrderSemiProjection> {
 	private static final long serialVersionUID = 814551700799637298L;
 	private int pageSize, page, totalPages, totalItems;
 	private Set<OrderSemiProjection> orders;
-
+	
 	
 	
 	@JsonbCreator

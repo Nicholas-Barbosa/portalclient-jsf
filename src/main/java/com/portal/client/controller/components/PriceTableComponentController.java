@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.components;
 
 import java.io.Serializable;
 import java.util.List;

@@ -28,6 +28,7 @@ public class OrdersController implements Serializable {
 	private OrderCrudService orderService;
 	private final int pageSize = 15;
 	private LazyBehaviorDataModel<OrderSemiProjection> orders;
+	private OrderSemiProjection invoiceToView;
 
 	public OrdersController() {
 		orders = new OrderLazyDataModel();
@@ -53,4 +54,11 @@ public class OrdersController implements Serializable {
 		return pageSize;
 	}
 
+	public OrderSemiProjection getInvoiceToView() {
+		return invoiceToView;
+	}
+
+	public void setInvoiceToView(OrderSemiProjection invoiceToView) {
+		this.invoiceToView = invoiceToView;
+	}
 }

@@ -28,7 +28,7 @@
 <composite:implementation>
 	<div class="card">
 		<h5>Gerenciar itens</h5>
-		<p:outputPanel deferred="true" deferredMode="visible" id="panelItems">
+		<p:outputPanel deferred="true" deferredMode="load" id="panelItems">
 			<h:form prependId="false">
 				<p:remoteCommand autoRun="true"
 					action="#{itemOrderContainerController.setOrder(cc.attrs.order)}" />

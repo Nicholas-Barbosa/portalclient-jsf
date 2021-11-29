@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.components;
 
 import java.io.Serializable;
 import java.net.SocketTimeoutException;
@@ -24,8 +24,8 @@ public class OnNetworkExceptionController implements NetworkExceptionObserver, S
 	private String errorMessage;
 
 	public void throwScoketException() throws SocketTimeoutException {
-		this.onException(new SocketTimeoutException());
-		throw new SocketTimeoutException();
+		this.onException(new SocketTimeoutException("connect"));
+		throw new SocketTimeoutException("connect");
 	}
 
 	@Override

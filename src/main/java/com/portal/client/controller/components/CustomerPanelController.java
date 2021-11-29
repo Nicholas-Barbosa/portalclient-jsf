@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.components;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

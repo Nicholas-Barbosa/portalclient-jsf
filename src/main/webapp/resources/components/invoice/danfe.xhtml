@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:ip="http://java.sun.com/jsf/composite/components/ip">
+<h:head>
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="invoice" type="com.portal.client.vo.Invoice" />
+	<composite:attribute name="invoiceNumber" type="java.lang.String" />
+	<composite:attribute name="invoiceSerie" type="java.lang.String" />
+	<composite:attribute name="onLoaded" type="java.lang.String" />
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<h:form>
+			<p:remoteCommand name="findDanfe" process="@this"
+				action="#{danfeComponent.load(cc.attrs.invoice,cc.attrs.invoiceNumber,cc.attrs.invoiceSerie)}"
+				onstart="onStartLoad()" oncomplete="onLoaded(xhr);" />
+		</h:form>
+		<div id="divLoadingDanfe" style="display: none">
+			<div class="p-d-flex p-ai-end">
+				<p:skeleton shape="circle" size="2rem" class="p-mr-2" />
+				<p:skeleton shape="circle" size="3rem" class="p-mr-2" />
+				<p:skeleton shape="circle" size="4rem" class="p-mr-2" />
+				<p:skeleton shape="circle" size="5rem" />
+			</div>
+		</div>
+		<div id="divMedia">
+			<OBJECT id="media" style="width: 80vw; height: 75vh"> </OBJECT>
+		</div>
+	</div>
+
+	<script>
+		
+		var mediaObject = document.getElementById("media");
+		function onStartLoad() {
+			$('#divLoadingDanfe').show();
+			mediaObject.data = null;
+		}
+
+		function onLoaded(xhr) {
+			let base64Data = xhr.getResponseHeader('base64');
+			mediaObject.data = base64Data;
+			#{cc.attrs.onLoad}
+			$('#divLoadingDanfe').hide();
+		}
+	</script>
+</composite:implementation>
+
+</html>

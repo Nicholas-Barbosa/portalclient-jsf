@@ -4,7 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:in="http://java.sun.com/jsf/composite/components/invoice">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -73,10 +74,17 @@
 								<h:outputText value="#{order.invoiceCreatedAt}"
 									rendered="#{order.invoiceCreatedAt !=null}">
 									<f:convertDateTime type="localDate" locale="pt_BR"
-										dateStyle="full" />
+										dateStyle="long" />
 								</h:outputText>
 							</p:column>
 							<p:column>
+								<p:commandButton title="Danfe" icon="pi pi-file-pdf"
+									styleClass="p-mr-2 p-mb-2 ui-button-help"
+									oncomplete="PF('dlgDanfe').show();"
+									rendered="#{order.invoice44Digits !=null}">
+									<f:setPropertyActionListener value="#{order}"
+										target="#{ordersController.invoiceToView}" />
+								</p:commandButton>
 								<p:linkButton outcome="edit" includeViewParams="true"
 									icon="pi pi-star">
 									<f:param name="orderID" value="#{order.code}" />
@@ -106,5 +114,13 @@
 				</div>
 			</div>
 		</div>
+		<p:dialog header="Danfe" modal="true" widgetVar="dlgDanfe"
+			responsive="true" onShow="findDanfe();" positionType="fixed"
+			position="center">
+			<in:danfe id="danfeComponent"
+				invoiceNumber="#{ordersController.invoiceToView.invoiceNumber}"
+				invoiceSerie="#{ordersController.invoiceToView.invoiceSerie}"
+				onLoad="PF('dlgDanfe').initPosition();" />
+		</p:dialog>
 	</ui:define>
 </ui:composition>

@@ -21,7 +21,7 @@ public class Order {
 	private LocalDate createdAt;
 	private RepresentativeUser representative;
 	private Invoice invoice;
-	
+	private String status;
 	public Order() {
 	}
 
@@ -172,5 +172,12 @@ public class Order {
 
 	public void removeItems() {
 		items.clear();
+	}
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }
