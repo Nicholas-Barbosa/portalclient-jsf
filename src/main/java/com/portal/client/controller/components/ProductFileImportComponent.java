@@ -50,6 +50,7 @@ public class ProductFileImportComponent implements Serializable {
 
 	public void confirm(String customerCode, String customerStore, ProductFileImportObserver observer) {
 		try {
+			System.out.println("extracted data " + extractedData.size());
 			observer.onConfirm(importer.parseData(extractedData, customerCode, customerStore));
 			this.setDefaultFileLayoutPositions();
 			this.fileLayout.setXlsxStreams(null);
@@ -63,6 +64,7 @@ public class ProductFileImportComponent implements Serializable {
 			productsNotFound = e.getProducts();
 			extractedData.removeIf(p -> Arrays.stream(productsNotFound).parallel()
 					.anyMatch(pNotFound -> p.getCode().equals(pNotFound.getProductIdentity())));
+			System.out.println("products not found! " + productsNotFound.length);
 			this.confirm(customerCode, customerStore, observer);
 		}
 	}
@@ -83,7 +85,7 @@ public class ProductFileImportComponent implements Serializable {
 				this.fileLayout.setOffSetCellForProductCode(fileLayout.getOffSetCellForProductCode() - 1);
 				this.fileLayout.setOffSetCellForProductQuantity(fileLayout.getOffSetCellForProductQuantity() - 1);
 				extractedData = importer.extractData(fileLayout);
-				FacesUtils.executeScript("PF('dlgLoading').hide();editScrollBodyMaxHeight('extractedDatas','35vh')");
+				FacesUtils.executeScript("PF('dlgLoading').hide();editScrollBodyMaxHeight('extractedDatas','35vh');");
 				return event.getNewStep();
 			} catch (MismatchCellTypeExceptions e) {
 				mismatchCelltypeExceptions = e.getExceptions();
@@ -117,6 +119,11 @@ public class ProductFileImportComponent implements Serializable {
 			return event.getNewStep();
 		}
 
+	}
+
+	public void removeExtractedData(ProductImporterExtractedData data) {
+		this.extractedData.remove(data);
+		System.out.println(this.extractedData.size());
 	}
 
 	private final void setDefaultFileLayoutPositions() {

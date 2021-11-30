@@ -78,8 +78,8 @@
 								var="product" editable="true" editMode="cell" reflow="true"
 								scrollable="true" filterDelay="75" paginator="true"
 								paginatorPosition="bottom" paginatorAlwaysVisible="false"
-								rows="10" >
-								
+								rows="10">
+
 								<p:column headerText="Produto" filterBy="#{product.code}"
 									id="columnCode">
 									<p:cellEditor>
@@ -105,9 +105,9 @@
 								<p:column style="width:3rem">
 									<p:commandButton icon="pi pi-times"
 										styleClass="rounded-button ui-button-danger"
-										action="#{itemImportController.removeItemXlsxProjection(item)}"
+										action="#{productFileImportComponent.removeExtractedData(product)}"
 										process="@this"
-										oncomplete="editScrollBodyMaxHeight('dtItemsResult','35vh');PF('dtItemsResult').clearFilters();" />
+										oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');" update="extractedDatas" partialSubmit="true"/>
 								</p:column>
 							</p:dataTable>
 						</div>
@@ -194,11 +194,14 @@
 	</p:dialog>
 	<script>
 		function onLoaded(xhr) {
-			PF('dlgLoading').hide();
 			$('#div-loading-text').text('Realizando leitura do arquivo...');
-				backWizardToBegin();
-				#{cc.attrs.onConfirm};
-			console.log(xhr.getResponseHeader("loaded"));
+			backWizardToBegin();
+			#{cc.attrs.onConfirm};
+			PF('dlgLoading').hide();
+			if(Boolean(xhr.getResponseHeader("products-not-found"))){
+				PF('productsNotFound').show();
+				updateProductsNotFound();
+			}
 		}
 	</script>
 </composite:implementation>
