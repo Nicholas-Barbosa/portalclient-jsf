@@ -29,8 +29,8 @@
 					<li><i class="pi pi-spin pi-spinner" style="font-size: 3rem"
 						id="loadingUser"></i></li>
 					<li class="topbar-item"><a href="#"> <p:avatar
-								icon="pi pi-user" styleClass="mr-2" size="large"
-								shape="circle" id="avatar" />
+								icon="pi pi-user" styleClass="mr-2" size="large" shape="circle"
+								id="avatar" />
 					</a>
 						<ul>
 							<li><a href="#"> <i class="pi pi-user"></i> <span><p:outputLabel
@@ -46,16 +46,19 @@
 					</a></li>
 
 				</ul>
-				<p:remoteCommand action="#{session.invalidate}" process="@this"
-					name="logout" oncomplete="window.location='/portal/login.xhtml'" />
-				<p:remoteCommand action="#{topBarController.loadUserData}"
-					autoRun="true" async="true"
-					onstart="$('#loadingUser').show();$('#avatar').hide();"
-					oncomplete="$('#loadingUser').hide();$('#avatar').show();"
-					update="user-label" />
+				<h:form>
+					<p:remoteCommand action="#{session.invalidate}" process="@this"
+						name="logout" oncomplete="window.location='/portal/login.xhtml'"
+						partialSubmit="true" id="sessionInvalidate" />
+					<p:remoteCommand action="#{topBarController.loadUserData}"
+						autoRun="true" async="true"
+						onstart="$('#loadingUser').show();$('#avatar').hide();"
+						oncomplete="$('#loadingUser').hide();$('#avatar').show();"
+						update="user-label" />
+				</h:form>
 			</div>
 
-			
+
 		</div>
 	</div>
 

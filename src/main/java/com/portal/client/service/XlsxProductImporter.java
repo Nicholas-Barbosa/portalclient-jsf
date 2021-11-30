@@ -77,24 +77,39 @@ public class XlsxProductImporter implements ProductImporter {
 				.collect(Collectors.toMap(k -> k.getCellOffset(), v -> v));
 		CellAttribute codeCell = attributes.get(offsetForCode);
 		CellAttribute quantityCell = attributes.get(offSetForQuantity);
-		Object quantityObj = quantityCell.getValue();
+		if (codeCell != null && quantityCell != null) {
+			String code;
+			switch (codeCell.getCellType()) {
+			case STRING:
+				code = (String) codeCell.getValue();
+				break;
 
-		if (quantityObj == null)
-			return new ProductImporterExtractedData((String) codeCell.getValue(), 1);
+			default:
+				throw new MismatchCellTypeException(row.getOffset(), codeCell, CellType.STRING);
+			}
+			
+			Object quantityObj = quantityCell.getValue();
+			if (quantityObj == null)
+				return new ProductImporterExtractedData((String) code, 1);
 
-		switch (quantityCell.getCellType()) {
-		case NUMERIC:
-			return new ProductImporterExtractedData((String) codeCell.getValue(), ((Double) quantityObj).intValue());
+			switch (quantityCell.getCellType()) {
+			case NUMERIC:
+				return new ProductImporterExtractedData((String) code,
+						((Double) quantityObj).intValue());
 
-		default:
-			try {
-				String quantityStr = RegexUtils.removeAllChars((String) quantityObj);
-				return new ProductImporterExtractedData((String) codeCell.getValue(),
-						Double.valueOf(quantityStr).intValue());
-			} catch (NumberFormatException e) {
-				throw new MismatchCellTypeException(row.getOffset(), quantityCell, CellType.NUMERIC);
+			default:
+				try {
+					String quantityStr = RegexUtils.removeAllChars((String) quantityObj);
+					return new ProductImporterExtractedData((String) codeCell.getValue(),
+							Double.valueOf(quantityStr).intValue());
+				} catch (NumberFormatException e) {
+					throw new MismatchCellTypeException(row.getOffset(), quantityCell, CellType.NUMERIC);
+				}
 			}
 		}
 
+		throw new IllegalArgumentException(
+				codeCell == null && quantityCell == null ? "Code cell and Quantity cell not found"
+						: quantityCell == null ? "Quantity cell not found" : "Code cell not found");
 	}
 }

@@ -20,8 +20,8 @@
 		<p:dialog id="exceptionDialog" header="Timeout"
 			widgetVar="exceptionDialog" responsive="true" modal="true">
 			<h:form>
-				<p:remoteCommand name="updateErrorMessage" update="#{cc.clientId}:errorMessage"
-					process="@this" />
+				<p:remoteCommand name="updateErrorMessage"
+					update="#{cc.clientId}:errorMessage" process="@this" async="true" />
 			</h:form>
 			<div class="grid flex-column">
 				<div class="col">

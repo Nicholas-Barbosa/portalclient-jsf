@@ -10,14 +10,12 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.RestClient;
 import com.portal.client.dto.BrazilianState;
 
 @ApplicationScoped
-@Named
 public class BrazilianStateServiceImpl implements BrazilianStateService, Serializable {
 
 	/**
@@ -33,7 +31,6 @@ public class BrazilianStateServiceImpl implements BrazilianStateService, Seriali
 	public BrazilianStateServiceImpl(RestClient restClient) {
 		super();
 		this.restClient = restClient;
-		loadStates();
 	}
 
 	@Override

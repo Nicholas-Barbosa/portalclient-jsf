@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.components;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,6 +13,7 @@ import org.primefaces.PrimeFaces;
 import org.primefaces.event.RowEditEvent;
 import org.primefaces.event.SelectEvent;
 
+import com.portal.client.controller.ProductFileImportObserver;
 import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.service.OrderBehaviorHelper;
@@ -52,18 +53,17 @@ public class ItemOrderContainerController implements Serializable, ProductFileIm
 	@Override
 	public void onConfirm(BatchProductSearchDataWrapper wrapper) {
 		orderHelper.addProducts(order, wrapper);
+		FacesUtils.executeScript("updateDtItems();updateTotals()");
 	}
 
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
 		this.orderHelper.merge(this.order, event.getObject());
-		FacesUtils.ajaxUpdate("panelTotals");
 	}
 
 	public void handleProductResult(SelectEvent<Optional<Product>> event) {
 		event.getObject().ifPresentOrElse(p -> {
 			System.out.println("product " + p.getProductTechDetail().getApplication());
 			orderHelper.addItem(order, new Item(p));
-			FacesUtils.ajaxUpdate("dtItems", "totals");
 		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
 
 	}

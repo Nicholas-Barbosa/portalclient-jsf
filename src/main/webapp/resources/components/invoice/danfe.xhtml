@@ -32,23 +32,26 @@
 			</div>
 		</div>
 		<div id="divMedia">
-			<OBJECT id="media" style="width: 80vw; height: 75vh"> </OBJECT>
+			<iframe id="media" style="width: 80vw; height: 75vh" />
 		</div>
 	</div>
 
 	<script>
 		
 		var mediaObject = document.getElementById("media");
+		var hrefNT = document.getElementById("hrefD");
 		function onStartLoad() {
 			$('#divLoadingDanfe').show();
-			mediaObject.data = null;
+			$('#divMedia').hide();
+			mediaObject.src = null;
 		}
 
 		function onLoaded(xhr) {
 			let base64Data = xhr.getResponseHeader('base64');
-			mediaObject.data = base64Data;
+			mediaObject.src = base64Data;
 			#{cc.attrs.onLoad}
 			$('#divLoadingDanfe').hide();
+			$('#divMedia').show();
 		}
 	</script>
 </composite:implementation>

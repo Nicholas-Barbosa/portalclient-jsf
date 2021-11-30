@@ -25,9 +25,7 @@ public class IpGeolocationComponent implements Serializable{
 
 	public void findIp(String ip) {
 		ip = ip.equals("127.0.0.1") ? "35.231.237.151" : ip;
-		System.out.println("IP " + ip);
 		this.data = ipGeoService.findByIp(ip);
-		System.out.println("IP data " + data);
 	}
 
 	public IPGeoData getData() {

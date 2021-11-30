@@ -78,12 +78,8 @@
 								var="product" editable="true" editMode="cell" reflow="true"
 								scrollable="true" filterDelay="75" paginator="true"
 								paginatorPosition="bottom" paginatorAlwaysVisible="false"
-								rows="10">
-								<f:facet name="header">
-									<p:button value="Redimensionar tabela"
-										styleClass="ui-button-help"
-										onclick="editScrollBodyMaxHeight('extractedDatas','35vh')" />
-								</f:facet>
+								rows="10" >
+								
 								<p:column headerText="Produto" filterBy="#{product.code}"
 									id="columnCode">
 									<p:cellEditor>
@@ -123,8 +119,7 @@
 										styleClass="ui-button-success" process="@this"
 										action="#{productFileImportComponent.confirm(cc.attrs.customerCode,cc.attrs.customerStore,cc.attrs.observer)}"
 										onstart="PF('dlgLoading').show(); $('#div-loading-text').text('Realizando busca em lote de produtos...')"
-										oncomplete="#{cc.attrs.onConfirm} backWizardToBegin();PF('dlgLoading').hide(); $('#div-loading-text').text('Realizando leitura do arquivo...');onConfirm(xhr)"
-										update="importWizard" />
+										oncomplete="onLoaded(xhr)" update="importWizard" />
 								</div>
 							</div>
 						</div>
@@ -154,10 +149,11 @@
 			<div class="col">
 				<h:form id="frm-mismatachs">
 					<p:remoteCommand name="updateMismatchs" process="@this"
-						update="@form:mismatchs" />
-					<p:dataTable id="mismatchs"
+						update="@form:mismatchs"
+						oncomplete="editScrollBodyMaxHeight('mismatchs','40vh')" />
+					<p:dataTable id="mismatchs" widgetVar="mismatchs"
 						value="#{productFileImportComponent.mismatchCelltypeExceptions}"
-						var="mismatch">
+						var="mismatch" scrollable="true">
 						<p:column field="rowNum" headerText="Linha" />
 						<p:column field="cell.cellOffset" headerText="Célula" />
 						<p:column field="expectedType" headerText="Tipo experado" />
@@ -196,6 +192,15 @@
 			</div>
 		</div>
 	</p:dialog>
+	<script>
+		function onLoaded(xhr) {
+			PF('dlgLoading').hide();
+			$('#div-loading-text').text('Realizando leitura do arquivo...');
+				backWizardToBegin();
+				#{cc.attrs.onConfirm};
+			console.log(xhr.getResponseHeader("loaded"));
+		}
+	</script>
 </composite:implementation>
 
 </html>

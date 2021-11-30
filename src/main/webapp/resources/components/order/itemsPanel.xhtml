@@ -28,10 +28,13 @@
 <composite:implementation>
 	<div class="card">
 		<h5>Gerenciar itens</h5>
-		<p:outputPanel deferred="true" deferredMode="load" id="panelItems">
+		<p:outputPanel id="panelItems" deferred="true">
+
 			<h:form prependId="false">
 				<p:remoteCommand autoRun="true"
-					action="#{itemOrderContainerController.setOrder(cc.attrs.order)}" />
+					action="#{itemOrderContainerController.setOrder(cc.attrs.order)}"
+					process="@this" partialSubmit="true" />
+
 				<p:toolbar styleClass="mb-4">
 					<p:toolbarGroup>
 						<p:commandButton value="Novo" icon="pi pi-plus"
@@ -93,9 +96,7 @@
 
 				</p:toolbar>
 
-				<p:remoteCommand name="updateDtItems" process="@none"
-					update="dtItems" onstart="$('#divUpdatingDtItems').show();"
-					oncomplete="$('#divUpdatingDtItems').hide();editScrollBodyMaxHeight('dtItems','40vh')" />
+
 
 				<div class="custom-skeleton p-4" id="divUpdatingDtItems"
 					style="display: none">
@@ -113,6 +114,11 @@
 						<p:skeleton width="4rem" height="2rem" />
 					</div>
 				</div>
+				<p:remoteCommand name="updateDtItems" process="@this"
+					update="dtItems" onstart="$('#divUpdatingDtItems').show();"
+					oncomplete="$('#divUpdatingDtItems').hide();editScrollBodyMaxHeight('dtItems','40vh')"
+					partialSubmit="true" />
+
 
 				<p:dataTable var="item" value="#{cc.attrs.order.items}" id="dtItems"
 					widgetVar="dtItems" editable="true" scrollable="true" size="small"
@@ -226,8 +232,7 @@
 
 					<p:rowExpansion>
 						<div id="rowData" class="grid ml-3  mt-2">
-							<div id="div-img-wrraper" class="col-fixed"
-								style="width: 12rem">
+							<div id="div-img-wrraper" class="col-fixed" style="width: 12rem">
 								<div id="div-img-loader-#{item.product.commercialCode}"
 									style="display: none">
 									<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
@@ -332,6 +337,7 @@
 						</div>
 					</p:rowExpansion>
 				</p:dataTable>
+
 			</h:form>
 			<p:sidebar widgetVar="expandingItem" modal="true" baseZIndex="1000"
 				position="bottom" showCloseIcon="false">
@@ -356,6 +362,8 @@
 			</p:blockUI>
 		</p:outputPanel>
 	</div>
+
+
 	<div class="card">
 		<p:outputPanel id="panelTotals" deferred="true" deferredMode="visible">
 			<h:form id="totals">
@@ -388,7 +396,6 @@
 							styleClass="inputfield w-full" />
 					</div>
 				</div>
-				<p:autoUpdate on="eventAddItem" />
 			</h:form>
 		</p:outputPanel>
 	</div>
@@ -400,21 +407,19 @@
 			styleClass="ui-confirmdialog-yes" />
 		<p:commandButton value="Não" type="button"
 			styleClass="ui-confirmdialog-no ui-button-flat" />
-
 	</p:confirmDialog>
 
 	<p:dialog header="Importar produtos" modal="true"
-		widgetVar="dlgImportProducts" responsive="true">
-		<div style="max-width: 50vw; max-height: 60vh; overflow-y: auto">
+		widgetVar="dlgImportProducts" responsive="true" style="max-width: 50vw; max-height: 70vh; overflow-y: auto">
+		<div>
 			<product:fileImport
 				customerCode="#{cc.attrs.order.customerOnOrder.code}"
 				customerStore="#{cc.attrs.order.customerOnOrder.store}"
 				observer="#{itemOrderContainerController}"
-				onConfirm="PF('dlgImportProducts').hide();updateDtItems();updateTotals();" />
+				onConfirm="PF('dlgImportProducts').hide();" />
 		</div>
 
 	</p:dialog>
-
 
 </composite:implementation>
 

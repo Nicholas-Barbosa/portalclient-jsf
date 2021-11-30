@@ -1,4 +1,4 @@
-package com.portal.client.controller;
+package com.portal.client.controller.components;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -11,12 +11,13 @@ import javax.inject.Named;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 
+import com.portal.client.controller.ProductFileImportObserver;
+import com.portal.client.dto.ProductImporterExtractedData;
 import com.portal.client.dto.XlsxProductFileReadLayout;
 import com.portal.client.exception.MismatchCellTypeExceptions;
+import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
 import com.portal.client.exception.ProductsNotFoundException;
 import com.portal.client.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
-import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
-import com.portal.client.dto.ProductImporterExtractedData;
 import com.portal.client.service.ProductImporter;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.WrapperProduct404Error.Product404Error;
@@ -56,6 +57,7 @@ public class ProductFileImportComponent implements Serializable {
 			this.extractedData = null;
 			if (productsNotFound != null) {
 				FacesUtils.addHeaderForResponse("products-not-found", true);
+				return;
 			}
 		} catch (ProductsNotFoundException e) {
 			productsNotFound = e.getProducts();
@@ -81,13 +83,33 @@ public class ProductFileImportComponent implements Serializable {
 				this.fileLayout.setOffSetCellForProductCode(fileLayout.getOffSetCellForProductCode() - 1);
 				this.fileLayout.setOffSetCellForProductQuantity(fileLayout.getOffSetCellForProductQuantity() - 1);
 				extractedData = importer.extractData(fileLayout);
-				FacesUtils.executeScript("PF('dlgLoading').hide()");
+				FacesUtils.executeScript("PF('dlgLoading').hide();editScrollBodyMaxHeight('extractedDatas','35vh')");
 				return event.getNewStep();
 			} catch (MismatchCellTypeExceptions e) {
 				mismatchCelltypeExceptions = e.getExceptions();
 				FacesUtils
 						.executeScript("PF('dlgLoading').hide();PF('dlgMismatchExcpetions').show();updateMismatchs()");
 				fileLayout.setXlsxStreams(null);
+			} catch (IllegalArgumentException e) {
+				switch (e.getMessage()) {
+				case "java.lang.IllegalArgumentException: Code cell and Quantity cell not found":
+					FacesUtils.error(null, "Células não encontradas",
+							"A célula de código e quantidade não foram encontradas.Revise a configuração de layout!",
+							"growl");
+					break;
+
+				case "java.lang.IllegalArgumentException: Quantity cell not found":
+					FacesUtils.error(null, "Célula não encontrada",
+							"A célula de quantidade não foi encontrada.Revise a configuração de layout!", "growl");
+					break;
+				case "java.lang.IllegalArgumentException: Code cell not found":
+					FacesUtils.error(null, "Célula não encontrada",
+							"A célula de código não foi encontrada.Revise a configuração de layout!", "growl");
+					break;
+
+				}
+				FacesUtils.executeScript("PF('dlgLoading').hide();");
+				return "setFileLayout";
 			}
 			return "file";
 
