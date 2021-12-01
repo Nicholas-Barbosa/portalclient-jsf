@@ -143,13 +143,14 @@
 				<o:itemsPanel order="#{newBudgetController.budget}"
 					renderDiscountButton="false" id="itemsComponent" />
 			</div>
-			
-				
+
+
 			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
 				header="#{holdMessageView.label('busca_de_cliente')}"
 				positionType="absolute" responsive="true" blockScroll="true">
 				<div style="max-height: 65vh; overflow: auto">
-					<p:tabView>
+					<p:tabView onTabShow="if(index==1)loadStates(); "
+						widgetVar="tabSearchCustomer">
 						<p:tab
 							title="#{resourceBundleServiceImpl.getMessage('palavra_chave')}">
 							<h5>
@@ -184,7 +185,8 @@
 						<p:tab title="PROSPECT">
 							<c:prospectForm order="#{newBudgetController.budget}"
 								update=":customerForm,budgetToolsForm"
-								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();" />
+								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();"
+								id="prospectForm" />
 						</p:tab>
 					</p:tabView>
 				</div>

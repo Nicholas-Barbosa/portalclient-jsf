@@ -51,6 +51,7 @@ public class ProductServiceImpl implements ProductService {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
 
 		try {
+			
 			Future<ProductPage> ftProduct = customerType.equals(CustomerType.NORMAL)
 					? productRepository.findByCodeAsync(code, customerCode, customerStore)
 					: productRepository.findByCodeForProspectAsync(code, state, sellerType);
