@@ -73,6 +73,8 @@
 				<p:tab id="extractedData" title="Dados extraídos">
 					<div class="flex flex-column">
 						<div class="mb-2">
+							<p:remoteCommand name="updateExtractedDatas" process="@this"
+								partialSubmit="true" update="extractedDatas" oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');"/>
 							<p:dataTable id="extractedDatas" widgetVar="extractedDatas"
 								value="#{productFileImportComponent.extractedData}"
 								var="product" editable="true" editMode="cell" reflow="true"
@@ -107,7 +109,8 @@
 										styleClass="rounded-button ui-button-danger"
 										action="#{productFileImportComponent.removeExtractedData(product)}"
 										process="@this"
-										oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');" update="extractedDatas" partialSubmit="true"/>
+										oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');"
+										update="extractedDatas" partialSubmit="true" />
 								</p:column>
 							</p:dataTable>
 						</div>

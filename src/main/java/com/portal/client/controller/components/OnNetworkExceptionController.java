@@ -2,7 +2,6 @@ package com.portal.client.controller.components;
 
 import java.io.Serializable;
 import java.net.SocketTimeoutException;
-import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
