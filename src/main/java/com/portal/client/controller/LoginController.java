@@ -7,10 +7,9 @@ import javax.ws.rs.NotAuthorizedException;
 
 import com.portal.client.dto.LoginProtheusForm;
 import com.portal.client.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
-import com.portal.client.repository.AuthenticationRepository;
+import com.portal.client.security.auth.Authentication;
 import com.portal.client.service.ResourceBundleService;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 
 @RequestScoped
 @Named
@@ -21,27 +20,25 @@ public class LoginController {
 	 * 
 	 */
 
-	private final AuthenticationRepository authenticationRepository;
+	private final Authentication authenticationRepository;
 	private final ResourceBundleService resourceBundleService;
 	private LoginProtheusForm loginForm;
 	private String headerDlgMessage;
 	private String previousPage;
-	private ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper;
 
 	@Inject
-	public LoginController(AuthenticationRepository authenticationRepository,
-			ResourceBundleService resourceBundleService,
-			ProcessingExceptionFacesMessageHelper processingExceptionMessageHelper) {
+	public LoginController(Authentication authenticationRepository,
+			ResourceBundleService resourceBundleService
+			) {
 		this.authenticationRepository = authenticationRepository;
 		this.resourceBundleService = resourceBundleService;
 		this.headerDlgMessage = this.resourceBundleService.getMessage("auteticando_usuario");
 		this.loginForm = new LoginProtheusForm();
-		this.processingExceptionMessageHelper = processingExceptionMessageHelper;
 	}
 
 	public String authenticate() {
 		try {
-			this.authenticationRepository.login(loginForm);
+			this.authenticationRepository.authenticate(loginForm);
 			FacesUtils.addHeaderForResponse("ok", true);
 			return "NEW_ORDER";
 		} catch (NotAuthorizedException e) {

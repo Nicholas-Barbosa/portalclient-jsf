@@ -27,8 +27,8 @@ public class ExcelJasperService implements JasperService{
 			JasperPrint filledDocument = JasperFillManager.fillReport(compiledReport, params,
 					new JRBeanCollectionDataSource(List.of(dataSource)));
 			SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
-			configuration.setOnePagePerSheet(true);
-			configuration.setSheetNames(new String[] { "budget-sheet-1" });
+			configuration.setOnePagePerSheet(false);
+			configuration.setSheetNames(new String[] { "sheet-1" });
 			JRXlsxExporter excelExporter = new JRXlsxExporter();
 			excelExporter.setExporterInput(new SimpleExporterInput(filledDocument));
 

@@ -59,6 +59,7 @@ public class SearchProductController implements Serializable {
 	}
 
 	public void confirm() {
+		System.out.println("quantity " + product.getPriceData().getQuantity());
 		PrimeFaces.current().dialog().closeDynamic(java.util.Optional.ofNullable(product));
 		product = null;
 	}

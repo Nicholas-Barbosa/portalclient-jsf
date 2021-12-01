@@ -3,8 +3,8 @@ package com.portal.client.security.api.register;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.portal.client.security.api.ProtheusApiUrlResolver;
 import com.portal.client.security.api.ProtheusCompanyApiEnv;
+import com.portal.client.resources.ProtheusApiUrlResolver;
 import com.portal.client.security.api.APIsRepository;
 import com.portal.client.security.api.ApiData;
 import com.portal.client.security.user.RepresentativeUser;

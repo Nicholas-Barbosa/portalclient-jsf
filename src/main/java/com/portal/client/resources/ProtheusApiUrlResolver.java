@@ -1,9 +1,9 @@
-package com.portal.client.security.api;
+package com.portal.client.resources;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.resources.ConfigPropertyResolver;
+import com.portal.client.security.api.ProtheusCompanyApiEnv;
 
 @ApplicationScoped
 public class ProtheusApiUrlResolver {

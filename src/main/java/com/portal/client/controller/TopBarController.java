@@ -30,7 +30,6 @@ public class TopBarController implements Serializable {
 	private boolean loadedUserData;
 	private String image;
 	private User user;
-
 	private static final String nsgLogoCss = "width:5.5vw;height:9.5vh;border-radius:50%";
 	private static final String cdgLogoCss = "";
 	private String currentLogoCss;
@@ -48,6 +47,9 @@ public class TopBarController implements Serializable {
 			this.currentLogoCss = nsgLogoCss;
 			break;
 		case CDG:
+			this.image = "Webp.net-resizeimage-gausslg.png";
+			break;
+		case SPG:
 			this.image = "Webp.net-resizeimage-gausslg.png";
 			break;
 		}
