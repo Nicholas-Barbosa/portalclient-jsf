@@ -39,6 +39,8 @@ public class ProspectCustomerFormController implements Serializable {
 
 	private List<BrazilianState> states;
 
+	private boolean readOnlyAddressFields = true;
+
 	public ProspectCustomerFormController() {
 		prospectCustomerForm = new ProspectCustomerForm();
 	}
@@ -62,7 +64,8 @@ public class ProspectCustomerFormController implements Serializable {
 			FacesUtils.info(null, "CEP encontrado!", zipCode.getStreet() + ", " + zipCode.getDistrict() + " - "
 					+ zipCode.getCity() + " lat: " + zipCode.getLat() + " lng: " + zipCode.getLng());
 		}, () -> {
-			FacesUtils.error(null, "CEP não encontrado", "Digite os dados do endereço manualmente.", "growl");
+			FacesUtils.warn(null, "CEP não encontrado", "Digite os dados do endereço manualmente.", "growl");
+			this.readOnlyAddressFields = false;
 		});
 	}
 
@@ -84,5 +87,9 @@ public class ProspectCustomerFormController implements Serializable {
 
 	public void setCepToSearch(String cepToSearch) {
 		this.cepToSearch = cepToSearch;
+	}
+
+	public boolean isReadOnlyAddressFields() {
+		return readOnlyAddressFields;
 	}
 }

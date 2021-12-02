@@ -4,8 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:composite="http://java.sun.com/jsf/composite"
-	>
+	xmlns:composite="http://java.sun.com/jsf/composite">
 
 <composite:interface>
 	<composite:attribute name="budget" required="true"
@@ -14,6 +13,8 @@
 </composite:interface>
 
 <composite:implementation>
+	<h:outputScript target="head" name="budgetExportComponent.js"
+		library="javascript" />
 	<div id="#{cc.clientId}">
 		<h:form>
 			<div class="ui-fluid">
@@ -21,7 +22,8 @@
 					<div class="ui-inputgroup">
 						<p:inputText
 							placeholder="#{resourceBundleServiceImpl.getMessage('nome_arquivo')}"
-							value="#{budgetExporterController.fileName}" id="fileName" widgetVar="fileName"
+							value="#{budgetExporterController.fileName}" id="fileName"
+							widgetVar="fileName"
 							onfocus="PF('fileName').jq[0].value='#{cc.attrs.fileName}';" />
 						<div class="ui-inputgroup-addon" id="fileExtension">.xlsx</div>
 					</div>
@@ -32,14 +34,7 @@
 						value="#{resourceBundleServiceImpl.getMessage('tipo')}" />
 					<p:selectOneMenu id="fileType"
 						value="#{budgetExporterController.fileType}"
-						onchange="let index = event.target.options.selectedIndex;
-						let text=null;
-						 if(index==1)
-							text = '.pdf';
-						else
-							text = '.xlsx';
-						$('#fileExtension').text(text);
-						" required="true">
+						onchange="onFileType(event);" required="true">
 						<f:selectItem itemLabel="Select One" itemValue=""
 							noSelectionOption="true" />
 						<f:selectItem itemLabel="PDF" itemValue="PDF" />

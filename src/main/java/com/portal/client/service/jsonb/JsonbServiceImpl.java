@@ -1,6 +1,8 @@
 package com.portal.client.service.jsonb;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.json.bind.Jsonb;
@@ -12,7 +14,6 @@ public class JsonbServiceImpl implements JsonbService {
 	private final Jsonb jsonbMapper;
 
 	public JsonbServiceImpl() {
-		super();
 		this.jsonbMapper = JsonbBuilder.create();
 	}
 
@@ -30,6 +31,12 @@ public class JsonbServiceImpl implements JsonbService {
 	public <T> T fromJson(InputStream entityStream, Class<T> type) {
 		// TODO Auto-generated method stub
 		return jsonbMapper.fromJson(entityStream, type);
+	}
+
+	@Override
+	public void toJson(Object obect, OutputStream out) {
+		jsonbMapper.toJson(obect, out);
+
 	}
 
 }

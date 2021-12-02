@@ -76,13 +76,13 @@
 					value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
 				<p:inputText id="prospBairro"
 					value="#{prospectCustomerFormController.prospectCustomerForm.district}"
-					readonly="true" />
+					readonly="#{prospectCustomerFormController.readOnlyAddressFields}" />
 
 				<p:outputLabel for="prospCidade"
 					value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
 				<p:inputText id="prospCidade"
 					value="#{prospectCustomerFormController.prospectCustomerForm.city}"
-					readonly="true" />
+					readonly="#{prospectCustomerFormController.readOnlyAddressFields}" />
 
 				<p:outputLabel for="@next" value="Estado" />
 				<p:selectOneMenu id="states" filter="true" panelStyle="width:180px"

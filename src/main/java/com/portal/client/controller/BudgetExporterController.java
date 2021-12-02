@@ -30,9 +30,13 @@ public class BudgetExporterController {
 	}
 
 	public void export(Budget budget) {
-		byte[] streams = budgetExporterFactory.getExporter(exportForm.getType()).export(budget);
-		exportForm.appendExtension();
-		FacesUtils.prepareResponseForDownloadOfStreams(getFileName(), streams, getFileType().getType());
+		if (budget.getItems() != null && !budget.getItems().isEmpty()) {
+			byte[] streams = budgetExporterFactory.getExporter(exportForm.getType()).export(budget);
+			exportForm.appendExtension();
+			FacesUtils.prepareResponseForDownloadOfStreams(getFileName(), streams, getFileType().getType());
+			return;
+		}
+		FacesUtils.error(null, "Orçamento sem itens!", null, "growl");
 	}
 
 	public boolean isOrder() {
