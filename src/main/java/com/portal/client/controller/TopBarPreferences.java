@@ -11,13 +11,14 @@ import com.portal.client.security.auth.AuthenticateddEvent;
 
 @SessionScoped
 @Named
-public class TopBarPreferences implements Serializable{
+public class TopBarPreferences implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -5243438532867147574L;
 	private static final String nsgLogoCss = "width:5.5vw;height:9.5vh;border-radius:50%";
+	private static final String spgLogoCss = "width:4.5vw;height:6vh";
 	private String image;
 	private String currentLogoCss;
 
@@ -31,7 +32,8 @@ public class TopBarPreferences implements Serializable{
 			this.image = "Webp.net-resizeimage-gausslg.png";
 			break;
 		case SPG:
-			this.image = "Webp.net-resizeimage-gausslg.png";
+			this.image = "LOGOMARCA SPG.png";
+			this.currentLogoCss = spgLogoCss;
 			break;
 		}
 	}

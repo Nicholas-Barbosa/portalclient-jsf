@@ -33,7 +33,7 @@ public class ExcelBudgetExporter implements BudgetExporter, Serializable {
 		BudgetJasperData data = new BudgetJasperData(budget);
 		data.setRepresentative(protheusApi.getUser().getName());
 		BudgetJasperForm form = new BudgetJasperForm(protheusApi.getUser().getType(), data);
-		return budgetReport.process(form, JasperReportType.EXCEL);
+		return budgetReport.generate(form, JasperReportType.EXCEL);
 	}
 
 }

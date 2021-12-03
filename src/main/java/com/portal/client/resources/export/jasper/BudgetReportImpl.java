@@ -1,5 +1,6 @@
 package com.portal.client.resources.export.jasper;
 
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -23,7 +24,7 @@ public class BudgetReportImpl implements BudgetReport {
 	private SimpleJasperServiceFactory factory;
 
 	@Override
-	public byte[] process(BudgetJasperForm form, JasperReportType type) {
+	public byte[] generate(BudgetJasperForm form, JasperReportType type) {
 		BudgetJasperData data = form.getData();
 		Map<String, Object> params = this.configureLayout(form.getSellertype());
 		params.put(JRParameter.REPORT_LOCALE, new Locale("pt", "BR"));
@@ -38,34 +39,19 @@ public class BudgetReportImpl implements BudgetReport {
 				return getClass().getResource("/report/images/gaussAgricola.jpeg").toURI().getPath();
 			case MOTOS:
 				return getClass().getResource("/report/images/gaussMoto.jpeg").toURI().getPath();
-			case CARROS:
-				return getClass().getResource("/report/images/gauss.png").toURI().getPath();
 			default:
-				throw new IllegalArgumentException("log does not exists!");
+				return getClass().getResource("/report/images/gauss.png").toURI().getPath();
 			}
-		} catch (Exception e) {
+		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
-	private String getTitle(SaleType type) {
-		try {
-			String title = "Gauss Indústria %s";
-			switch (type) {
-			case AGRICOLA:
-				return String.format(title, "Agrícola & Construção");
-			case MOTOS:
-				return String.format(title, "Motopeças");
-			case CARROS:
-				return String.format(title, "Autopeças");
-			default:
-				throw new IllegalArgumentException(type + " not recongnized");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	private String getTitle(SaleType saleType) {
+		String title = "Gauss Indústria %s";
+		return String.format(title, saleType.getReportLabel());
+
 	}
 
 	public Map<String, Object> configureLayout(SaleType type) {

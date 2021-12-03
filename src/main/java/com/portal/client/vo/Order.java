@@ -27,7 +27,7 @@ public class Order {
 
 	public Order(String code, String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder,
 			BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount,
-			String message, List<Item> items, LocalDate createdAt, RepresentativeUser representative) {
+			String message, List<Item> items, LocalDate createdAt, RepresentativeUser representative,String status) {
 		super();
 		this.code = code;
 		this.customerNumOrder = customerNumOrder;
@@ -41,12 +41,13 @@ public class Order {
 		this.items = items;
 		this.createdAt = createdAt;
 		this.representative = representative;
+		this.status = status;
 	}
 
 	public Order(Order order) {
 		this(order.code, order.customerNumOrder, order.repNumOrder, order.customerOnOrder, order.grossValue,
 				order.liquidValue, order.stValue, order.globalDiscount, order.message, new ArrayList<>(order.items),
-				order.createdAt, order.representative);
+				order.createdAt, order.representative,order.getStatus());
 	}
 
 	public String getCode() {

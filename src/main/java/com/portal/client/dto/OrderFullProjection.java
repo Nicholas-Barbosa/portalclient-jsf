@@ -20,7 +20,7 @@ public class OrderFullProjection extends Order {
 			CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue,
 			BigDecimal globalDiscount, String message, List<Item> items, LocalDate createdAt) {
 		super(code, customerNumOrder, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount, message,
-				items, createdAt,null);
+				items, createdAt,null,null);
 		// TODO Auto-generated constructor stub
 	}
 

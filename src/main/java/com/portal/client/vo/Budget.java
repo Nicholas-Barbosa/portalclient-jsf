@@ -17,7 +17,7 @@ public class Budget extends Order {
 			BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount, List<Item> items, String message,
 			LocalDate createdAt, RepresentativeUser representative) {
 		super(null, customerNumOrder, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
-				message, items, createdAt, representative);
+				message, items, createdAt, representative,null);
 
 	}
 
@@ -25,7 +25,7 @@ public class Budget extends Order {
 			BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount,
 			List<Item> items, String message, LocalDate createdAt, RepresentativeUser representative) {
 		super(code, customerNumOrder, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
-				message, items, createdAt, representative);
+				message, items, createdAt, representative,null);
 
 	}
 

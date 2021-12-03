@@ -5,6 +5,6 @@ import com.portal.client.resources.export.jasper.service.JasperReportType;
 
 public interface BudgetReport {
 
-	byte[] process(BudgetJasperForm form, JasperReportType type);
+	byte[] generate(BudgetJasperForm form, JasperReportType type);
 
 }

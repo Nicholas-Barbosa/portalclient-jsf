@@ -46,7 +46,7 @@
 							value="#{ordersController.orders}" paginator="true"
 							paginatorPosition="bottom" rows="#{ordersController.pageSize}"
 							scrollable="true" lazy="true" reflow="true"
-							rowStyleClass="#{order.invoice44Digits !=null ? 'invoiced' : null}">
+							rowStyleClass="#{order.status eq 'Faturado' ? 'invoiced' : null}">
 							<p:ajax event="page" listener="#{ordersController.onPage}"
 								onstart="$('#divLoading').show();$('#divListContent').hide();"
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
@@ -68,8 +68,9 @@
 								filterable="true" headerText="Número" />
 							<p:column field="invoiceSerie" sortable="false" filterable="true"
 								headerText="Série" />
-							<p:column field="invoice44Digits" sortable="false"
-								filterable="false" headerText="Chave" />
+							<p:column headerText="Chave">
+								<div class="p-text-nowrap p-text-truncate" style="width: 15rem">#{order.invoice44Digits}</div>
+							</p:column>
 							<p:column headerText="Criada em">
 								<h:outputText value="#{order.invoiceCreatedAt}"
 									rendered="#{order.invoiceCreatedAt !=null}">
@@ -77,6 +78,8 @@
 										dateStyle="long" />
 								</h:outputText>
 							</p:column>
+							<p:column field="status" headerText="Status" sortable="false" />
+
 							<p:column>
 								<p:commandButton title="Danfe" icon="pi pi-file-pdf"
 									styleClass="p-mr-2 p-mb-2 ui-button-help"

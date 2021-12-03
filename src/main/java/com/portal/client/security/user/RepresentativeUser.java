@@ -49,16 +49,23 @@ public class RepresentativeUser extends User {
 	}
 
 	public static enum SaleType {
-		CARROS("C"), MOTOS("M"), AGRICOLA("A"), INTERNO("U");
+		CARROS("C", "Autopeças"), MOTOS("M", "Motopeças"), AGRICOLA("A", "Agrícola & Construção"),
+		INTERNO("U", "Interno");
 
 		private final String type;
+		private final String reportLabel;
 
-		private SaleType(String type) {
+		private SaleType(String type, String reportLabel) {
 			this.type = type;
+			this.reportLabel = reportLabel;
 		}
 
 		public String getType() {
 			return type;
+		}
+
+		public String getReportLabel() {
+			return reportLabel;
 		}
 
 		public static SaleType fromAcronym(String acronym) {
