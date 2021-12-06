@@ -74,13 +74,5 @@ public class APIsRepository implements Serializable {
 		return new StringBuilder(serverAPI.getBaseUrl()).append("/" + endpoint).toString();
 	}
 
-	/**
-	 * return if User object is null. Does not necessarily mean that there is not a
-	 * user authenticated in the api.
-	 * 
-	 * @return
-	 */
-	public boolean isUserDataComplete(String api) {
-		return authenticatedServices.get(api).getUserData().isDataComplete();
-	}
+	
 }

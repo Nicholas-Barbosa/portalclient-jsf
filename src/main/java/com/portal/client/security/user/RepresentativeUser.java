@@ -1,20 +1,54 @@
 package com.portal.client.security.user;
 
-public class RepresentativeUser extends User {
+import java.io.Serializable;
+import java.util.Arrays;
+
+public class RepresentativeUser implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4333174724267823064L;
+	private String name, email;
+	private final String username;
+	private final char[] password;
 	private String code, fantasyName;
 	private SaleType type;
-
-	public RepresentativeUser(String code, String fantasyName, String name, String username, String email,
-			char[] password, SaleType type) {
-		super(name, username, email, password);
+	private FetchStatus fetchStatus;
+	
+	public RepresentativeUser(String name, String email, String username, char[] password, String code,
+			String fantasyName, SaleType type) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.username = username;
+		this.password = password;
 		this.code = code;
 		this.fantasyName = fantasyName;
 		this.type = type;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+	public String getUsername() {
+		return username;
+	}
+
+	public char[] getPassword() {
+		return password.clone();
 	}
 
 	public String getCode() {
@@ -33,12 +67,6 @@ public class RepresentativeUser extends User {
 		this.fantasyName = fantasyName;
 	}
 
-	@Override
-	public boolean isDataComplete() {
-		// TODO Auto-generated method stub
-		return super.isDataComplete() && code != null && fantasyName != null;
-	}
-
 	public SaleType getType() {
 		// TODO Auto-generated method stub
 		return type;
@@ -46,6 +74,17 @@ public class RepresentativeUser extends User {
 
 	public void setType(SaleType type) {
 		this.type = type;
+	}
+
+	public FetchStatus getFetchStatus() {
+		return fetchStatus;
+	}
+	public void setFetchStatus(FetchStatus fetchStatus) {
+		this.fetchStatus = fetchStatus;
+	}
+	public Object writeReplace() {
+		Arrays.fill(password, '*');
+		return this;
 	}
 
 	public static enum SaleType {
@@ -83,5 +122,9 @@ public class RepresentativeUser extends User {
 				return SaleType.INTERNO;
 			}
 		}
+	}
+	
+	public static enum FetchStatus{
+		FETCHED,NOT_FETCHED
 	}
 }

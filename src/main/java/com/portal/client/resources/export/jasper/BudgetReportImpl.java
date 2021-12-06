@@ -12,6 +12,8 @@ import com.portal.client.dto.BudgetJasperData;
 import com.portal.client.dto.BudgetJasperForm;
 import com.portal.client.resources.export.jasper.service.JasperReportType;
 import com.portal.client.resources.export.jasper.service.SimpleJasperServiceFactory;
+import com.portal.client.security.api.helper.ProtheusAPIHelper;
+import com.portal.client.security.user.InternalRepresentativeUser;
 import com.portal.client.security.user.RepresentativeUser.SaleType;
 
 import net.sf.jasperreports.engine.JRParameter;
@@ -22,6 +24,9 @@ public class BudgetReportImpl implements BudgetReport {
 
 	@Inject
 	private SimpleJasperServiceFactory factory;
+
+	@Inject
+	private ProtheusAPIHelper protheusApi;
 
 	@Override
 	public byte[] generate(BudgetJasperForm form, JasperReportType type) {
@@ -50,6 +55,8 @@ public class BudgetReportImpl implements BudgetReport {
 
 	private String getTitle(SaleType saleType) {
 		String title = "Gauss Indústria %s";
+		if (protheusApi.getUser() instanceof InternalRepresentativeUser)
+			return String.format(title, ((InternalRepresentativeUser) protheusApi.getUser()).getLoggedSaleType().getReportLabel());
 		return String.format(title, saleType.getReportLabel());
 
 	}

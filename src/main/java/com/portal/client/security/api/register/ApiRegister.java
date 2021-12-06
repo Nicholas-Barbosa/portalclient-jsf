@@ -1,7 +1,7 @@
 package com.portal.client.security.api.register;
 
+import com.portal.client.dto.RepresentativeData;
 import com.portal.client.security.api.ApiData;
-import com.portal.client.security.user.User;
 
 public interface ApiRegister<R extends ApiRegister<R>> {
 
@@ -11,5 +11,5 @@ public interface ApiRegister<R extends ApiRegister<R>> {
 
 	ApiData register();
 
-	R setUser(User user);
+	R setUser(RepresentativeData user);
 }

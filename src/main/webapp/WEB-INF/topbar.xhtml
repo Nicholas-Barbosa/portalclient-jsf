@@ -34,7 +34,7 @@
 					</a>
 						<ul>
 							<li><a href="#"> <i class="pi pi-user"></i> <span><p:outputLabel
-											value="#{topBarController.user.name}" id="user-label" /> </span>
+											value="#{userDataController.user.name}" id="user-label" /> </span>
 							</a></li>
 							<li onclick="logout()"><a href="#"> <i
 									class="topbar-icon pi pi-power-off"> </i><span>Sair</span>
@@ -50,7 +50,7 @@
 					<p:remoteCommand action="#{session.invalidate}" process="@this"
 						name="logout" oncomplete="window.location='/portal/login.xhtml'"
 						partialSubmit="true" id="sessionInvalidate" />
-					<p:remoteCommand action="#{topBarController.loadUserData}"
+					<p:remoteCommand action="#{userDataController.loadUserData}"
 						autoRun="true" async="true"
 						onstart="$('#loadingUser').show();$('#avatar').hide();"
 						oncomplete="$('#loadingUser').hide();$('#avatar').show();"

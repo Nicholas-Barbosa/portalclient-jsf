@@ -11,6 +11,8 @@ import com.portal.client.dto.BudgetJasperForm;
 import com.portal.client.resources.export.jasper.BudgetReport;
 import com.portal.client.resources.export.jasper.service.JasperReportType;
 import com.portal.client.security.api.helper.ProtheusAPIHelper;
+import com.portal.client.security.user.InternalRepresentativeUser;
+import com.portal.client.security.user.RepresentativeUser;
 import com.portal.client.vo.Budget;
 
 @ApplicationScoped
@@ -31,7 +33,12 @@ public class PdfBudgetExporter implements BudgetExporter, Serializable {
 	@Override
 	public byte[] export(Budget budget) {
 		BudgetJasperData data = new BudgetJasperData(budget);
-		data.setRepresentative(protheusApi.getUser().getName());
+		RepresentativeUser user = protheusApi.getUser();
+		data.setRepresentative(user.getName());
+		String userType = user instanceof InternalRepresentativeUser
+				? ((InternalRepresentativeUser) user).getLoggedSaleType().toString()
+				: user.getType().toString();
+		data.setRepresentativeType(userType);
 		BudgetJasperForm form = new BudgetJasperForm(protheusApi.getUser().getType(), data);
 		return budgetReport.generate(form, JasperReportType.PDF);
 	}

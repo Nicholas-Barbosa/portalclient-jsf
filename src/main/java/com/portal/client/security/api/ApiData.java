@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.portal.client.security.user.User;
+import com.portal.client.security.user.RepresentativeUser;
 
 public class ApiData implements Serializable {
 
@@ -17,10 +17,10 @@ public class ApiData implements Serializable {
 	private final String loginEndpoint;
 	private String token;
 	private final String tokenPrefix;
-	private User userData;
+	private RepresentativeUser userData;
 	private final Map<String, Object> attributes;
 
-	public ApiData(User user, String baseUrl, String loginEndpoint, String token, String tokenPrefix) {
+	public ApiData(RepresentativeUser user, String baseUrl, String loginEndpoint, String token, String tokenPrefix) {
 		super();
 		this.userData = user;
 		this.baseUrl = baseUrl;
@@ -46,11 +46,11 @@ public class ApiData implements Serializable {
 		return token;
 	}
 
-	public User getUserData() {
+	public RepresentativeUser getLoggedUser() {
 		return userData;
 	}
 
-	public void setUser(User user) {
+	public void setUser(RepresentativeUser user) {
 		this.userData = user;
 	}
 

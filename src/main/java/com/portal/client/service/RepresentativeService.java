@@ -1,14 +1,13 @@
 package com.portal.client.service;
 
-import com.portal.client.security.user.User;
+import com.portal.client.security.user.RepresentativeUser;
 
 public interface RepresentativeService {
 
 	/**
-	 * Call RepresentativeRepository to search for additional data and set it in the
-	 * current api user object
+	 * Call RepresentativeRepository to make a request to /representative endpint
 	 * 
 	 * @return
 	 */
-	User getAdditionalData();
+	RepresentativeUser find();
 }

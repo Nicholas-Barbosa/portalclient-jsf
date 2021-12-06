@@ -46,7 +46,8 @@ public class ProtheusApiRegisterImpl implements ProtheusApiRegister {
 	@Override
 	public ApiData register() {
 		// TODO Auto-generated method stub
-		ApiData api = new ApiData(user, urlResolver.getUrl(companyEnv), "v1/token", token, prefix);
+		ApiData api = new ApiData(user, urlResolver.getUrl(companyEnv), "/v1/token", token, prefix);
+				
 		api.setAttribute("companyEnv", companyEnv);
 		apisManger.registerAuthenticatedService("PROTHEUS_API", api);
 		return api;

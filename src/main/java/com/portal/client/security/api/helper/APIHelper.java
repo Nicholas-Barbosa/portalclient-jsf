@@ -1,7 +1,7 @@
 package com.portal.client.security.api.helper;
 
 import com.portal.client.security.api.ApiData;
-import com.portal.client.security.user.User;
+import com.portal.client.security.user.RepresentativeUser;
 
 public interface APIHelper {
 
@@ -12,12 +12,11 @@ public interface APIHelper {
 	String buildEndpoint(String endpoint);
 
 	String getBaseUrl();
-	
-	ApiData getSourceAPI();
 
-	String getSourceAPIKey();
-	
-	User getUser();
-	
-	boolean isUserDataComplete();
+	ApiData getData();
+
+	String getKey();
+
+	RepresentativeUser getUser();
+
 }

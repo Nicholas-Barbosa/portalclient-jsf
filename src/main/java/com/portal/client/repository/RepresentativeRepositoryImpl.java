@@ -10,7 +10,6 @@ import com.nicholas.jaxrsclient.TokenedRestClient;
 import com.portal.client.dto.RepresentativeData;
 import com.portal.client.dto.WrapperRepresentativeData;
 import com.portal.client.security.api.helper.APIHelper;
-import com.portal.client.security.user.RepresentativeUser;
 
 @ApplicationScoped
 public class RepresentativeRepositoryImpl implements RepresentativeRepository, Serializable {
@@ -27,17 +26,12 @@ public class RepresentativeRepositoryImpl implements RepresentativeRepository, S
 	private APIHelper protheusApiHelper;
 
 	@Override
-	public void getAdditionalData() {
+	public RepresentativeData find() {
 		// TODO Auto-generated method stub
-		RepresentativeData data = restClient.get(protheusApiHelper.buildEndpoint("representative"),
+		return restClient.get(protheusApiHelper.buildEndpoint("representative"),
 				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), WrapperRepresentativeData.class, null,
 				null, MediaType.APPLICATION_JSON).getData();
-		RepresentativeUser user = (RepresentativeUser) protheusApiHelper.getUser();
-		user.setCode(data.getCode());
-		user.setFantasyName(data.getFantasyname());
-		user.setName(data.getName());
-		user.setEmail(data.getEmail());
-		user.setType(data.getType());
+	
 	}
 
 }

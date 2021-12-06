@@ -1,5 +1,7 @@
 package com.portal.client.repository;
 
+import com.portal.client.dto.RepresentativeData;
+
 public interface RepresentativeRepository {
 
 	/**
@@ -7,5 +9,5 @@ public interface RepresentativeRepository {
 	 * 
 	 * @return
 	 */
-	void getAdditionalData();
+	RepresentativeData find();
 }

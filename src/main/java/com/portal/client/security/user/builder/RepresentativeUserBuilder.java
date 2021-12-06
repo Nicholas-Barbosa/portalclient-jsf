@@ -3,13 +3,33 @@ package com.portal.client.security.user.builder;
 import com.portal.client.security.user.RepresentativeUser;
 import com.portal.client.security.user.RepresentativeUser.SaleType;
 
-public class RepresentativeUserBuilder extends UserBuilder {
-
-	private String code, fantasyName;
+public class RepresentativeUserBuilder {
+	private String name, username, email, code, fantasyName;;
+	private char[] password;
 	private SaleType type;
 
 	public static RepresentativeUserBuilder getInstance() {
 		return new RepresentativeUserBuilder();
+	}
+
+	public RepresentativeUserBuilder withName(String name) {
+		this.name = name;
+		return this;
+	}
+
+	public RepresentativeUserBuilder withUsername(String name) {
+		this.username = name;
+		return this;
+	}
+
+	public RepresentativeUserBuilder withEmail(String email) {
+		this.email = email;
+		return this;
+	}
+
+	public RepresentativeUserBuilder withPassword(char[] password) {
+		this.password = password;
+		return this;
 	}
 
 	public RepresentativeUserBuilder withCode(String code) {
@@ -27,10 +47,7 @@ public class RepresentativeUserBuilder extends UserBuilder {
 		return this;
 	}
 
-	@Override
 	public RepresentativeUser build() {
-		// TODO Auto-generated method stub
-		return new RepresentativeUser(code, fantasyName, super.getName(), super.getUsername(), super.getEmail(),
-				super.getPassword(), type);
+		return new RepresentativeUser(name, email, username, password, code, fantasyName, type);
 	}
 }

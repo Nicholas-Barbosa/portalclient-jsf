@@ -19,7 +19,7 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 
 	private ApiData orcamentoAPI;
 	private final String orcamentoAPIKey = "PROTHEUS_API";
-	private APIsRepository apiManager;
+	private APIsRepository apisRepository;
 
 	public ProtheusAPIHelper() {
 		// TODO Auto-generated constructor stub
@@ -29,16 +29,16 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 	public ProtheusAPIHelper(APIsRepository apiManager) {
 		super();
 		this.orcamentoAPI = apiManager.getAPI(orcamentoAPIKey);
-		this.apiManager = apiManager;
+		this.apisRepository = apiManager;
 	}
 
 	@Override
-	public ApiData getSourceAPI() {
+	public ApiData getData() {
 		return orcamentoAPI;
 	}
 
 	@Override
-	public String getSourceAPIKey() {
+	public String getKey() {
 		return orcamentoAPIKey;
 	}
 
@@ -51,7 +51,7 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 	@Override
 	public String buildEndpoint(String string) {
 		// TODO Auto-generated method stub
-		return apiManager.buildEndpoint(orcamentoAPI, string);
+		return apisRepository.buildEndpoint(orcamentoAPI, string);
 	}
 
 	@Override
@@ -69,12 +69,7 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 	@Override
 	public RepresentativeUser getUser() {
 		// TODO Auto-generated method stub
-		return (RepresentativeUser) orcamentoAPI.getUserData();
-	}
-
-	@Override
-	public boolean isUserDataComplete() {
-		return apiManager.isUserDataComplete(orcamentoAPIKey);
+		return orcamentoAPI.getLoggedUser();
 	}
 
 }

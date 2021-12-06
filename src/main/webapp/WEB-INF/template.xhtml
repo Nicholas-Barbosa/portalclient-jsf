@@ -77,23 +77,24 @@
 
 		<div class="layout-mask modal-in"></div>
 
-		<p:dialog header="Tipo de venda" modal="true" widgetVar="dlgSaleType"
-			closable="false" responsive="true" resizable="true" width="20vw">
+		<p:dialog header="Usuário interno" modal="true"
+			widgetVar="dlgSetInternalSaleType" closable="false" responsive="true"
+			resizable="true" width="20vw">
 			<div style="width: 30rem">Identificamos que você é um usuário
 				interno. Selecione o tipo de venda que deseja realizar.</div>
 			<div class="field col-12 md:col-4">
 				<h:form>
 					<p:selectOneMenu required="true"
-						value="#{internalRepresentativeTypeController.sellerType}">
+						value="#{internalUserTypeSetTypeFomController.type}">
+						<p:ajax event="itemSelect"
+							listener="#{internalUserTypeSetTypeFomController.saveSaleType}"
+							oncomplete="PF('dlgSetInternalSaleType').hide()" process="@this"/>
 						<f:selectItem itemLabel="Selecione" itemValue="" />
 						<f:selectItem itemLabel="Auto" itemValue="CARROS" />
 						<f:selectItem itemLabel="Motos" itemValue="MOTOS" />
 						<f:selectItem itemLabel="Agrícola" itemValue="AGRICOLA" />
 					</p:selectOneMenu>
-					<p:commandButton process="@form" value="Continuar"
-						action="#{internalRepresentativeTypeController.save}"
-						styleClass="ui-button-raised ui-button-success"
-						oncomplete="PF('dlgSaleType').hide()" />
+
 				</h:form>
 			</div>
 		</p:dialog>

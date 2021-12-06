@@ -6,8 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import com.portal.client.security.user.RepresentativeUser.SaleType;
+import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
-import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPriceData;
 
@@ -30,11 +31,11 @@ public class BudgetJasperData implements Serializable {
 
 	private String message;
 
-	private String representative;
+	private String representative, representativeType;
 
 	public BudgetJasperData(BigDecimal liquidValue, BigDecimal grossValue, BigDecimal stTotal,
 			CustomerJasperData customerReportDTO, Set<BudgetItemJasperData> items, String message,
-			String representative) {
+			String representative, String representativeType) {
 		super();
 		this.liquidValue = liquidValue;
 		this.grossValue = grossValue;
@@ -43,21 +44,15 @@ public class BudgetJasperData implements Serializable {
 		this.items = new HashSet<>(items);
 		this.message = message;
 		this.representative = representative;
+		this.representativeType = representativeType;
 	}
 
-	public BudgetJasperData(Order order) {
-		this.liquidValue = order.getLiquidValue();
-		this.grossValue = order.getGrossValue();
-		this.stTotal = order.getStValue();
-		this.customerData = new CustomerJasperData(order.getCustomerOnOrder());
-		this.items = order.getItems().parallelStream().map(BudgetItemJasperData::new)
-				.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll);
-		this.message = order.getMessage();
+	public BudgetJasperData(Budget budget) {
+		this(budget.getLiquidValue(), budget.getGrossValue(), budget.getStValue(),
+				new CustomerJasperData(budget.getCustomerOnOrder()), budget.getItems().parallelStream()
+						.map(BudgetItemJasperData::new).collect(ConcurrentSkipListSet::new, Set::add, Set::addAll),
+				budget.getMessage(), null, null);
 
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	public BigDecimal getLiquidValue() {
@@ -90,6 +85,14 @@ public class BudgetJasperData implements Serializable {
 
 	public void setRepresentative(String representative) {
 		this.representative = representative;
+	}
+
+	public String getRepresentativeType() {
+		return representativeType;
+	}
+
+	public void setRepresentativeType(String representativeType) {
+		this.representativeType = representativeType;
 	}
 
 	public static class CustomerJasperData implements Serializable {
@@ -157,7 +160,7 @@ public class BudgetJasperData implements Serializable {
 
 	public static class BudgetItemJasperData implements Comparable<BudgetItemJasperData> {
 
-		private String commercialCode, protheusCode, description,application;
+		private String commercialCode, protheusCode, description, application;
 		private int quantity;
 		private BigDecimal unitValue;
 		private BigDecimal totalValue;
@@ -177,7 +180,8 @@ public class BudgetJasperData implements Serializable {
 			this.totalValue = priceData.getTotalValue();
 			this.totalStValue = priceData.getTotalStValue();
 			this.totalGrossValue = priceData.getTotalGrossValue();
-			this.application = product.getProductTechDetail() == null ? null : product.getProductTechDetail().getApplication();
+			this.application = product.getProductTechDetail() == null ? null
+					: product.getProductTechDetail().getApplication();
 
 		}
 
@@ -220,6 +224,7 @@ public class BudgetJasperData implements Serializable {
 		public String getApplication() {
 			return application;
 		}
+
 		@Override
 		public int compareTo(BudgetItemJasperData o) {
 			// TODO Auto-generated method stub
