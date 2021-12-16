@@ -1,5 +1,6 @@
 package com.portal.client.vo;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.json.bind.annotation.JsonbCreator;
@@ -9,8 +10,12 @@ import com.portal.client.vo.ProductImage.ImageInfoState;
 import com.portal.client.vo.builder.ProductDiscountDataBuilder;
 import com.portal.client.vo.builder.ProductTechDetailBuilder;
 
-public class Product {
+public class Product implements Comparable<Product>,Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String code;
 	private final String commercialCode;
 	private final String description;
@@ -163,6 +168,12 @@ public class Product {
 				+ ", line=" + line + ", acronymLine=" + acronymLine + ", stock=" + stock + ", commercialBlock="
 				+ commercialBlock + ", image=" + image + ", priceData=" + priceData + ", productTechDetail="
 				+ productTechDetail + ", link=" + link + "]";
+	}
+
+	@Override
+	public int compareTo(Product o) {
+		// TODO Auto-generated method stub
+		return code.compareTo(o.code);
 	}
 
 }

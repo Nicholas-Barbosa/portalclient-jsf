@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTable;
+import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTableJsonData;
 
 public class PriceTableJasperDto {
 
@@ -26,7 +26,7 @@ public class PriceTableJasperDto {
 		return prices;
 	}
 
-	public static PriceTableJasperDto of(String customerCode, List<ProductPriceTable> table) {
+	public static PriceTableJasperDto of(String customerCode, List<ProductPriceTableJsonData> table) {
 		
 		return null;
 		

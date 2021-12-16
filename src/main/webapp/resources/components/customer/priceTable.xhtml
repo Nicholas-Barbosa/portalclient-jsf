@@ -11,18 +11,16 @@
 </h:head>
 
 <composite:interface>
-	<composite:attribute name="customerCode" type="java.lang.String"
-		required="true" />
-	<composite:attribute name="customerStore" type="java.lang.String"
-		required="true" />
+	<composite:attribute name="customer" required="true" />
+
 </composite:interface>
 
 <composite:implementation>
 	<div id="#{cc.clientId}">
 		<h:form>
 			<p:remoteCommand name="findTable"
-				action="#{priceTableComponentController.find(cc.attrs.customerCode,cc.attrs.customerStore)}"
-				autoRun="true" process="@this" update="tables"
+				action="#{customerPriceTableComponentController.find(cc.attrs.customer)}"
+				autoRun="true" process="@this" update="products"
 				onstart="$('#priceTableComponent-loading').show();"
 				oncomplete="$('#priceTableComponent-loading').hide();
 				if(xhr.getResponseHeader('foundTable')=='true'){
@@ -32,48 +30,48 @@
 				$('#priceTableComponent-content').hide();$('#priceTableComponent-not-found').show();
 				" />
 
-			<div id="priceTableComponent-content" style="display: none"
-				>
+			<div id="priceTableComponent-content" style="display: none">
 				<div class="flex justify-content-between">
 					<div>
 						<h5>Exportar</h5>
 						<p:commandButton value="XLSX" styleClass="mr-2 mb-2"
-							action="#{priceTableComponentController.export(cc.attrs.customerCode)}"
+							action="#{customerPriceTableComponentController.export(cc.attrs.customer)}"
 							process="@this" ajax="false" />
 
 					</div>
 
 				</div>
-				<p:dataTable value="#{priceTableComponentController.tables}"
-					var="table" rows="5" paginator="true" id="tables">
-					<p:column groupRow="true" headerText="Linha" filterBy="#{table.product.line}">
+				<p:dataTable value="#{cc.attrs.customer.priceTable.products}"
+					var="product" rows="5" paginator="true" id="products">
+					<p:column groupRow="true" headerText="Linha"
+						filterBy="#{product.line}">
 						<h:outputText style="vertical-align: middle; margin-left: .5rem"
-							value="#{table.product.line}" />
+							value="#{product.line}" />
 					</p:column>
-					<p:column field="product.commercialCode" headerText="Código" />
-					<p:column field="product.description" headerText="Produto" />
+					<p:column field="commercialCode" headerText="Código" />
+					<p:column field="description" headerText="Produto" />
 					<p:column headerText="Valor" filterable="false">
-						<h:outputText value="#{table.product.priceData.unitValue}">
+						<h:outputText value="#{product.priceData.unitValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column headerText="ST" filterable="false">
-						<h:outputText value="#{table.product.priceData.unitStValue}">
+						<h:outputText value="#{product.priceData.unitStValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column headerText="Bruto" filterable="false">
-						<h:outputText value="#{table.product.priceData.unitGrossValue}">
+						<h:outputText value="#{product.priceData.unitGrossValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"
 								locale="pt_BR" />
 						</h:outputText>
 					</p:column>
 					<p:column style="2rem">
 						<p:button value="Aplicação"
-							rendered="#{table.product.productTechDetail.application != null}"
-							onclick="$('#product-application-text').text('#{table.product.productTechDetail.application}'); PF('productApplicationOverlay').show('#{component.clientId}');" />
+							rendered="#{product.productTechDetail.application != null}"
+							onclick="$('#product-application-text').text('#{product.productTechDetail.application}'); PF('productApplicationOverlay').show('#{component.clientId}');" />
 					</p:column>
 				</p:dataTable>
 				<p:overlayPanel widgetVar="productApplicationOverlay"

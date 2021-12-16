@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.vo.CustomerProductPriceTable;
+
 public class Customer implements Serializable {
 
 	/**
@@ -23,7 +25,8 @@ public class Customer implements Serializable {
 	private final CustomerAddress address;
 	private final CustomerPurchaseInfo financialInfo;
 	private final CustomerContact contact;
-	
+	private CustomerProductPriceTable priceTable;
+
 	@JsonbCreator
 	public static Customer ofJsonb(@JsonbProperty("code") String code, @JsonbProperty("store") String store,
 			@JsonbProperty("cgc") String cnpj, @JsonbProperty("blocked") String blocked,
@@ -40,7 +43,8 @@ public class Customer implements Serializable {
 		CustomerContact contact = new CustomerContact(email, email2);
 
 		CustomerPurchaseInfo purchaseInfo = new CustomerPurchaseInfo(discount, discount2, discount3,
-				formatLastPurschase(lastPurchase), risk.length() >0 ? risk.charAt(0) : '-', paymentTerms, table, limit);
+				formatLastPurschase(lastPurchase), risk.length() > 0 ? risk.charAt(0) : '-', paymentTerms, table,
+				limit);
 		return new Customer(code, store, cnpj, blocked, name, fantasyName, address, purchaseInfo, contact);
 
 	}
@@ -129,8 +133,16 @@ public class Customer implements Serializable {
 		return address.getState();
 	}
 
+	public CustomerProductPriceTable getPriceTable() {
+		return priceTable;
+	}
 
+	public void setPriceTable(CustomerProductPriceTable priceTable) {
+		this.priceTable = priceTable;
+	}
 
-	
+	public String getPriceTableCode() {
+		return priceTable == null ? financialInfo.getTable() : priceTable.getCode();
+	}
 
 }

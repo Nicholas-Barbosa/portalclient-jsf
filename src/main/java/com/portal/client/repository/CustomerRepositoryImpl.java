@@ -1,6 +1,7 @@
 package com.portal.client.repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,6 +14,8 @@ import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.CustomerWrapper;
+import com.portal.client.dto.ProductPriceTableWrapper;
+import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTableJsonData;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.security.api.helper.APIHelper;
 
@@ -43,9 +46,9 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
 		queryParms.put("pageSize", pageSize);
-		CustomerPageDTO customerPage = restClient.get(protheusApiHelper.buildEndpoint( "client"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParms, null,
-				MediaType.APPLICATION_JSON);
+		CustomerPageDTO customerPage = restClient.get(protheusApiHelper.buildEndpoint("client"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParms,
+				null, MediaType.APPLICATION_JSON);
 		return customerPage;
 
 	}
@@ -56,8 +59,8 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
 		pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("clients/{code}/loja/{codeStore}"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerWrapper.class, null, pathParams,
-				MediaType.APPLICATION_JSON).getClients().get(0));
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerWrapper.class, null,
+				pathParams, MediaType.APPLICATION_JSON).getClients().get(0));
 
 	}
 
@@ -67,9 +70,9 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", name);
-		Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(protheusApiHelper.buildEndpoint ("clients"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParams, null,
-				MediaType.APPLICATION_JSON));
+		Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(protheusApiHelper.buildEndpoint("clients"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParams,
+				null, MediaType.APPLICATION_JSON));
 
 		return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();
 
@@ -77,6 +80,14 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 
 	private Map<String, Object> getMapInstance() {
 		return new HashMap<>();
+	}
+
+	@Override
+	public Optional<List<ProductPriceTableJsonData>> findPriceTable(String customerCode, String customerStore) {
+		// TODO Auto-generated method stub
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("tables/{customer}/loja/{store}"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductPriceTableWrapper.class, null,
+				Map.of("customer", customerCode, "store", customerStore), "application/json").getList());
 	}
 
 }

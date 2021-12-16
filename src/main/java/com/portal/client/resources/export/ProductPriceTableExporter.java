@@ -1,10 +1,8 @@
 package com.portal.client.resources.export;
 
-import java.util.List;
-
-import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTable;
+import com.portal.client.dto.Customer;
 
 public interface ProductPriceTableExporter {
 
-	byte[]toExcel(String customerCode,List<ProductPriceTable> table);
+	byte[]toExcel(Customer customer);
 }

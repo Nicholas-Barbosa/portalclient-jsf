@@ -13,4 +13,6 @@ public interface CustomerService extends ServiceSerializable {
 	Optional<Customer> findByCodeAndStore(SearchCustomerByCodeAndStoreDTO searchCustomerByCodeAndStoreDTO);
 
 	Optional<CustomerPageDTO> findByName(String name, int page, int pageSize);
+	
+	boolean findPriceTable(Customer customer);
 }

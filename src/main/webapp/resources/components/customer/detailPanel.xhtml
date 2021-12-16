@@ -100,14 +100,14 @@
 			<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
 				<c:finanPanel customer="#{cc.attrs.customer}" />
 			</p:tab>
+			<p:tab title="Tabela de Preços(#{cc.attrs.customer.priceTableCode})">
+				<c:priceTable customer="#{cc.attrs.customer}" />
+			</p:tab>
 			<p:tab
 				title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
 				<c:openPaymentsPanel customer="#{cc.attrs.customer}" />
 			</p:tab>
-			<p:tab title="Tabela de preços">
-				<c:priceTable customerCode="#{cc.attrs.customer.code}"
-					customerStore="#{cc.attrs.customer.store}" />
-			</p:tab>
+
 		</p:tabView>
 
 	</div>
