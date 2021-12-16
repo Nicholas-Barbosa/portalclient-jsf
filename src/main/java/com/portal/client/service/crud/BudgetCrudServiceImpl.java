@@ -59,9 +59,6 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 		maybe.ifPresent(budget -> {
 			orderHelper.sumStValue(budget);
 			orderRepSetter.setAutor(budget);
-//			budget.getItems().stream().map(Item::getPriceData).forEach(pData -> {
-//				ItemDiscounData data = ItemDiscountDataBuilder.getInstance().with
-//			});
 		});
 		return maybe;
 	}

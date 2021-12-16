@@ -24,7 +24,6 @@ public class BudgetFullProjection extends Budget {
 			@JsonbProperty("gross_order_value") BigDecimal grossValue,
 			@JsonbProperty("items") Set<ItemBudgetProjectionDTO> items,
 			@JsonbProperty("discount") BigDecimal globalDiscount, @JsonbProperty("creation_date") String createdAt) {
-
 		CustomerOnOrder customer = new CustomerOnOrder(customerCode, customerStore, null, null, null, null, null, null,
 				null);
 		return new BudgetFullProjection(customerNumOrder, representativeOrder, customer, code, null, liquidValue,
@@ -37,7 +36,7 @@ public class BudgetFullProjection extends Budget {
 			BigDecimal stValue, BigDecimal liquidValue, BigDecimal grossValue, List<Item> items, String message,
 			BigDecimal globalDiscount, LocalDate createdAt) {
 		super(code, customerNumOrder, repNumOrder, customer, grossValue, liquidValue, stValue, globalDiscount, items,
-				message, createdAt,null);
+				message, createdAt, null);
 
 	}
 

@@ -37,7 +37,8 @@ public class ItemBudgetProjectionDTO extends Item implements Serializable {
 						.withUnitValue(unitValue)
 						.withUnitGrossValue(grossValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
 						.withQuantity(quantity).withTotalGrossValue(grossValue).withTotalStValue(stValue)
-						.withTotalValue(unitValue.multiply(BigDecimal.valueOf(quantity))).build(),
+						.withTotalValue(unitValue.multiply(BigDecimal.valueOf(quantity))).withMultiple(multiple)
+						.build(),
 				application != null && !application.isBlank()
 						? ProductTechDetailBuilder.getInstance().withApplication(application).build()
 						: null));

@@ -142,7 +142,7 @@ public class Customer implements Serializable {
 	}
 
 	public String getPriceTableCode() {
-		return priceTable == null ? financialInfo.getTable() : priceTable.getCode();
+		return priceTable == null ? financialInfo != null ? financialInfo.getTable() : null : priceTable.getCode();
 	}
 
 }
