@@ -46,13 +46,12 @@
 				</div>
 				<p:dataTable value="#{priceTableComponentController.tables}"
 					var="table" rows="5" paginator="true" id="tables">
-					<p:column groupRow="true">
+					<p:column groupRow="true" headerText="Linha" filterBy="#{table.product.line}">
 						<h:outputText style="vertical-align: middle; margin-left: .5rem"
-							value="#{table.code}" />
+							value="#{table.product.line}" />
 					</p:column>
 					<p:column field="product.commercialCode" headerText="Código" />
 					<p:column field="product.description" headerText="Produto" />
-					<p:column field="product.line" headerText="Linha" />
 					<p:column headerText="Valor" filterable="false">
 						<h:outputText value="#{table.product.priceData.unitValue}">
 							<f:convertNumber currencySymbol="R$" type="currency"

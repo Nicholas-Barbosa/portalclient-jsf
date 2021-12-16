@@ -43,7 +43,7 @@
 			<h:form>
 				<p:remoteCommand autoRun="true"
 					action="#{orderEditingController.find}" process="@this"
-					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems()"
+					oncomplete="$('#divLoading').hide();$('#content').show();updateDtItems();loadCustomer();"
 					update="orderContainer" />
 			</h:form>
 
