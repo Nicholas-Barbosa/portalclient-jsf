@@ -9,7 +9,6 @@ import com.portal.client.dto.OrderFullProjection;
 import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.repository.OrderRepository;
-import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
@@ -17,9 +16,6 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 
 	@Inject
 	private OrderRepository repository;
-
-	@Inject
-	private OrderBehaviorHelper orderHelper;
 
 	@Override
 	public void persist(Order order) throws OrderBadRequestExcpetion {
@@ -35,8 +31,6 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	@Override
 	public Optional<OrderFullProjection> findByCode(String code) {
 		Optional<OrderFullProjection> maybe = repository.findByCode(code);
-		maybe.ifPresent(orderHelper::sumStValue);
-		System.out.println(maybe);
 		return maybe;
 	}
 

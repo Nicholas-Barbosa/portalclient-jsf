@@ -25,17 +25,10 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 
 	private BudgetRepository budgetRepository;
 
-	private OrderBehaviorHelper orderHelper;
-
-	private OrderRprensentativeSetter orderRepSetter;
-
 	@Inject
-	public BudgetCrudServiceImpl(BudgetRepository budgetRepository, OrderBehaviorHelper orderHelper,
-			OrderRprensentativeSetter authorSetter) {
+	public BudgetCrudServiceImpl(BudgetRepository budgetRepository) {
 		super();
 		this.budgetRepository = budgetRepository;
-		this.orderHelper = orderHelper;
-		this.orderRepSetter = authorSetter;
 	}
 
 	@Override
@@ -56,10 +49,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	@Override
 	public Optional<BudgetFullProjection> findByCode(String code) {
 		Optional<BudgetFullProjection> maybe = budgetRepository.findByCode(code);
-		maybe.ifPresent(budget -> {
-			orderHelper.sumStValue(budget);
-			orderRepSetter.setAutor(budget);
-		});
+
 		return maybe;
 	}
 

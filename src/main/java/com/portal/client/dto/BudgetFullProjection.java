@@ -26,7 +26,7 @@ public class BudgetFullProjection extends Budget {
 			@JsonbProperty("discount") BigDecimal globalDiscount, @JsonbProperty("creation_date") String createdAt) {
 		CustomerOnOrder customer = new CustomerOnOrder(customerCode, customerStore, null, null, null, null, null, null,
 				null);
-		return new BudgetFullProjection(customerNumOrder, representativeOrder, customer, code, null, liquidValue,
+		return new BudgetFullProjection(customerNumOrder, representativeOrder, customer, code, grossValue.subtract(liquidValue), liquidValue,
 				grossValue, items.stream().map(BudgetFullProjection::castItem).collect(Collectors.toList()), message,
 				globalDiscount, StringToLocalDateParser.convert(createdAt));
 

@@ -252,7 +252,7 @@
 					</jr:column>
 					<jr:column width="200" uuid="5e569d4a-43c0-41d6-9a53-37821f6f1aca">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-						<printWhenExpression><![CDATA[$F{representativeType} == "MOTOS"]]></printWhenExpression>
+						<printWhenExpression><![CDATA[$F{representativeType} != "CARROS" ]]></printWhenExpression>
 						<jr:columnHeader style="Table_CH" height="20" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="200" height="20" uuid="a13aed2d-a5f0-4fb7-a850-9a61744bf19a"/>
