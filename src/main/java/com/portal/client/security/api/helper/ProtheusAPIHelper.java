@@ -5,8 +5,8 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-import com.portal.client.security.api.APIsRepository;
-import com.portal.client.security.api.ApiData;
+import com.portal.client.security.api.APIsManager;
+import com.portal.client.security.api.ProtheusApiData;
 import com.portal.client.security.user.RepresentativeUser;
 
 @SessionScoped
@@ -17,23 +17,23 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 	 */
 	private static final long serialVersionUID = 6759109065591573681L;
 
-	private ApiData orcamentoAPI;
+	private ProtheusApiData orcamentoAPI;
 	private final String orcamentoAPIKey = "PROTHEUS_API";
-	private APIsRepository apisRepository;
+	private APIsManager apisRepository;
 
 	public ProtheusAPIHelper() {
 		// TODO Auto-generated constructor stub
 	}
 
 	@Inject
-	public ProtheusAPIHelper(APIsRepository apiManager) {
+	public ProtheusAPIHelper(APIsManager apiManager) {
 		super();
 		this.orcamentoAPI = apiManager.getAPI(orcamentoAPIKey);
 		this.apisRepository = apiManager;
 	}
 
 	@Override
-	public ApiData getData() {
+	public ProtheusApiData getData() {
 		return orcamentoAPI;
 	}
 

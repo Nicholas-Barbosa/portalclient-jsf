@@ -32,7 +32,7 @@ public class ProductPriceTableExporterImpl implements ProductPriceTableExporter 
 				CellAttributeBuilder.of(0, customer.getCode(), customer.getPriceTableCode()));
 
 		RowObject headers = new RowObject(2,
-				CellAttributeBuilder.of(0, "Produto", "Descrição", "Linha", "Valor", "ST", "Bruto", "Aplicação"));
+				CellAttributeBuilder.of(0, "Produto", "Descrição", "Linha","NCM", "Valor", "ST", "Bruto", "Aplicação"));
 		rows.add(customerHeader);
 		rows.add(customerDetails);
 		rows.add(headers);
@@ -44,11 +44,12 @@ public class ProductPriceTableExporterImpl implements ProductPriceTableExporter 
 			attributes.add(CellAttributeBuilder.of(0, product.getCommercialCode(), CellType.STRING));
 			attributes.add(CellAttributeBuilder.of(1, product.getDescription(), CellType.STRING));
 			attributes.add(CellAttributeBuilder.of(2, product.getLine(), CellType.STRING));
-			attributes.add(CellAttributeBuilder.ofNumber(3, value.getUnitValue().doubleValue()));
-			attributes.add(CellAttributeBuilder.ofNumber(4, value.getUnitStValue().doubleValue()));
-			attributes.add(CellAttributeBuilder.ofNumber(5, value.getUnitGrossValue().doubleValue()));
+			attributes.add(CellAttributeBuilder.of(3, product.getNcm(), CellType.STRING));
+			attributes.add(CellAttributeBuilder.ofNumber(4, value.getUnitValue().doubleValue()));
+			attributes.add(CellAttributeBuilder.ofNumber(5, value.getUnitStValue().doubleValue()));
+			attributes.add(CellAttributeBuilder.ofNumber(6, value.getUnitGrossValue().doubleValue()));
 			attributes
-					.add(CellAttributeBuilder.of(6, product.getProductTechDetail().getApplication(), CellType.STRING));
+					.add(CellAttributeBuilder.of(7, product.getProductTechDetail().getApplication(), CellType.STRING));
 			return new RowObject(rowCounter.getAndIncrement(), attributes);
 		}).collect(CopyOnWriteArrayList::new, List::add, List::addAll));
 

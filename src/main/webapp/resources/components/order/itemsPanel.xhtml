@@ -250,7 +250,6 @@
 										onstart="$('#div-img-loader-#{item.product.commercialCode}').show();$('#div-img-#{item.product.commercialCode}').hide();"
 										oncomplete="$('#div-img-loader-#{item.product.commercialCode}').hide();$('#div-img-#{item.product.commercialCode}').show();"
 										async="true" />
-
 								</div>
 
 							</div>
@@ -260,6 +259,14 @@
 								<div class="font-normal mb-1">
 									Quantidade múltiplo de <strong>
 										#{item.product.priceData.multiple}</strong>
+								</div>
+								<div class="font-normal mb-1">
+									Quantidade em pedidos: <strong>
+										#{item.product.quantityOnOrders}</strong>
+								</div>
+								<div class="font-normal mb-1">
+									NCM: <strong>
+										#{item.product.ncm}</strong>
 								</div>
 								<div id="div-stock-wrapper">
 									<div id="div-loading-stock-#{item.product.commercialCode}"

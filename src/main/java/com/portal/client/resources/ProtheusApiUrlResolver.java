@@ -3,7 +3,7 @@ package com.portal.client.resources;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.security.api.ProtheusCompanyApiEnv;
+import com.portal.client.security.api.ProtheusApiEnviroment;
 
 @ApplicationScoped
 public class ProtheusApiUrlResolver {
@@ -13,8 +13,8 @@ public class ProtheusApiUrlResolver {
 	private final String configProtheusUrlTestKey = "protheus_test_env_url";
 	private final String configProtheusUrlProdKey = "protheus_production_env_url";
 
-	public String getUrl(ProtheusCompanyApiEnv comEnv) {
-		if (propertiesResolver.getProfile().equals("prod") && comEnv == ProtheusCompanyApiEnv.CDG) {
+	public String getUrl(ProtheusApiEnviroment comEnv) {
+		if (propertiesResolver.getProfile().equals("prod") && comEnv == ProtheusApiEnviroment.CDG) {
 			return propertiesResolver.getProperty(configProtheusUrlProdKey, "9990");
 		}
 		String baseUrl = propertiesResolver.getProperty(

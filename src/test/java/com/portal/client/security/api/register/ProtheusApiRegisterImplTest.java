@@ -12,8 +12,8 @@ import org.junit.runner.RunWith;
 
 import com.portal.ShrinkwrapDeploymentUtils;
 import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.security.api.ApiData;
-import com.portal.client.security.api.ProtheusCompanyApiEnv;
+import com.portal.client.security.api.ProtheusApiData;
+import com.portal.client.security.api.ProtheusApiEnviroment;
 
 @RunWith(Arquillian.class)
 public class ProtheusApiRegisterImplTest {
@@ -28,8 +28,8 @@ public class ProtheusApiRegisterImplTest {
 
 	@Test
 	public void registerSession() {
-		ApiData apiData =  register.token("token").tokenPrefix("tokenPrefix")
-				.companyEnv(ProtheusCompanyApiEnv.SPG).register();
+		ProtheusApiData apiData =  register.token("token").tokenPrefix("tokenPrefix")
+				.companyEnv(ProtheusApiEnviroment.SPG).register();
 		assertEquals("http://192.168.0.201:8096/rest", apiData.getBaseUrl());
 		System.out.println(apiData);
 	}

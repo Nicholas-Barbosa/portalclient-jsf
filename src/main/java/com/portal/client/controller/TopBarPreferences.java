@@ -6,7 +6,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Named;
 
-import com.portal.client.security.api.ProtheusCompanyApiEnv;
+import com.portal.client.security.api.ProtheusApiEnviroment;
 import com.portal.client.security.auth.AuthenticateddEvent;
 
 @SessionScoped
@@ -23,17 +23,17 @@ public class TopBarPreferences implements Serializable {
 	private String currentLogoCss;
 
 	public void loadImage(@Observes AuthenticateddEvent event) {
-		switch ((ProtheusCompanyApiEnv) event.getProtheusEnviroment()) {
+		switch ((ProtheusApiEnviroment) event.getProtheusEnviroment()) {
 		case NSG:
 			this.image = "NSG.png";
 			this.currentLogoCss = nsgLogoCss;
 			break;
-		case CDG:
-			this.image = "Webp.net-resizeimage-gausslg.png";
-			break;
 		case SPG:
 			this.image = "LOGOMARCA SPG.png";
 			this.currentLogoCss = spgLogoCss;
+			break;
+		default:
+			this.image = "Webp.net-resizeimage-gausslg.png";
 			break;
 		}
 	}

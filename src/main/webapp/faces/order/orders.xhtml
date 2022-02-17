@@ -68,9 +68,7 @@
 								filterable="true" headerText="Número" />
 							<p:column field="invoiceSerie" sortable="false" filterable="true"
 								headerText="Série" />
-							<p:column headerText="Chave">
-								<div class="p-text-nowrap p-text-truncate" style="width: 15rem">#{order.invoice44Digits}</div>
-							</p:column>
+							
 							<p:column headerText="Criada em">
 								<h:outputText value="#{order.invoiceCreatedAt}"
 									rendered="#{order.invoiceCreatedAt !=null}">

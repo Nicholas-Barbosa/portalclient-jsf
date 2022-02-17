@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import com.google.cloud.storage.Blob;
 import com.portal.client.cdi.qualifier.ProductBucket;
 import com.portal.client.dto.CustomerOnOrder.CustomerType;
-import com.portal.client.dto.ProductPage;
+import com.portal.client.dto.ProductWrapper;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.google.cloud.storage.BucketClient;
@@ -52,13 +52,13 @@ public class ProductServiceImpl implements ProductService {
 
 		try {
 			
-			Future<ProductPage> ftProduct = customerType.equals(CustomerType.NORMAL)
+			Future<ProductWrapper> ftProduct = customerType.equals(CustomerType.NORMAL)
 					? productRepository.findByCodeAsync(code, customerCode, customerStore)
 					: productRepository.findByCodeForProspectAsync(code, state, sellerType);
-			ProductPage response = ftProduct.get();
+			ProductWrapper response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
-				Product product = response.getProducts().get(0);
+				Product product = response.getProducts().get(0).getProduct();
 				product.setImage(image, image == null ? ImageInfoState.NOT_FOUND
 						: image.length == 0 ? ImageInfoState.TIMEOUT_EXCPTION : ImageInfoState.FOUND);
 				ProductPriceData priceData = product.getPriceData();

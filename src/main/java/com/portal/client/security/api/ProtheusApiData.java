@@ -6,7 +6,7 @@ import java.util.Map;
 
 import com.portal.client.security.user.RepresentativeUser;
 
-public class ApiData implements Serializable {
+public class ProtheusApiData implements Serializable {
 
 	/**
 	 * 
@@ -14,18 +14,22 @@ public class ApiData implements Serializable {
 	private static final long serialVersionUID = -5239012235740247278L;
 
 	private final String baseUrl;
-	private final String loginEndpoint;
-	private String token;
+	private final String authUrl;
+	private final String refreshTokenUrl;
+	private String token,refreshToken;
 	private final String tokenPrefix;
 	private RepresentativeUser userData;
 	private final Map<String, Object> attributes;
 
-	public ApiData(RepresentativeUser user, String baseUrl, String loginEndpoint, String token, String tokenPrefix) {
+	public ProtheusApiData(RepresentativeUser user, String baseUrl, String loginEndpoint, String refreshTokenUrl, String token,String refreshToken,
+			String tokenPrefix) {
 		super();
 		this.userData = user;
 		this.baseUrl = baseUrl;
-		this.loginEndpoint = loginEndpoint;
+		this.authUrl = loginEndpoint;
+		this.refreshTokenUrl = refreshTokenUrl;
 		this.token = token;
+		this.refreshToken = refreshToken;
 		this.tokenPrefix = tokenPrefix;
 		attributes = new HashMap<>();
 	}
@@ -35,11 +39,15 @@ public class ApiData implements Serializable {
 	}
 
 	public String getLoginEndpoint() {
-		return loginEndpoint;
+		return authUrl;
 	}
 
 	public String getTokenPrefix() {
 		return tokenPrefix;
+	}
+	
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	public String getToken() {
@@ -62,10 +70,22 @@ public class ApiData implements Serializable {
 		return attributes.get(key);
 	}
 
+	public String getRefreshTokenUrl() {
+		return refreshTokenUrl;
+	}
+	
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+	
+	public String getRefreshToken() {
+		return refreshToken;
+	}
+
 	@Override
 	public String toString() {
-		return "ApiData [baseUrl=" + baseUrl + ", loginEndpoint=" + loginEndpoint + ", token=" + token
-				+ ", tokenPrefix=" + tokenPrefix + ", userData=" + userData + ", attributes=" + attributes + "]";
+		return "ApiData [baseUrl=" + baseUrl + ", loginEndpoint=" + authUrl + ", token=" + token + ", tokenPrefix="
+				+ tokenPrefix + ", userData=" + userData + ", attributes=" + attributes + "]";
 	}
 
 }

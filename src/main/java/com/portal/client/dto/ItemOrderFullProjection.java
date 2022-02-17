@@ -27,12 +27,12 @@ public class ItemOrderFullProjection extends Item {
 			@JsonbProperty("commercial_code") String commercialCode, @JsonbProperty("product_code") String code,
 			@JsonbProperty("description") String description, @JsonbProperty("product_type") String acronymLine,
 			@JsonbProperty("quantity") int quantity) {
-		super(new Product(code, commercialCode, description, line, acronymLine, null, null,
+		super(new Product(code, commercialCode,null, description, line, acronymLine, null, null,null,
 				ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
 				ProductPriceBuilder.getInstance().withQuantity(quantity)
 						.withUnitGrossValue(totalGrossValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
 						.withUnitStValue(totalStValue.divide(BigDecimal.valueOf(quantity),RoundingMode.HALF_UP)).withUnitValue(unitValue)
-						.withTotalGrossValue(totalGrossValue).withTotalStValue(totalStValue).withTotalValue(totalValue)
+						.withTotalGrossValue(totalGrossValue).withTotalStValue(totalStValue).withTotalValue(totalValue).withMultiple(multple)
 						.build(),
 				null));
 

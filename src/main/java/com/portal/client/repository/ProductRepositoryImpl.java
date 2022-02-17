@@ -21,7 +21,7 @@ import com.nicholas.jaxrsclient.TokenedRestClient;
 import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.dto.BatchProductSearchJsonPostForm;
-import com.portal.client.dto.ProductPage;
+import com.portal.client.dto.ProductWrapper;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductStock;
 import com.portal.client.dto.ProductStockWrapper;
@@ -57,13 +57,13 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		pathParmas.put("store", store);
 		return Optional.of(
 				restClient.get(protheusApiHelper.buildEndpoint("products/{code}/client/{customerCode}/store/{store}"),
-						protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductPage.class, null,
-						pathParmas, MediaType.APPLICATION_JSON).getProducts().get(0));
+						protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductWrapper.class, null,
+						pathParmas, MediaType.APPLICATION_JSON).getProducts().get(0).getProduct());
 
 	}
 
 	@Override
-	public Future<ProductPage> findByCodeAsync(String code, String customerCode, String store)
+	public Future<ProductWrapper> findByCodeAsync(String code, String customerCode, String store)
 			throws ExecutionException {
 		Map<String, Object> pathParams = new HashMap<>();
 		pathParams.put("code", code);
@@ -71,8 +71,8 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		pathParams.put("store", store);
 		return restClient.getAsync(
 				protheusApiHelper.buildEndpoint("products/{code}/client/{customerCode}/store/{store}"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductPage.class, null, pathParams,
-				MediaType.APPLICATION_JSON);
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductWrapper.class, null,
+				pathParams, MediaType.APPLICATION_JSON);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 	}
 
 	@Override
-	public Future<ProductPage> findByCodeForProspectAsync(String code, String state, String sellerType)
+	public Future<ProductWrapper> findByCodeForProspectAsync(String code, String state, String sellerType)
 			throws ExecutionException {
 		Map<String, Object> pathParmas = new HashMap<>();
 		pathParmas.put("code", code);
@@ -109,7 +109,7 @@ public class ProductRepositoryImpl extends OptionalEmptyRepository implements Pr
 		queryParams.put("state", state);
 		queryParams.put("type", sellerType);
 		return restClient.getAsync(protheusApiHelper.buildEndpoint("products/{code}"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), ProductPage.class, queryParams, pathParmas,
+				protheusApiHelper.getTokenPrefix(), ProductWrapper.class, queryParams, pathParmas,
 				MediaType.APPLICATION_JSON);
 
 	}

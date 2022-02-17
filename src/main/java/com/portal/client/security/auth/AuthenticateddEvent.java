@@ -1,17 +1,17 @@
 package com.portal.client.security.auth;
 
-import com.portal.client.security.api.ProtheusCompanyApiEnv;
+import com.portal.client.security.api.ProtheusApiEnviroment;
 
 public class AuthenticateddEvent {
 
-	private ProtheusCompanyApiEnv protheusEnviroment;
+	private ProtheusApiEnviroment protheusEnviroment;
 
-	public AuthenticateddEvent(ProtheusCompanyApiEnv protheusEnviroment) {
+	public AuthenticateddEvent(ProtheusApiEnviroment protheusEnviroment) {
 		super();
 		this.protheusEnviroment = protheusEnviroment;
 	}
 
-	public ProtheusCompanyApiEnv getProtheusEnviroment() {
+	public ProtheusApiEnviroment getProtheusEnviroment() {
 		return protheusEnviroment;
 	}
 }

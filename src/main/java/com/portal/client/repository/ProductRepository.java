@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import com.portal.client.dto.BatchProductSearchDataWrapper;
-import com.portal.client.dto.ProductPage;
+import com.portal.client.dto.ProductWrapper;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductTechDetailJson;
 import com.portal.client.dto.ProductToFind;
@@ -20,9 +20,9 @@ public interface ProductRepository {
 
 	Optional<Product> findByCode(String code, String customerCode, String store);
 
-	Future<ProductPage> findByCodeAsync(String code, String customerCode, String store) throws ExecutionException;
+	Future<ProductWrapper> findByCodeAsync(String code, String customerCode, String store) throws ExecutionException;
 
-	Future<ProductPage> findByCodeForProspectAsync(String code, String state, String sellerType)
+	Future<ProductWrapper> findByCodeForProspectAsync(String code, String state, String sellerType)
 			throws ExecutionException;
 
 	ProductTechDetailJson findTechDetails(String commercialCode);

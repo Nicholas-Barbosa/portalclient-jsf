@@ -16,16 +16,16 @@ import org.slf4j.LoggerFactory;
  *
  */
 @SessionScoped
-public class APIsRepository implements Serializable {
+public class APIsManager implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6271296356737609480L;
 
-	private final Map<String, ApiData> authenticatedServices = new ConcurrentHashMap<>();
+	private final Map<String, ProtheusApiData> authenticatedServices = new ConcurrentHashMap<>();
 
-	private final Logger logger = LoggerFactory.getLogger(APIsRepository.class);
+	private final Logger logger = LoggerFactory.getLogger(APIsManager.class);
 
 	/**
 	 * Register this service to the hash table.
@@ -33,7 +33,7 @@ public class APIsRepository implements Serializable {
 	 * @param key
 	 * @param service
 	 */
-	public void registerAuthenticatedService(String key, ApiData service) {
+	public void registerAuthenticatedService(String key, ProtheusApiData service) {
 		logger.debug("Registering server API with key " + key + " with token " + service.getToken());
 		this.authenticatedServices.putIfAbsent(key, service);
 	}
@@ -54,7 +54,7 @@ public class APIsRepository implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public ApiData getAPI(String key) {
+	public ProtheusApiData getAPI(String key) {
 		return this.authenticatedServices.get(key);
 	}
 
@@ -70,7 +70,7 @@ public class APIsRepository implements Serializable {
 		return new StringBuilder(getAPI(serverKey).getBaseUrl()).append("/" + endpoint).toString();
 	}
 
-	public String buildEndpoint(ApiData serverAPI, String endpoint) {
+	public String buildEndpoint(ProtheusApiData serverAPI, String endpoint) {
 		return new StringBuilder(serverAPI.getBaseUrl()).append("/" + endpoint).toString();
 	}
 

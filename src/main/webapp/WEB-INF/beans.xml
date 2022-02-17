@@ -8,5 +8,6 @@
 		<class>com.portal.client.cdi.aop.aspect.OrderBadRequestAspect</class>
 		<class>com.portal.client.exceptionhandler.netowork.NetworkExcpetionAspect</class>
 		<class>com.portal.client.service.states.StatesCacheAspect</class>
+		<class>com.portal.client.cdi.aop.aspec.NotAuthorizedAspect</class>
 	</interceptors>
 </beans>

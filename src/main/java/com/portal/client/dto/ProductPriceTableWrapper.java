@@ -43,12 +43,12 @@ public class ProductPriceTableWrapper {
 				@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("st_value") BigDecimal stValue,
 				@JsonbProperty("description") String description,
 				@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue,
-				@JsonbProperty("application") String application) {
+				@JsonbProperty("application") String application,@JsonbProperty("ncm") String ncm) {
 			ProductPriceData priceData = ProductPriceBuilder.getInstance().withUnitStValue(stValue)
 					.withUnitValue(unitValue).withQuantity(1).withUnitGrossValue(unitGrossValue)
 					.withTotalGrossValue(unitGrossValue).withTotalStValue(stValue).withTotalValue(unitValue).build();
-			Product product = new Product(productCode, productCommercialCode, description, productLine, acronymLine,
-					null, false, null, priceData,
+			Product product = new Product(productCode, productCommercialCode, ncm, description, productLine,
+					acronymLine, null, null, false, null, priceData,
 					new ProductTechDetail(null, application.isBlank() ? null : application, null, 0, null));
 			this.product = product;
 			this.code = code;

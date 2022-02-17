@@ -21,7 +21,7 @@ import com.portal.client.exception.ProductsNotFoundException;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
 import com.portal.client.microsoft.excel.writer.XssfWriterImpl;
 import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.security.api.ProtheusCompanyApiEnv;
+import com.portal.client.security.api.ProtheusApiEnviroment;
 import com.portal.client.security.api.register.ProtheusApiRegisterImpl;
 import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.service.jsonb.JsonbServiceImpl;
@@ -73,7 +73,7 @@ public class ProductRepositoryImplTest {
 	}
 
 	private void shouldApiRegistered() {
-		assertNotNull(apiRegister.companyEnv(ProtheusCompanyApiEnv.CDG).token(
+		assertNotNull(apiRegister.companyEnv(ProtheusApiEnviroment.CDG).token(
 				"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6InBKd3RQdWJsaWNLZXlGb3IyNTYifQ.eyJpc3MiOiJUT1RWUy1BRFZQTC1GV0pXVCIsInN1YiI6ImhzdyIsImlhdCI6MTYzNzc3NTQ3MSwidXNlcmlkIjoiMDAwMTYxIiwiZXhwIjoxNjM3Nzc5MDcxLCJlbnZJZCI6IkRCX0NERyJ9.V2VIxmNpFLBekJtX0kODXh9v1tgVTca6ywSWC-1WWPnzQdNNXGvvu8_RRDlKIWVEmxZTaTHRFdJz9Rgdct7OWcc6sANDT6HRAE2vlmya3h16ulhD160Oxrg7Szllui7DhvTz7lk5KbxvE7YORJa3PZcyuvYo9j8bEyNurPsD4pqDelcUH04qLSY2VV2_7_frf1Rp_3oIv5mEp9hlW6UHMTVqGNAqG73P3Mi-5vQ7kwzsbx3aEnYYTAL5-yRQXm0nIg5Mkzyu-TDJD2bzGWtklCC_FEFdFupAyT_lEGbBceVqFfkVMESUgc0wTAlRLjutnAPQSKSf27Tq1r9GCFsAkA")
 				.tokenPrefix("Bearer").register());
 	}

@@ -7,7 +7,7 @@ import javax.ws.rs.NotAuthorizedException;
 
 import com.portal.client.dto.LoginProtheusForm;
 import com.portal.client.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
-import com.portal.client.security.auth.Authentication;
+import com.portal.client.security.auth.AuthenticationService;
 import com.portal.client.service.ResourceBundleService;
 import com.portal.client.util.jsf.FacesUtils;
 
@@ -20,14 +20,14 @@ public class LoginController {
 	 * 
 	 */
 
-	private final Authentication authenticationRepository;
+	private final AuthenticationService authenticationRepository;
 	private final ResourceBundleService resourceBundleService;
 	private LoginProtheusForm loginForm;
 	private String headerDlgMessage;
 	private String previousPage;
 
 	@Inject
-	public LoginController(Authentication authenticationRepository,
+	public LoginController(AuthenticationService authenticationRepository,
 			ResourceBundleService resourceBundleService
 			) {
 		this.authenticationRepository = authenticationRepository;

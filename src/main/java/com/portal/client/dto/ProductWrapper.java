@@ -6,19 +6,17 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.vo.Product;
+public class ProductWrapper {
 
-public class ProductPage {
-
-	private List<Product> products;
+	private List<ProductSearchDto> products;
 
 	@JsonbCreator
-	public ProductPage(@JsonbProperty("products") List<Product> products) {
+	public ProductWrapper(@JsonbProperty("products") List<ProductSearchDto> products) {
 		super();
 		this.products = new ArrayList<>(products);
 	}
 
-	public List<Product> getProducts() {
+	public List<ProductSearchDto> getProducts() {
 		return new ArrayList<>(products);
 	}
 

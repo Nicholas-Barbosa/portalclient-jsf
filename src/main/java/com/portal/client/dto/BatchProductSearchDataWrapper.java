@@ -65,8 +65,8 @@ public class BatchProductSearchDataWrapper {
 				@JsonbProperty("multiple") int multiple, @JsonbProperty("product_type") String acronymLine,
 				@JsonbProperty("description_product_type") String line,
 				@JsonbProperty("application") String application) {
-			this.product = new Product(productCode, commercialCode, description, line, acronymLine, null, null,
-					ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
+			this.product = new Product(productCode, commercialCode, null, description, line, acronymLine, null, null,
+					null, ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
 					ProductPriceBuilder.getInstance().withQuantity(quantity).withMultiple(multiple)
 							.withUnitGrossValue(unitGross).withUnitValue(unitValue)
 							.withUnitStValue(totalStValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))

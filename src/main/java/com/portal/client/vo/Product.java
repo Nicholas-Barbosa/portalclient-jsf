@@ -1,63 +1,34 @@
 package com.portal.client.vo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-
-import javax.json.bind.annotation.JsonbCreator;
-import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.vo.ProductImage.ImageInfoState;
-import com.portal.client.vo.builder.ProductDiscountDataBuilder;
-import com.portal.client.vo.builder.ProductTechDetailBuilder;
 
-public class Product implements Comparable<Product>,Serializable {
+public class Product implements Comparable<Product>, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final String code;
-	private final String commercialCode;
-	private final String description;
-	private final String line;
-	private final String acronymLine;
-	private Integer stock;
-	private final Boolean commercialBlock;
+	private String code, commercialCode, ncm, description, line, acronymLine, link;
+	private Integer stock, quantityOnOrders;
+	private Boolean commercialBlock;
 	private ProductImage image;
-	private final ProductPriceData priceData;
+	private ProductPriceData priceData;
 	private ProductTechDetail productTechDetail;
-	private String link;
 
-	@JsonbCreator
-	public static Product ofJsonb(@JsonbProperty("application") String application, @JsonbProperty("code") String code,
-			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
-			@JsonbProperty("multiple") int multiple, @JsonbProperty("commercial_block") String commercialBlock,
-			@JsonbProperty("commercial_code") String cCode, @JsonbProperty("st_value") BigDecimal stValue,
-			@JsonbProperty("unit_price") BigDecimal unitValue, @JsonbProperty("stock") int stock,
-			@JsonbProperty("description") String description,
-			@JsonbProperty("unit_gross_value") BigDecimal unitGrossValue) {
-		ProductDiscountData discountData = ProductDiscountDataBuilder.getInstance().withUnitGrossValue(unitGrossValue)
-				.withUnitStValue(stValue).withUnitValue(unitValue).withTotalValue(unitValue)
-				.withTotalGrossValue(unitGrossValue).withTotalStValue(stValue).build();
-		ProductPriceData price = new ProductPriceData(stValue, unitValue, unitGrossValue, 1, multiple, discountData);
-		System.out.println("Application: " + application);
-		return new Product(code, cCode, description, line, acronymLine, stock,
-				commercialBlock == null ? null : commercialBlock.equalsIgnoreCase("nao") ? false : true, null, price,
-				application != null && !application.isBlank()
-						? ProductTechDetailBuilder.getInstance().withApplication(application).build()
-						: null);
-	}
-
-	public Product(String code, String commercialCode, String description, String line, String acronymLine,
-			Integer stock, Boolean commercialBlock, ProductImage image, ProductPriceData price,
-			ProductTechDetail productTechDetail) {
+	public Product(String code, String commercialCode, String ncm, String description, String line, String acronymLine,
+			Integer stock, Integer quantityOnOrders, Boolean commercialBlock, ProductImage image,
+			ProductPriceData price, ProductTechDetail productTechDetail) {
 		super();
 		this.code = code;
 		this.commercialCode = commercialCode;
+		this.ncm = ncm;
 		this.description = description;
 		this.line = line;
 		this.acronymLine = acronymLine;
 		this.stock = stock;
+		this.quantityOnOrders = quantityOnOrders;
 		this.commercialBlock = commercialBlock;
 		this.image = image;
 		this.priceData = price;
@@ -70,6 +41,10 @@ public class Product implements Comparable<Product>,Serializable {
 
 	public String getCommercialCode() {
 		return commercialCode;
+	}
+
+	public String getNcm() {
+		return ncm;
 	}
 
 	public String getDescription() {
@@ -90,6 +65,14 @@ public class Product implements Comparable<Product>,Serializable {
 
 	public void setStock(Integer stock) {
 		this.stock = stock;
+	}
+
+	public Integer getQuantityOnOrders() {
+		return quantityOnOrders;
+	}
+
+	public void setQuantityOnOrders(Integer quantityOnOrders) {
+		this.quantityOnOrders = quantityOnOrders;
 	}
 
 	public Boolean isCommercialBlock() {
