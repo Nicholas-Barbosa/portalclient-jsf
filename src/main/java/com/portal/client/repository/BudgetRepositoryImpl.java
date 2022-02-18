@@ -2,29 +2,20 @@ package com.portal.client.repository;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
-import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetPage;
 import com.portal.client.dto.BudgetSavedResponse;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.BudgetToUpdateDTO;
 import com.portal.client.security.api.helper.APIHelper;
-import com.portal.client.service.jsonb.JsonbService;
 import com.portal.client.vo.Budget;
-import com.portal.client.vo.Customer404Error;
-import com.portal.client.vo.Deseriaized404JsonEstimateEndpoint;
 import com.portal.client.vo.Page;
-import com.portal.client.vo.WrapperProduct404Error;
 
 @ApplicationScoped
 public class BudgetRepositoryImpl extends OptionalEmptyRepository implements BudgetRepository {
@@ -34,18 +25,16 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	 */
 	private static final long serialVersionUID = -1758905240244736233L;
 	private final TokenedRestClient restClient;
-	private final JsonbService jsonbService;
 	private APIHelper protheusApiHelper;
 
 	public BudgetRepositoryImpl() {
-		this(null, null, null);
+		this(null, null);
 	}
 
 	@Inject
-	public BudgetRepositoryImpl(TokenedRestClient restClient, JsonbService jsonbService, APIHelper protheusApiHelper) {
+	public BudgetRepositoryImpl(TokenedRestClient restClient,  APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
-		this.jsonbService = jsonbService;
 		this.protheusApiHelper = protheusApiHelper;
 	}
 
@@ -75,24 +64,7 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	}
 
 	
-	private Deseriaized404JsonEstimateEndpoint deserializeJson404FromEstimateEndpoint(String json) {
-		ExecutorService executor = null;
-		try {
-			executor = Executors.newFixedThreadPool(2);
-			Future<WrapperProduct404Error> f = executor
-					.submit(() -> jsonbService.fromJson(json, WrapperProduct404Error.class));
-			Future<Customer404Error> fCustomer = executor
-					.submit(() -> jsonbService.fromJson(json, Customer404Error.class));
-			Deseriaized404JsonEstimateEndpoint deserialized = new Deseriaized404JsonEstimateEndpoint(
-					f.get().getErrors(), fCustomer.get());
-			return deserialized;
-		} catch (InterruptedException | ExecutionException e) {
-			e.printStackTrace();
-			return null;
-		} finally {
-			executor.shutdown();
-		}
-	}
+	
 
 	@Override
 	public void update(Budget budget) {

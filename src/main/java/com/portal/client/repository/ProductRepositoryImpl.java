@@ -18,7 +18,6 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
-import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.BatchProductSearchDataWrapper;
 import com.portal.client.dto.BatchProductSearchJsonPostForm;
 import com.portal.client.dto.ProductWrapper;

@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
-import com.portal.client.cdi.aop.OptionalEmptyRepository;
 import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.CustomerWrapper;
