@@ -56,7 +56,7 @@ public class ItemLazyDataModel extends LazyBehaviorDataModel<Item> {
 
 	@Override
 	public String getRowKey(Item object) {
-		return object.getProduct().getCommercialCode();
+		return object.getCommercialCode();
 	}
 
 	@Override

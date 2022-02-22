@@ -4,12 +4,13 @@ import java.io.Serializable;
 import java.util.Optional;
 
 import com.portal.client.dto.BudgetFullProjection;
+import com.portal.client.dto.BudgetSemiProjection;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Page;
 
 public interface BudgetRepository extends Serializable {
 
-	Page<Budget> findAll(int page, int pageSize);
+	Page<BudgetSemiProjection> findAll(int page, int pageSize);
 
 	Optional<BudgetFullProjection> findByCode(String code);
 

@@ -11,7 +11,7 @@ public class ProductTechDetail {
 	public ProductTechDetail() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public ProductTechDetail(String productsReplaces, String application, String alternatorCode, float grossWeight,
 			String packageDimension) {
 		super();
@@ -20,6 +20,10 @@ public class ProductTechDetail {
 		this.alternatorCode = alternatorCode;
 		this.grossWeight = grossWeight;
 		this.packageDimension = packageDimension;
+	}
+
+	public ProductTechDetail(ProductTechDetail p) {
+		this(p.productsReplaces, p.application, p.alternatorCode, p.grossWeight, p.packageDimension);
 	}
 
 	public String getProductsReplaces() {
@@ -41,7 +45,6 @@ public class ProductTechDetail {
 	public String getPackageDimension() {
 		return packageDimension;
 	}
-	
 
 	public void setProductsReplaces(String productsReplaces) {
 		this.productsReplaces = productsReplaces;

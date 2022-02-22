@@ -36,7 +36,6 @@ public class ItemOrderFullProjection extends Item {
 						.build(),
 				null));
 
-		System.out.println("Total st value " + totalStValue);
 	}
 
 }

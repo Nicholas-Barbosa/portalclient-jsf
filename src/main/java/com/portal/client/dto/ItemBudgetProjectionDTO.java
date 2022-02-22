@@ -10,6 +10,7 @@ import javax.json.bind.annotation.JsonbProperty;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductImage.ImageInfoState;
+import com.portal.client.vo.ProductTechDetail;
 import com.portal.client.vo.builder.ProductImageBuilder;
 import com.portal.client.vo.builder.ProductPriceBuilder;
 import com.portal.client.vo.builder.ProductTechDetailBuilder;
@@ -30,18 +31,20 @@ public class ItemBudgetProjectionDTO extends Item implements Serializable {
 			@JsonbProperty("description_product_type") String line, @JsonbProperty("product_type") String acronymLine,
 			@JsonbProperty("multiple") int multiple, @JsonbProperty("description") String description,
 			@JsonbProperty("application") String application) {
-		super(new Product(productCode, commercialCode,null, description, line, acronymLine, null, null,null,
+		super(new Product(productCode, commercialCode, null, description, line, acronymLine, null, null, null,
 				ProductImageBuilder.getInstance().withState(ImageInfoState.NOT_LOADED).build(),
 				ProductPriceBuilder.getInstance()
-						.withUnitStValue(stValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
+						.withUnitStValue(stValue.equals(BigDecimal.ZERO) ? BigDecimal.ZERO
+								: stValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
 						.withUnitValue(unitValue)
-						.withUnitGrossValue(grossValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
+						.withUnitGrossValue(grossValue.equals(BigDecimal.ZERO) ? BigDecimal.ZERO
+								: grossValue.divide(BigDecimal.valueOf(quantity), RoundingMode.HALF_UP))
 						.withQuantity(quantity).withTotalGrossValue(grossValue).withTotalStValue(stValue)
 						.withTotalValue(unitValue.multiply(BigDecimal.valueOf(quantity))).withMultiple(multiple)
 						.build(),
 				application != null && !application.isBlank()
 						? ProductTechDetailBuilder.getInstance().withApplication(application).build()
-						: null));
+						: ProductTechDetailBuilder.getInstance().build()));
 
 	}
 

@@ -19,7 +19,6 @@ import com.portal.client.microsoft.excel.RowObject;
 import com.portal.client.microsoft.excel.writer.XssfWriter;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Item;
-import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPriceData;
 
 @ApplicationScoped
@@ -49,7 +48,7 @@ public class ExcelCalculationSummaryBudgetExporter implements BudgetExporter {
 	}
 
 	private List<CellAttribute> createPriceCells(Item item) {
-		Product product = item.getProduct();
+		Item product = item;
 		ProductPriceData priceData = product.getPriceData();
 		List<CellAttribute> cells = new LinkedList<>();
 		addCellValue(cells, "productCode", product.getCommercialCode());

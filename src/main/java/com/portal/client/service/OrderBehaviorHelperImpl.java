@@ -27,13 +27,13 @@ public class OrderBehaviorHelperImpl implements OrderBehaviorHelper, Serializabl
 
 	@Override
 	public void calculateTotals(Order budget) {
-		BigDecimal newGrossValue = budget.getItems().parallelStream().map(Item::getProduct)
+		BigDecimal newGrossValue = budget.getItems().parallelStream()
 				.map(p -> p.getPriceData().getTotalGrossValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newLiquidValue = budget.getItems().parallelStream().map(Item::getProduct)
+		BigDecimal newLiquidValue = budget.getItems().parallelStream()
 				.map(p -> p.getPriceData().getTotalValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
-		BigDecimal newStValue = budget.getItems().parallelStream().map(Item::getProduct)
+		BigDecimal newStValue = budget.getItems().parallelStream()
 				.map(p -> p.getPriceData().getTotalStValue())
 				.reduce(BigDecimal.ZERO, (a, b) -> a.add(b), (a, b) -> a.add(b));
 		budget.setGrossValue(newGrossValue);
@@ -45,7 +45,7 @@ public class OrderBehaviorHelperImpl implements OrderBehaviorHelper, Serializabl
 	public void removeItem(Order budget, Item item) {
 		if (budget.removeItem(item)) {
 			sumStValue(budget);
-			ProductPriceData priceData = item.getProduct().getPriceData();
+			ProductPriceData priceData = item.getPriceData();
 			BigDecimal itemGrossValue = priceData.getTotalGrossValue();
 			BigDecimal itemStValue = priceData.getTotalStValue();
 			BigDecimal itemTValue = priceData.getTotalValue();
@@ -62,7 +62,7 @@ public class OrderBehaviorHelperImpl implements OrderBehaviorHelper, Serializabl
 	@Override
 	public void addItem(Order order, Item item) {
 		if (item != null && order.addItem(item)) {
-			ProductPriceData priceData = item.getProduct().getPriceData();
+			ProductPriceData priceData = item.getPriceData();
 			if (order.getGrossValue() == null)
 				order.setGrossValue(priceData.getTotalGrossValue());
 			else
@@ -118,7 +118,7 @@ public class OrderBehaviorHelperImpl implements OrderBehaviorHelper, Serializabl
 	@Override
 	public void sumStValue(Order order) {
 		if (order.getStValue() == null) {
-			BigDecimal stValue = order.getItems().stream().map(Item::getProduct)
+			BigDecimal stValue = order.getItems().stream()
 					.map(i -> i.getPriceData().getTotalStValue()).reduce(BigDecimal.ZERO, (v1, v2) -> v1.add(v2));
 			order.setStValue(stValue);
 		}
@@ -141,7 +141,7 @@ public class OrderBehaviorHelperImpl implements OrderBehaviorHelper, Serializabl
 	public void addProducts(Order order, Collection<Product> products) {
 		products.parallelStream().map(Item::new).filter(i -> order.addItem(i)).forEach(i -> {
 			synchronized (order) {
-				ProductPriceData priceData = i.getProduct().getPriceData();
+				ProductPriceData priceData = i.getPriceData();
 				BigDecimal oldStValue = order.getStValue();
 				BigDecimal oldValue = order.getLiquidValue();
 				BigDecimal oldGross = order.getGrossValue();

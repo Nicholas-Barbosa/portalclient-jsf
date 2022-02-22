@@ -35,6 +35,13 @@ public class Product implements Comparable<Product>, Serializable {
 		this.productTechDetail = productTechDetail;
 	}
 
+	public Product(Product p) {
+		this(p.code, p.commercialCode, p.ncm, p.description, p.line, p.acronymLine, p.stock, p.quantityOnOrders,
+				p.commercialBlock, p.image != null ? new ProductImage(p.image) : null,
+				p.priceData != null ? new ProductPriceData(p.priceData) : null,
+				p.productTechDetail != null ? new ProductTechDetail(p.productTechDetail) : null);
+	}
+
 	public String getCode() {
 		return code;
 	}
@@ -134,13 +141,14 @@ public class Product implements Comparable<Product>, Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != obj.getClass()) 
 			return false;
+		
 		Product other = (Product) obj;
 		if (commercialCode == null) {
 			if (other.commercialCode != null)
 				return false;
-		} else if (!commercialCode.equals(other.commercialCode))
+		} else if (!commercialCode.equalsIgnoreCase(other.commercialCode))
 			return false;
 		return true;
 	}

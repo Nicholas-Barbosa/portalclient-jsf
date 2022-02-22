@@ -1,7 +1,6 @@
 package com.portal.client.controller;
 
 import java.io.Serializable;
-import java.util.Optional;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -24,9 +23,7 @@ import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.vo.Budget;
-import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
-import com.portal.client.vo.Product;
 
 @Named
 @ViewScoped
@@ -120,13 +117,7 @@ public class BudgetEditingController implements Serializable {
 		FacesUtils.info(null, "Orçamento atualizado", null, "growl");
 	}
 
-	public void handleProductResult(SelectEvent<Optional<Product>> event) {
-		event.getObject().ifPresentOrElse(p -> {
-			orderHelper.addItem(this.getBudget(), new Item(p));
-			FacesUtils.ajaxUpdate("dtItems", "totals");
-		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
 
-	}
 
 	public void showCustomerData() {
 		if (!isCustomerDataComplete)

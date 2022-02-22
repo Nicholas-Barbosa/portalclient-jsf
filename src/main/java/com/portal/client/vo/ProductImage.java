@@ -19,6 +19,10 @@ public class ProductImage {
 		this.imageStreams = new byte[0];
 	}
 
+	public ProductImage(ProductImage image) {
+		this(image.imageStreams,image.currentState);
+	}
+
 	public byte[] getImageStreams() {
 		return imageStreams.clone();
 	}

@@ -67,7 +67,7 @@ public class OrderDiscountController implements Serializable {
 
 	public void loadCurrentItemLines() {
 		if (activeTab == 1 && lines == null)
-			this.lines = order.getItems().parallelStream().map(Item::getProduct).map(Product::getLine)
+			this.lines = order.getItems().parallelStream().map(Product::getLine)
 					.collect(Collectors.toSet());
 	}
 

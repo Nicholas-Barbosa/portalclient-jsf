@@ -170,7 +170,7 @@ public class BudgetJasperData implements Serializable {
 
 		public BudgetItemJasperData(Item item) {
 			super();
-			Product product = item.getProduct();
+			Product product = item;
 			ProductPriceData priceData = product.getPriceData();
 			this.commercialCode = product.getCommercialCode();
 			this.protheusCode = product.getCode();

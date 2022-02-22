@@ -21,7 +21,7 @@ public class ItemOrderToSave {
 	public ItemOrderToSave(Item item) {
 		super();
 		this.item = item;
-		this.itemProduct = item.getProduct();
+		this.itemProduct = item;
 		this.value = itemProduct.getPriceData();
 	}
 

@@ -9,8 +9,9 @@ import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
 import com.portal.client.dto.BudgetFullProjection;
-import com.portal.client.dto.BudgetPage;
+import com.portal.client.dto.BudgetSemiProjectionPage;
 import com.portal.client.dto.BudgetSavedResponse;
+import com.portal.client.dto.BudgetSemiProjection;
 import com.portal.client.dto.BudgetToSaveJsonSerializable;
 import com.portal.client.dto.BudgetToUpdateDTO;
 import com.portal.client.security.api.helper.APIHelper;
@@ -39,11 +40,11 @@ public class BudgetRepositoryImpl extends OptionalEmptyRepository implements Bud
 	}
 
 	@Override
-	public Page<Budget> findAll(int page, int pageSize) {
+	public Page<BudgetSemiProjection> findAll(int page, int pageSize) {
 		StringBuilder endpointURL = new StringBuilder(protheusApiHelper.getBaseUrl());
 		endpointURL.append("/budgets");
 		return restClient.get(endpointURL.toString(), protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(),
-				BudgetPage.class, Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC"), null,
+				BudgetSemiProjectionPage.class, Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC"), null,
 				MediaType.APPLICATION_JSON);
 	}
 

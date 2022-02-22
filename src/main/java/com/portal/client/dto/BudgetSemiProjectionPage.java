@@ -1,17 +1,14 @@
 package com.portal.client.dto;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.portal.client.vo.Budget;
 import com.portal.client.vo.Page;
 
-public class BudgetPage implements Page<Budget> {
+public class BudgetSemiProjectionPage implements Page<BudgetSemiProjection> {
 
 	/**
 	 * 
@@ -22,19 +19,18 @@ public class BudgetPage implements Page<Budget> {
 	private final int totalPage;
 	private final int pageSize;
 	private final int page;
-	private final List<Budget> budgets;
+	private final List<BudgetSemiProjection> budgets;
 
 	@JsonbCreator
-	public BudgetPage(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPage,
-			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
-			@JsonbProperty("budget") List<BudgetSemiProjection> budgets) {
+	public BudgetSemiProjectionPage(@JsonbProperty("total_items") int totalItems,
+			@JsonbProperty("total_page") int totalPage, @JsonbProperty("page_size") int pageSize,
+			@JsonbProperty("page") int page, @JsonbProperty("budget") List<BudgetSemiProjection> budgets) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPage = totalPage;
 		this.pageSize = pageSize;
 		this.page = page;
-		this.budgets = budgets.parallelStream().map(BudgetSemiProjection::build).collect(CopyOnWriteArrayList::new,
-				List::add, List::addAll);
+		this.budgets = budgets;
 	}
 
 	@Override
@@ -62,9 +58,9 @@ public class BudgetPage implements Page<Budget> {
 	}
 
 	@Override
-	public Collection<Budget> getContent() {
+	public Collection<BudgetSemiProjection> getContent() {
 		// TODO Auto-generated method stub
-		return new ArrayList<>(budgets);
+		return budgets;
 	}
 
 }

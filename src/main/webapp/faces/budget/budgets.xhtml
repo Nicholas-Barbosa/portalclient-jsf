@@ -51,6 +51,10 @@
 								<h:outputText value="#{budget.code}" />
 							</p:column>
 							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+								<h:outputText value="#{budget.customerName}" />
+							</p:column>
+							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('criado_em')}">
 								<h:outputText value="#{budget.createdAt}">
 									<f:convertDateTime type="localDate" locale="pt_BR"
@@ -71,12 +75,9 @@
 										locale="pt_BR" />
 								</h:outputText>
 							</p:column>
-							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
-								<h:outputText value="#{budget.customerOnOrder.code}" />
-							</p:column>
+
 							<p:column>
-								
+
 
 								<p:linkButton icon="pi pi-pencil"
 									styleClass="rounded-button ui-button-help  mr-3"

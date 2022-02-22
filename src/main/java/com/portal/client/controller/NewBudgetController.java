@@ -27,8 +27,6 @@ import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.ServerEndpointErrorUtils;
 import com.portal.client.vo.Budget;
-import com.portal.client.vo.Item;
-import com.portal.client.vo.Product;
 
 @Named
 @ViewScoped
@@ -125,14 +123,6 @@ public class NewBudgetController implements Serializable {
 		}, () -> {
 			FacesUtils.warn(null, "Nenhum cliente selecionado", null, "growl");
 			FacesUtils.executeScript("PF('blockItems').show;");
-		});
-
-	}
-
-	public void handleProductResult(SelectEvent<Optional<Product>> event) {
-		event.getObject().ifPresent(p -> {
-			budgetBehaviorHelper.addItem(budget, new Item(p));
-			FacesUtils.ajaxUpdate("formItems:dtItems", "budgetTotals");
 		});
 
 	}

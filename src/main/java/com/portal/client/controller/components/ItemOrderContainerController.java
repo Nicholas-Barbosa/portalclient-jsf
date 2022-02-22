@@ -26,7 +26,7 @@ import com.portal.client.vo.Product;
 
 @ViewScoped
 @Named
-public class ItemOrderContainerController implements Serializable, ProductFileImportObserver {
+public class ItemOrderContainerController implements Serializable, ProductFileImportObserver, ProductSearchObserver {
 
 	/**
 	 * 
@@ -45,9 +45,16 @@ public class ItemOrderContainerController implements Serializable, ProductFileIm
 	private int pageSize = 10;
 
 	private int onRowItemQuantity;
+	
 
 	public ItemOrderContainerController() {
 		itemsToRemove = new ArrayList<>();
+	}
+
+	@Override
+	public void onConfirm(Product product) {
+		orderHelper.addItem(order, new Item(null,product));
+
 	}
 
 	@Override
@@ -58,13 +65,6 @@ public class ItemOrderContainerController implements Serializable, ProductFileIm
 
 	public void handleItemImportReturn(SelectEvent<Budget> event) {
 		this.orderHelper.merge(this.order, event.getObject());
-	}
-
-	public void handleProductResult(SelectEvent<Optional<Product>> event) {
-		event.getObject().ifPresentOrElse(p -> {
-			orderHelper.addItem(order, new Item(p));
-		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
-
 	}
 
 	public void onRowItemEdit(RowEditEvent<Item> event) {
@@ -86,7 +86,7 @@ public class ItemOrderContainerController implements Serializable, ProductFileIm
 	public void removeItems() {
 		orderHelper.removeItems(order, itemsToRemove);
 		String message = itemsToRemove.size() == 1
-				? "Item " + itemsToRemove.get(0).getProduct().getCommercialCode() + " removido"
+				? "Item " + itemsToRemove.get(0).getCommercialCode() + " removido"
 				: itemsToRemove.size() + " itens removidos.";
 		itemsToRemove.clear();
 		FacesUtils.info(null, message, null, "growl");
@@ -142,4 +142,5 @@ public class ItemOrderContainerController implements Serializable, ProductFileIm
 		this.onRowItemQuantity = onRowItemQuantity;
 	}
 
+	
 }

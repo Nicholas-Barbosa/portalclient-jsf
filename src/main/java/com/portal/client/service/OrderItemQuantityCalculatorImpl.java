@@ -23,7 +23,7 @@ public class OrderItemQuantityCalculatorImpl implements OrderItemQuantityCalcula
 
 	@Override
 	public void calc(Order order, Item item, int quantity) throws ItemQuantityNotAllowed {
-		ProductPriceData productPriceData = item.getProduct().getPriceData();
+		ProductPriceData productPriceData = item.getPriceData();
 
 		BigDecimal oldTotalValue = productPriceData.getTotalValue();
 		BigDecimal oldTotalGrossValue = productPriceData.getTotalGrossValue();

@@ -15,11 +15,11 @@ public class ItemServiceImpl implements ItemService {
 	public void calculateDueQuantity(Item item, int quantity) throws ItemQuantityNotAllowed {
 		if (checkQuantityPolicies(item, quantity)) {
 			calculateTotals(item, quantity);
-			item.getProduct().getPriceData().setQuantity(quantity);
+			item.getPriceData().setQuantity(quantity);
 			return;
 		}
 		throw new ItemQuantityNotAllowed(
-				"quantity " + quantity + " must be multiple of " + item.getProduct().getPriceData().getMultiple());
+				"quantity " + quantity + " must be multiple of " + item.getPriceData().getMultiple());
 	}
 
 //	@Override
@@ -67,7 +67,7 @@ public class ItemServiceImpl implements ItemService {
 //	}
 
 	private void calculateTotals(Item item) {
-		ProductPriceData priceData = item.getProduct().getPriceData();
+		ProductPriceData priceData = item.getPriceData();
 		BigDecimal quantity = BigDecimal.valueOf(priceData.getQuantity());
 		priceData.setTotalGrossValue(priceData.getUnitGrossValue().multiply(quantity));
 		priceData.setTotalStValue(priceData.getUnitStValue().multiply(quantity));
@@ -75,7 +75,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	private void calculateTotals(Item item, int quantity1) {
-		ProductPriceData priceData = item.getProduct().getPriceData();
+		ProductPriceData priceData = item.getPriceData();
 		BigDecimal quantity = BigDecimal.valueOf(quantity1);
 		priceData.setTotalGrossValue(priceData.getUnitGrossValue().multiply(quantity));
 		priceData.setTotalStValue(priceData.getUnitStValue().multiply(quantity));
@@ -97,7 +97,7 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public boolean checkQuantityPolicies(Item item, int quantity) {
 		// TODO Auto-generated method stub
-		ProductPriceData priceData = item.getProduct().getPriceData();
+		ProductPriceData priceData = item.getPriceData();
 		if (priceData.getMultiple() == null || priceData.getMultiple() == 0)
 			return true;
 		return quantity % priceData.getMultiple() == 0 ? true : false;

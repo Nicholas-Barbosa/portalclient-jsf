@@ -98,13 +98,6 @@ public class NewOrderController implements Serializable {
 		orderHelper.setCustomer(order, prosp);
 	}
 
-	public void handleProductResult(SelectEvent<Optional<Product>> event) {
-		event.getObject().ifPresentOrElse(p -> {
-			orderHelper.addItem(order,new Item(p));
-			FacesUtils.ajaxUpdate("formItems:dtItems", "frmTotals");
-		}, () -> FacesUtils.warn(null, "Produto não selecionado", "Operação cancelada", "growl"));
-
-	}
 
 	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
 		event.getObject().ifPresentOrElse(c -> {

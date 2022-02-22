@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+<h:head>
+
+</h:head>
+
+<composite:interface>
+	<composite:attribute name="customer" required="true" />
+	<composite:attribute name="searchObserver" required="true"
+		type="com.portal.client.controller.components.ProductSearchObserver" />
+	<composite:attribute name="updates" type="java.lang.String" />
+	<composite:attribute name="products" type="java.util.List" />
+</composite:interface>
+<composite:implementation>
+	<p:dialog header="Pesquisar produto" widgetVar="productSearch"
+		modal="true" responsive="true" fitViewport="true">
+		<div id="#{cc.clientId}" style="max-height: 50vh; overflow: auto;">
+			<div class="ui-fluid">
+				<h:form>
+					<div class="field">
+						<p:outputLabel for="code">#{resourceBundleServiceImpl.getMessage('codigo_comercial')}</p:outputLabel>
+						<div class="ui-inputgroup">
+							<p:inputText id="code"
+								value="#{productSearchComponentController.codeToSearch}" />
+							<p:commandButton icon="pi pi-search"
+								styleClass="ui-button-warning" process="@this,code"
+								action="#{productSearchComponentController.search(cc.attrs.customer,cc.attrs.products)}"
+								onstart="PF('dlgLoading').show()"
+								oncomplete="PF('dlgLoading').hide()" update="@obs(searchAction)" />
+						</div>
+					</div>
+				</h:form>
+				<div jsf:id="duplicateMessage">
+					<p:staticMessage severity="warn" summary="Produto duplicado"
+						detail="O mesmo não será adicionado ao pedido ou orçamento atual."
+						style="width: 99%"
+						rendered="#{productSearchComponentController.duplicateProduct}">
+					</p:staticMessage>
+					<p:autoUpdate on="searchAction" />
+				</div>
+			</div>
+			<div class="card">
+				<p:outputPanel id="manage-product-content" class="ui-fluid">
+					<p:autoUpdate on="searchAction" />
+					<i class="pi pi-spin pi-spinner"
+						style="font-size: 5rem; display: none" id="spinnerLoadingImage"></i>
+
+					<p:outputPanel id="imagePanel">
+						<div id="divProductImg" class="flex justify-content-center">
+							<p:graphicImage
+								value="#{productSearchComponentController.product.imageStreams}"
+								styleClass="w3-round-xlarge" style="width:100%;max-width:300px;"
+								stream="false" id="productImg"
+								alt="Image not uploaded for #{productSearchComponentController.product.commercialCode}"
+								rendered="#{productSearchComponentController.product.image.currentState eq 'FOUND' || 'NOT_FOUND'}" />
+							<p:commandButton
+								value="#{resourceBundleServiceImpl.getMessage('timeout_busca_imagem_gcp')}"
+								rendered="#{productSearchComponentController.product.image.currentState eq 'TIMEOUT_EXCPTION'}"
+								process="@this"
+								action="#{productImageLoaderController.loadImage(productSearchComponentController.product)}"
+								update="imagePanel"
+								onstart="$('#spinnerLoadingImage').show();$('#divProductImg').hide();$('#btnLoadImage').hide()"
+								oncomplete="$('#spinnerLoadingImage').hide();
+				$('#divProductImg').show();"
+								id="btnLoadImage" />
+						</div>
+					</p:outputPanel>
+
+					<div class="field">
+						<p:outputLabel for="name">#{resourceBundleServiceImpl.getMessage('descricao')}</p:outputLabel>
+						<p:inputTextarea id="name"
+							value="#{productSearchComponentController.product.description}"
+							required="true" readonly="true" />
+					</div>
+					<div class="field">
+						<p:outputLabel for="line">#{resourceBundleServiceImpl.getMessage('linha')}</p:outputLabel>
+						<p:inputText id="line"
+							value="#{productSearchComponentController.product.line}"
+							readonly="true" />
+					</div>
+					<ui:fragment
+						rendered="#{productSearchComponentController.product.productTechDetail.application != null}">
+						<div class="field">
+							<p:outputLabel for="aplicability">#{resourceBundleServiceImpl.getMessage('aplicacao')}</p:outputLabel>
+							<p:inputText id="aplicability"
+								value="#{productSearchComponentController.product.productTechDetail.application}"
+								readonly="true" />
+
+						</div>
+					</ui:fragment>
+
+					<div class="field">
+						<h:form>
+							<p:outputLabel for="quantity">#{resourceBundleServiceImpl.getMessage('quantidade')}<strong>(*
+									#{productSearchComponentController.product.priceData.multiple})</strong>
+							</p:outputLabel>
+							<p:spinner id="quantity"
+								value="#{productSearchComponentController.newQuantity}"
+								stepFactor="#{productSearchComponentController.product.priceData.multiple}"
+								onchange="calcQuantity()" />
+							<p:tooltip for="quantity"
+								value="Entre com algum número múltiplo de #{productSearchComponentController.product.priceData.multiple}"
+								position="bottom" />
+							<p:remoteCommand name="calcQuantity" process="@this,quantity"
+								action="#{productSearchComponentController.onQuantityChange}"
+								update="#{cc.clientId}:vLiquid,#{cc.clientId}:vGross,#{cc.clientId}:vSt" />
+						</h:form>
+					</div>
+
+					<div class="formgrid grid">
+						<div class="field col">
+							<p:outputLabel for="vLiquid">#{resourceBundleServiceImpl.getMessage('valor_liquido')}</p:outputLabel>
+							<p:inputNumber id="vLiquid"
+								value="#{productSearchComponentController.product.priceData.totalValue}"
+								symbol="R$ " symbolPosition="p" decimalSeparator=","
+								thousandSeparator="." readonly="true"
+								styleClass="inputfield w-full" />
+						</div>
+						<div class="field col">
+							<p:outputLabel for="vGross">#{resourceBundleServiceImpl.getMessage('valor_bruto')}</p:outputLabel>
+							<p:inputNumber id="vGross"
+								value="#{productSearchComponentController.product.priceData.totalGrossValue}"
+								symbol="R$ " symbolPosition="p" decimalSeparator=","
+								thousandSeparator="." readonly="true"
+								styleClass="inputfield w-full" />
+						</div>
+						<div class="field col">
+							<p:outputLabel for="vSt">#{resourceBundleServiceImpl.getMessage('valor_st')}</p:outputLabel>
+							<p:inputNumber id="vSt"
+								value="#{productSearchComponentController.product.priceData.totalStValue}"
+								symbol="R$ " symbolPosition="p" decimalSeparator=","
+								thousandSeparator="." readonly="true"
+								styleClass="inputfield w-full" />
+						</div>
+					</div>
+
+				</p:outputPanel>
+				<div id="footer">
+					<h:form>
+						<p:commandButton
+							value="#{resourceBundleServiceImpl.getMessage('confirmar')}"
+							icon="pi pi-check"
+							styleClass="ui-button-raised ui-button-success mr-2 mb-2"
+							action="#{productSearchComponentController.notifyObserver(cc.attrs.searchObserver)}"
+							id="btnConfirm" onclick="PF('productSearch').hide()"
+							update="#{cc.attrs.updates}"
+							disabled="#{productSearchComponentController.duplicateProduct}">
+							<p:autoUpdate on="searchAction" />
+						</p:commandButton>
+						<p:commandButton
+							value="#{resourceBundleServiceImpl.getMessage('cancelar')}"
+							icon="pi pi-times"
+							action="#{productSearchComponentController.confirmCancel}"
+							styleClass="ui-button-raised ui-button-danger mr-2 mb-2"
+							onclick="PF('productSearch').hide()" />
+						<p:commandButton value="Dados técnicos" process="@this"
+							action="#{productTechDataShowController.show(productSearchComponentController.product)}"
+							icon="pi pi-info-circle" />
+
+					</h:form>
+				</div>
+			</div>
+
+			<p:dialog header="Buscando produto..." modal="true" closable="false"
+				widgetVar="dlgLoading">
+				<i class="pi pi-spin pi-spinner" style="font-size: 4rem"></i>
+			</p:dialog>
+
+		</div>
+	</p:dialog>
+</composite:implementation>
+
+</html>

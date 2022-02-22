@@ -20,7 +20,7 @@ public class ItemBudgetToSaveJsonSerializable implements Comparable<ItemBudgetTo
 
 	public ItemBudgetToSaveJsonSerializable(Item item) {
 		super();
-		this.product = item.getProduct();
+		this.product = item;
 		this.priceData = product.getPriceData();
 	}
 
