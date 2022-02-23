@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.security.user.RepresentativeUser;
 
 public class Order {

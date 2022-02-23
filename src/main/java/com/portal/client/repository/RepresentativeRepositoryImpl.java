@@ -7,11 +7,15 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
+import com.portal.client.cdi.aop.annotations.IllegalResponsePointCutJoinPoint;
+import com.portal.client.cdi.aop.annotations.NotAuthorizedJoinPointCut;
 import com.portal.client.dto.RepresentativeData;
 import com.portal.client.dto.WrapperRepresentativeData;
 import com.portal.client.security.api.helper.APIHelper;
 
 @ApplicationScoped
+@IllegalResponsePointCutJoinPoint
+@NotAuthorizedJoinPointCut
 public class RepresentativeRepositoryImpl implements RepresentativeRepository, Serializable {
 
 	/**
@@ -26,12 +30,13 @@ public class RepresentativeRepositoryImpl implements RepresentativeRepository, S
 	private APIHelper protheusApiHelper;
 
 	@Override
-	public RepresentativeData find() {
+	public RepresentativeData loadData() {
 		// TODO Auto-generated method stub
-		return restClient.get(protheusApiHelper.buildEndpoint("representative"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), WrapperRepresentativeData.class, null,
-				null, MediaType.APPLICATION_JSON).getData();
-	
+		System.out.println("Find representative data");
+		return restClient.get(protheusApiHelper.buildEndpoint("representative"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), WrapperRepresentativeData.class, null, null,
+				MediaType.APPLICATION_JSON).getData();
+
 	}
 
 }

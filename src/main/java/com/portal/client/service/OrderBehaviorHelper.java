@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.portal.client.dto.BatchProductSearchDataWrapper;
-import com.portal.client.dto.CustomerOnOrder;
+import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;

@@ -2,6 +2,7 @@ package com.portal.client.cdi.aop.aspect;
 
 import java.util.Optional;
 
+import javax.annotation.Priority;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -12,6 +13,7 @@ import com.portal.client.cdi.aop.annotations.NotFoundOptionalEmptyJoinPointCut;
 
 @Interceptor
 @NotFoundOptionalEmptyJoinPointCut
+@Priority(3)
 public class NotFound404OptionalEmptyAspect {
 
 	@AroundInvoke

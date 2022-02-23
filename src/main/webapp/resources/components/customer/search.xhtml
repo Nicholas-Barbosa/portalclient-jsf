@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+
+<composite:interface>
+	<composite:attribute name="observer" required="true" />
+</composite:interface>
+<composite:implementation>
+	<style>
+.label-r {
+	font-weight: bold;
+}
+
+.blocked-customer-row {
+	background-color: #ff9999 !important;
+	background-image: none !important;
+	color: #000000 !important;
+}
+</style>
+	<div id="#{cc.clientId}">
+		<p:dialog header="Buscar cliente" widgetVar="dlgCustomerSearch"
+			modal="true" responsive="true"
+			style="max-width:60vw;max-height: 65vh; overflow-y: auto">
+			<h:form>
+				<p:remoteCommand name="setObserver"
+					action="#{customerSearchController.setObserver(cc.attrs.observer)}" />
+			</h:form>
+			<div>
+				<div class="ui-inputgroup">
+					<h:form>
+						<p:inputText value="#{customerSearchController.keyword}"
+							id="inName" placeholder="keyword" />
+						<p:commandButton icon="pi pi-search"
+							styleClass="ui-button-success" onstart="onStartSearchCustomer()"
+							oncomplete="onCompleteSearchCustomer()"
+							action="#{customerSearchController.search(1)}"
+							process="@this,inName" update="#{cc.clientId}:pnCustomersResult">
+						</p:commandButton>
+					</h:form>
+				</div>
+			</div>
+			<div id="content">
+				<p:outputPanel id="pnCustomersResult">
+					<h:form prependId="false">
+						<p:dataTable var="customer"
+							value="#{customerSearchController.customers}" paginator="true"
+							rows="#{customerSearchController.numberOfRows}" size="small"
+							selectionMode="single" id="dtCustomerResult"
+							widgetVar="dtCustomerResult"
+							rowStyleClass="#{customer.blocked eq 'Sim' ? 'blocked-customer-row' : null}">
+							<p:ajax event="rowSelect"
+								listener="#{customerSearchController.notifyObserver}"
+								update="growl,#{cc.clientId}:customerDetailComponent"
+								onstart="PF('dlgCustomerSearch').hide()">
+							</p:ajax>
+							<p:ajax event="page"
+								listener="#{customerSearchController.onPage}" process="@this" />
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
+								<h:outputText value="#{customer.code}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('nome')}">
+								<h:outputText value="#{customer.name}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}">
+								<h:outputText value="#{customer.fantasyName}" />
+							</p:column>
+							<p:column headerText="CNPJ">
+								<h:outputText value="#{customer.cnpj}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
+								<h:outputText value="#{customer.address.street}" />
+							</p:column>
+							<p:column
+								headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}"
+								style="width:6rem">
+								<h:outputText value="#{customer.blocked}" />
+							</p:column>
+							<p:column style="width:2rem">
+								<p:commandButton icon="pi pi-eye"
+									action="#{customerSearchController.setSelectedCustomerToSeeDetails(customer)}"
+									process="@this" oncomplete="openCustomerDetailDialog()"
+									update="#{cc.clientId}:customerDetailComponent">
+								</p:commandButton>
+							</p:column>
+						</p:dataTable>
+
+						<p:blockUI block="dtCustomerResult" trigger="dtCustomerResult">
+							<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+						</p:blockUI>
+					</h:form>
+
+				</p:outputPanel>
+
+			</div>
+			<div id="skeletonForLoad">
+				<h5>Buscando por clientes pela palavra-chave
+					#{customerSearchController.keyword}...</h5>
+				<p:dataTable var="product"
+					value="#{dataTableSkeletonObjects.getSkeleton(6)}">
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
+						<p:skeleton />
+					</p:column>
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('nome')}">
+						<p:skeleton />
+					</p:column>
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}">
+						<p:skeleton />
+					</p:column>
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
+						<p:skeleton />
+					</p:column>
+					<p:column
+						headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}">
+						<p:skeleton />
+					</p:column>
+				</p:dataTable>
+			</div>
+			<div id="noCustomersFound" class="exception-body notfound"
+				style="display: none">
+				<div class="exception-card">
+					<h1>
+						<span>NENHUM</span> REGISTRO ENCONTRADO
+					</h1>
+					<p:graphicImage name="images/pages/asset-404.svg"
+						library="rain-layout" />
+					<span>Tente novamente com outra palavra-chave</span>
+				</div>
+			</div>
+
+
+		</p:dialog>
+
+		<c:detailPanel id="customerDetailComponent"
+			customer="#{customerSearchController.selectedCustomerToSeeDetails}" />
+	</div>
+	<script>
+		function onStartSearchCustomer() {
+			$('#skeletonForLoad').show();
+			$('#content').hide();
+		}
+
+		function onCompleteSearchCustomer() {
+			$('#skeletonForLoad').hide();
+		}
+	</script>
+</composite:implementation>
+</html>

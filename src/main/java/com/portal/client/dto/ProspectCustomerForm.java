@@ -4,6 +4,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
 import com.portal.client.security.user.RepresentativeUser.SaleType;
+import com.portal.client.vo.CustomerAddress;
+import com.portal.client.vo.CustomerPurchaseInfo;
+import com.portal.client.vo.ProspectCustomerOnOrder;
 
 public class ProspectCustomerForm {
 

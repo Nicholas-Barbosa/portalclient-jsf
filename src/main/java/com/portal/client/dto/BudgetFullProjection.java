@@ -11,6 +11,7 @@ import javax.json.bind.annotation.JsonbProperty;
 
 import com.portal.client.dto.helper.StringToLocalDateParser;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Item;
 
 public class BudgetFullProjection extends Budget {

@@ -14,11 +14,9 @@ import javax.ws.rs.ProcessingException;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.SelectEvent;
 
+import com.portal.client.controller.components.CustomerSearchObserver;
 import com.portal.client.controller.components.ItemOrderContainerController;
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
-import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.crud.BudgetCrudService;
@@ -27,10 +25,13 @@ import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.util.jsf.ServerEndpointErrorUtils;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.Customer;
+import com.portal.client.vo.CustomerOnOrder;
+import com.portal.client.vo.ProspectCustomerOnOrder;
 
 @Named
 @ViewScoped
-public class NewBudgetController implements Serializable {
+public class NewBudgetController implements Serializable, CustomerSearchObserver {
 
 	/**
 	 * 
@@ -113,17 +114,16 @@ public class NewBudgetController implements Serializable {
 		dtItemsController.setOrder(budget);
 	}
 
-	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
-		event.getObject().ifPresentOrElse(c -> {
-			budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(c));
+	@Override
+	public void onCustomerSelect(Customer customer) {
+		budgetBehaviorHelper.setCustomer(budget, new CustomerOnOrder(customer));
+		FacesUtils.info(null, "Cliente selecionado", null, "growl");
+		FacesUtils.ajaxUpdate("customerForm");
+		FacesUtils.executeScript("PF('blockItems').hide();");
 
-			FacesUtils.info(null, "Cliente selecionado", null, "growl");
-			FacesUtils.ajaxUpdate("customerForm");
-			FacesUtils.executeScript("PF('blockItems').hide();");
-		}, () -> {
-			FacesUtils.warn(null, "Nenhum cliente selecionado", null, "growl");
-			FacesUtils.executeScript("PF('blockItems').show;");
-		});
+	}
+
+	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
 
 	}
 
@@ -131,7 +131,6 @@ public class NewBudgetController implements Serializable {
 		ProspectCustomerOnOrder prosp = (ProspectCustomerOnOrder) session.getAttribute("prospect");
 		budgetBehaviorHelper.setCustomer(budget, prosp);
 	}
-
 
 	public ClientErrorExceptionController getResponseController() {
 		return responseController;

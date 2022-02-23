@@ -1,12 +1,13 @@
 package com.portal.client.dto;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.vo.Customer;
 import com.portal.client.vo.Page;
 
 public class CustomerPageDTO implements Page<Customer> {
@@ -24,7 +25,7 @@ public class CustomerPageDTO implements Page<Customer> {
 
 	private int page;
 
-	private List<Customer> clients;
+	private List<Customer> customers;
 
 	public CustomerPageDTO() {
 		// TODO Auto-generated constructor stub
@@ -33,18 +34,15 @@ public class CustomerPageDTO implements Page<Customer> {
 	@JsonbCreator
 	public CustomerPageDTO(@JsonbProperty("total_items") int totalItems, @JsonbProperty("total_page") int totalPages,
 			@JsonbProperty("page_size") int pageSize, @JsonbProperty("page") int page,
-			@JsonbProperty("client") List<Customer> clients) {
+			@JsonbProperty("client") List<CustomerJson> clients) {
 		super();
 		this.totalItems = totalItems;
 		this.totalPages = totalPages;
 		this.pageSize = pageSize;
 		this.page = page;
-		this.clients = new ArrayList<>(clients);
+		this.customers = clients.parallelStream().map(CustomerJson::getCustomer).collect(CopyOnWriteArrayList::new,
+				List::add, List::addAll);
 
-	}
-
-	public List<Customer> getClients() {
-		return new ArrayList<>(clients);
 	}
 
 	@Override
@@ -72,15 +70,15 @@ public class CustomerPageDTO implements Page<Customer> {
 	}
 
 	@Override
-	public Collection<Customer> getContent() {
-		// TODO Auto-generated method stub
-		return clients;
+	public String toString() {
+		return "CustomerPage [totalItems=" + totalItems + ", totalPages=" + totalPages + ", pageSize=" + pageSize
+				+ ", page=" + page + ", clients=" + customers + "]";
 	}
 
 	@Override
-	public String toString() {
-		return "CustomerPage [totalItems=" + totalItems + ", totalPages=" + totalPages + ", pageSize=" + pageSize
-				+ ", page=" + page + ", clients=" + clients + "]";
+	public Collection<Customer> getContent() {
+		// TODO Auto-generated method stub
+		return customers;
 	}
 
 }

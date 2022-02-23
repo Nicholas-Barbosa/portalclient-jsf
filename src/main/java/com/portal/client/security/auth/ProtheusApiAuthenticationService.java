@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -19,7 +20,7 @@ import com.portal.client.security.api.ProtheusApiEnviroment;
 import com.portal.client.security.user.RepresentativeUser;
 import com.portal.client.security.user.builder.RepresentativeUserBuilder;
 
-@RequestScoped
+@SessionScoped
 public class ProtheusApiAuthenticationService implements AuthenticationService, Serializable {
 
 	/**
@@ -32,6 +33,8 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 	private Event<AuthenticateddEvent> authenticatedEvent;
 	@Inject
 	private APIsManager apisManger;
+
+	private String originalToken;
 
 	@Inject
 	public ProtheusApiAuthenticationService(RestClient restClient, ProtheusApiUrlResolver protheusApiUrlResolver) {
@@ -56,22 +59,25 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 				(RepresentativeUser) RepresentativeUserBuilder.getInstance().withUsername(loginForm.getUsername())
 						.withPassword(loginForm.getPassword().toCharArray()).build(),
 				authResponse.getAccessToken(), authResponse.getRefreshToken(), "Bearer", loginForm.getCompanyEnv());
+		this.originalToken = authResponse.getRefreshToken();
 		authenticatedEvent.fire(new AuthenticateddEvent(loginForm.getCompanyEnv()));
 		loginForm = null;
 	}
 
-	public void registerApi(RepresentativeUser user, String token, String refreshToken, String tokenPrefix,
+	private void registerApi(RepresentativeUser user, String token, String refreshToken, String tokenPrefix,
 			ProtheusApiEnviroment enviroment) {
-		ProtheusApiData api = new ProtheusApiData(user, protheusApiUrlResolver.getUrl(enviroment), "/v1/token",
-				"/v1/token", token, refreshToken, tokenPrefix);
+		ProtheusApiData api = new ProtheusApiData(user, protheusApiUrlResolver.getUrl(enviroment),
+				"api/oauth2/v1/token", "api/oauth2/v1/token", token, refreshToken, tokenPrefix);
 		api.setAttribute("companyEnv", enviroment);
 		apisManger.registerAuthenticatedService("PROTHEUS_API", api);
 	}
 
 	@Override
 	public void refreshToken() {
+		System.out.println("Original token " + originalToken);
 		ProtheusApiData apiData = apisManger.getAPI("PROTHEUS_API");
-		ProtheusAuthenticationEndpointResponse refreshResponse = restClient.post(apiData.getRefreshTokenUrl(),
+		ProtheusAuthenticationEndpointResponse refreshResponse = restClient.post(
+				apisManger.buildEndpoint(apiData, apiData.getRefreshTokenUrl()),
 				ProtheusAuthenticationEndpointResponse.class,
 				Map.of("grant_type", "refresh_token", "refresh_token", apiData.getRefreshToken()), null, null,
 				MediaType.APPLICATION_JSON);

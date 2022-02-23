@@ -11,7 +11,7 @@ import com.nicholas.jaxrsclient.TokenedRestClient;
 import com.portal.client.dto.OpenPaymentsPage;
 import com.portal.client.security.api.helper.APIHelper;
 
-public class OpenPaymentRepositoryImpl extends OptionalEmptyRepository implements OpenPaymentRepository {
+public class OpenPaymentRepositoryImpl extends RepositoryInterceptors implements OpenPaymentRepository {
 
 	private TokenedRestClient restClient;
 	private APIHelper protheusApiHelper;

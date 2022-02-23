@@ -83,12 +83,12 @@ public class ProductFileImportComponent implements Serializable {
 				this.fileLayout.setOffSetCellForProductCode(fileLayout.getOffSetCellForProductCode() - 1);
 				this.fileLayout.setOffSetCellForProductQuantity(fileLayout.getOffSetCellForProductQuantity() - 1);
 				extractedData = importer.extractData(fileLayout);
-				FacesUtils.executeScript("PF('dlgLoading').hide();updateExtractedDatas();");
+				FacesUtils.executeScript("PF('dlgReadingFile').hide();updateExtractedDatas();");
 				return event.getNewStep();
 			} catch (MismatchCellTypeExceptions e) {
 				mismatchCelltypeExceptions = e.getExceptions();
 				FacesUtils
-						.executeScript("PF('dlgLoading').hide();PF('dlgMismatchExcpetions').show();updateMismatchs()");
+						.executeScript("PF('dlgReadingFile').hide();PF('dlgMismatchExcpetions').show();updateMismatchs()");
 				fileLayout.setXlsxStreams(null);
 			} catch (IllegalArgumentException e) {
 				switch (e.getMessage()) {
@@ -108,7 +108,7 @@ public class ProductFileImportComponent implements Serializable {
 					break;
 
 				}
-				FacesUtils.executeScript("PF('dlgLoading').hide();");
+				FacesUtils.executeScript("PF('dlgReadingFile').hide();");
 				return "setFileLayout";
 			}
 			return "file";

@@ -15,18 +15,16 @@ import org.primefaces.event.SelectEvent;
 
 import com.portal.client.controller.components.ItemOrderContainerController;
 import com.portal.client.controller.show.OrderBadRequestShowController;
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.ItemQuantityNotAllowed;
 import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.OrderItemQuantityCalculator;
 import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.Customer;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
-import com.portal.client.vo.Product;
+import com.portal.client.vo.ProspectCustomerOnOrder;
 
 @Named
 @ViewScoped
@@ -98,10 +96,9 @@ public class NewOrderController implements Serializable {
 		orderHelper.setCustomer(order, prosp);
 	}
 
-
 	public void handleCustomerResult(SelectEvent<Optional<Customer>> event) {
 		event.getObject().ifPresentOrElse(c -> {
-			orderHelper.setCustomer(order, new CustomerOnOrder(c));
+			orderHelper.setCustomer(order, new com.portal.client.vo.CustomerOnOrder(c));
 			FacesUtils.info(null, "Cliente selecionado", null, "growl");
 			FacesUtils.ajaxUpdate("customerForm");
 			FacesUtils.executeScript("PF('dlgSearchCustomer').hide();PF('blockItems').hide();");

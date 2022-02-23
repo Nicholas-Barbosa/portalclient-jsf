@@ -9,5 +9,5 @@ public interface RepresentativeRepository {
 	 * 
 	 * @return
 	 */
-	RepresentativeData find();
+	RepresentativeData loadData();
 }

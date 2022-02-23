@@ -2,9 +2,9 @@ package com.portal.client.service.crud;
 
 import java.util.Optional;
 
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.service.ServiceSerializable;
+import com.portal.client.vo.CustomerOnOrder.CustomerType;
 import com.portal.client.vo.Product;
 
 public interface ProductService extends ServiceSerializable {

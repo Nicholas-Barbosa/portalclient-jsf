@@ -25,114 +25,121 @@
 		type="java.lang.String" />
 </composite:interface>
 <composite:implementation>
-	<div id="#{cc.clientId}">
-		<h:form prependId="false">
-			<p:wizard flowListener="#{productFileImportComponent.onFlowProcess}"
-				showNavBar="true" showStepStatus="true"
-				onnext="if(PF('importWizard').currentStep=='setFileLayout')PF('dlgLoading').show()"
-				widgetVar="importWizard" nextLabel="Próximo" backLabel="Voltar"
-				id="importWizard">
-				<p:tab id="file" title="Arquivo">
-					<p:fileUpload mode="advanced" dragDropSupport="true"
-						allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
-						label="Escolher"
-						listener="#{productFileImportComponent.handleFileUpload}"
-						process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
-				</p:tab>
-				<p:tab id="setFileLayout" title="Layout do arquivo">
-					<p:panelGrid columns="4"
-						columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
-						layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
-						style="border:0px none; background-color:transparent;"
-						id="pnFileLayout">
-						<p:outputLabel for="@next"
-							value="Posição de ínicio para lista de itens" />
-						<p:spinner
-							value="#{productFileImportComponent.fileLayout.initPosition}" />
+	<p:dialog header="Importar produtos" widgetVar="dlgImportProducts"
+		responsive="true" modal="true" blockScroll="true"
+		style="max-width: 50vw; max-height: 60vh; overflow-y: auto">
+		<div id="#{cc.clientId}">
+			<h:form prependId="false">
+				<p:wizard flowListener="#{productFileImportComponent.onFlowProcess}"
+					showNavBar="true" showStepStatus="true"
+					onnext="if(PF('importWizard').currentStep=='setFileLayout')PF('dlgReadingFile').show()"
+					widgetVar="importWizard" nextLabel="Próximo" backLabel="Voltar"
+					id="importWizard">
+					<p:tab id="file" title="Arquivo">
+						<p:fileUpload mode="advanced" dragDropSupport="true"
+							allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
+							label="Escolher"
+							listener="#{productFileImportComponent.handleFileUpload}"
+							process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
+					</p:tab>
+					<p:tab id="setFileLayout" title="Layout do arquivo">
+						<p:panelGrid columns="4"
+							columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4"
+							layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+							style="border:0px none; background-color:transparent;"
+							id="pnFileLayout">
+							<p:outputLabel for="@next"
+								value="Posição de ínicio para lista de itens" />
+							<p:spinner
+								value="#{productFileImportComponent.fileLayout.initPosition}" />
 
-						<p:outputLabel for="@next"
-							value="Última posição para lista de itens" />
-						<p:spinner
-							value="#{productFileImportComponent.fileLayout.lastPosition}" />
+							<p:outputLabel for="@next"
+								value="Última posição para lista de itens" />
+							<p:spinner
+								value="#{productFileImportComponent.fileLayout.lastPosition}" />
 
-						<p:row style="font-weight: bold">
+							<p:row style="font-weight: bold">
            Posições das colunas/células relevantes ao produto
         </p:row>
 
-						<p:outputLabel for="@next" value="Código" />
-						<p:spinner
-							value="#{productFileImportComponent.fileLayout.offSetCellForProductCode}" />
+							<p:outputLabel for="@next" value="Código" />
+							<p:spinner
+								value="#{productFileImportComponent.fileLayout.offSetCellForProductCode}" />
 
-						<p:outputLabel for="@next" value="Quantidade" />
-						<p:spinner
-							value="#{productFileImportComponent.fileLayout.offSetCellForProductQuantity}" />
+							<p:outputLabel for="@next" value="Quantidade" />
+							<p:spinner
+								value="#{productFileImportComponent.fileLayout.offSetCellForProductQuantity}" />
 
 
-					</p:panelGrid>
-				</p:tab>
-				<p:tab id="extractedData" title="Dados extraídos">
-					<div class="flex flex-column">
-						<div class="mb-2">
-							<p:remoteCommand name="updateExtractedDatas" process="@this"
-								partialSubmit="true" update="extractedDatas" oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');"/>
-							<p:dataTable id="extractedDatas" widgetVar="extractedDatas"
-								value="#{productFileImportComponent.extractedData}"
-								var="product" editable="true" editMode="cell" reflow="true"
-								scrollable="true" filterDelay="75" paginator="true"
-								paginatorPosition="bottom" paginatorAlwaysVisible="false"
-								rows="10">
+						</p:panelGrid>
+					</p:tab>
+					<p:tab id="extractedData" title="Dados extraídos">
+						<div class="flex flex-column">
+							<div class="mb-2">
+								<p:remoteCommand name="updateExtractedDatas" process="@this"
+									partialSubmit="true" update="extractedDatas"
+									oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');" />
+								<p:dataTable id="extractedDatas" widgetVar="extractedDatas"
+									value="#{productFileImportComponent.extractedData}"
+									var="product" editable="true" editMode="cell" reflow="true"
+									scrollable="true" filterDelay="75" paginator="true"
+									paginatorPosition="bottom" paginatorAlwaysVisible="false"
+									rows="10">
 
-								<p:column headerText="Produto" filterBy="#{product.code}"
-									id="columnCode">
-									<p:cellEditor>
-										<f:facet name="input">
-											<p:inputText value="#{product.code}" />
-										</f:facet>
-										<f:facet name="output">
-											<h:outputText value="#{product.code}" />
-										</f:facet>
-									</p:cellEditor>
+									<p:column headerText="Produto" filterBy="#{product.code}"
+										id="columnCode">
+										<p:cellEditor>
+											<f:facet name="input">
+												<p:inputText value="#{product.code}" />
+											</f:facet>
+											<f:facet name="output">
+												<h:outputText value="#{product.code}" />
+											</f:facet>
+										</p:cellEditor>
 
-								</p:column>
-								<p:column headerText="Quantidade" id="columnQuantity">
-									<p:cellEditor>
-										<f:facet name="input">
-											<p:spinner value="#{product.quantity}" min="1" />
-										</f:facet>
-										<f:facet name="output">
-											<h:outputText value="#{product.quantity}" />
-										</f:facet>
-									</p:cellEditor>
-								</p:column>
-								<p:column style="width:3rem">
-									<p:commandButton icon="pi pi-times"
-										styleClass="rounded-button ui-button-danger"
-										action="#{productFileImportComponent.removeExtractedData(product)}"
-										process="@this"
-										oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');"
-										update="extractedDatas" partialSubmit="true" />
-								</p:column>
-							</p:dataTable>
-						</div>
-						<div class="mb-2">
-							<div class="flex justify-content-between">
-								<div></div>
-								<div>
-									<p:commandButton value="Confirmar"
-										styleClass="ui-button-success" process="@this"
-										action="#{productFileImportComponent.confirm(cc.attrs.customerCode,cc.attrs.customerStore,cc.attrs.observer)}"
-										onstart="PF('dlgLoading').show(); $('#div-loading-text').text('Realizando busca em lote de produtos...')"
-										oncomplete="onLoaded(xhr)" update="importWizard" />
+									</p:column>
+									<p:column headerText="Quantidade" id="columnQuantity">
+										<p:cellEditor>
+											<f:facet name="input">
+												<p:spinner value="#{product.quantity}" min="1" />
+											</f:facet>
+											<f:facet name="output">
+												<h:outputText value="#{product.quantity}" />
+											</f:facet>
+										</p:cellEditor>
+									</p:column>
+									<p:column style="width:3rem">
+										<p:commandButton icon="pi pi-times"
+											styleClass="rounded-button ui-button-danger"
+											action="#{productFileImportComponent.removeExtractedData(product)}"
+											process="@this"
+											oncomplete="editScrollBodyMaxHeight('extractedDatas','35vh');"
+											update="extractedDatas" partialSubmit="true" />
+									</p:column>
+								</p:dataTable>
+							</div>
+							<div class="mb-2">
+								<div class="flex justify-content-between">
+									<div></div>
+									<div>
+										<p:commandButton value="Confirmar"
+											styleClass="ui-button-success" process="@this"
+											action="#{productFileImportComponent.confirm(cc.attrs.customerCode,cc.attrs.customerStore,cc.attrs.observer)}"
+											onstart="PF('dlgReadingFile').show(); $('#div-loading-text').text('Realizando busca em lote de produtos...')"
+											oncomplete="onLoaded(xhr)" update="importWizard" />
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-				</p:tab>
-			</p:wizard>
-		</h:form>
-	</div>
-	<p:dialog widgetVar="dlgLoading" closable="false" responsive="true"
-		modal="true" appendTo="@(body)" header="Processando...">
+					</p:tab>
+				</p:wizard>
+			</h:form>
+
+
+		</div>
+	</p:dialog>
+	<p:dialog widgetVar="dlgReadingFile" closable="false" responsive="true"
+		modal="true" header="Processando..." appendTo="@(body)">
 		<div class="grid flex-column">
 			<div class="col" id="div-loading-text">Realizando leitura do
 				arquivo...</div>
@@ -170,6 +177,7 @@
 		</div>
 	</p:dialog>
 
+
 	<p:dialog widgetVar="productsNotFound" header="Produtos não importados"
 		modal="true" responsive="true" appendTo="@(body)"
 		style="max-width:25vw" onHide="setNullProductsNotFound()">
@@ -200,7 +208,7 @@
 			$('#div-loading-text').text('Realizando leitura do arquivo...');
 			backWizardToBegin();
 			#{cc.attrs.onConfirm};
-			PF('dlgLoading').hide();
+			PF('dlgReadingFile').hide();
 			if(Boolean(xhr.getResponseHeader("products-not-found"))){
 				PF('productsNotFound').show();
 				updateProductsNotFound();

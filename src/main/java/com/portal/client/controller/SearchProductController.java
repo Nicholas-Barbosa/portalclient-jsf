@@ -8,10 +8,10 @@ import javax.inject.Named;
 
 import org.primefaces.PrimeFaces;
 
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
 import com.portal.client.service.ProductCalculator;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.CustomerOnOrder.CustomerType;
 import com.portal.client.vo.Product;
 
 @ViewScoped

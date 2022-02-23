@@ -14,105 +14,126 @@
 
 <composite:interface>
 	<composite:attribute name="customer" required="true" />
-
 </composite:interface>
 
 <composite:implementation>
 	<div id="#{cc.clientId}">
-		<p:tabView dynamic="true" cache="true">
-			<p:tab title="#{resourceBundleServiceImpl.getMessage('cliente')}"
-				effect="fade" effectDuration="fast">
+		<p:dialog header="Cliente" modal="true" widgetVar="dlg#{cc.clientId}"
+			responsive="true"
+			style="max-width: 60vw; max-height: 70vh; overflow-y: auto"
+			blockScroll="true">
 
-				<p:panelGrid columns="4" layout="flex"
-					columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
-					styleClass="customPanelGrid" contentStyleClass="ui-fluid">
+			<h:form>
+				<p:remoteCommand name="loadCustomer"
+					action="#{customerDetailPanelController.load(cc.attrs.customer)}"
+					process="@this" update="@obs(loadEvent)" />
+			</h:form>
+			<p:tabView dynamic="true" cache="true">
+				<p:autoUpdate on="loadEvent" />
+				<p:tab title="#{resourceBundleServiceImpl.getMessage('cliente')}"
+					effect="fade" effectDuration="fast">
 
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('nome')}" />
-					<p:inputText value="#{cc.attrs.customer.name}" readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}" />
-					<p:inputText value="#{cc.attrs.customer.fantasyName}"
-						readonly="true" />
-
-					<p:outputLabel for="@next" value="CNPJ" />
-					<p:inputText value="#{cc.attrs.customer.cnpj}" readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('codigo')}" />
-					<p:inputText value="#{cc.attrs.customer.code}" readonly="true" />
-
-					<p:outputLabel for="@next" value="Email" />
-					<p:inputText value="#{cc.attrs.customer.contact.email}"
-						readonly="true" />
-
-					<p:outputLabel for="@next" value="Email2" />
-					<p:inputText value="#{cc.attrs.customer.contact.email2}"
-						readonly="true" />
-
-					<p:outputLabel for="@next"
-						value="#{resourceBundleServiceImpl.getMessage('bloqueado')}" />
-					<p:inputText value="#{cc.attrs.customer.blocked}" readonly="true" />
-
-				</p:panelGrid>
-			</p:tab>
-			<p:tab
-				title="#{resourceBundleServiceImpl.getMessage('geolocalizacao')}">
-				<h:form>
 					<p:panelGrid columns="4" layout="flex"
 						columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
 						styleClass="customPanelGrid" contentStyleClass="ui-fluid">
-						<p:outputLabel for="@next" value="CEP" />
-						<p:inputText value="#{cc.attrs.customer.zipCode}" readonly="true" />
 
 						<p:outputLabel for="@next"
-							value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
-						<p:inputText value="#{cc.attrs.customer.street}" readonly="true" />
+							value="#{resourceBundleServiceImpl.getMessage('nome')}" />
+						<p:inputText value="#{cc.attrs.customer.name}" readonly="true" />
 
 						<p:outputLabel for="@next"
-							value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
-						<p:inputText value="#{cc.attrs.customer.district}" readonly="true" />
-
-						<p:outputLabel for="@next"
-							value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
-						<p:inputText
-							value="#{cc.attrs.customer.city}, #{cc.attrs.customer.state}"
+							value="#{resourceBundleServiceImpl.getMessage('nome_fantasia')}" />
+						<p:inputText value="#{cc.attrs.customer.fantasyName}"
 							readonly="true" />
-						<div class="flex flex-column">
-							<div class="mb-2">
-								<p:gmap center="#{gMapController.currentLatLng}" zoom="12"
-									type="road" style="width:50vw;height:35vh"
-									model="#{gMapController.gMap}" id="gMap" widgetVar="gMap" />
 
-							</div>
-							<div class="mb-2">
-								<small>Coordernadas: #{gMapController.currentLatLng}</small>
-							</div>
-						</div>
+						<p:outputLabel for="@next" value="CNPJ" />
+						<p:inputText value="#{cc.attrs.customer.cnpj}" readonly="true" />
+
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('codigo')}" />
+						<p:inputText value="#{cc.attrs.customer.code}" readonly="true" />
+
+						<p:outputLabel for="@next" value="Email" />
+						<p:inputText value="#{cc.attrs.customer.contact.email}"
+							readonly="true" />
+
+						<p:outputLabel for="@next" value="Email2" />
+						<p:inputText value="#{cc.attrs.customer.contact.email2}"
+							readonly="true" />
+
+						<p:outputLabel for="@next"
+							value="#{resourceBundleServiceImpl.getMessage('bloqueado')}" />
+						<p:inputText value="#{cc.attrs.customer.blocked}" readonly="true" />
+
 					</p:panelGrid>
-					<p:remoteCommand name="loadMap"
-						action="#{gMapController.loadGMap(cc.attrs.customer.address.zipCode,cc.attrs.customer.name)}"
-						process="@this" autoRun="true" update="gMap" />
+				</p:tab>
+				<p:tab
+					title="#{resourceBundleServiceImpl.getMessage('geolocalizacao')}">
+					<h:form>
+						<p:panelGrid columns="4" layout="flex"
+							columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+							styleClass="customPanelGrid" contentStyleClass="ui-fluid">
+							<p:outputLabel for="@next" value="CEP" />
+							<p:inputText value="#{cc.attrs.customer.address.zipCode}"
+								readonly="true" />
 
-				</h:form>
-			</p:tab>
-			<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
-				<c:finanPanel customer="#{cc.attrs.customer}" />
-			</p:tab>
-			<p:tab title="Tabela de Preços(#{cc.attrs.customer.priceTableCode})">
-				<c:priceTable customer="#{cc.attrs.customer}" />
-			</p:tab>
-			<p:tab
-				title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
-				<c:openPaymentsPanel customer="#{cc.attrs.customer}" />
-			</p:tab>
+							<p:outputLabel for="@next"
+								value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
+							<p:inputText value="#{cc.attrs.customer.address.street}"
+								readonly="true" />
 
-		</p:tabView>
+							<p:outputLabel for="@next"
+								value="#{resourceBundleServiceImpl.getMessage('bairro')}" />
+							<p:inputText value="#{cc.attrs.customer.address.district}"
+								readonly="true" />
 
+							<p:outputLabel for="@next"
+								value="#{resourceBundleServiceImpl.getMessage('cidade')}" />
+							<p:inputText
+								value="#{cc.attrs.customer.address.city}, #{cc.attrs.customer.address.state}"
+								readonly="true" />
+							<div class="flex flex-column">
+								<div class="mb-2">
+									<p:gmap center="#{gMapController.currentLatLng}" zoom="12"
+										type="road" style="width:50vw;height:35vh"
+										model="#{gMapController.gMap}" id="gMap" widgetVar="gMap" />
+
+								</div>
+								<div class="mb-2">
+									<small>Coordernadas: #{gMapController.currentLatLng}</small>
+								</div>
+							</div>
+						</p:panelGrid>
+						<p:remoteCommand name="loadMap"
+							action="#{gMapController.loadGMap(cc.attrs.customer.address.zipCode,cc.attrs.customer.name)}"
+							process="@this" autoRun="true" update="gMap" />
+
+					</h:form>
+				</p:tab>
+				<p:tab title="#{resourceBundleServiceImpl.getMessage('financeiro')}">
+					<c:finanPanel customer="#{cc.attrs.customer}" />
+				</p:tab>
+				<p:tab
+					title="Tabela de Preços(#{cc.attrs.customer.financialInfo.table})">
+					<c:priceTable customer="#{cc.attrs.customer}" />
+				</p:tab>
+				<p:tab
+					title="#{resourceBundleServiceImpl.getMessage('titulos_em_aberto')}">
+					<c:openPaymentsPanel customer="#{cc.attrs.customer}" />
+				</p:tab>
+
+			</p:tabView>
+
+		</p:dialog>
 	</div>
-
-
+	<script>
+	function openCustomerDetailDialog(){
+		PF('dlg#{cc.clientId}').show();
+	}
+	function closeCustomerDetailDialog(){
+		PF('dlg#{cc.clientId}').hide();
+	}
+	</script>
 </composite:implementation>
 
 </html>

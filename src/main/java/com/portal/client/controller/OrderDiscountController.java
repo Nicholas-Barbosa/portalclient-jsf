@@ -15,7 +15,6 @@ import org.primefaces.PrimeFaces;
 import com.portal.client.dto.ItemLineDiscountForm;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 import com.portal.client.vo.Product;
 

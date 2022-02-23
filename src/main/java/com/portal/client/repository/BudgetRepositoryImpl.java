@@ -19,7 +19,7 @@ import com.portal.client.vo.Budget;
 import com.portal.client.vo.Page;
 
 @ApplicationScoped
-public class BudgetRepositoryImpl extends OptionalEmptyRepository implements BudgetRepository {
+public class BudgetRepositoryImpl extends RepositoryInterceptors implements BudgetRepository {
 
 	/**
 	 * 

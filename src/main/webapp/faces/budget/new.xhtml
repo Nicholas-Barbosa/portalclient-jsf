@@ -39,7 +39,6 @@
 			<p:growl id="growl" showDetail="true" globalOnly="true"
 				widgetVar="growl" />
 			<div class="card">
-
 				<h:form id="budgetToolsForm">
 					<p:toolbar id="tb">
 						<p:toolbarGroup>
@@ -64,7 +63,7 @@
 
 							<p:button
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
-								icon="pi pi-eye" onclick="PF('dlgCustomerDetails').show()" />
+								icon="pi pi-eye" onclick="openCustomerDetailDialog();" />
 
 
 						</p:toolbarGroup>
@@ -80,15 +79,12 @@
 							<p:outputLabel
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 							<div class="ui-inputgroup">
+								<p:button value="Prospect" onclick="PF('dlgProspect').show();" />
 								<p:inputText
 									value="#{newBudgetController.budget.customerOnOrder.name}-#{newBudgetController.budget.customerOnOrder.store}"
 									readonly="true" styleClass="inputfield w-full" />
 								<p:button icon="pi pi-search" styleClass="ui-button-warning"
-									onclick="PF('dlgSearchCustomer').show()"
-									disabled="#{not empty newBudgetController.budget.items}"
-									id="btnShowSearchCustomer">
-									<p:autoUpdate on="eventAddItem" />
-								</p:button>
+									onclick="PF('dlgCustomerSearch').show()" />
 							</div>
 						</div>
 
@@ -103,7 +99,7 @@
 							<p:outputLabel for="endereco"
 								value="#{resourceBundleServiceImpl.getMessage('endereco')}" />
 							<p:inputText id="endereco"
-								value="#{newBudgetController.budget.customerOnOrder.street}, #{newBudgetController.budget.customerOnOrder.city} - #{newBudgetController.budget.customerOnOrder.state}"
+								value="#{newBudgetController.budget.customerOnOrder.address.street}, #{newBudgetController.budget.customerOnOrder.address.city} - #{newBudgetController.budget.customerOnOrder.address.state}"
 								readonly="true" styleClass="inputfield w-full" />
 						</div>
 						<div class="field col-12 xl:col-3 lg:col-2  md:col-12">
@@ -144,51 +140,16 @@
 					renderDiscountButton="false" id="itemsComponent" />
 			</div>
 
+			<c:search observer="#{newBudgetController}" />
 
-			<p:dialog widgetVar="dlgSearchCustomer" modal="true"
-				header="#{holdMessageView.label('busca_de_cliente')}"
-				positionType="absolute" responsive="true" blockScroll="true">
-				<div style="max-height: 65vh; overflow: auto">
-					<p:tabView onTabShow="if(index==1)loadStates(); "
-						widgetVar="tabSearchCustomer">
-						<p:tab
-							title="#{resourceBundleServiceImpl.getMessage('palavra_chave')}">
-							<h5>
-								<h:outputText
-									value="Busca pelo nome ou cnpj do cliente" />
-							</h5>
-							<h:form>
-
-								<div class="formgroup-inline">
-									<div class="field">
-										<div class="ui-inputgroup">
-											<p:inputText type="text" placeholder="keyword"
-												value="#{newBudgetController.cNameToSearch}" required="true"
-												id="cName" styleClass="inputfield" />
-
-											<p:commandButton icon="pi pi-search"
-												action="#{customerSearchShowController.show(newBudgetController.cNameToSearch)}"
-												onclick="PF('dlgSearchCustomer').hide()">
-												<p:ajax event="dialogReturn"
-													listener="#{newBudgetController.handleCustomerResult}"
-													update=":customerDetailComponent" />
-											</p:commandButton>
-										</div>
-
-										<p:message for="cName" />
-									</div>
-
-								</div>
-							</h:form>
-						</p:tab>
-
-						<p:tab title="PROSPECT">
-							<c:prospectForm order="#{newBudgetController.budget}"
-								update=":customerForm,budgetToolsForm"
-								oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();"
-								id="prospectForm" />
-						</p:tab>
-					</p:tabView>
+			<p:dialog widgetVar="dlgProspect" modal="true" header="Prospect"
+				positionType="absolute" responsive="true" blockScroll="true"
+				style="max-height: 65vh; overflow: auto">
+				<div>
+					<c:prospectForm order="#{newBudgetController.budget}"
+						update=":customerForm,budgetToolsForm"
+						oncompleteJsCode="PF('blockItems').hide();PF('dlgSearchCustomer').hide();"
+						id="prospectForm" />
 				</div>
 			</p:dialog>
 
@@ -258,14 +219,9 @@
 			<p:sidebar widgetVar="topSidebar" position="top" baseZIndex="10000">
 				<h4>Adicionado produto ao orçamento e calculando totais...</h4>
 			</p:sidebar>
-			<p:dialog header="Cliente" modal="true"
-				widgetVar="dlgCustomerDetails" responsive="true">
-				<div style="max-width: 60vw; max-height: 70vh; overflow-y: auto">
-					<c:detailPanel id="customerDetailComponent"
-						customer="#{newBudgetController.budget.customerOnOrder}" />
-				</div>
 
-			</p:dialog>
+
+
 			<p:dialog widgetVar="exportComponent" modal="true" header="Exportar"
 				responsive="true">
 				<b:export budget="#{newBudgetController.budget}" />
@@ -291,6 +247,7 @@ body .ui-panelgrid .ui-panelgrid-cell {
 
 			<script type="text/javascript">
 				//<![CDATA[
+				setObserver();
 				var processFinished = false;
 
 				function turnDtScrollBodyResponsive(clientId, maxHeight) {

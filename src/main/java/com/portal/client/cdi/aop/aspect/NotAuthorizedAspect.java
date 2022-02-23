@@ -13,7 +13,7 @@ import com.portal.client.security.auth.AuthenticationService;
 
 @Interceptor
 @NotAuthorizedJoinPointCut
-@Priority(0)
+@Priority(1)
 public class NotAuthorizedAspect {
 
 	@Inject
@@ -22,14 +22,21 @@ public class NotAuthorizedAspect {
 	@AroundInvoke
 	public Object authorize(InvocationContext joinpoint) throws Throwable {
 		try {
-			System.out.println("not authorized interceptor");
 			return joinpoint.proceed();
 		} catch (NotAuthorizedException | ProcessingException e) {
-			System.out.println("not authorized " +e);
-			if (e instanceof ProcessingException)
-				if (e.getCause() instanceof NotAuthorizedException)
+			if (e instanceof NotAuthorizedException) {
+				authService.refreshToken();
+				return joinpoint.proceed();
+			} else if (e instanceof ProcessingException) {
+				ProcessingException psExcpetion = (ProcessingException) e;
+				if (psExcpetion.getCause() instanceof NotAuthorizedException) {
 					authService.refreshToken();
-			return joinpoint.proceed();
+					return joinpoint.proceed();
+				}
+
+			}
+
+			throw e;
 		}
 	}
 }

@@ -4,6 +4,7 @@
 	version="1.2" bean-discovery-mode="all">
 
 	<interceptors>
+		<class>com.portal.client.cdi.aop.aspect.IllegalResponseAspect</class>
 		<class>com.portal.client.cdi.aop.aspect.NotFound404OptionalEmptyAspect</class>
 		<class>com.portal.client.cdi.aop.aspect.OrderBadRequestAspect</class>
 		<class>com.portal.client.exceptionhandler.netowork.NetworkExcpetionAspect</class>

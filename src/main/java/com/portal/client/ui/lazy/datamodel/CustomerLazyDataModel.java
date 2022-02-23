@@ -8,9 +8,9 @@ import java.util.Map;
 import org.primefaces.model.FilterMeta;
 import org.primefaces.model.SortMeta;
 
-import com.portal.client.dto.Customer;
+import com.portal.client.vo.Customer;
 
-public class CustomerLazyDataModel extends LazyBehaviorDataModel<Customer>  {
+public class CustomerLazyDataModel extends LazyBehaviorDataModel<Customer> {
 
 	/**
 	 * 

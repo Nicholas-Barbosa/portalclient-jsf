@@ -3,7 +3,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsf/composite/components/customer">
 
 <h:head>
 	<f:facet name="first">
@@ -92,7 +93,7 @@
 						</p:column>
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('endereco')}">
-							<h:outputText value="#{customer.street}" />
+							<h:outputText value="#{customer.address.street}" />
 						</p:column>
 						<p:column
 							headerText="#{resourceBundleServiceImpl.getMessage('bloqueado')}"
@@ -102,14 +103,14 @@
 						<p:column style="width:2rem">
 							<p:commandButton icon="pi pi-eye"
 								rendered="#{customer.blocked != 'Sim'}"
-								action="#{customerDetailShowController.show(customer)}"
-								process="@this" />
+								action="#{customerSearchController.setSelectedCustomerToSeeDetails(customer)}"
+								process="@this" oncomplete="PF('dlgCustomerDetails').show()" update="customerDetailComponent">
+							</p:commandButton>
 						</p:column>
 					</p:dataTable>
 
 				</h:form>
 			</p:outputPanel>
-
 
 			<p:blockUI block="pnCustomersResult" widgetVar="dtCustomersBlocker" />
 		</div>
@@ -151,10 +152,13 @@
 				<span>Tente novamente com outra palavra-chave</span>
 			</div>
 		</div>
+
+
+		<c:detailPanel id="customerDetailComponent"
+			customer="#{customerSearchController.selectedCustomerToSeeDetails}" />
+
 	</div>
-	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
-		library="rain-layout" />
-	<h:outputStylesheet name="primeflex-3.css" library="css" />
+
 	<script>
 		function onStartSearchCustomer() {
 			$('#skeletonForLoad').show();

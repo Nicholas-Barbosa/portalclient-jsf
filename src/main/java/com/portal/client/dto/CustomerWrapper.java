@@ -5,17 +5,21 @@ import java.util.List;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
+import com.portal.client.vo.Customer;
+
 public class CustomerWrapper {
 
-	private List<Customer> clients;
+	private Customer customer;
 
 	@JsonbCreator
-	public CustomerWrapper(@JsonbProperty("client") List<Customer> clients) {
+	public CustomerWrapper(@JsonbProperty("client") List<CustomerJson> customerJson) {
 		super();
-		this.clients = clients;
+		Customer customer = customerJson != null && customerJson.get(0) != null ? customerJson.get(0).getCustomer()
+				: null;
+		this.customer = customer;
 	}
 
-	public List<Customer> getClients() {
-		return clients;
+	public Customer getCustomer() {
+		return customer;
 	}
 }

@@ -11,15 +11,15 @@ import javax.inject.Inject;
 
 import com.google.cloud.storage.Blob;
 import com.portal.client.cdi.qualifier.ProductBucket;
-import com.portal.client.dto.CustomerOnOrder.CustomerType;
-import com.portal.client.dto.ProductWrapper;
 import com.portal.client.dto.ProductPageDTO;
 import com.portal.client.dto.ProductTechDetailJson;
+import com.portal.client.dto.ProductWrapper;
 import com.portal.client.google.cloud.storage.BucketClient;
 import com.portal.client.repository.ProductRepository;
+import com.portal.client.vo.CustomerOnOrder.CustomerType;
 import com.portal.client.vo.Product;
-import com.portal.client.vo.ProductPriceData;
 import com.portal.client.vo.ProductImage.ImageInfoState;
+import com.portal.client.vo.ProductPriceData;
 import com.portal.client.vo.ProductTechDetail;
 
 @ApplicationScoped

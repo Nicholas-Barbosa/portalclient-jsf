@@ -34,7 +34,7 @@ import com.portal.client.vo.Product;
 import com.portal.client.vo.WrapperProduct404Error;
 
 @ApplicationScoped
-public class ProductRepositoryImpl extends OptionalEmptyRepository implements ProductRepository, Serializable {
+public class ProductRepositoryImpl extends RepositoryInterceptors implements ProductRepository, Serializable {
 
 	private static final long serialVersionUID = 4463669170628763803L;
 	@Inject

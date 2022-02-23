@@ -3,6 +3,8 @@ package com.portal.client.dto;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
+import com.portal.client.vo.Customer;
+
 public class CustomerUtils {
 
 	public static boolean isNull(Customer customer) {

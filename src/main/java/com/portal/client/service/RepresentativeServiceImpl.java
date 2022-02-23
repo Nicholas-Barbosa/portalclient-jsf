@@ -30,7 +30,7 @@ public class RepresentativeServiceImpl implements RepresentativeService, Seriali
 	public RepresentativeUser find() {
 		if (protheusApi.getUser().getFetchStatus() == null
 				|| protheusApi.getUser().getFetchStatus() == FetchStatus.NOT_FETCHED) {
-			RepresentativeData data = repository.find();
+			RepresentativeData data = repository.loadData();
 			RepresentativeUser user = (RepresentativeUser) protheusApi.getUser();
 			user.setCode(data.getCode());
 			user.setFantasyName(data.getFantasyname());

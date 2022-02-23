@@ -2,9 +2,9 @@ package com.portal.client.service;
 
 import java.util.Optional;
 
-import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.vo.Customer;
 
 public interface CustomerService extends ServiceSerializable {
 

@@ -18,7 +18,7 @@ import com.portal.client.security.api.helper.ProtheusAPIHelper;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
-public class OrderRepositoryImpl extends OptionalEmptyRepository implements OrderRepository {
+public class OrderRepositoryImpl extends RepositoryInterceptors implements OrderRepository {
 
 	private TokenedRestClient restClient;
 	private APIHelper protheusApiHelper;

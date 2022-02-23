@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.security.user.RepresentativeUser;
 
 public class Budget extends Order {

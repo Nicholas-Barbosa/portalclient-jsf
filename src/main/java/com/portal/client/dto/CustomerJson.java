@@ -6,29 +6,40 @@ import java.time.format.DateTimeFormatter;
 
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
+import javax.json.bind.annotation.JsonbTransient;
 
+import com.portal.client.vo.Customer;
+import com.portal.client.vo.CustomerAddress;
+import com.portal.client.vo.CustomerContact;
 import com.portal.client.vo.CustomerProductPriceTable;
+import com.portal.client.vo.CustomerPurchaseInfo;
 
-public class Customer implements Serializable {
+public class CustomerJson implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5152498286178192330L;
-	private final String code;
+	private String code;
 
-	private final String store;
-	private final String cnpj;
-	private final String blocked;
-	private final String name;
-	private final String fantasyName;
-	private final CustomerAddress address;
-	private final CustomerPurchaseInfo financialInfo;
-	private final CustomerContact contact;
+	private String store;
+	private String cnpj;
+	private String blocked;
+	private String name;
+	private String fantasyName;
+	private CustomerAddress address;
+	private CustomerPurchaseInfo financialInfo;
+	private CustomerContact contact;
 	private CustomerProductPriceTable priceTable;
+	@JsonbTransient
+	private Customer customer;
+
+	public CustomerJson() {
+		// TODO Auto-generated constructor stub
+	}
 
 	@JsonbCreator
-	public static Customer ofJsonb(@JsonbProperty("code") String code, @JsonbProperty("store") String store,
+	public CustomerJson(@JsonbProperty("code") String code, @JsonbProperty("store") String store,
 			@JsonbProperty("cgc") String cnpj, @JsonbProperty("blocked") String blocked,
 			@JsonbProperty("name") String name, @JsonbProperty("fantasy_name") String fantasyName,
 			@JsonbProperty("address") String street, @JsonbProperty("limit") double limit,
@@ -45,8 +56,17 @@ public class Customer implements Serializable {
 		CustomerPurchaseInfo purchaseInfo = new CustomerPurchaseInfo(discount, discount2, discount3,
 				formatLastPurschase(lastPurchase), risk.length() > 0 ? risk.charAt(0) : '-', paymentTerms, table,
 				limit);
-		return new Customer(code, store, cnpj, blocked, name, fantasyName, address, purchaseInfo, contact);
-
+		this.code = code;
+		this.store = store;
+		this.cnpj = cnpj;
+		this.blocked = blocked;
+		this.name = name;
+		this.fantasyName = fantasyName;
+		this.address = address;
+		this.financialInfo = purchaseInfo;
+		this.contact = contact;
+		customer = new Customer(code, store, cnpj, blocked, name, fantasyName, address, purchaseInfo, contact,
+				priceTable);
 	}
 
 	private static LocalDateTime formatLastPurschase(String text) {
@@ -56,25 +76,6 @@ public class Customer implements Serializable {
 		} catch (Exception e) {
 			return LocalDateTime.of(2004, 6, 14, 20, 10, 10);
 		}
-	}
-
-	public Customer(String code, String store, String cnpj, String blocked, String name, String fantasyName,
-			CustomerAddress address, CustomerPurchaseInfo financialInfo, CustomerContact contact) {
-		super();
-		this.code = code;
-		this.store = store;
-		this.cnpj = cnpj;
-		this.blocked = blocked;
-		this.name = name;
-		this.fantasyName = fantasyName;
-		this.address = address;
-		this.financialInfo = financialInfo;
-		this.contact = contact;
-	}
-
-	public Customer(Customer customer) {
-		this(customer.code, customer.store, customer.cnpj, customer.blocked, customer.name, customer.fantasyName,
-				customer.address, customer.financialInfo, customer.contact);
 	}
 
 	public String getCode() {
@@ -145,4 +146,7 @@ public class Customer implements Serializable {
 		return priceTable == null ? financialInfo != null ? financialInfo.getTable() : null : priceTable.getCode();
 	}
 
+	public Customer getCustomer() {
+		return this.customer;
+	}
 }

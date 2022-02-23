@@ -6,8 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import com.portal.client.security.user.RepresentativeUser.SaleType;
 import com.portal.client.vo.Budget;
+import com.portal.client.vo.CustomerAddress;
+import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Product;
 import com.portal.client.vo.ProductPriceData;
@@ -120,10 +121,11 @@ public class BudgetJasperData implements Serializable {
 
 		public CustomerJasperData(CustomerOnOrder customer) {
 			super();
+			CustomerAddress address = customer.getAddress();
 			this.name = customer.getName();
-			this.city = customer.getCity();
-			this.address = customer.getStreet();
-			this.state = customer.getState();
+			this.city = address.getCity();
+			this.address = address.getStreet();
+			this.state = address.getState();
 			this.cgc = customer.getCnpj();
 			this.paymentTerms = customer.getFinancialInfo().getPaymentTerms();
 		}

@@ -5,13 +5,13 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ProcessingException;
 
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerOnOrder;
 import com.portal.client.dto.CustomerUtils;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.service.CustomerService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
+import com.portal.client.vo.Customer;
+import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Order;
 
 @RequestScoped

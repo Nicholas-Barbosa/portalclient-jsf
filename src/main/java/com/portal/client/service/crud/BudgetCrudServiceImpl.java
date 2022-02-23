@@ -9,11 +9,11 @@ import com.portal.client.cdi.aop.annotations.OrderRepresentativeSetterJoinPointC
 import com.portal.client.dto.BudgetFullProjection;
 import com.portal.client.dto.BudgetSemiProjection;
 import com.portal.client.dto.CustomerRepresentativeOrderForm;
-import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.exception.CustomerNotAllowed;
 import com.portal.client.repository.BudgetRepository;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Page;
+import com.portal.client.vo.ProspectCustomerOnOrder;
 
 @ApplicationScoped
 public class BudgetCrudServiceImpl implements BudgetCrudService {

@@ -6,11 +6,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.client.dto.Customer;
+import com.portal.client.dto.CustomerJson;
 import com.portal.client.resources.export.BudgetExportType;
 import com.portal.client.resources.export.ProductPriceTableExporter;
 import com.portal.client.service.CustomerService;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.Customer;
 
 @RequestScoped
 @Named
@@ -36,7 +37,7 @@ public class CustomerPriceTableComponentController implements Serializable {
 
 	}
 
-	public void export(Customer customer) {
+	public void export(CustomerJson customer) {
 		byte[] excel = exporter.toExcel(customer);
 		FacesUtils.prepareResponseForDownloadOfStreams("tabelaPreços", excel, BudgetExportType.EXCEL.getType());
 	}

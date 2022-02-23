@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Optional;
 
-import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
-import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTableJsonData;
+import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
+import com.portal.client.vo.Customer;
 
 public interface CustomerRepository extends Serializable {
 

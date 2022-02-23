@@ -5,23 +5,15 @@ import java.io.Serializable;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.ProcessingException;
 
 import org.primefaces.event.SelectEvent;
 
 import com.portal.client.controller.show.BudgetExporterShowController;
-import com.portal.client.controller.show.CustomerDetailShowController;
 import com.portal.client.controller.show.OrderBadRequestShowController;
-import com.portal.client.dto.Customer;
-import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.repository.OrderBadRequestExcpetion;
-import com.portal.client.service.CustomerService;
-import com.portal.client.service.OrderBehaviorHelper;
 import com.portal.client.service.crud.BudgetCrudService;
 import com.portal.client.service.crud.OrderCrudService;
 import com.portal.client.util.jsf.FacesUtils;
-import com.portal.client.util.jsf.ProcessingExceptionFacesMessageHelper;
 import com.portal.client.vo.Budget;
 import com.portal.client.vo.Order;
 
@@ -36,15 +28,7 @@ public class BudgetEditingController implements Serializable {
 
 	private BudgetCrudService budgetService;
 
-	private CustomerService customerService;
-
-	private ProcessingExceptionFacesMessageHelper exceptionShowMessage;
-
 	private boolean isCustomerDataComplete;
-
-	private CustomerDetailShowController customerShow;
-
-	private OrderBehaviorHelper orderHelper;
 
 	private OrderCrudService orderService;
 
@@ -59,17 +43,12 @@ public class BudgetEditingController implements Serializable {
 	private OrderBadRequestShowController orderBadRequestShowController;
 
 	@Inject
-	public BudgetEditingController(BudgetCrudService budgetService, CustomerService customerService,
-			ProcessingExceptionFacesMessageHelper serverApiExceptionMessageHelper,
-			CustomerDetailShowController customerShow, OrderBehaviorHelper orderHelper,
+	public BudgetEditingController(BudgetCrudService budgetService,
+
 			OrderCrudService orderService, BudgetExporterShowController exporterShow,
 			OrderBadRequestShowController orderBadRequestShowController) {
 		super();
 		this.budgetService = budgetService;
-		this.customerService = customerService;
-		this.exceptionShowMessage = serverApiExceptionMessageHelper;
-		this.customerShow = customerShow;
-		this.orderHelper = orderHelper;
 		this.orderService = orderService;
 		this.exporterShow = exporterShow;
 		this.orderBadRequestShowController = orderBadRequestShowController;
@@ -115,34 +94,6 @@ public class BudgetEditingController implements Serializable {
 	public void confirmBudgetEditing() {
 		budgetService.update(this.getBudget());
 		FacesUtils.info(null, "Orçamento atualizado", null, "growl");
-	}
-
-
-
-	public void showCustomerData() {
-		if (!isCustomerDataComplete)
-			this.loadAdditionalCustomerData();
-		customerShow.show(this.getBudget().getCustomerOnOrder());
-	}
-
-	private void loadAdditionalCustomerData() {
-		try {
-			customerService
-					.findByCodeAndStore(
-							new SearchCustomerByCodeAndStoreDTO(this.getBudget().getCustomerOnOrder().getCode(),
-									this.getBudget().getCustomerOnOrder().getStore()))
-					.ifPresentOrElse(this::populateCustomerData,
-							() -> FacesUtils.error(null, "Cliente não encontrado", null, "growl"));
-		} catch (ProcessingException e) {
-			exceptionShowMessage.displayMessage(e, null, "growl");
-		}
-	}
-
-	private void populateCustomerData(Customer customer) {
-		CustomerOnOrder newCustomer = new CustomerOnOrder(customer);
-		this.getBudget().setCustomerOnOrder(newCustomer);
-		this.isCustomerDataComplete = true;
-		FacesUtils.ajaxUpdate("panelCustomer");
 	}
 
 	public String getBudgetIdToSearch() {

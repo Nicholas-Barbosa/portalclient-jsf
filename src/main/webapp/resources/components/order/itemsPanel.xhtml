@@ -37,7 +37,7 @@
 
 				<p:toolbar styleClass="mb-4">
 					<p:toolbarGroup>
-						
+
 						<p:button value="Adicionar" icon="pi pi-plus"
 							styleClass="ui-button-raised ui-button-success"
 							style="margin-right: .5rem" onclick="PF('productSearch').show()" />
@@ -109,8 +109,8 @@
 					widgetVar="dtItems" editable="true" scrollable="true" size="small"
 					filterDelay="100"
 					selection="#{itemOrderContainerController.itemsToRemove}"
-					rowKey="#{item.commercialCode}" rowSelectMode="add"
-					reflow="true" rows="10" paginator="true" rowIndexVar="index">
+					rowKey="#{item.commercialCode}" rowSelectMode="add" reflow="true"
+					rows="10" paginator="true" rowIndexVar="index">
 					<p:autoUpdate on="newItem" />
 					<f:facet name="footer">
 						<h:outputText
@@ -222,8 +222,8 @@
 									<i class="pi pi-spin pi-spinner" style="font-size: 3rem;" />
 								</div>
 								<div jsf:id="div-img">
-									<p:graphicImage value="#{item.imageStreams}"
-										stream="false" styleClass="w3-round-xlarge product-image"
+									<p:graphicImage value="#{item.imageStreams}" stream="false"
+										styleClass="w3-round-xlarge product-image"
 										style="height: 8.2rem; width: 10rem" id="img"
 										alt="Imagem não encontrada"
 										rendered="#{item.image.currentState eq 'FOUND' || item.image.currentState eq 'NOT_FOUND'}" />
@@ -263,8 +263,7 @@
 											style=" display: #{item.stock eq null ?'none':block};">
 											<span
 												class="#{item.stock > 0 ? 'product-in-stock' : 'product-out-stock'}">
-												#{productStockMessageController.getMessage(item.stock)}
-											</span>
+												#{productStockMessageController.getMessage(item.stock)} </span>
 
 										</div>
 										<p:remoteCommand name="loadStock"
@@ -276,8 +275,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="col"
-								id="product-tech-loader-#{item.commercialCode}"
+							<div class="col" id="product-tech-loader-#{item.commercialCode}"
 								style="display: none">
 								Buscando dados... <i class="pi pi-spin pi-spinner"
 									style="font-size: 3rem;" />
@@ -292,8 +290,7 @@
 
 									<p:outputLabel for="@next" value="Aplicação:"
 										styleClass="font-bold" />
-									<p:outputLabel
-										value="#{item.productTechDetail.application}"
+									<p:outputLabel value="#{item.productTechDetail.application}"
 										styleClass="label-r" />
 
 									<p:outputLabel for="@next" value="Substituições:"
@@ -304,8 +301,7 @@
 
 									<p:outputLabel for="@next" value="Peso bruto:"
 										styleClass="font-bold" />
-									<p:outputLabel
-										value="#{item.productTechDetail.grossWeight}"
+									<p:outputLabel value="#{item.productTechDetail.grossWeight}"
 										styleClass="label-r" />
 
 									<p:outputLabel for="@next" value="Dimensões da caixa:"
@@ -401,21 +397,16 @@
 			styleClass="ui-confirmdialog-no ui-button-flat" />
 	</p:confirmDialog>
 
-	<p:dialog header="Importar produtos" modal="true"
-		widgetVar="dlgImportProducts" responsive="true"
-		style="max-width: 50vw; max-height: 70vh; overflow-y: auto">
-		<div>
-			<product:fileImport
-				customerCode="#{cc.attrs.order.customerOnOrder.code}"
-				customerStore="#{cc.attrs.order.customerOnOrder.store}"
-				observer="#{itemOrderContainerController}"
-				onConfirm="PF('dlgImportProducts').hide();" />
-		</div>
-	</p:dialog>
+	<product:fileImport
+		customerCode="#{cc.attrs.order.customerOnOrder.code}"
+		customerStore="#{cc.attrs.order.customerOnOrder.store}"
+		observer="#{itemOrderContainerController}"
+		onConfirm="PF('dlgImportProducts').hide();" />
 
 	<product:search customer="#{cc.attrs.order.customerOnOrder}"
 		searchObserver="#{itemOrderContainerController}"
-		updates="@obs(newItem),#{cc.clientId}:panelTotals" products="#{itemOrderContainerController.items}"/>
+		updates="@obs(newItem),#{cc.clientId}:panelTotals"
+		products="#{itemOrderContainerController.items}" />
 
 </composite:implementation>
 

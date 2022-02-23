@@ -7,12 +7,12 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.service.ProductCalculator;
 import com.portal.client.service.crud.ProductService;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Product;
+import com.portal.client.vo.ProspectCustomerOnOrder;
 
 @ViewScoped
 @Named
@@ -48,8 +48,9 @@ public class ProductSearchComponentController implements Serializable {
 					FacesUtils.ajaxUpdate("manage-product-content");
 					FacesUtils.executeScript("$('#footer').show()");
 					this.newQuantity = product.getPriceData().getQuantity();
-					this.duplicateProduct = products.parallelStream()
-							.anyMatch(p -> p.getCommercialCode().equalsIgnoreCase(product.getCommercialCode()));
+					this.duplicateProduct = products == null ? false
+							: products.parallelStream()
+									.anyMatch(p -> p.getCommercialCode().equalsIgnoreCase(product.getCommercialCode()));
 
 				}, () -> {
 					FacesUtils.error(null, "Produto não localizado", null, "growl");

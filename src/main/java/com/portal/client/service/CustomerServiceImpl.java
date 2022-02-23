@@ -8,11 +8,11 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTableJsonData;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.repository.CustomerRepository;
+import com.portal.client.vo.Customer;
 import com.portal.client.vo.CustomerProductPriceTable;
 
 @ApplicationScoped

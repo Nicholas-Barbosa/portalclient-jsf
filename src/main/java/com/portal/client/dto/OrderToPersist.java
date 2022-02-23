@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.json.bind.annotation.JsonbProperty;
 import javax.json.bind.annotation.JsonbTransient;
 
+import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Order;
 
 public class OrderToPersist {

@@ -10,16 +10,16 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.nicholas.jaxrsclient.TokenedRestClient;
-import com.portal.client.dto.Customer;
 import com.portal.client.dto.CustomerPageDTO;
 import com.portal.client.dto.CustomerWrapper;
 import com.portal.client.dto.ProductPriceTableWrapper;
 import com.portal.client.dto.ProductPriceTableWrapper.ProductPriceTableJsonData;
 import com.portal.client.dto.SearchCustomerByCodeAndStoreDTO;
 import com.portal.client.security.api.helper.APIHelper;
+import com.portal.client.vo.Customer;
 
 @ApplicationScoped
-public class CustomerRepositoryImpl extends OptionalEmptyRepository implements CustomerRepository {
+public class CustomerRepositoryImpl extends RepositoryInterceptors implements CustomerRepository {
 
 	/**
 	 * 
@@ -59,7 +59,7 @@ public class CustomerRepositoryImpl extends OptionalEmptyRepository implements C
 		pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("clients/{code}/loja/{codeStore}"),
 				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerWrapper.class, null,
-				pathParams, MediaType.APPLICATION_JSON).getClients().get(0));
+				pathParams, MediaType.APPLICATION_JSON).getCustomer());
 
 	}
 

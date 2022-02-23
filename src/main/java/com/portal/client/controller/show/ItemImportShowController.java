@@ -6,10 +6,10 @@ import java.util.Map;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
-import com.portal.client.dto.CustomerOnOrder;
-import com.portal.client.dto.ProspectCustomerOnOrder;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Order;
+import com.portal.client.vo.ProspectCustomerOnOrder;
 
 @Named
 @RequestScoped

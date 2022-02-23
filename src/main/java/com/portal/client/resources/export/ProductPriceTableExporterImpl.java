@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.portal.client.dto.Customer;
+import com.portal.client.dto.CustomerJson;
 import com.portal.client.microsoft.excel.CellAttribute;
 import com.portal.client.microsoft.excel.CellAttribute.CellAttributeBuilder;
 import com.portal.client.microsoft.excel.RowObject;
@@ -24,7 +24,7 @@ public class ProductPriceTableExporterImpl implements ProductPriceTableExporter 
 	private XssfWriter writer;
 
 	@Override
-	public byte[] toExcel(Customer customer) {
+	public byte[] toExcel(CustomerJson customer) {
 		List<RowObject> rows = new ArrayList<>();
 		final AtomicInteger rowCounter = new AtomicInteger(3);
 		RowObject customerHeader = new RowObject(0, CellAttributeBuilder.of(0, "Cliente", "Tabela"));
