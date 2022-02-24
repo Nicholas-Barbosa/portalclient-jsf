@@ -34,9 +34,9 @@ public class OrderRepositoryImpl extends RepositoryInterceptors implements Order
 	@OrderBadRequestJoinPointCut
 	public void persist(Order order) {
 		OrderToPersist transientOrder = OrderToPersist.of(order);
-		OrderPersisted managedOrder = restClient.post(protheusApiHelper.buildEndpoint("orders"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), OrderPersisted.class, null, null, transientOrder,
-				MediaType.APPLICATION_JSON);
+		OrderPersisted managedOrder = restClient.post(protheusApiHelper.buildEndpoint("orders"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), OrderPersisted.class, null, null,
+				transientOrder, MediaType.APPLICATION_JSON);
 		order.setCode(managedOrder.getCode());
 
 	}
@@ -45,14 +45,24 @@ public class OrderRepositoryImpl extends RepositoryInterceptors implements Order
 	public Optional<OrderSemiProjectionPage> findAll(int page, int pageSize) {
 		Map<String, Object> queryParams = Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC");
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), OrderSemiProjectionPage.class, queryParams, null, "application/json"));
+				protheusApiHelper.getTokenPrefix(), OrderSemiProjectionPage.class, queryParams, null,
+				"application/json"));
 	}
 
 	@Override
 	public Optional<OrderFullProjection> findByCode(String code) {
 		// TODO Auto-generated method stub
-		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders/{code}"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), OrderFullProjection.class, null, Map.of("code", code),
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders/{code}"),
+				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), OrderFullProjection.class, null,
+				Map.of("code", code), "application/json"));
+	}
+
+	@Override
+	public Optional<OrderSemiProjectionPage> findByNameOrCnpj(String nameOrCnpj, int page, int pageSize) {
+		Map<String, Object> queryParams = Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC", "searchKey",
+				nameOrCnpj);
+		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders"), protheusApiHelper.getToken(),
+				protheusApiHelper.getTokenPrefix(), OrderSemiProjectionPage.class, queryParams, null,
 				"application/json"));
 	}
 

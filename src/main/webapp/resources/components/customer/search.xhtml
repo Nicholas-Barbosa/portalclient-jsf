@@ -60,6 +60,8 @@
 								onstart="PF('dlgCustomerSearch').hide()">
 							</p:ajax>
 							<p:ajax event="page"
+								onstart="PF('dtCustomerResultBlock').show();"
+								oncomplete="PF('dtCustomerResultBlock').hide();"
 								listener="#{customerSearchController.onPage}" process="@this" />
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('codigo')}">
@@ -94,7 +96,8 @@
 							</p:column>
 						</p:dataTable>
 
-						<p:blockUI block="dtCustomerResult" trigger="dtCustomerResult">
+						<p:blockUI block="dtCustomerResult"
+							widgetVar="dtCustomerResultBlock">
 							<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
 						</p:blockUI>
 					</h:form>

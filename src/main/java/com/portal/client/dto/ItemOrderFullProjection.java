@@ -1,5 +1,6 @@
 package com.portal.client.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -12,7 +13,7 @@ import com.portal.client.vo.ProductImage.ImageInfoState;
 import com.portal.client.vo.builder.ProductImageBuilder;
 import com.portal.client.vo.builder.ProductPriceBuilder;
 
-public class ItemOrderFullProjection extends Item {
+public class ItemOrderFullProjection extends Item implements Serializable{
 
 	/**
 	 * 

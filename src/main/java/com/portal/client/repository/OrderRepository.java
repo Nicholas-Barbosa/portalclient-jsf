@@ -12,5 +12,7 @@ public interface OrderRepository {
 
 	Optional<OrderSemiProjectionPage> findAll(int page, int pageSize);
 
+	Optional<OrderSemiProjectionPage> findByNameOrCnpj(String nameOrCnpj,int page, int pageSize);
+	
 	Optional<OrderFullProjection> findByCode(String code);
 }

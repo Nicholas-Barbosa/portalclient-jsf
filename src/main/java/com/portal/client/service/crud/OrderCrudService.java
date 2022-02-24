@@ -13,5 +13,7 @@ public interface OrderCrudService extends CrudService {
 
 	Optional<OrderSemiProjectionPage> findAll(int page, int pageSize);
 
+	Optional<OrderSemiProjectionPage> findByNameOrCnpj(String nameOrCnpj,int page, int pageSize);
+	
 	Optional<OrderFullProjection> findByCode(String code);
 }

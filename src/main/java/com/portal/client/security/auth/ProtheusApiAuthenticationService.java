@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -20,7 +19,7 @@ import com.portal.client.security.api.ProtheusApiEnviroment;
 import com.portal.client.security.user.RepresentativeUser;
 import com.portal.client.security.user.builder.RepresentativeUserBuilder;
 
-@SessionScoped
+@RequestScoped
 public class ProtheusApiAuthenticationService implements AuthenticationService, Serializable {
 
 	/**

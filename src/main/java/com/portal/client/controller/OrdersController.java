@@ -29,9 +29,19 @@ public class OrdersController implements Serializable {
 	private final int pageSize = 15;
 	private LazyBehaviorDataModel<OrderSemiProjection> orders;
 	private OrderSemiProjection invoiceToView;
+	private String keyFilter;
 
 	public OrdersController() {
 		orders = new OrderLazyDataModel();
+
+	}
+
+	public void filter() {
+		System.out.println("Filter " + keyFilter);
+		orderService.findByNameOrCnpj(keyFilter, 1, pageSize).ifPresent(page -> {
+			LazyPopulatorUtils.populate(orders, page);
+			System.out.println("Encontrou!");
+		});
 	}
 
 	public void getOrders(int page) {
@@ -60,5 +70,13 @@ public class OrdersController implements Serializable {
 
 	public void setInvoiceToView(OrderSemiProjection invoiceToView) {
 		this.invoiceToView = invoiceToView;
+	}
+
+	public String getKeyFilter() {
+		return keyFilter;
+	}
+
+	public void setKeyFilter(String keyFilter) {
+		this.keyFilter = keyFilter;
 	}
 }

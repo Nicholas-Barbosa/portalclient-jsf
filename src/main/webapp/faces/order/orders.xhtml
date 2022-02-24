@@ -45,8 +45,19 @@
 						<p:dataTable id="dtOrders" widgetVar="dtOrders" var="order"
 							value="#{ordersController.orders}" paginator="true"
 							paginatorPosition="bottom" rows="#{ordersController.pageSize}"
-							scrollable="true" lazy="true" reflow="true"
+							scrollable="true" reflow="true"
 							rowStyleClass="#{order.status eq 'Faturado' ? 'invoiced' : null}">
+							<f:facet name="header">
+								<div class="p-d-flex p-jc-end">
+									<p:inputText id="globalFilter"
+										onkeypress="if(event.code==='Enter')filter();" style="width:300px"
+										placeholder="Nome ou CNPJ"
+										value="#{ordersController.keyFilter}" />
+									<p:remoteCommand name="filter" action="#{ordersController.filter}"
+										process="@this,globalFilter" update="dtOrders"/>
+								</div>
+							</f:facet>
+
 							<p:ajax event="page" listener="#{ordersController.onPage}"
 								onstart="$('#divLoading').show();$('#divListContent').hide();"
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
@@ -61,14 +72,15 @@
 							</p:column>
 
 							<p:column
-								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}">
+								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}"
+								filterBy="#{order.customerShortname}">
 								<h:outputText value="#{order.customerShortname}" />
 							</p:column>
 							<p:column field="invoiceNumber" sortable="false"
 								filterable="true" headerText="Número" />
 							<p:column field="invoiceSerie" sortable="false" filterable="true"
 								headerText="Série" />
-							
+
 							<p:column headerText="Criada em">
 								<h:outputText value="#{order.invoiceCreatedAt}"
 									rendered="#{order.invoiceCreatedAt !=null}">
@@ -93,8 +105,10 @@
 							</p:column>
 						</p:dataTable>
 
+
 					</h:form>
 				</div>
+
 				<div id="divLoading" class="card">
 					<p:dataTable value="#{dataTableSkeletonObjects.getSkeleton(10)}">
 						<p:column

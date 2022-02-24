@@ -1,5 +1,6 @@
 package com.portal.client.dto;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,7 +14,12 @@ import com.portal.client.vo.CustomerOnOrder;
 import com.portal.client.vo.Item;
 import com.portal.client.vo.Order;
 
-public class OrderFullProjection extends Order {
+public class OrderFullProjection extends Order implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7111841709509384056L;
 
 	public OrderFullProjection(String code, String customerNumOrder, String repNumOrder,
 			CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue,
