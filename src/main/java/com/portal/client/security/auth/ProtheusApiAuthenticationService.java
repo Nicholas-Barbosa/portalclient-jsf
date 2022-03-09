@@ -33,8 +33,6 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 	@Inject
 	private APIsManager apisManger;
 
-	private String originalToken;
-
 	@Inject
 	public ProtheusApiAuthenticationService(RestClient restClient, ProtheusApiUrlResolver protheusApiUrlResolver) {
 		super();
@@ -58,7 +56,6 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 				(RepresentativeUser) RepresentativeUserBuilder.getInstance().withUsername(loginForm.getUsername())
 						.withPassword(loginForm.getPassword().toCharArray()).build(),
 				authResponse.getAccessToken(), authResponse.getRefreshToken(), "Bearer", loginForm.getCompanyEnv());
-		this.originalToken = authResponse.getRefreshToken();
 		authenticatedEvent.fire(new AuthenticateddEvent(loginForm.getCompanyEnv()));
 		loginForm = null;
 	}
@@ -73,8 +70,8 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 
 	@Override
 	public void refreshToken() {
-		System.out.println("Original token " + originalToken);
 		ProtheusApiData apiData = apisManger.getAPI("PROTHEUS_API");
+		System.out.println("Refresh token " + apiData.getRefreshToken());
 		ProtheusAuthenticationEndpointResponse refreshResponse = restClient.post(
 				apisManger.buildEndpoint(apiData, apiData.getRefreshTokenUrl()),
 				ProtheusAuthenticationEndpointResponse.class,

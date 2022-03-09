@@ -10,7 +10,6 @@
 </h:head>
 
 <composite:interface>
-
 	<composite:attribute name="customerCode" required="true"
 		type="java.lang.String" />
 
@@ -40,7 +39,7 @@
 							allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
 							label="Escolher"
 							listener="#{productFileImportComponent.handleFileUpload}"
-							process="@this" invalidFileMessage="Arquivo inválido" auto="true"  />
+							process="@this" invalidFileMessage="Arquivo inválido" auto="true" />
 					</p:tab>
 					<p:tab id="setFileLayout" title="Layout do arquivo">
 						<p:panelGrid columns="4"
@@ -196,6 +195,11 @@
 					<p:dataTable id="productsNotFound"
 						value="#{productFileImportComponent.productsNotFound}"
 						var="mismatch">
+						<f:facet name="header">
+							<p:commandButton icon="pi pi-file-excel" value="Baixar .xlsx"
+								action="#{productFileImportComponent.exportXlsxProductsNotFound}"
+								ajax="false" />
+						</f:facet>
 						<p:column field="productIdentity" headerText="Produto" />
 
 					</p:dataTable>

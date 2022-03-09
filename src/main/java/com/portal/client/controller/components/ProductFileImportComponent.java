@@ -18,6 +18,8 @@ import com.portal.client.exception.MismatchCellTypeExceptions;
 import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
 import com.portal.client.exception.ProductsNotFoundException;
 import com.portal.client.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
+import com.portal.client.microsoft.excel.writer.XssfWriter;
+import com.portal.client.resources.export.ProductsImportComponentNotFoundCommandExporter;
 import com.portal.client.service.ProductImporter;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.WrapperProduct404Error.Product404Error;
@@ -43,9 +45,18 @@ public class ProductFileImportComponent implements Serializable {
 
 	private Product404Error[] productsNotFound;
 
+	@Inject
+	private ProductsImportComponentNotFoundCommandExporter exporter;
+
 	public ProductFileImportComponent() {
 		this.setDefaultFileLayoutPositions();
 
+	}
+
+	public void exportXlsxProductsNotFound() {
+		FacesUtils.prepareResponseForDownloadOfStreams("produtos-inconsistentes.xlsx",
+				exporter.execute(productsNotFound),
+				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 	}
 
 	public void confirm(String customerCode, String customerStore, ProductFileImportObserver observer) {
@@ -87,8 +98,8 @@ public class ProductFileImportComponent implements Serializable {
 				return event.getNewStep();
 			} catch (MismatchCellTypeExceptions e) {
 				mismatchCelltypeExceptions = e.getExceptions();
-				FacesUtils
-						.executeScript("PF('dlgReadingFile').hide();PF('dlgMismatchExcpetions').show();updateMismatchs()");
+				FacesUtils.executeScript(
+						"PF('dlgReadingFile').hide();PF('dlgMismatchExcpetions').show();updateMismatchs()");
 				fileLayout.setXlsxStreams(null);
 			} catch (IllegalArgumentException e) {
 				switch (e.getMessage()) {

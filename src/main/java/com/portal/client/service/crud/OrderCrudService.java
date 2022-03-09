@@ -11,9 +11,7 @@ public interface OrderCrudService extends CrudService {
 
 	void persist(Order order) throws OrderBadRequestExcpetion;
 
-	Optional<OrderSemiProjectionPage> findAll(int page, int pageSize);
+	Optional<OrderSemiProjectionPage> findAll(String nameOrCnpj, int page, int pageSize);
 
-	Optional<OrderSemiProjectionPage> findByNameOrCnpj(String nameOrCnpj,int page, int pageSize);
-	
 	Optional<OrderFullProjection> findByCode(String code);
 }

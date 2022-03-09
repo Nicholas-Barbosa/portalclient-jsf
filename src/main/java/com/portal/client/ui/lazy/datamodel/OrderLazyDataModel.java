@@ -28,7 +28,7 @@ public class OrderLazyDataModel extends LazyBehaviorDataModel<OrderSemiProjectio
 	@Override
 	public void clearCollection() {
 		orders.clear();
-
+		super.setRowCount(0);
 	}
 
 	@Override

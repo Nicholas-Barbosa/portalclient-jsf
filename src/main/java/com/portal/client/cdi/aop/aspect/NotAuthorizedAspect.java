@@ -24,6 +24,7 @@ public class NotAuthorizedAspect {
 		try {
 			return joinpoint.proceed();
 		} catch (NotAuthorizedException | ProcessingException e) {
+			System.out.println("Trata not authorized");
 			if (e instanceof NotAuthorizedException) {
 				authService.refreshToken();
 				return joinpoint.proceed();

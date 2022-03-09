@@ -27,10 +27,10 @@
 			</div>
 			<div class="col-2">
 				<h:form>
-					<p:commandButton icon="pi pi-search-plus"
+					<p:button icon="pi pi-search-plus"
 						title="Visualizar cliente"
 						styleClass="rounded-button ui-button-success "
-						oncomplete="PF('detailPanel').show();" />
+						onclick="openCustomerDetailDialog()" />
 				</h:form>
 
 				<p:sidebar widgetVar="sideBarForLoadingCustomer" position="top"
@@ -50,18 +50,21 @@
 					<div class="field col-12 md:col-6">
 						<label for="cName">Código - Nome</label>
 						<p:inputText id="cName" type="text" readonly="true"
-							value="#{cc.attributes.order.customerOnOrder.code} - #{cc.attributes.order.customerOnOrder.name}" styleClass="inputfield w-full"/>
+							value="#{cc.attributes.order.customerOnOrder.code} - #{cc.attributes.order.customerOnOrder.name}"
+							styleClass="inputfield w-full" />
 					</div>
 
 					<div class="field col-12 md:col-6">
 						<label for="cCnpj">CNPJ</label>
 						<p:inputText id="cCnpj" type="text" readonly="true"
-							value="#{cc.attributes.order.customerOnOrder.cnpj}" styleClass="inputfield w-full"/>
+							value="#{cc.attributes.order.customerOnOrder.cnpj}"
+							styleClass="inputfield w-full" />
 					</div>
 					<div class="field col-12">
 						<label for="cAddress">Endereço</label>
 						<p:inputText id="cAddress" type="text" readonly="true"
-							value="#{cc.attributes.order.customerOnOrder.address.street} - #{cc.attributes.order.customerOnOrder.address.district}, #{cc.attributes.order.customerOnOrder.address.city} - #{cc.attributes.order.customerOnOrder.address.state}" styleClass="inputfield w-full"/>
+							value="#{cc.attributes.order.customerOnOrder.address.street} - #{cc.attributes.order.customerOnOrder.address.district}, #{cc.attributes.order.customerOnOrder.address.city} - #{cc.attributes.order.customerOnOrder.address.state}"
+							styleClass="inputfield w-full" />
 					</div>
 				</div>
 			</p:outputPanel>
@@ -77,17 +80,13 @@
 			action="#{customerPanelController.load(cc.attributes.order,cc.clientId.concat(':panelCustomer'))}"
 			update="detailPanel" process="@this" async="true" />
 
-		<p:dialog header="Cliente" modal="true" widgetVar="detailPanel"
-			responsive="true">
-			<div style="max-width: 60vw; max-height: 70vh; overflow-y: auto">
-				<c:detailPanel id="detailPanel"
-					customer="#{cc.attributes.order.customerOnOrder}" />
-			</div>
-		</p:dialog>
+
+		<c:detailPanel id="detailPanel"
+			customer="#{cc.attributes.order.customerOnOrder}" />
 		<p:dialog header="long-running task" modal="true"
 			widgetVar="dlgLongRunningTask" responsive="true" closable="false">
-			<div class="font-bold">A busca pelo cliente está demorando
-				mais do que o habitual. Por favor, aguarde!</div>
+			<div class="font-bold">A busca pelo cliente está demorando mais
+				do que o habitual. Por favor, aguarde!</div>
 		</p:dialog>
 	</div>
 	<script>

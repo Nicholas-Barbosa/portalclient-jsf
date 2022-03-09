@@ -42,14 +42,6 @@ public class OrderRepositoryImpl extends RepositoryInterceptors implements Order
 	}
 
 	@Override
-	public Optional<OrderSemiProjectionPage> findAll(int page, int pageSize) {
-		Map<String, Object> queryParams = Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC");
-		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), OrderSemiProjectionPage.class, queryParams, null,
-				"application/json"));
-	}
-
-	@Override
 	public Optional<OrderFullProjection> findByCode(String code) {
 		// TODO Auto-generated method stub
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders/{code}"),
@@ -58,9 +50,9 @@ public class OrderRepositoryImpl extends RepositoryInterceptors implements Order
 	}
 
 	@Override
-	public Optional<OrderSemiProjectionPage> findByNameOrCnpj(String nameOrCnpj, int page, int pageSize) {
+	public Optional<OrderSemiProjectionPage> findAll(String nameOrCnpj, int page, int pageSize) {
 		Map<String, Object> queryParams = Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC", "searchKey",
-				nameOrCnpj);
+				nameOrCnpj == null ? "" : nameOrCnpj);
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("orders"), protheusApiHelper.getToken(),
 				protheusApiHelper.getTokenPrefix(), OrderSemiProjectionPage.class, queryParams, null,
 				"application/json"));

@@ -29,9 +29,10 @@
 
 			<div id="openPaymentsPanel-content">
 				<p:dataTable id="dtPayments" var="payment" paginator="true"
-					rows="10" paginatorPosition="bottom" lazy="true" reflow="true">
+					rows="10" paginatorPosition="bottom" lazy="true" reflow="true"
+					value="#{openPaymentsComponentController.payments}">
 					<p:ajax event="page"
-						listener="#{openPaymentsComponentController.findPayments(1,cc.attrs.customer.code,cc.attrs.customer.store)}" />
+						listener="#{openPaymentsComponentController.onPage}" />
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('numero_documento')}">
 						<h:outputText value="#{payment.docNumber}" />
@@ -51,8 +52,7 @@
 					<p:column
 						headerText="#{resourceBundleServiceImpl.getMessage('data_vencimento')}">
 						<h:outputText value="#{payment.dueDate}">
-							<f:convertDateTime pattern="dd/MM/yyyy 'às' HH:mm:ss"
-								type="localDateTime" />
+							<f:convertDateTime pattern="dd/MM/yyyy" type="localDateTime" />
 						</h:outputText>
 					</p:column>
 					<p:column
@@ -95,11 +95,12 @@
 	<script>
 		function showSkeleton() {
 			$('#openPaymentsPanel-div-loading').show();
-			$('#openPaymentsPanel-content').hide();
+
 		}
 		function hideSkeleton() {
 			$('#openPaymentsPanel-div-loading').hide();
-			$('#openPaymentsPanel-content').show();
+		
+
 		}
 	</script>
 </composite:implementation>

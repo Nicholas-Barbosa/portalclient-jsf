@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	>
+<h:head>
+</h:head>
+
+<composite:interface>
+
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<p:ajaxExceptionHandler type="java.net.ConnectException"
+			onexception="PF('dlgconnectionRefused').show();" />
+		<p:dialog id="dlgconnectionRefused" header="Conexão recusada"
+			widgetVar="dlgconnectionRefused" responsive="true" modal="true">
+			<div class="grid flex-column">
+				<div class="col">
+					<p:staticMessage severity="error" summary="Erro de Rede"
+						detail="Conexão recusada. Não há serviço nesta porta IP. Contate o suporte!"
+						style="width: 100%"  />
+				</div>
+			</div>
+		</p:dialog>
+	</div>
+
+</composite:implementation>
+
+</html>

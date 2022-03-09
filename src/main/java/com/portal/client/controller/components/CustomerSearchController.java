@@ -59,6 +59,7 @@ public class CustomerSearchController implements Serializable {
 
 	public void notifyObserver(SelectEvent<Customer> event) {
 		if (!event.getObject().getBlocked().equals("Sim")) {
+			System.out.println("Observer " + observer);
 			this.selectedCustomerToSeeDetails = event.getObject();
 			observer.onCustomerSelect(event.getObject());
 			return;

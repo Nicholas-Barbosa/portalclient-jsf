@@ -24,8 +24,8 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	}
 
 	@Override
-	public Optional<OrderSemiProjectionPage> findAll(int page, int pageSize) {
-		return repository.findAll(page, pageSize);
+	public Optional<OrderSemiProjectionPage> findAll(String nameOrCnpj,int page, int pageSize) {
+		return repository.findAll(nameOrCnpj,page, pageSize);
 	}
 
 	@Override
@@ -34,10 +34,6 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 		return maybe;
 	}
 
-	@Override
-	public Optional<OrderSemiProjectionPage> findByNameOrCnpj(String nameOrCnpj, int page, int pageSize) {
-		// TODO Auto-generated method stub
-		return repository.findByNameOrCnpj(nameOrCnpj, page, pageSize);
-	}
+	
 
 }

@@ -61,10 +61,13 @@
 								styleClass="ui-button-success mr-2"
 								onclick="PF('exportComponent').show();" />
 
-							<p:button
-								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
-								icon="pi pi-eye" onclick="openCustomerDetailDialog();" />
 
+							<p:splitButton
+								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
+								icon="pi pi-eye" onclick="openCustomerDetailDialog();"
+								styleClass=" margin-right: .5rem;">
+								<p:menuitem value="Prospect" onclick="PF('dlgProspect').show();" />
+							</p:splitButton>
 
 						</p:toolbarGroup>
 					</p:toolbar>
@@ -79,12 +82,12 @@
 							<p:outputLabel
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
 							<div class="ui-inputgroup">
-								<p:button value="Prospect" onclick="PF('dlgProspect').show();" />
 								<p:inputText
 									value="#{newBudgetController.budget.customerOnOrder.name}-#{newBudgetController.budget.customerOnOrder.store}"
 									readonly="true" styleClass="inputfield w-full" />
 								<p:button icon="pi pi-search" styleClass="ui-button-warning"
 									onclick="PF('dlgCustomerSearch').show()" />
+
 							</div>
 						</div>
 

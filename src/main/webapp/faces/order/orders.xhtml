@@ -5,7 +5,8 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:in="http://java.sun.com/jsf/composite/components/invoice">
+	xmlns:in="http://java.sun.com/jsf/composite/components/invoice"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -33,34 +34,52 @@
 		<p:growl id="growl" globalOnly="true" />
 		<div class="grid table-demo">
 			<div class="col-12">
-				<div id="divListContent" class="card" style="display: none">
+				<div jsf:id="divListContent" class="card" style="display: none">
 					<h:form>
-						<p:remoteCommand action="#{ordersController.getOrders(1)}"
+						<p:remoteCommand action="#{ordersController.findOrders(1)}"
 							process="@this" autoRun="true"
 							oncomplete="$('#divLoading').hide();$('#divListContent').show();updateDtOrders()" />
 						<p:remoteCommand name="updateDtOrders" update="dtOrders"
 							action="@none" process="@none"
-							oncomplete="editScrollBodyMaxHeight('dtOrders','90vh')" />
+							oncomplete="editScrollBodyMaxHeight('dataTableOrders','75vh')" />
 
-						<p:dataTable id="dtOrders" widgetVar="dtOrders" var="order"
+						<div class="p-col-12 p-md-4">
+							<div class="ui-inputgroup">
+								<p:commandButton icon="pi pi-times"
+									styleClass="ui-button-danger" process="@this,globalFilter"
+									action="#{ordersController.clearFilter}" update="dtOrders"
+									onstart="let inId = PF('inputFilter').id;document.getElementById(inId).value='';PF('bui').show();"
+									oncomplete="PF('bui').hide()" />
+								<p:inputText id="globalFilter" style="width:300px"
+									placeholder="Nome ou CNPJ"
+									value="#{ordersController.keyFilter}" widgetVar="inputFilter" />
+								<p:commandButton icon="pi pi-search"
+									styleClass="ui-button-success"
+									action="#{ordersController.findOrders(1)}"
+									process="@this,globalFilter" update="dtOrders"
+									onstart="PF('bui').show()" oncomplete="PF('bui').hide()" />
+							</div>
+						</div>
+
+						<p:dataTable id="dtOrders" widgetVar="dataTableOrders" var="order"
 							value="#{ordersController.orders}" paginator="true"
 							paginatorPosition="bottom" rows="#{ordersController.pageSize}"
 							scrollable="true" reflow="true"
 							rowStyleClass="#{order.status eq 'Faturado' ? 'invoiced' : null}">
 							<f:facet name="header">
-								<div class="p-d-flex p-jc-end">
-									<p:inputText id="globalFilter"
-										onkeypress="if(event.code==='Enter')filter();" style="width:300px"
-										placeholder="Nome ou CNPJ"
-										value="#{ordersController.keyFilter}" />
-									<p:remoteCommand name="filter" action="#{ordersController.filter}"
-										process="@this,globalFilter" update="dtOrders"/>
+								<div>
+									<h:outputText
+										value="Filtrando resultados por #{ordersController.keyFilter}"
+										id="filterMessage" rendered="#{ordersController.filterOn}" />
 								</div>
 							</f:facet>
-
+							<f:facet name="footer">
+								<span class="p-text-bold">Há
+									#{ordersController.page.totalItems()} resultados em
+									#{ordersController.page.totalPages()} páginas.</span>
+							</f:facet>
 							<p:ajax event="page" listener="#{ordersController.onPage}"
-								onstart="$('#divLoading').show();$('#divListContent').hide();"
-								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
+								onstart="PF('bui').show()" oncomplete="PF('bui').hide()" />
 
 							<p:column field="code" sortable="false" filterable="false" />
 							<p:column
@@ -74,7 +93,7 @@
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('cliente')}"
 								filterBy="#{order.customerShortname}">
-								<h:outputText value="#{order.customerShortname}" />
+								<h:outputText value="#{order.customerName}" />
 							</p:column>
 							<p:column field="invoiceNumber" sortable="false"
 								filterable="true" headerText="Número" />
@@ -106,6 +125,10 @@
 						</p:dataTable>
 
 
+						<p:blockUI block="divListContent" widgetVar="bui">
+							<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+						</p:blockUI>
+
 					</h:form>
 				</div>
 
@@ -129,6 +152,7 @@
 				</div>
 			</div>
 		</div>
+
 		<p:dialog header="Danfe" modal="true" widgetVar="dlgDanfe"
 			responsive="true" onShow="findDanfe();" positionType="fixed"
 			position="center">

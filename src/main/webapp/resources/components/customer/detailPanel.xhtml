@@ -23,11 +23,7 @@
 			style="max-width: 60vw; max-height: 70vh; overflow-y: auto"
 			blockScroll="true">
 
-			<h:form>
-				<p:remoteCommand name="loadCustomer"
-					action="#{customerDetailPanelController.load(cc.attrs.customer)}"
-					process="@this" update="@obs(loadEvent)" />
-			</h:form>
+			
 			<p:tabView dynamic="true" cache="true">
 				<p:autoUpdate on="loadEvent" />
 				<p:tab title="#{resourceBundleServiceImpl.getMessage('cliente')}"

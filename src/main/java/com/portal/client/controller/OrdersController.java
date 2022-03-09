@@ -30,30 +30,39 @@ public class OrdersController implements Serializable {
 	private LazyBehaviorDataModel<OrderSemiProjection> orders;
 	private OrderSemiProjection invoiceToView;
 	private String keyFilter;
+	private boolean filterOn;
+	private OrderSemiProjectionPage page;
 
 	public OrdersController() {
 		orders = new OrderLazyDataModel();
 
 	}
 
-	public void filter() {
-		System.out.println("Filter " + keyFilter);
-		orderService.findByNameOrCnpj(keyFilter, 1, pageSize).ifPresent(page -> {
+	public void clearFilter() {
+		if (this.filterOn) {
+			this.keyFilter = null;
+			this.findOrders(1);
+			this.filterOn = false;
+		}
+	}
+
+	public void findOrders(int pageNumber) {
+		if (keyFilter != null && !keyFilter.isBlank())
+			this.filterOn = true;
+		else
+			this.filterOn = false;
+		orderService.findAll(keyFilter, pageNumber, pageSize).ifPresentOrElse(page -> {
 			LazyPopulatorUtils.populate(orders, page);
-			System.out.println("Encontrou!");
+			this.page = page;
+		}, () -> {
+			FacesUtils.error(null, "Nenhum resultado encontrado", null, "growl");
+			orders.clearCollection();
+			this.page = null;
 		});
 	}
 
-	public void getOrders(int page) {
-		orderService.findAll(page, pageSize).ifPresentOrElse(o -> {
-			OrderSemiProjectionPage wrapper = o;
-			LazyPopulatorUtils.populate(orders, wrapper);
-		}, () -> FacesUtils.error(null, "Não há pedidos", "Não há pedidos para o representante", "growl"));
-
-	}
-
 	public void onPage(PageEvent page) {
-		this.getOrders(page.getPage() + 1);
+		this.findOrders(page.getPage() + 1);
 	}
 
 	public LazyBehaviorDataModel<OrderSemiProjection> getOrders() {
@@ -78,5 +87,13 @@ public class OrdersController implements Serializable {
 
 	public void setKeyFilter(String keyFilter) {
 		this.keyFilter = keyFilter;
+	}
+
+	public boolean isFilterOn() {
+		return filterOn;
+	}
+
+	public OrderSemiProjectionPage getPage() {
+		return page;
 	}
 }
