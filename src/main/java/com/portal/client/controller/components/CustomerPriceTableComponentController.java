@@ -6,9 +6,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.portal.client.dto.CustomerJson;
 import com.portal.client.resources.export.BudgetExportType;
-import com.portal.client.resources.export.ProductPriceTableExporter;
+import com.portal.client.resources.export.CustomerPriceTableExporter;
 import com.portal.client.service.CustomerService;
 import com.portal.client.util.jsf.FacesUtils;
 import com.portal.client.vo.Customer;
@@ -26,7 +25,7 @@ public class CustomerPriceTableComponentController implements Serializable {
 	private CustomerService service;
 
 	@Inject
-	private ProductPriceTableExporter exporter;
+	private CustomerPriceTableExporter exporter;
 
 	public void find(Customer customer) {
 		if (service.findPriceTable(customer)) {
@@ -37,9 +36,9 @@ public class CustomerPriceTableComponentController implements Serializable {
 
 	}
 
-	public void export(CustomerJson customer) {
+	public void export(Customer customer) {
 		byte[] excel = exporter.toExcel(customer);
-		FacesUtils.prepareResponseForDownloadOfStreams("tabelaPreços", excel, BudgetExportType.EXCEL.getType());
+		FacesUtils.prepareResponseForDownloadOfStreams("tabelaPreços.xlsx", excel, BudgetExportType.EXCEL.getType());
 	}
 
 }

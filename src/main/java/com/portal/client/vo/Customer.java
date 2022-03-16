@@ -121,4 +121,7 @@ public class Customer implements Serializable{
 		this.priceTable = priceTable;
 	}
 
+	public String getPriceTableCode() {
+		return priceTable == null ? financialInfo != null ? financialInfo.getTable() : null : priceTable.getCode();
+	}
 }
