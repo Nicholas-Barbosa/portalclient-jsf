@@ -11,7 +11,7 @@ import com.portal.client.vo.ProductPriceData;
 
 public class ItemBudgetToSaveJsonSerializable implements Comparable<ItemBudgetToSaveJsonSerializable> {
 
-	private Product product;
+	private Item product;
 	private ProductPriceData priceData;
 
 	public static ItemBudgetToSaveJsonSerializable of(Item item) {

@@ -10,12 +10,12 @@ public class Item extends Product implements Serializable {
 	private static final long serialVersionUID = 3280139406134360476L;
 
 	private Order order;
+	private String customerOrder;
 
 	public Item(Product product) {
 		super(product);
 	}
 
-	
 	public Item(Order order, Product product) {
 		super(product);
 		this.order = order;
@@ -29,7 +29,11 @@ public class Item extends Product implements Serializable {
 		this.order = order;
 	}
 
+	public String getCustomerOrder() {
+		return customerOrder;
+	}
 
-	
-	
+	public void setCustomerOrder(String customerOrder) {
+		this.customerOrder = customerOrder;
+	}
 }

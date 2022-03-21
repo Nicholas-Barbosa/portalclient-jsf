@@ -43,16 +43,9 @@ public class BudgetToUpdateDTO extends BudgetToSaveJsonSerializable {
 	}
 
 	@Override
-	@JsonbProperty("client_order")
-	public String getCustomerOrder() {
-		// TODO Auto-generated method stub
-		String value = super.getCustomerOrder();
-		return value == null ? "empty" : value;
-	}
-
-	@Override
 	@JsonbProperty("items")
 	public Set<ItemBudgetToSaveJsonSerializable> getItems() {
-		return super.getBudget().getItems().stream().map(ItemBudgetToUpdateJsonSerializable::of).collect(Collectors.toSet());
+		return super.getBudget().getItems().stream().map(ItemBudgetToUpdateJsonSerializable::of)
+				.collect(Collectors.toSet());
 	}
 }

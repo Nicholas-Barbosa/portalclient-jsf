@@ -21,10 +21,10 @@ public class OrderFullProjection extends Order implements Serializable{
 	 */
 	private static final long serialVersionUID = 7111841709509384056L;
 
-	public OrderFullProjection(String code, String customerNumOrder, String repNumOrder,
+	public OrderFullProjection(String code,String repNumOrder,
 			CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue,
 			BigDecimal globalDiscount, String message, List<Item> items, LocalDate createdAt) {
-		super(code, customerNumOrder, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
+		super(code,  repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
 				message, items, createdAt, null, null);
 		// TODO Auto-generated constructor stub
 	}
@@ -38,7 +38,7 @@ public class OrderFullProjection extends Order implements Serializable{
 
 		CustomerOnOrder customer = new CustomerOnOrder(customerCode, customerStore, null, null, null, null, null, null,
 				null);
-		return new OrderFullProjection(code, null, null, customer, grossValue, value, grossValue.subtract(value), null,
+		return new OrderFullProjection(code, null, customer, grossValue, value, grossValue.subtract(value), null,
 				null, items.stream().map(i -> (Item) i).collect(Collectors.toList()),
 				StringToLocalDateParser.convert(createdAt));
 	}

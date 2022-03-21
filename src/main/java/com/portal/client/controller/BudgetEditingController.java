@@ -78,8 +78,7 @@ public class BudgetEditingController implements Serializable {
 	public void saveToOrder() {
 		if (savedOrder == null) {
 			try {
-				savedOrder = new Order(this.getBudget());
-				orderService.persist(savedOrder);
+				savedOrder = orderService.persistFromBudget(budget);
 				FacesUtils.executeScript("PF('effectivedBudget').show();");
 				FacesUtils.ajaxUpdate("successPersisted");
 			} catch (OrderBadRequestExcpetion e) {

@@ -3,7 +3,6 @@ package com.portal.client.service.crud;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.portal.client.security.api.helper.APIHelper;
-import com.portal.client.security.user.RepresentativeUser;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped

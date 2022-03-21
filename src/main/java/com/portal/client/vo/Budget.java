@@ -12,20 +12,22 @@ public class Budget extends Order {
 
 	}
 
-	public Budget(String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder, BigDecimal grossValue,
-			BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount, List<Item> items, String message,
-			LocalDate createdAt, RepresentativeUser representative) {
-		super(null, customerNumOrder, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
-				message, items, createdAt, representative,null);
-
-	}
+	private String customerNumOrder;
 
 	public Budget(String code, String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder,
 			BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount,
 			List<Item> items, String message, LocalDate createdAt, RepresentativeUser representative) {
-		super(code, customerNumOrder, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
-				message, items, createdAt, representative,null);
+		super(code, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount, message, items,
+				createdAt, representative, null);
+		this.customerNumOrder = customerNumOrder;
 
 	}
 
+	public String getCustomerOrder() {
+		return customerNumOrder;
+	}
+
+	public void setCustomerOrder(String customerNumOrder) {
+		this.customerNumOrder = customerNumOrder;
+	}
 }

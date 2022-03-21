@@ -9,6 +9,7 @@ import com.portal.client.dto.OrderFullProjection;
 import com.portal.client.dto.OrderSemiProjectionPage;
 import com.portal.client.repository.OrderBadRequestExcpetion;
 import com.portal.client.repository.OrderRepository;
+import com.portal.client.vo.Budget;
 import com.portal.client.vo.Order;
 
 @ApplicationScoped
@@ -24,8 +25,8 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	}
 
 	@Override
-	public Optional<OrderSemiProjectionPage> findAll(String nameOrCnpj,int page, int pageSize) {
-		return repository.findAll(nameOrCnpj,page, pageSize);
+	public Optional<OrderSemiProjectionPage> findAll(String nameOrCnpj, int page, int pageSize) {
+		return repository.findAll(nameOrCnpj, page, pageSize);
 	}
 
 	@Override
@@ -34,6 +35,12 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 		return maybe;
 	}
 
-	
+	@Override
+	public Order persistFromBudget(Budget budget) throws OrderBadRequestExcpetion {
+		Order persitedOrder = new Order(budget);
+		persitedOrder.getItems().parallelStream().forEach(item -> item.setCustomerOrder(budget.getCustomerOrder()));
+		this.persist(persitedOrder);
+		return persitedOrder;
+	}
 
 }

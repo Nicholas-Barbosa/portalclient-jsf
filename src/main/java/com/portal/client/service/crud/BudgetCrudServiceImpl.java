@@ -41,8 +41,8 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	@Override
 	public void save(Budget budget, CustomerRepresentativeOrderForm ordersForm) {
 		checkBudgetState(budget);
-		budget.setCustomerNumOrder(ordersForm.getCustomerOrder());
 		budget.setRepNumOrder(ordersForm.getRepresentativeOrder());
+		budget.setCustomerOrder(ordersForm.getCustomerOrder());
 		budgetRepository.save(budget);
 	}
 

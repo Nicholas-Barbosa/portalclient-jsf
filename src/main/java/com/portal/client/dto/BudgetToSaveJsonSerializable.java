@@ -38,7 +38,7 @@ public class BudgetToSaveJsonSerializable {
 
 	@JsonbProperty("client_order")
 	public String getCustomerOrder() {
-		return budget.getCustomerNumOrder();
+		return budget.getCustomerOrder();
 	}
 
 	@JsonbProperty("message")
@@ -50,7 +50,7 @@ public class BudgetToSaveJsonSerializable {
 	public Set<ItemBudgetToSaveJsonSerializable> getItems() {
 		return budget.getItems().stream().map(ItemBudgetToSaveJsonSerializable::of).collect(Collectors.toSet());
 	}
-	
+
 	public Budget getBudget() {
 		return budget;
 	}

@@ -45,11 +45,7 @@ public class OrderToPersist {
 
 	}
 
-	@JsonbProperty("client_order")
-	public String getCustomerOrder() {
-		return order.getCustomerNumOrder();
-
-	}
+	
 
 	@JsonbProperty("items")
 	public Set<ItemOrderToSave> getItems() {
