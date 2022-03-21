@@ -33,19 +33,21 @@ public class BudgetRepositoryImpl extends RepositoryInterceptors implements Budg
 	}
 
 	@Inject
-	public BudgetRepositoryImpl(TokenedRestClient restClient,  APIHelper protheusApiHelper) {
+	public BudgetRepositoryImpl(TokenedRestClient restClient, APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
 		this.protheusApiHelper = protheusApiHelper;
 	}
 
 	@Override
-	public Page<BudgetSemiProjection> findAll(int page, int pageSize) {
+	public Optional<Page<BudgetSemiProjection>> findAll(int page, int pageSize, String key) {
 		StringBuilder endpointURL = new StringBuilder(protheusApiHelper.getBaseUrl());
 		endpointURL.append("/budgets");
-		return restClient.get(endpointURL.toString(), protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(),
-				BudgetSemiProjectionPage.class, Map.of("page", page, "pageSize", pageSize, "searchOrder", "DESC"), null,
-				MediaType.APPLICATION_JSON);
+		return Optional
+				.of(restClient.get(endpointURL.toString(), protheusApiHelper.getToken(),
+						protheusApiHelper.getTokenPrefix(), BudgetSemiProjectionPage.class, Map.of("page", page,
+								"pageSize", pageSize, "searchOrder", "DESC", "searchKey", key == null ? "" : key),
+						null, MediaType.APPLICATION_JSON));
 	}
 
 	@Override
@@ -63,9 +65,6 @@ public class BudgetRepositoryImpl extends RepositoryInterceptors implements Budg
 				Map.of("code", code), MediaType.APPLICATION_JSON));
 
 	}
-
-	
-	
 
 	@Override
 	public void update(Budget budget) {

@@ -11,7 +11,7 @@ import com.portal.client.vo.Page;
 
 public interface BudgetCrudService extends ServiceSerializable, CrudService {
 
-	Page<BudgetSemiProjection> findAll(int page, int pageSize);
+	Optional<Page<BudgetSemiProjection>> findAll(int page, int pageSize,String key);
 
 	void save(Budget budget, CustomerRepresentativeOrderForm ordersForm);
 

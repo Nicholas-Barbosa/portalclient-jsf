@@ -10,7 +10,7 @@ import com.portal.client.vo.Page;
 
 public interface BudgetRepository extends Serializable {
 
-	Page<BudgetSemiProjection> findAll(int page, int pageSize);
+	Optional<Page<BudgetSemiProjection>> findAll(int page, int pageSize, String key);
 
 	Optional<BudgetFullProjection> findByCode(String code);
 

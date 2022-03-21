@@ -15,6 +15,7 @@ import com.portal.client.ui.lazy.datamodel.LazyBehaviorDataModel;
 import com.portal.client.ui.lazy.datamodel.LazyPopulatorUtils;
 import com.portal.client.ui.lazy.datamodel.OrderLazyDataModel;
 import com.portal.client.util.jsf.FacesUtils;
+import com.portal.client.vo.builder.PageBuilder;
 
 @ViewScoped
 @Named
@@ -47,10 +48,7 @@ public class OrdersController implements Serializable {
 	}
 
 	public void findOrders(int pageNumber) {
-		if (keyFilter != null && !keyFilter.isBlank())
-			this.filterOn = true;
-		else
-			this.filterOn = false;
+		this.filterOn = this.keyFilter != null && !keyFilter.isBlank() ? true : false;
 		orderService.findAll(keyFilter, pageNumber, pageSize).ifPresentOrElse(page -> {
 			LazyPopulatorUtils.populate(orders, page);
 			this.page = page;

@@ -32,8 +32,8 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	}
 
 	@Override
-	public Page<BudgetSemiProjection> findAll(int page, int pageSize) {
-		return budgetRepository.findAll(page, pageSize);
+	public Optional<Page<BudgetSemiProjection>> findAll(int page, int pageSize, String key) {
+		return budgetRepository.findAll(page, pageSize, key);
 
 	}
 

@@ -4,7 +4,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -25,7 +26,7 @@
 	<ui:define name="content">
 		<div class="grid table-demo" id="contentFound">
 			<div class="col-12">
-				<div id="divListContent" class="card" style="display: none">
+				<div jsf:id="divListContent" class="card" style="display: none">
 					<h:form>
 						<p:remoteCommand action="#{budgetListController.loadBudgets(1)}"
 							process="@this" autoRun="true"
@@ -37,6 +38,25 @@
 							action="@none" process="@none"
 							oncomplete="editScrollBodyMaxHeight('dtBudgets','90vh')" />
 
+						<div class="p-col-12 p-md-4">
+							<div class="ui-inputgroup">
+								<p:commandButton icon="pi pi-times"
+									styleClass="ui-button-danger" process="@this,globalFilter"
+									action="#{budgetListController.clearFilter}" update="dtBudgets"
+									onstart="let inId = PF('inputFilter').id;document.getElementById(inId).value='';PF('bui').show();"
+									oncomplete="PF('bui').hide()" />
+								<p:inputText id="globalFilter" style="width:300px"
+									placeholder="Nome ou CNPJ"
+									value="#{budgetListController.keyFilter}"
+									widgetVar="inputFilter" />
+								<p:commandButton icon="pi pi-search"
+									styleClass="ui-button-success"
+									action="#{budgetListController.loadBudgets(1)}"
+									process="@this,globalFilter" update="dtBudgets"
+									onstart="PF('bui').show()" oncomplete="PF('bui').hide()" />
+							</div>
+						</div>
+
 
 						<p:dataTable id="dtBudgets" widgetVar="dtBudgets" var="budget"
 							value="#{budgetListController.budgets}" paginator="true"
@@ -45,7 +65,19 @@
 							<p:ajax event="page" listener="#{budgetListController.onPage}"
 								onstart="$('#divLoading').show();$('#divListContent').hide();"
 								oncomplete="$('#divLoading').hide();$('#divListContent').show();" />
+							<f:facet name="header">
+								<div>
+									<h:outputText
+										value="Filtrando resultados por #{budgetListController.keyFilter}"
+										id="filterMessage" rendered="#{budgetListController.filterOn}" />
 
+								</div>
+							</f:facet>
+							<f:facet name="footer">
+								<span class="p-text-bold">Há
+									#{budgetListController.page.totalItems()} resultados em
+									#{budgetListController.page.totalPages()} páginas.</span>
+							</f:facet>
 							<p:column
 								headerText="#{resourceBundleServiceImpl.getMessage('orcamento')}">
 								<h:outputText value="#{budget.code}" />
@@ -86,6 +118,10 @@
 								</p:linkButton>
 							</p:column>
 						</p:dataTable>
+
+						<p:blockUI block="divListContent" widgetVar="bui">
+							<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+						</p:blockUI>
 
 					</h:form>
 				</div>
