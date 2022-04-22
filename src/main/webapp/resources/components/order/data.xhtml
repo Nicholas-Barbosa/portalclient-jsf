@@ -28,7 +28,7 @@
 				<div class="field col-12 md:col-6">
 					<label for="bCode">Código</label>
 					<p:inputText id="bCode" type="text" readonly="true"
-						value="#{cc.attrs.order.code}" styleClass="inputfield w-full"/>
+						value="#{cc.attrs.order.code}" styleClass="inputfield w-full" />
 				</div>
 				<div class="field col-12 md:col-6">
 					<label for="createdAt">Criado em</label>
@@ -41,17 +41,13 @@
 				<div class="field col-12 md:col-6">
 					<label for="oPNum">N°Pedido representante</label>
 					<p:inputText id="oPNum" type="text"
-						value="#{cc.attrs.order.repNumOrder}" styleClass="inputfield w-full"/>
-				</div>
-				<div class="field col-12 md:col-6">
-					<label for="ocNum">N°Pedido cliente</label>
-					<p:inputText id="ocNum" type="text"
-						value="#{cc.attrs.order.customerNumOrder}" styleClass="inputfield w-full"/>
+						value="#{cc.attrs.order.repNumOrder}"
+						styleClass="inputfield w-full" />
 				</div>
 				<div class="field col-12 xl:col-4 lg:col-5 md:col-12">
 					<p:outputLabel for="mensagem" value="Mensagem" />
 					<p:inputTextarea id="mensagem" rows="4" maxlength="250"
-						value="#{cc.attrs.order.message}" styleClass="inputfield w-full"/>
+						value="#{cc.attrs.order.message}" styleClass="inputfield w-full" />
 				</div>
 
 			</div>

@@ -42,7 +42,7 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 	public void save(Budget budget, CustomerRepresentativeOrderForm ordersForm) {
 		checkBudgetState(budget);
 		budget.setRepNumOrder(ordersForm.getRepresentativeOrder());
-		budget.setCustomerOrder(ordersForm.getCustomerOrder());
+		budget.setCustomerNumOrder(ordersForm.getCustomerOrder());
 		budgetRepository.save(budget);
 	}
 

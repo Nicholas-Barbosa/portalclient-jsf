@@ -18,7 +18,6 @@ import com.portal.client.exception.MismatchCellTypeExceptions;
 import com.portal.client.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
 import com.portal.client.exception.ProductsNotFoundException;
 import com.portal.client.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
-import com.portal.client.microsoft.excel.writer.XssfWriter;
 import com.portal.client.resources.export.ProductsImportComponentNotFoundCommandExporter;
 import com.portal.client.service.ProductImporter;
 import com.portal.client.util.jsf.FacesUtils;
@@ -66,15 +65,14 @@ public class ProductFileImportComponent implements Serializable {
 			this.fileLayout.setXlsxStreams(null);
 			this.mismatchCelltypeExceptions = null;
 			this.extractedData = null;
-			if (productsNotFound != null) {
-				FacesUtils.addHeaderForResponse("products-not-found", true);
-				return;
-			}
 		} catch (ProductsNotFoundException e) {
 			productsNotFound = e.getProducts();
-			extractedData.removeIf(p -> Arrays.stream(productsNotFound).parallel()
-					.anyMatch(pNotFound -> p.getCode().equals(pNotFound.getProductIdentity())));
-			this.confirm(customerCode, customerStore, observer);
+			extractedData.removeIf(p -> Arrays.stream(productsNotFound).parallel().anyMatch(
+					pNotFound -> p.getCode().strip().equalsIgnoreCase(pNotFound.getProductIdentity().strip())));
+			FacesUtils.addHeaderForResponse("products-not-found", true);
+			if (extractedData.size() > 0)
+				this.confirm(customerCode, customerStore, observer);
+				
 		}
 	}
 

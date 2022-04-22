@@ -24,7 +24,7 @@ public class OrderFullProjection extends Order implements Serializable{
 	public OrderFullProjection(String code,String repNumOrder,
 			CustomerOnOrder customerOnOrder, BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue,
 			BigDecimal globalDiscount, String message, List<Item> items, LocalDate createdAt) {
-		super(code,  repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
+		super(code, null, repNumOrder, customerOnOrder, grossValue, liquidValue, stValue, globalDiscount,
 				message, items, createdAt, null, null);
 		// TODO Auto-generated constructor stub
 	}

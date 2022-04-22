@@ -32,13 +32,14 @@ public class OrderCrudServiceImpl implements OrderCrudService {
 	@Override
 	public Optional<OrderFullProjection> findByCode(String code) {
 		Optional<OrderFullProjection> maybe = repository.findByCode(code);
+		maybe.ifPresent(order -> order.setCustomerNumOrder(order.getItems().get(0).getCustomerOrder()));
 		return maybe;
 	}
 
 	@Override
 	public Order persistFromBudget(Budget budget) throws OrderBadRequestExcpetion {
 		Order persitedOrder = new Order(budget);
-		persitedOrder.getItems().parallelStream().forEach(item -> item.setCustomerOrder(budget.getCustomerOrder()));
+		persitedOrder.getItems().parallelStream().forEach(item -> item.setCustomerOrder(budget.getCustomerNumOrder()));
 		this.persist(persitedOrder);
 		return persitedOrder;
 	}

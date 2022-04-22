@@ -179,7 +179,7 @@
 
 	<p:dialog widgetVar="productsNotFound" header="Produtos não importados"
 		modal="true" responsive="true" appendTo="@(body)"
-		style="max-width:25vw" onHide="setNullProductsNotFound()">
+		style="max-width: 25vw; max-height: 60vh; overflow-y: auto" onHide="setNullProductsNotFound()">
 		<div class="grid flex-column">
 			<div class="col">
 				<p:staticMessage severity="warn" summary="Produtos não encontrados"

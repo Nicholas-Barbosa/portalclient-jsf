@@ -40,6 +40,10 @@ public class ItemOrderToSave {
 		return value.getQuantity();
 	}
 
+	@JsonbProperty("client_order")
+	public String getClientOrder() {
+		return item.getCustomerOrder();
+	}
 //	public int getQuantity() {
 //		return value.getQuantity();
 //	}

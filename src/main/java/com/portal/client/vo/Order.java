@@ -9,7 +9,7 @@ import com.portal.client.security.user.RepresentativeUser;
 
 public class Order {
 
-	private String code,repNumOrder;
+	private String code, customerNumOrder,repNumOrder;
 	private CustomerOnOrder customerOnOrder;
 	private BigDecimal grossValue;
 	private BigDecimal liquidValue;
@@ -21,15 +21,17 @@ public class Order {
 	private RepresentativeUser representative;
 	private Invoice invoice;
 	private String status;
+
 	public Order() {
 	}
 
-	public Order(String code,  String repNumOrder, CustomerOnOrder customerOnOrder,
-			BigDecimal grossValue, BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount,
-			String message, List<Item> items, LocalDate createdAt, RepresentativeUser representative,String status) {
+	public Order(String code,String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder, BigDecimal grossValue,
+			BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount, String message, List<Item> items,
+			LocalDate createdAt, RepresentativeUser representative, String status) {
 		super();
 		this.code = code;
 		this.repNumOrder = repNumOrder;
+		this.customerNumOrder = customerNumOrder;
 		this.customerOnOrder = customerOnOrder;
 		this.grossValue = grossValue;
 		this.liquidValue = liquidValue;
@@ -43,9 +45,9 @@ public class Order {
 	}
 
 	public Order(Order order) {
-		this(order.code, order.repNumOrder, order.customerOnOrder, order.grossValue,
-				order.liquidValue, order.stValue, order.globalDiscount, order.message, new ArrayList<>(order.items),
-				order.createdAt, order.representative,order.getStatus());
+		this(order.code,order.customerNumOrder, order.repNumOrder, order.customerOnOrder, order.grossValue, order.liquidValue, order.stValue,
+				order.globalDiscount, order.message, new ArrayList<>(order.items), order.createdAt,
+				order.representative, order.getStatus());
 	}
 
 	public String getCode() {
@@ -56,13 +58,19 @@ public class Order {
 		this.code = code;
 	}
 
-	
 	public String getRepNumOrder() {
 		return repNumOrder;
 	}
 
 	public void setRepNumOrder(String repNumOrder) {
 		this.repNumOrder = repNumOrder;
+	}
+	
+	public String getCustomerNumOrder() {
+		return customerNumOrder;
+	}
+	public void setCustomerNumOrder(String customerNumOrder) {
+		this.customerNumOrder = customerNumOrder;
 	}
 
 	public CustomerOnOrder getCustomerOnOrder() {
@@ -149,7 +157,7 @@ public class Order {
 	public void setRepresentative(RepresentativeUser representative) {
 		this.representative = representative;
 	}
-	
+
 	public Invoice getInvoice() {
 		return invoice;
 	}
@@ -157,7 +165,7 @@ public class Order {
 	public void setInvoice(Invoice invoice) {
 		this.invoice = invoice;
 	}
-	
+
 	public boolean removeItems(List<Item> itemsToCompareAndRemove) {
 		return items.removeAll(itemsToCompareAndRemove);
 	}
@@ -165,11 +173,14 @@ public class Order {
 	public void removeItems() {
 		items.clear();
 	}
-	
+
 	public String getStatus() {
 		return status;
 	}
+
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+
 }

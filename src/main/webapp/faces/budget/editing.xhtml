@@ -136,13 +136,14 @@
 				</div>
 				<o:editPanel order="#{budgetEditingController.budget}"
 					id="editPanel" title="Orçamento" />
-
+				
 			</div>
 
 		</f:view>
 		<p:dialog widgetVar="exportComponent" modal="true"
 			header="Exportar orçamento" responsive="true">
-			<b:export budget="#{budgetEditingController.budget}" fileName="orcamento-#{budgetEditingController.budget.code}"/>
+			<b:export budget="#{budgetEditingController.budget}"
+				fileName="orcamento-#{budgetEditingController.budget.code}" />
 		</p:dialog>
 
 		<script type="text/javascript"
