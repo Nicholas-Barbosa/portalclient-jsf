@@ -59,8 +59,13 @@ public class ProductSearchComponentController implements Serializable {
 	}
 
 	public void notifyObserver(ProductSearchObserver observer) {
-		observer.onConfirm(product);
-		product = null;
+		if (product != null) {
+			observer.onConfirm(product);
+			product = null;
+			codeToSearch=null;
+			return;
+		}
+		FacesUtils.warn(null, "Produto não adicionado!", "Pesquise o produto antes de confirmar", "growl");
 	}
 
 	public void onQuantityChange() {

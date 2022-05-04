@@ -22,7 +22,7 @@
 		modal="true" responsive="true" fitViewport="true">
 		<div id="#{cc.clientId}" style="max-height: 50vh; overflow: auto;">
 			<div class="ui-fluid">
-				<h:form>
+				<h:form id="formSearch">
 					<div class="field">
 						<p:outputLabel for="code">#{resourceBundleServiceImpl.getMessage('codigo_comercial')}</p:outputLabel>
 						<div class="ui-inputgroup">
@@ -149,7 +149,7 @@
 							styleClass="ui-button-raised ui-button-success mr-2 mb-2"
 							action="#{productSearchComponentController.notifyObserver(cc.attrs.searchObserver)}"
 							id="btnConfirm" onclick="PF('productSearch').hide()"
-							update="#{cc.attrs.updates}"
+							update="#{cc.attrs.updates}, #{cc.clientId}:formSearch, #{cc.clientId}:manage-product-content"
 							disabled="#{productSearchComponentController.duplicateProduct}">
 							<p:autoUpdate on="searchAction" />
 						</p:commandButton>
