@@ -2897,6 +2897,8 @@ a {
   height: 38px;
   align-items: center;
   justify-content: space-between;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .layout-breadcrumb .breadcrumb {
   display: -ms-flexbox;
@@ -2929,9 +2931,13 @@ a {
   -webkit-transition: color 0.2s;
   transition: color 0.2s;
   font-size: 12px;
+  white-space: nowrap;
 }
 .layout-breadcrumb .breadcrumb .route-bar-breadcrumb > li .ui-link:hover {
   color: #3C9462;
+}
+.layout-breadcrumb::-webkit-scrollbar {
+  display: none;
 }
 
 @media (max-width: 992px) {

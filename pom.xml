@@ -7,19 +7,62 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>war</packaging>
 
+	<properties>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<failOnMissingWebXml>false</failOnMissingWebXml>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-war-plugin.version>3.3.1</maven-war-plugin.version>
+		<maven-dependency-plugin.version>3.1.2</maven-dependency-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+		<maven-failsafe-plugin.version>3.0.0-M5</maven-failsafe-plugin.version>
+		<maven-surefire-report-plugin.version>3.0.0-M5</maven-surefire-report-plugin.version>
+		<!-- Cargo maven plugin -->
+		<!-- Since 1.9.0, cargo-maven3-plugin is the default for cargo prefix. -->
+		<cargo-maven3-plugin.version>1.9.0</cargo-maven3-plugin.version>
+
+		<!-- Jakarta EE API -->
+		<jakartaee-api.version>8.0.0</jakartaee-api.version>
+
+		<!-- Arquillian BOM -->
+		<arquillian-bom.version>1.7.0.Alpha9</arquillian-bom.version>
+		<junit-jupiter.version>5.7.1</junit-jupiter.version>
+
+		<!-- Glassfish server -->
+		<glassfish.version>6.0.0</glassfish.version>
+		<arquillian-glassfish6.version>1.0.0.Alpha1</arquillian-glassfish6.version>
+		<jersey.version>3.0.1</jersey.version>
+		<skipTests>true</skipTests>
+	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.google.cloud</groupId>
-				<artifactId>libraries-bom</artifactId>
-				<version>20.4.0</version>
-				<type>pom</type>
-				<scope>import</scope>
+				<groupId>jakarta.platform</groupId>
+				<artifactId>jakarta.jakartaee-api</artifactId>
+				<version>${jakartaee-api.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.arquillian</groupId>
 				<artifactId>arquillian-bom</artifactId>
-				<version>1.1.14.Final</version>
+				<version>${arquillian-bom.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>libraries-bom</artifactId>
+				<version>20.4.0</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -30,32 +73,29 @@
 		<dependency>
 			<groupId>jakarta.platform</groupId>
 			<artifactId>jakarta.jakartaee-api</artifactId>
-			<version>8.0.0</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<groupId>org.jboss.arquillian.junit5</groupId>
+			<artifactId>arquillian-junit5-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- see: https://github.com/arquillian/arquillian-core/issues/248 -->
+		<!-- and https://github.com/arquillian/arquillian-core/pull/246/files -->
+		<dependency>
+			<groupId>org.jboss.arquillian.protocol</groupId>
+			<artifactId>arquillian-protocol-servlet-jakarta</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-container</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.4</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- clip -->
 		<dependency>
 			<groupId>org.primefaces</groupId>
 			<artifactId>primefaces</artifactId>
-			<version>10.0.0</version>
+			<version>11.0.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/net.sf.jasperreports/jasperreports -->
 		<dependency>
@@ -84,22 +124,10 @@
 			<artifactId>omnifaces</artifactId>
 			<version>3.11.2</version>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.shrinkwrap.resolver</groupId>
-			<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-			<scope>test</scope>
-		</dependency>
+
 
 	</dependencies>
 
-	<properties>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<failOnMissingWebXml>false</failOnMissingWebXml>
-		<skipTests>true</skipTests>
-	</properties>
 
 	<profiles>
 		<profile>
@@ -156,21 +184,70 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		<profile>
+			<id>glassfish</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<dependencies>
+				<!-- Jersey -->
+				<dependency>
+					<groupId>org.glassfish.jersey.media</groupId>
+					<artifactId>jersey-media-sse</artifactId>
+					<version>${jersey.version}</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.glassfish.jersey.media</groupId>
+					<artifactId>jersey-media-json-binding</artifactId>
+					<version>${jersey.version}</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.glassfish.jersey.inject</groupId>
+					<artifactId>jersey-hk2</artifactId>
+					<version>${jersey.version}</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.glassfish.jersey.core</groupId>
+					<artifactId>jersey-client</artifactId>
+					<version>${jersey.version}</version>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.jboss.arquillian.container</groupId>
+					<artifactId>arquillian-glassfish-remote-6</artifactId>
+					<version>${arquillian-glassfish6.version}</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+
+		</profile>
 	</profiles>
 
 	<build>
 		<finalName>portal</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.cargo</groupId>
+					<artifactId>cargo-maven3-plugin</artifactId>
+					<version>${cargo-maven3-plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
-				<configuration>
-					<skipTests>${skipTests}</skipTests>
-					<systemProperties>
-						<arquillian.launch>glassfish-embedded</arquillian.launch>
-					</systemProperties>
-				</configuration>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven-war-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>

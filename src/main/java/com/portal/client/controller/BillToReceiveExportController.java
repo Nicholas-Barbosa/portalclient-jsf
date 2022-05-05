@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.inject.Named;
 
+
 @javax.faces.view.ViewScoped
 @Named
 public class BillToReceiveExportController implements Serializable{
