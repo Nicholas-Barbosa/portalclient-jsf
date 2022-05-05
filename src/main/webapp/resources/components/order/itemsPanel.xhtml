@@ -16,7 +16,7 @@
 <composite:interface>
 
 	<composite:attribute name="order" required="true"
-		type="com.portal.client.vo.Order" />
+		type="com.farawaybr.portal.vo.Order" />
 	<composite:attribute name="renderDiscountButton"
 		shortDescription="Conditionaly render menu button for discount"
 		type="java.lang.Boolean" default="false" />
@@ -38,10 +38,10 @@
 				<p:toolbar styleClass="mb-4">
 					<p:toolbarGroup>
 
-						<p:button value="Adicionar" icon="pi pi-plus"
+						<p:commandButton type="button" value="Adicionar" icon="pi pi-plus"
 							styleClass="ui-button-raised ui-button-success"
 							style="margin-right: .5rem" onclick="PF('productSearch').show()" />
-						<p:button value="#{resourceBundleServiceImpl.getMessage('abrir')}"
+						<p:commandButton type="button" value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 							icon="pi pi-folder-open" styleClass="ui-button-success mr-2"
 							onclick="PF('dlgImportProducts').show();"
 							title="Importar produtos" />

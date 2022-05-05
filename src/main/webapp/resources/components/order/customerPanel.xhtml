@@ -14,7 +14,7 @@
 </h:head>
 
 <composite:interface>
-	<composite:attribute name="order" type="com.portal.client.vo.Order"
+	<composite:attribute name="order" type="com.farawaybr.portal.vo.Order"
 		required="true" />
 
 </composite:interface>
@@ -27,7 +27,7 @@
 			</div>
 			<div class="col-2">
 				<h:form>
-					<p:button icon="pi pi-search-plus"
+					<p:commandButton type="button" icon="pi pi-search-plus"
 						title="Visualizar cliente"
 						styleClass="rounded-button ui-button-success "
 						onclick="openCustomerDetailDialog()" />

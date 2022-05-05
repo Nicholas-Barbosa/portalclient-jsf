@@ -1,4 +1,4 @@
-package com.portal.client.security.api.register;
+package com.farawaybr.portal.security.api.register;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,10 +10,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.security.api.ProtheusApiData;
+import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
 import com.portal.ShrinkwrapDeploymentUtils;
-import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.security.api.ProtheusApiData;
-import com.portal.client.security.api.ProtheusApiEnviroment;
 
 @RunWith(Arquillian.class)
 public class ProtheusApiRegisterImplTest {
@@ -23,7 +23,7 @@ public class ProtheusApiRegisterImplTest {
 
 	@Deployment
 	public static JavaArchive deployment() {
-		return ShrinkwrapDeploymentUtils.createdDeployment(true,"com.portal.client.security.api").addClass(ConfigPropertyResolver.class);
+		return ShrinkwrapDeploymentUtils.createdDeployment(true,"com.farawaybr.portal.security.api").addClass(ConfigPropertyResolver.class);
 	}
 
 	@Test

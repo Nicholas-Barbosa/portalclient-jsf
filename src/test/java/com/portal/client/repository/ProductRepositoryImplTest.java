@@ -1,4 +1,4 @@
-package com.portal.client.repository;
+package com.farawaybr.portal.repository;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -14,15 +14,16 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
+import com.farawaybr.portal.dto.ProductToFind;
+import com.farawaybr.portal.exception.ProductsNotFoundException;
+import com.farawaybr.portal.microsoft.excel.writer.XssfWriter;
+import com.farawaybr.portal.microsoft.excel.writer.XssfWriterImpl;
+import com.farawaybr.portal.repository.ProductRepositoryImpl;
+import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.service.jsonb.JsonbService;
+import com.farawaybr.portal.service.jsonb.JsonbServiceImpl;
 import com.portal.ShrinkwrapDeploymentUtils;
-import com.portal.client.dto.BatchProductSearchDataWrapper;
-import com.portal.client.dto.ProductToFind;
-import com.portal.client.exception.ProductsNotFoundException;
-import com.portal.client.microsoft.excel.writer.XssfWriter;
-import com.portal.client.microsoft.excel.writer.XssfWriterImpl;
-import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.service.jsonb.JsonbService;
-import com.portal.client.service.jsonb.JsonbServiceImpl;
 
 @RunWith(Arquillian.class)
 public class ProductRepositoryImplTest {
@@ -33,8 +34,8 @@ public class ProductRepositoryImplTest {
 	@Deployment
 	public static JavaArchive deploy() {
 		return ShrinkwrapDeploymentUtils
-				.createdDeployment(true, "com.nicholas.jaxrsclient", "com.portal.client.repository",
-						"com.portal.client.security.api")
+				.createdDeployment(true, "com.nicholas.jaxrsclient", "com.farawaybr.portal.repository",
+						"com.farawaybr.portal.security.api")
 				.addClass(ConfigPropertyResolver.class).addClass(XssfWriter.class).addClass(XssfWriterImpl.class)
 				.addClass(JsonbService.class).addClass(JsonbServiceImpl.class);
 	}

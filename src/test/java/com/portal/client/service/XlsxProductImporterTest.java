@@ -1,4 +1,4 @@
-package com.portal.client.service;
+package com.farawaybr.portal.service;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -15,10 +15,11 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.farawaybr.portal.dto.XlsxProductFileReadLayout;
+import com.farawaybr.portal.exception.MismatchCellTypeExceptions;
+import com.farawaybr.portal.microsoft.excel.reader.XssfReaderImpl;
+import com.farawaybr.portal.service.XlsxProductImporter;
 import com.portal.ShrinkwrapDeploymentUtils;
-import com.portal.client.dto.XlsxProductFileReadLayout;
-import com.portal.client.exception.MismatchCellTypeExceptions;
-import com.portal.client.microsoft.excel.reader.XssfReaderImpl;
 
 @RunWith(Arquillian.class)
 public class XlsxProductImporterTest {

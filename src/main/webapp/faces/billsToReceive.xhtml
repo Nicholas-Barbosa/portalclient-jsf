@@ -43,7 +43,7 @@
 								oncomplete="$('#divLoading').hide();$('#divDTContent').show()" />
 
 							<f:facet name="header">
-								<p:button icon="pi pi-share-alt" value="Exportar"
+								<p:commandButton type="button" icon="pi pi-share-alt" value="Exportar"
 									onclick="PF('exportDlg').show()"
 									rendered="#{financialBondsController.titles != null}" />
 							</f:facet>

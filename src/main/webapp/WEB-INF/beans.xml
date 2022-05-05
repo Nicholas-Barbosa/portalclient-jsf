@@ -1,14 +1,14 @@
 <beans xmlns="http://xmlns.jcp.org/xml/ns/javaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
-	version="1.2" bean-discovery-mode="all">
+	version="1.2" bean-discovery-mode="annotated">
 
 	<interceptors>
-		<class>com.portal.client.cdi.aop.aspect.IllegalResponseAspect</class>
-		<class>com.portal.client.cdi.aop.aspect.NotFound404OptionalEmptyAspect</class>
-		<class>com.portal.client.cdi.aop.aspect.OrderBadRequestAspect</class>
-		<class>com.portal.client.exceptionhandler.netowork.NetworkExcpetionAspect</class>
-		<class>com.portal.client.service.states.StatesCacheAspect</class>
-		<class>com.portal.client.cdi.aop.aspect.NotAuthorizedAspect</class>
+		<class>com.farawaybr.portal.cdi.aop.aspect.IllegalResponseAspect</class>
+		<class>com.farawaybr.portal.cdi.aop.aspect.NotFound404OptionalEmptyAspect</class>
+		<class>com.farawaybr.portal.cdi.aop.aspect.OrderBadRequestAspect</class>
+		<class>com.farawaybr.portal.exceptionhandler.netowork.NetworkExcpetionAspect</class>
+		<class>com.farawaybr.portal.service.states.StatesCacheAspect</class>
+		<class>com.farawaybr.portal.cdi.aop.aspect.NotAuthorizedAspect</class>
 	</interceptors>
 </beans>

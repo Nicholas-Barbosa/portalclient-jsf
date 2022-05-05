@@ -1,4 +1,4 @@
-package com.portal.client.resources.export.jasper.service;
+package com.farawaybr.portal.resources.export.jasper.service;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -11,12 +11,12 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.farawaybr.portal.microsoft.excel.writer.XssfWriterImpl;
+import com.farawaybr.portal.resources.export.jasper.service.ExcelJasperService;
+import com.farawaybr.portal.resources.export.jasper.service.JasperReportType;
+import com.farawaybr.portal.resources.export.jasper.service.PdfJasperService;
+import com.farawaybr.portal.resources.export.jasper.service.SimpleJasperServiceFactory;
 import com.portal.ShrinkwrapDeploymentUtils;
-import com.portal.client.microsoft.excel.writer.XssfWriterImpl;
-import com.portal.client.resources.export.jasper.service.ExcelJasperService;
-import com.portal.client.resources.export.jasper.service.JasperReportType;
-import com.portal.client.resources.export.jasper.service.PdfJasperService;
-import com.portal.client.resources.export.jasper.service.SimpleJasperServiceFactory;
 
 @RunWith(Arquillian.class)
 public class SimpleJasperServiceFactoryTest {
@@ -24,7 +24,7 @@ public class SimpleJasperServiceFactoryTest {
 	@Deployment
 	public static JavaArchive createDeployment() {
 		JavaArchive jar = ShrinkwrapDeploymentUtils
-				.createdDeployment(true, "com.portal.client.resources", "com.portal.client.security.api")
+				.createdDeployment(true, "com.farawaybr.portal.resources", "com.farawaybr.portal.security.api")
 				.addClass(XssfWriterImpl.class);
 //		System.out.println(jar.toString(true));
 		return jar;

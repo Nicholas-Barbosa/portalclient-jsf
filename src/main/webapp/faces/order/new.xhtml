@@ -62,7 +62,7 @@
 								action="#{orderExportShowController.show(newOrderController.order)}"
 								process="@this" />-->
 
-							<p:button
+							<p:commandButton type="button"
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}"
 								icon="pi pi-eye" onclick="PF('dlgCustomerDetails').show()" />
 
@@ -82,10 +82,10 @@
 								<p:inputText
 									value="#{newOrderController.order.customerOnOrder.name}-#{newOrderController.order.customerOnOrder.store}"
 									readonly="true" styleClass="inputfield w-full" />
-								<p:button icon="pi pi-search" styleClass="ui-button-warning"
+								<p:commandButton type="button" icon="pi pi-search" styleClass="ui-button-warning"
 									onclick="PF('dlgSearchCustomer').show()"
 									id="btnShowSearchCustomer">
-								</p:button>
+								</p:commandButton type="button">
 							</div>
 						</div>
 

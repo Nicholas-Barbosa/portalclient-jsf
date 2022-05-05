@@ -19,7 +19,7 @@
 	</ui:define>
 
 	<ui:define name="title">
-		FarAway | #{resourceBundleServiceImpl.getMessage('orcamento_message')}
+		Novo orçamento
 	</ui:define>
 
 	<ui:define name="viewname">
@@ -57,7 +57,7 @@
 								value="#{resourceBundleServiceImpl.getMessage('salvar_orcamento')}"
 								icon="pi pi-check" styleClass="ui-button-success " />
 							<i class="pi pi-bars px-2" />
-							<p:button title="Print" icon="pi pi-print"
+							<p:commandButton type="button" title="Print" icon="pi pi-print"
 								styleClass="ui-button-success mr-2"
 								onclick="PF('exportComponent').show();" />
 
@@ -77,7 +77,7 @@
 
 			<div class="card">
 				<h:form id="customerForm">
-					<div class="formgrid grid">
+					<div class="formgrid grid ui-input-filled">
 						<div class="field col-12 xl:col-4 lg:col-5 md:col-12">
 							<p:outputLabel
 								value="#{resourceBundleServiceImpl.getMessage('cliente')}" />
@@ -85,7 +85,8 @@
 								<p:inputText
 									value="#{newBudgetController.budget.customerOnOrder.name}-#{newBudgetController.budget.customerOnOrder.store}"
 									readonly="true" styleClass="inputfield w-full" />
-								<p:button icon="pi pi-search" styleClass="ui-button-warning"
+								<p:commandButton type="button" icon="pi pi-search"
+									styleClass="ui-button-warning"
 									onclick="PF('dlgCustomerSearch').show()" />
 
 							</div>

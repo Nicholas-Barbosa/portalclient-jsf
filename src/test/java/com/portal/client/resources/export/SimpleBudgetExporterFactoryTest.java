@@ -1,4 +1,4 @@
-package com.portal.client.resources.export;
+package com.farawaybr.portal.resources.export;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -10,9 +10,11 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.farawaybr.portal.microsoft.excel.writer.XssfWriterImpl;
+import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.resources.export.BudgetExportType;
+import com.farawaybr.portal.resources.export.SimpleBudgetExporterFactory;
 import com.portal.ShrinkwrapDeploymentUtils;
-import com.portal.client.microsoft.excel.writer.XssfWriterImpl;
-import com.portal.client.resources.ConfigPropertyResolver;
 
 @RunWith(Arquillian.class)
 public class SimpleBudgetExporterFactoryTest {
@@ -23,7 +25,7 @@ public class SimpleBudgetExporterFactoryTest {
 	@Deployment
 	public static JavaArchive deployment() {
 		return ShrinkwrapDeploymentUtils
-				.createdDeployment(true, "com.portal.client.resources.export", "com.portal.client.security.api")
+				.createdDeployment(true, "com.farawaybr.portal.resources.export", "com.farawaybr.portal.security.api")
 				.addClass(ConfigPropertyResolver.class).addClass(XssfWriterImpl.class);
 	}
 

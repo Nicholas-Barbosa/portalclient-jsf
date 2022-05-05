@@ -1,4 +1,4 @@
-package com.portal.client.repository;
+package com.farawaybr.portal.repository;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -11,9 +11,11 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.farawaybr.portal.repository.DanfeRepository;
+import com.farawaybr.portal.repository.DanfeRepositoryImpl;
+import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.security.api.register.ProtheusApiRegisterImpl;
 import com.portal.ShrinkwrapDeploymentUtils;
-import com.portal.client.resources.ConfigPropertyResolver;
-import com.portal.client.security.api.register.ProtheusApiRegisterImpl;
 
 @RunWith(Arquillian.class)
 public class DanfeRepositoryImplTest {
@@ -27,7 +29,7 @@ public class DanfeRepositoryImplTest {
 	@Deployment
 	public static JavaArchive createDeploy() {
 		return ShrinkwrapDeploymentUtils
-				.createdDeployment(true, "com.nicholas.jaxrsclient", "com.portal.client.security.api")
+				.createdDeployment(true, "com.nicholas.jaxrsclient", "com.farawaybr.portal.security.api")
 				.addClass(ConfigPropertyResolver.class).addClass(DanfeRepository.class)
 				.addClass(DanfeRepositoryImpl.class);
 	}

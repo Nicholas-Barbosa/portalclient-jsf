@@ -42,7 +42,7 @@
 
 				</div>
 				<p:dataTable value="#{cc.attrs.customer.priceTable.products}"
-					var="product" rows="5" paginator="true" id="products">
+					var="product" rows="5" paginator="true" id="products" lazy="false">
 					<p:column groupRow="true" headerText="Linha"
 						filterBy="#{product.line}">
 						<h:outputText style="vertical-align: middle; margin-left: .5rem"
@@ -69,7 +69,7 @@
 						</h:outputText>
 					</p:column>
 					<p:column style="2rem">
-						<p:button value="Aplicação"
+						<p:commandButton type="button" value="Aplicação"
 							rendered="#{product.productTechDetail.application != null}"
 							onclick="$('#product-application-text').text('#{product.productTechDetail.application}'); PF('productApplicationOverlay').show('#{component.clientId}');" />
 					</p:column>
