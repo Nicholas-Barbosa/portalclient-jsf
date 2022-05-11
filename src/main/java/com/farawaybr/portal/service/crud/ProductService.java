@@ -1,6 +1,7 @@
 package com.farawaybr.portal.service.crud;
 
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 
 import com.farawaybr.portal.dto.ProductPageDTO;
 import com.farawaybr.portal.service.ServiceSerializable;
@@ -12,12 +13,12 @@ public interface ProductService extends ServiceSerializable {
 	Optional<ProductPageDTO> findByDescription(String descriptio, int page, int pageSize);
 
 	Optional<Product> findByCode(String code, String customerCode, String customerStore, String state,
-			String sellerType, CustomerType customerType);
+			String sellerType, CustomerType customerType) throws ExecutionException, InterruptedException;
 
 	void loadImage(Product product);
 
 	void loadTechDetails(Product product);
-	
-	void findStock(Product...products);
-	
+
+	void findStock(Product... products);
+
 }

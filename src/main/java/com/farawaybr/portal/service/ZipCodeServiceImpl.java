@@ -10,10 +10,9 @@ import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 
 import com.farawaybr.portal.cdi.aop.annotations.NotFoundOptionalEmptyJoinPointCut;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.pojo.ZipCode;
 import com.farawaybr.portal.resources.ConfigPropertyResolver;
-import com.nicholas.jaxrsclient.RestClient;
-import com.nicholas.jaxrsclient.diqualifier.Simple;
 
 @ApplicationScoped
 public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
@@ -28,7 +27,7 @@ public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 	private ConfigPropertyResolver configPropertiesResolver;
 
 	@Inject
-	public ZipCodeServiceImpl(@Simple RestClient restClient, ConfigPropertyResolver resourcesReader) {
+	public ZipCodeServiceImpl(RestClient restClient, ConfigPropertyResolver resourcesReader) {
 		super();
 		this.restClient = restClient;
 		this.configPropertiesResolver = resourcesReader;
@@ -40,7 +39,7 @@ public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 		// TODO Auto-generated method stub
 		try {
 			return Optional.of(restClient.get(configPropertiesResolver.getProperty("cep_api_url"), ZipCode.class, null,
-					Map.of("cep", cep), MediaType.APPLICATION_JSON));
+					Map.of("cep", cep), MediaType.APPLICATION_JSON, null));
 		} catch (NotFoundException e) {
 			return Optional.empty();
 		}

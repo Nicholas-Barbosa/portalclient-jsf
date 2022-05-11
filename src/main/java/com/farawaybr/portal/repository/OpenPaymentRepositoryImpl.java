@@ -6,20 +6,21 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import com.farawaybr.portal.dto.OpenPaymentsPage;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.security.api.helper.APIHelper;
-import com.nicholas.jaxrsclient.TokenedRestClient;
 
 @ApplicationScoped
 public class OpenPaymentRepositoryImpl extends RepositoryInterceptors implements OpenPaymentRepository {
 
-	private TokenedRestClient restClient;
+	private RestClient restClient;
 	private APIHelper protheusApiHelper;
 
 	@Inject
-	public OpenPaymentRepositoryImpl(TokenedRestClient restClient, APIHelper protheusApiHelper) {
+	public OpenPaymentRepositoryImpl(RestClient restClient, APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
 		this.protheusApiHelper = protheusApiHelper;
@@ -31,9 +32,9 @@ public class OpenPaymentRepositoryImpl extends RepositoryInterceptors implements
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchOrder", "DESC");
-		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("titles"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), OpenPaymentsPage.class, queryParams, null,
-				MediaType.APPLICATION_JSON));
+		return Optional
+				.of(restClient.get(protheusApiHelper.buildEndpoint("titles"), OpenPaymentsPage.class, queryParams, null,
+						MediaType.APPLICATION_JSON, Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken())));
 
 	}
 
@@ -45,8 +46,8 @@ public class OpenPaymentRepositoryImpl extends RepositoryInterceptors implements
 		queryParams.put("searchOrder", "DESC");
 
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("titles/{code}/loja/{store}"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), OpenPaymentsPage.class, queryParams,
-				Map.of("code", code, "store", store), MediaType.APPLICATION_JSON));
+				OpenPaymentsPage.class, queryParams, Map.of("code", code, "store", store), MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken())));
 
 	}
 

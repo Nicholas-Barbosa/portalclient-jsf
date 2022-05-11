@@ -45,8 +45,9 @@ public class ProspectCustomerFormController implements Serializable {
 		prospectCustomerForm = new ProspectCustomerForm();
 	}
 
-	public void loadStates(String componentId) {
-		if (states == null) {
+	public void loadStates() {
+		System.out.println("load states!");
+		if (states == null || states.size() < 27) {
 			states = this.stateService.findAll();
 			return;
 
@@ -61,8 +62,7 @@ public class ProspectCustomerFormController implements Serializable {
 			this.prospectCustomerForm.setDistrict(zipCode.getDistrict());
 			this.prospectCustomerForm.setCity(zipCode.getCity());
 			this.prospectCustomerForm.setZipCode(cepToSearch);
-			FacesUtils.info(null, "CEP encontrado!", zipCode.getStreet() + ", " + zipCode.getDistrict() + " - "
-					+ zipCode.getCity() + " lat: " + zipCode.getLat() + " lng: " + zipCode.getLng());
+
 		}, () -> {
 			FacesUtils.warn(null, "CEP não encontrado", "Digite os dados do endereço manualmente.", "growl");
 			this.readOnlyAddressFields = false;

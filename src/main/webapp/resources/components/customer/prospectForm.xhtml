@@ -87,12 +87,12 @@
 				<p:outputLabel for="@next" value="Estado" />
 				<p:selectOneMenu id="states" filter="true" panelStyle="width:180px"
 					value="#{prospectCustomerFormController.prospectCustomerForm.stateAcronym}"
-					editable="false" widgetVar="states">
+					editable="false" widgetVar="states" >
 					<f:selectItems value="#{prospectCustomerFormController.states}"
 						var="state" itemLabel="#{state.name}" itemValue="#{state.acronym}" />
 				</p:selectOneMenu>
 				<p:remoteCommand name="loadStates"
-					action="#{prospectCustomerFormController.loadStates(cc.clientId)}"
+					action="#{prospectCustomerFormController.loadStates()}"
 					process="@this" update="states" async="true" />
 
 				<p:row>

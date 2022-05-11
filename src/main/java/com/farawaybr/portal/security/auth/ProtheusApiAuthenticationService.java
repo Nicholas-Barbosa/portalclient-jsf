@@ -11,13 +11,13 @@ import javax.ws.rs.core.MediaType;
 
 import com.farawaybr.portal.dto.LoginProtheusForm;
 import com.farawaybr.portal.dto.ProtheusAuthenticationEndpointResponse;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.resources.ProtheusApiUrlResolver;
 import com.farawaybr.portal.security.api.APIsManager;
 import com.farawaybr.portal.security.api.ProtheusApiData;
 import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
 import com.farawaybr.portal.security.user.RepresentativeUser;
 import com.farawaybr.portal.security.user.builder.RepresentativeUserBuilder;
-import com.nicholas.jaxrsclient.RestClient;
 
 @RequestScoped
 public class ProtheusApiAuthenticationService implements AuthenticationService, Serializable {
@@ -50,7 +50,8 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 		String baseUrl = protheusApiUrlResolver.getUrl(loginForm.getCompanyEnv());
 		String authenticationUrl = String.format("%s/%s", baseUrl, "api/oauth2/v1/token");
 		ProtheusAuthenticationEndpointResponse authResponse = restClient.post(authenticationUrl,
-				ProtheusAuthenticationEndpointResponse.class, queryParams, null, null, MediaType.APPLICATION_JSON);
+				ProtheusAuthenticationEndpointResponse.class, queryParams, null, null, MediaType.APPLICATION_JSON,
+				null);
 
 		this.registerApi(
 				(RepresentativeUser) RepresentativeUserBuilder.getInstance().withUsername(loginForm.getUsername())
@@ -71,12 +72,11 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 	@Override
 	public void refreshToken() {
 		ProtheusApiData apiData = apisManger.getAPI("PROTHEUS_API");
-		System.out.println("Refresh token " + apiData.getRefreshToken());
 		ProtheusAuthenticationEndpointResponse refreshResponse = restClient.post(
 				apisManger.buildEndpoint(apiData, apiData.getRefreshTokenUrl()),
 				ProtheusAuthenticationEndpointResponse.class,
 				Map.of("grant_type", "refresh_token", "refresh_token", apiData.getRefreshToken()), null, null,
-				MediaType.APPLICATION_JSON);
+				MediaType.APPLICATION_JSON, null);
 		String newToken = refreshResponse.getAccessToken();
 		String newRefreshToken = refreshResponse.getRefreshToken();
 		apiData.setToken(newToken);

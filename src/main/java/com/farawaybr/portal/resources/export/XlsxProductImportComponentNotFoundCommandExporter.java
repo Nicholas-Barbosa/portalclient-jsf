@@ -1,4 +1,4 @@
-package com.farawaybr.portal.resources;
+package com.farawaybr.portal.resources.export;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import com.farawaybr.portal.microsoft.excel.RowObject;
 import com.farawaybr.portal.microsoft.excel.CellAttribute.CellAttributeBuilder;
 import com.farawaybr.portal.microsoft.excel.writer.XssfWriter;
-import com.farawaybr.portal.resources.export.ProductsImportComponentNotFoundCommandExporter;
 import com.farawaybr.portal.vo.WrapperProduct404Error.Product404Error;
 
 @ApplicationScoped

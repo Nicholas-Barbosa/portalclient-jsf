@@ -10,7 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
 import com.farawaybr.portal.dto.BrazilianState;
-import com.nicholas.jaxrsclient.RestClient;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 
 @ApplicationScoped
 public class BrazilianStateServiceImpl implements BrazilianStateService, Serializable {
@@ -33,7 +33,7 @@ public class BrazilianStateServiceImpl implements BrazilianStateService, Seriali
 	public List<BrazilianState> findAll() {
 		List<BrazilianState> states = Arrays
 				.asList(this.restClient.get("https://servicodados.ibge.gov.br/api/v1/localidades/estados",
-						BrazilianState[].class, null, null, MediaType.APPLICATION_JSON));
+						BrazilianState[].class, null, null, MediaType.APPLICATION_JSON,null));
 		Collections.sort(states, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 		return states;
 	}

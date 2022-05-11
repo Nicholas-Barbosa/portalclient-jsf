@@ -163,7 +163,12 @@
 					<version>5.2021.9</version>
 					<scope>test</scope>
 				</dependency>
-
+<dependency>
+					<groupId>org.jboss.weld</groupId>
+					<artifactId>weld-core</artifactId>
+					<version>2.3.5.Final</version>
+					<scope>test</scope>
+				</dependency>
 			</dependencies>
 		</profile>
 

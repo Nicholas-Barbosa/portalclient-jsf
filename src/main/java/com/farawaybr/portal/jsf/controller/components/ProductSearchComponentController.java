@@ -2,6 +2,7 @@ package com.farawaybr.portal.jsf.controller.components;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
@@ -39,30 +40,36 @@ public class ProductSearchComponentController implements Serializable {
 	}
 
 	public void search(CustomerOnOrder customer, List<Product> products) {
-		productService.findByCode(codeToSearch, customer.getCode(), customer.getStore(), customer.getStore(),
-				customer instanceof ProspectCustomerOnOrder
-						? ((ProspectCustomerOnOrder) customer).getSellerType().getType()
-						: null,
-				customer.getType()).ifPresentOrElse(product -> {
-					this.product = product;
-					FacesUtils.ajaxUpdate("manage-product-content");
-					FacesUtils.executeScript("$('#footer').show()");
-					this.newQuantity = product.getPriceData().getQuantity();
-					this.duplicateProduct = products == null ? false
-							: products.parallelStream()
-									.anyMatch(p -> p.getCommercialCode().equalsIgnoreCase(product.getCommercialCode()));
+		try {
+			productService.findByCode(codeToSearch, customer.getCode(), customer.getStore(), customer.getStore(),
+					customer instanceof ProspectCustomerOnOrder
+							? ((ProspectCustomerOnOrder) customer).getSellerType().getType()
+							: null,
+					customer.getType()).ifPresentOrElse(product -> {
+						this.product = product;
+						FacesUtils.ajaxUpdate("manage-product-content");
+						FacesUtils.executeScript("$('#footer').show()");
+						this.newQuantity = product.getPriceData().getQuantity();
+						this.duplicateProduct = products == null ? false
+								: products.parallelStream().anyMatch(
+										p -> p.getCommercialCode().equalsIgnoreCase(product.getCommercialCode()));
 
-				}, () -> {
-					FacesUtils.error(null, "Produto não localizado", null, "growl");
-					product = null;
-				});
+					}, () -> {
+						FacesUtils.error(null, "Produto não localizado", null, "growl");
+						product = null;
+					});
+		} catch (ExecutionException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			FacesUtils.fatal(null, "Error interno", "Tente novamente mais tarde", "growl");
+			e.printStackTrace();
+		}
 	}
 
 	public void notifyObserver(ProductSearchObserver observer) {
 		if (product != null) {
 			observer.onConfirm(product);
 			product = null;
-			codeToSearch=null;
+			codeToSearch = null;
 			return;
 		}
 		FacesUtils.warn(null, "Produto não adicionado!", "Pesquise o produto antes de confirmar", "growl");

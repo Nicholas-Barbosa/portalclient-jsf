@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
@@ -27,18 +28,18 @@ import com.farawaybr.portal.dto.ProductToFind;
 import com.farawaybr.portal.dto.ProductToFindStock;
 import com.farawaybr.portal.dto.ProductWrapper;
 import com.farawaybr.portal.exception.ProductsNotFoundException;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.security.api.helper.APIHelper;
 import com.farawaybr.portal.service.jsonb.JsonbService;
 import com.farawaybr.portal.vo.Product;
 import com.farawaybr.portal.vo.WrapperProduct404Error;
-import com.nicholas.jaxrsclient.TokenedRestClient;
 
 @ApplicationScoped
 public class ProductRepositoryImpl extends RepositoryInterceptors implements ProductRepository, Serializable {
 
 	private static final long serialVersionUID = 4463669170628763803L;
 	@Inject
-	private TokenedRestClient restClient;
+	private RestClient restClient;
 	@Inject
 	private APIHelper protheusApiHelper;
 	@Inject
@@ -54,10 +55,11 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 		pathParmas.put("code", code);
 		pathParmas.put("customerCode", customerCode);
 		pathParmas.put("store", store);
-		return Optional.of(
-				restClient.get(protheusApiHelper.buildEndpoint("products/{code}/client/{customerCode}/store/{store}"),
-						protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductWrapper.class, null,
-						pathParmas, MediaType.APPLICATION_JSON).getProducts().get(0).getProduct());
+		return Optional.of(restClient
+				.get(protheusApiHelper.buildEndpoint("products/{code}/client/{customerCode}/store/{store}"),
+						ProductWrapper.class, null, pathParmas, MediaType.APPLICATION_JSON,
+						Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()))
+				.getProducts().get(0).getProduct());
 
 	}
 
@@ -70,8 +72,8 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 		pathParams.put("store", store);
 		return restClient.getAsync(
 				protheusApiHelper.buildEndpoint("products/{code}/client/{customerCode}/store/{store}"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductWrapper.class, null,
-				pathParams, MediaType.APPLICATION_JSON);
+				ProductWrapper.class, null, pathParams, MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 	}
 
 	@Override
@@ -79,8 +81,8 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 		Map<String, Object> queryParams = Stream.of(page, pageSize)
 				.collect(Collectors.toMap(k -> k.toString(), v -> v));
 		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(protheusApiHelper.buildEndpoint("products"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductPageDTO.class, queryParams,
-				null, MediaType.APPLICATION_JSON);
+				ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 
 		return productPageDto;
 	}
@@ -92,8 +94,8 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", description);
 		ProductPageDTO productPageDto = (ProductPageDTO) restClient.get(protheusApiHelper.buildEndpoint("products"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductPageDTO.class, queryParams,
-				null, MediaType.APPLICATION_JSON);
+				ProductPageDTO.class, queryParams, null, MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 		return Optional.of(productPageDto);
 
 	}
@@ -107,17 +109,17 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("state", state);
 		queryParams.put("type", sellerType);
-		return restClient.getAsync(protheusApiHelper.buildEndpoint("products/{code}"), protheusApiHelper.getToken(),
-				protheusApiHelper.getTokenPrefix(), ProductWrapper.class, queryParams, pathParmas,
-				MediaType.APPLICATION_JSON);
+		return restClient.getAsync(protheusApiHelper.buildEndpoint("products/{code}"), ProductWrapper.class,
+				queryParams, pathParmas, MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 
 	}
 
 	@Override
 	public ProductTechDetailJson findTechDetails(String commercialCode) {
 		return restClient.get("https://gauss.com.br/produtos/wp-json/wp/v2/gauss_products",
-				System.getProperty("site.api.token"), "Bearer", ProductTechDetailJson[].class,
-				Map.of("slug", commercialCode, "lang", "pt"), null, "application/json")[0];
+				ProductTechDetailJson[].class, Map.of("slug", commercialCode, "lang", "pt"), null, "application/json",
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + System.getProperty("site.api.token")))[0];
 	}
 
 	@Override
@@ -125,8 +127,8 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 		ProductToFindStock[] productsToFind = Arrays.stream(products).map(ProductToFindStock::of)
 				.collect(Collectors.toSet()).toArray(new ProductToFindStock[0]);
 		List<ProductStock> stocks = restClient.post(protheusApiHelper.buildEndpoint("stock/search"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductStockWrapper.class, null, null,
-				productsToFind, MediaType.APPLICATION_JSON).getStock();
+				ProductStockWrapper.class, null, null, productsToFind, MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken())).getStock();
 		Arrays.stream(products).parallel().forEach(p -> {
 			stocks.stream().filter(pStock -> p.getCommercialCode().equals(pStock.getCommercialCode())).findAny()
 					.ifPresent(pStock -> {
@@ -144,8 +146,9 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 				products);
 		try {
 			BatchProductSearchDataWrapper dataWrapper = restClient.post(protheusApiHelper.buildEndpoint("estimate"),
-					protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(),
-					BatchProductSearchDataWrapper.class, null, null, postForm, "application/json");
+
+					BatchProductSearchDataWrapper.class, null, null, postForm, "application/json",
+					Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 			return dataWrapper;
 		} catch (NotFoundException e) {
 			WrapperProduct404Error wrapper = jsonb.fromJson((String) e.getResponse().getEntity(),

@@ -22,10 +22,10 @@ public class StatesCacheAspect {
 		if (source.isEmpty()) {
 			Object result = context.proceed();
 			List<BrazilianState> collection = (List<BrazilianState>) result;
-			source.loadCacheSource(collection);
+			source.setStates(collection);
 			return result;
 		}
-		return source.getAll();
+		return source.getStates();
 
 	}
 }

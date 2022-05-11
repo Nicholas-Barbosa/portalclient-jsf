@@ -47,7 +47,6 @@ public class CustomerSearchController implements Serializable {
 			this.selectedCustomerToSeeDetails = c.getContent().stream().limit(1).collect(Collectors.toList()).get(0);
 			FacesUtils.ajaxUpdate("dtCustomerResult");
 			FacesUtils.executeScript("$('#noCustomersFound').hide();$('#content').show();");
-			System.out.println("foi");
 
 		}, () -> {
 			FacesUtils.executeScript("$('#noCustomersFound').show();$('#content').hide();");
@@ -60,7 +59,6 @@ public class CustomerSearchController implements Serializable {
 
 	public void notifyObserver(SelectEvent<Customer> event) {
 		if (!event.getObject().getBlocked().equals("Sim")) {
-			System.out.println("Observer " + observer);
 			this.selectedCustomerToSeeDetails = event.getObject();
 			observer.onCustomerSelect(event.getObject());
 			return;

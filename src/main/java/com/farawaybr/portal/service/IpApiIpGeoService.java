@@ -6,7 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.farawaybr.portal.dto.IPGeoData;
-import com.nicholas.jaxrsclient.RestClient;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 
 @ApplicationScoped
 public class IpApiIpGeoService implements IpGeoService {
@@ -18,7 +18,7 @@ public class IpApiIpGeoService implements IpGeoService {
 	public IPGeoData findByIp(String ip) {
 		// TODO Auto-generated method stub
 		return restClient.get("http://ip-api.com/json/{ip}", IPGeoData.class, null, Map.of("ip", ip),
-				"application/json");
+				"application/json",null);
 	}
 
 }

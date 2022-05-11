@@ -148,7 +148,7 @@
 
 			<p:dialog widgetVar="dlgProspect" modal="true" header="Prospect"
 				positionType="absolute" responsive="true" blockScroll="true"
-				style="max-height: 65vh; overflow: auto">
+				style="max-height: 65vh; overflow: auto" onShow="loadStates()">
 				<div>
 					<c:prospectForm order="#{newBudgetController.budget}"
 						update=":customerForm,budgetToolsForm"

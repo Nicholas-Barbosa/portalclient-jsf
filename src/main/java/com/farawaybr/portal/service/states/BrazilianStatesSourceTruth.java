@@ -1,11 +1,8 @@
 package com.farawaybr.portal.service.states;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
@@ -15,21 +12,21 @@ import com.farawaybr.portal.dto.BrazilianState;
 @ApplicationScoped
 public class BrazilianStatesSourceTruth {
 
-	private final Map<String, BrazilianState> states = new ConcurrentHashMap<>();
+	private final List<BrazilianState> states = new CopyOnWriteArrayList<>();
 
 	@PreDestroy
 	public void preDestroy() {
 //		OutputStream out = new BufferedOutputStream(new FileOutputStream(""));
 //		new FileInputStream(null)
 	}
-	void loadCacheSource(List<BrazilianState> states) {
-		this.states.putAll(states.parallelStream().collect(Collectors.toConcurrentMap(k -> k.getName(), v -> v)));
+
+	void setStates(List<BrazilianState> states) {
+		this.states.addAll(states);
+		Collections.sort(states, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
 	}
 
-	public List<BrazilianState> getAll() {
-		List<BrazilianState> states = new ArrayList<>(List.copyOf(this.states.values()));
-		Collections.sort(states, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
-		return states;
+	public List<BrazilianState> getStates() {
+		return Collections.unmodifiableList(states);
 	}
 
 	public boolean isEmpty() {

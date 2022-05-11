@@ -1,4 +1,4 @@
-package com.farawaybr.portal.cdi.aop.aspect;
+package com.farawaybr.portal.jaxrs.client.aspect;
 
 import java.util.Optional;
 

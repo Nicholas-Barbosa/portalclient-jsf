@@ -15,7 +15,6 @@ import com.farawaybr.portal.jsf.lazydata.LazyPopulatorUtils;
 import com.farawaybr.portal.jsf.lazydata.OrderLazyDataModel;
 import com.farawaybr.portal.service.crud.OrderCrudService;
 import com.farawaybr.portal.util.jsf.FacesUtils;
-import com.farawaybr.portal.vo.builder.PageBuilder;
 
 @ViewScoped
 @Named

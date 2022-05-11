@@ -5,18 +5,19 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
 
 import com.farawaybr.portal.cdi.aop.annotations.NotFoundOptionalEmptyJoinPointCut;
 import com.farawaybr.portal.dto.DanfeDataDto;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.security.api.helper.ProtheusAPIHelper;
 import com.farawaybr.portal.vo.Danfe;
-import com.nicholas.jaxrsclient.TokenedRestClient;
 
 @ApplicationScoped
-public class DanfeRepositoryImpl implements DanfeRepository {
+public class DanfeRepositoryImpl extends RepositoryInterceptors implements DanfeRepository {
 
 	@Inject
-	private TokenedRestClient tokenedRestClient;
+	private RestClient tokenedRestClient;
 
 	@Inject
 	private ProtheusAPIHelper protheusApi;
@@ -26,9 +27,9 @@ public class DanfeRepositoryImpl implements DanfeRepository {
 	public Optional<Danfe> findByInvoiceNumber(String invoiceNumber, String invoiceSerie) {
 		// TODO Auto-generated method stub
 		DanfeDataDto data = tokenedRestClient.get(
-				protheusApi.buildEndpoint("/danfe/{invoiceNumber}/series/{invoiceSerie}"), protheusApi.getToken(),
-				protheusApi.getTokenPrefix(), DanfeDataDto.class, null,
-				Map.of("invoiceNumber", invoiceNumber, "invoiceSerie", invoiceSerie), "application/json");
+				protheusApi.buildEndpoint("/danfe/{invoiceNumber}/series/{invoiceSerie}"), DanfeDataDto.class, null,
+				Map.of("invoiceNumber", invoiceNumber, "invoiceSerie", invoiceSerie), "application/json",
+				Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApi.getToken()));
 		StringBuilder base64 = new StringBuilder(data.getStreamBase64());
 //		base64.delete(0, 28);
 		return Optional.of(new Danfe(base64.toString()));

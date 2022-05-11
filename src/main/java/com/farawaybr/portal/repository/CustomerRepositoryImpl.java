@@ -7,16 +7,17 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import com.farawaybr.portal.dto.CustomerPageDTO;
 import com.farawaybr.portal.dto.CustomerWrapper;
 import com.farawaybr.portal.dto.ProductPriceTableWrapper;
-import com.farawaybr.portal.dto.SearchCustomerByCodeAndStoreDTO;
 import com.farawaybr.portal.dto.ProductPriceTableWrapper.ProductPriceTableJsonData;
+import com.farawaybr.portal.dto.SearchCustomerByCodeAndStoreDTO;
+import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.security.api.helper.APIHelper;
 import com.farawaybr.portal.vo.Customer;
-import com.nicholas.jaxrsclient.TokenedRestClient;
 
 @ApplicationScoped
 public class CustomerRepositoryImpl extends RepositoryInterceptors implements CustomerRepository {
@@ -25,7 +26,7 @@ public class CustomerRepositoryImpl extends RepositoryInterceptors implements Cu
 	 * 
 	 */
 	private static final long serialVersionUID = -8042300828676622038L;
-	private final TokenedRestClient restClient;
+	private final RestClient restClient;
 	private final APIHelper protheusApiHelper;
 
 	public CustomerRepositoryImpl() {
@@ -33,7 +34,7 @@ public class CustomerRepositoryImpl extends RepositoryInterceptors implements Cu
 	}
 
 	@Inject
-	public CustomerRepositoryImpl(TokenedRestClient restClient, APIHelper protheusApiHelper) {
+	public CustomerRepositoryImpl(RestClient restClient, APIHelper protheusApiHelper) {
 		super();
 		this.restClient = restClient;
 		this.protheusApiHelper = protheusApiHelper;
@@ -45,9 +46,9 @@ public class CustomerRepositoryImpl extends RepositoryInterceptors implements Cu
 		Map<String, Object> queryParms = new HashMap<>();
 		queryParms.put("page", page);
 		queryParms.put("pageSize", pageSize);
-		CustomerPageDTO customerPage = restClient.get(protheusApiHelper.buildEndpoint("client"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParms,
-				null, MediaType.APPLICATION_JSON);
+		CustomerPageDTO customerPage = restClient.get(protheusApiHelper.buildEndpoint("client"), CustomerPageDTO.class,
+				queryParms, null, MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken()));
 		return customerPage;
 
 	}
@@ -58,8 +59,8 @@ public class CustomerRepositoryImpl extends RepositoryInterceptors implements Cu
 		pathParams.put("code", searchCustomerByCodeAndStoreDTO.getCode());
 		pathParams.put("codeStore", searchCustomerByCodeAndStoreDTO.getStore());
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("clients/{code}/loja/{codeStore}"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerWrapper.class, null,
-				pathParams, MediaType.APPLICATION_JSON).getCustomer());
+				CustomerWrapper.class, null, pathParams, MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken())).getCustomer());
 
 	}
 
@@ -69,9 +70,9 @@ public class CustomerRepositoryImpl extends RepositoryInterceptors implements Cu
 		queryParams.put("page", page);
 		queryParams.put("pageSize", pageSize);
 		queryParams.put("searchKey", name);
-		Optional<CustomerPageDTO> cPage = Optional.of(restClient.get(protheusApiHelper.buildEndpoint("clients"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), CustomerPageDTO.class, queryParams,
-				null, MediaType.APPLICATION_JSON));
+		Optional<CustomerPageDTO> cPage = Optional
+				.of(restClient.get(protheusApiHelper.buildEndpoint("clients"), CustomerPageDTO.class, queryParams, null,
+						MediaType.APPLICATION_JSON, Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken())));
 
 		return cPage.get().getContent().size() > 0 ? cPage : Optional.empty();
 
@@ -85,8 +86,8 @@ public class CustomerRepositoryImpl extends RepositoryInterceptors implements Cu
 	public Optional<List<ProductPriceTableJsonData>> findPriceTable(String customerCode, String customerStore) {
 		// TODO Auto-generated method stub
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("tables/{customer}/loja/{store}"),
-				protheusApiHelper.getToken(), protheusApiHelper.getTokenPrefix(), ProductPriceTableWrapper.class, null,
-				Map.of("customer", customerCode, "store", customerStore), "application/json").getList());
+				ProductPriceTableWrapper.class, null, Map.of("customer", customerCode, "store", customerStore),
+				"application/json", Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken())).getList());
 	}
 
 }

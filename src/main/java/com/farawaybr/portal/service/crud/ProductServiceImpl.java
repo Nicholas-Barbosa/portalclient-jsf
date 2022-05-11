@@ -8,6 +8,9 @@ import java.util.concurrent.TimeoutException;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.client.ResponseProcessingException;
 
 import com.farawaybr.portal.cdi.qualifier.ProductBucket;
 import com.farawaybr.portal.dto.ProductPageDTO;
@@ -15,11 +18,11 @@ import com.farawaybr.portal.dto.ProductTechDetailJson;
 import com.farawaybr.portal.dto.ProductWrapper;
 import com.farawaybr.portal.google.cloud.storage.BucketClient;
 import com.farawaybr.portal.repository.ProductRepository;
+import com.farawaybr.portal.vo.CustomerOnOrder.CustomerType;
 import com.farawaybr.portal.vo.Product;
+import com.farawaybr.portal.vo.ProductImage.ImageInfoState;
 import com.farawaybr.portal.vo.ProductPriceData;
 import com.farawaybr.portal.vo.ProductTechDetail;
-import com.farawaybr.portal.vo.CustomerOnOrder.CustomerType;
-import com.farawaybr.portal.vo.ProductImage.ImageInfoState;
 import com.google.cloud.storage.Blob;
 
 @ApplicationScoped
@@ -47,14 +50,22 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Optional<Product> findByCode(String code, String customerCode, String customerStore, String state,
-			String sellerType, CustomerType customerType) {
+			String sellerType, CustomerType customerType) throws ExecutionException, InterruptedException {
 		Future<Blob> ftBlob = bucketClient.getAsyncObject(code);
 
 		try {
-			
+
 			Future<ProductWrapper> ftProduct = customerType.equals(CustomerType.NORMAL)
 					? productRepository.findByCodeAsync(code, customerCode, customerStore)
 					: productRepository.findByCodeForProspectAsync(code, state, sellerType);
+			/*
+			 * Note that calling the java.util.concurrent.Future.get() method on the
+			 * returned Future instance may throw an java.util.concurrent.ExecutionException
+			 * that wraps either a javax.ws.rs.ProcessingException thrown in case of an
+			 * invocation processing failure or a WebApplicationException or one of its
+			 * subclasses thrown in case thereceived response status code is not successful
+			 * and the specified response type is not javax.ws.rs.core.Response.
+			 */
 			ProductWrapper response = ftProduct.get();
 			if (response != null) {
 				byte[] image = getBlobStreamImageContent(ftBlob);
@@ -68,10 +79,19 @@ public class ProductServiceImpl implements ProductService {
 				return Optional.of(product);
 			}
 			ftBlob.cancel(true);
+			return Optional.empty();
 		} catch (ExecutionException | InterruptedException e) {
-			e.printStackTrace();
+			if (e.getCause() instanceof WebApplicationException) {
+				WebApplicationException wae = (WebApplicationException) e.getCause();
+				wae.getResponse().close();
+				return Optional.empty();
+			} else if (e.getCause() instanceof ResponseProcessingException) {
+				ResponseProcessingException rpe = (ResponseProcessingException) e.getCause();
+				rpe.getResponse().close();
+			}
+			throw e;
+
 		}
-		return Optional.empty();
 	}
 
 	@Override
