@@ -110,7 +110,7 @@
 					filterDelay="100"
 					selection="#{itemOrderContainerController.itemsToRemove}"
 					rowKey="#{item.commercialCode}" rowSelectMode="add" reflow="true"
-					rows="10" paginator="true" rowIndexVar="index">
+					rows="10" paginator="true" rowIndexVar="index" lazy="false">
 					<p:autoUpdate on="newItem" />
 					<f:facet name="footer">
 						<h:outputText
