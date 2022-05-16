@@ -1,6 +1,8 @@
 package com.farawaybr.portal.jsf.controller;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.push.Push;
+import javax.faces.push.PushContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
@@ -26,16 +28,17 @@ public class LoginController {
 	private String headerDlgMessage;
 	private String previousPage;
 
+	
 	@Inject
 	public LoginController(AuthenticationService authenticationRepository,
-			ResourceBundleService resourceBundleService
-			) {
+			ResourceBundleService resourceBundleService) {
 		this.authenticationRepository = authenticationRepository;
 		this.resourceBundleService = resourceBundleService;
 		this.headerDlgMessage = this.resourceBundleService.getMessage("auteticando_usuario");
 		this.loginForm = new LoginProtheusForm();
 	}
 
+	
 	public String authenticate() {
 		try {
 			this.authenticationRepository.authenticate(loginForm);

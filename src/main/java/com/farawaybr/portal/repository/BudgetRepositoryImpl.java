@@ -56,7 +56,9 @@ public class BudgetRepositoryImpl extends RepositoryInterceptors implements Budg
 	public void save(Budget budget) {
 		BudgetSavedResponse response = restClient.post(protheusApiHelper.buildEndpoint("budgets"),
 				BudgetSavedResponse.class, null, null, BudgetToSaveJsonSerializable.of(budget),
-				MediaType.APPLICATION_JSON, Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken()));
+				MediaType.APPLICATION_JSON,
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
+
 		budget.setCode(response.getCode());
 	}
 
@@ -64,7 +66,7 @@ public class BudgetRepositoryImpl extends RepositoryInterceptors implements Budg
 	public Optional<BudgetFullProjection> findByCode(String code) {
 		return Optional.of(restClient.get(protheusApiHelper.buildEndpoint("budgets/{code}"), BudgetFullProjection.class,
 				null, Map.of("code", code), MediaType.APPLICATION_JSON,
-				Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken())));
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken())));
 
 	}
 
@@ -73,6 +75,6 @@ public class BudgetRepositoryImpl extends RepositoryInterceptors implements Budg
 		BudgetToUpdateDTO toUpdate = new BudgetToUpdateDTO(budget);
 		restClient.put(protheusApiHelper.buildEndpoint("budgets/{id}"), String.class, null,
 				Map.of("id", budget.getCode()), toUpdate, "application/json",
-				Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken()));
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 	}
 }
