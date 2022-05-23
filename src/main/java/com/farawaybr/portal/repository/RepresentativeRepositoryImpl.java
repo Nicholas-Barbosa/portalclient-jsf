@@ -34,7 +34,6 @@ public class RepresentativeRepositoryImpl implements RepresentativeRepository, S
 	@Override
 	public RepresentativeData loadData() {
 		// TODO Auto-generated method stub
-		System.out.println("Find representative data");
 		return restClient
 				.get(protheusApiHelper.buildEndpoint("representative"), WrapperRepresentativeData.class, null, null,
 						MediaType.APPLICATION_JSON, Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApiHelper.getToken()))

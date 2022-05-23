@@ -65,7 +65,6 @@ public class JaxrsClientRequester {
 		if (queryParams != null)
 			for (String key : queryParams.keySet())
 				target = target.queryParam(key, queryParams.get(key));
-
 		if (pathParams != null)
 			target = target.resolveTemplates(pathParams);
 		return target;

@@ -1,4 +1,4 @@
-package com.farawaybr.portal.jaxrs.client.aspect;
+package com.farawaybr.portal.repository;
 
 import java.util.Optional;
 
@@ -14,7 +14,7 @@ import com.farawaybr.portal.cdi.aop.annotations.NotFoundOptionalEmptyJoinPointCu
 @Interceptor
 @NotFoundOptionalEmptyJoinPointCut
 @Priority(3)
-public class NotFound404OptionalEmptyAspect {
+public class RepositoryNotFound404OptionalEmptyAspect {
 
 	@AroundInvoke
 	public Object aroundInvoke(InvocationContext joinpoint) throws Throwable {
@@ -24,6 +24,11 @@ public class NotFound404OptionalEmptyAspect {
 			if (e.getCause() instanceof NotFoundException && isOptional(joinpoint))
 				return Optional.empty();
 			throw e.getCause();
+		} catch (NotFoundException e) {
+			System.out.println("not found!");
+			if (isOptional(joinpoint))
+				return Optional.empty();
+			throw e;
 		}
 	}
 

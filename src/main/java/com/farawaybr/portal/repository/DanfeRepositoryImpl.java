@@ -17,7 +17,7 @@ import com.farawaybr.portal.vo.Danfe;
 public class DanfeRepositoryImpl extends RepositoryInterceptors implements DanfeRepository {
 
 	@Inject
-	private RestClient tokenedRestClient;
+	private RestClient restClient;
 
 	@Inject
 	private ProtheusAPIHelper protheusApi;
@@ -26,10 +26,10 @@ public class DanfeRepositoryImpl extends RepositoryInterceptors implements Danfe
 	@Override
 	public Optional<Danfe> findByInvoiceNumber(String invoiceNumber, String invoiceSerie) {
 		// TODO Auto-generated method stub
-		DanfeDataDto data = tokenedRestClient.get(
-				protheusApi.buildEndpoint("/danfe/{invoiceNumber}/series/{invoiceSerie}"), DanfeDataDto.class, null,
+		DanfeDataDto data = restClient.get(
+				protheusApi.buildEndpoint("danfe/{invoiceNumber}/series/{invoiceSerie}"), DanfeDataDto.class, null,
 				Map.of("invoiceNumber", invoiceNumber, "invoiceSerie", invoiceSerie), "application/json",
-				Map.of(HttpHeaders.AUTHORIZATION,"Bearer "+  protheusApi.getToken()));
+				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApi.getToken()));
 		StringBuilder base64 = new StringBuilder(data.getStreamBase64());
 //		base64.delete(0, 28);
 		return Optional.of(new Danfe(base64.toString()));
