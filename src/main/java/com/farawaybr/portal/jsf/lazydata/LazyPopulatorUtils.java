@@ -18,7 +18,7 @@ public class LazyPopulatorUtils {
 	@SuppressWarnings("unchecked")
 	public static <T extends AbstractLazyDataModel<?>, U extends Page<?>> void populate(T lazy, U wrapperPage) {
 		lazy.setPageSize(wrapperPage.getPageSize());
-		lazy.setRowCount(wrapperPage.totalItems());
+		lazy.setVrowCount(wrapperPage.totalItems());
 		Collection<?> content = wrapperPage.getContent();
 		((LazyBehavior<T>) lazy).setCollection((Collection<T>) content);
 	}
@@ -26,7 +26,7 @@ public class LazyPopulatorUtils {
 	@SuppressWarnings("unchecked")
 	public static <T extends AbstractLazyDataModel<?>, P extends Page<?>, C> void populate(T lazy, P page, C content) {
 		lazy.setPageSize(page.getPageSize());
-		lazy.setRowCount(page.totalItems());
+		lazy.setVrowCount(page.totalItems());
 		((LazyBehavior<T>) lazy).setCollection((Collection<T>) content);
 	}
 

@@ -1,8 +1,8 @@
 package com.farawaybr.portal.jsf.controller;
 
+import java.net.ConnectException;
+
 import javax.enterprise.context.RequestScoped;
-import javax.faces.push.Push;
-import javax.faces.push.PushContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.NotAuthorizedException;
@@ -28,7 +28,6 @@ public class LoginController {
 	private String headerDlgMessage;
 	private String previousPage;
 
-	
 	@Inject
 	public LoginController(AuthenticationService authenticationRepository,
 			ResourceBundleService resourceBundleService) {
@@ -38,7 +37,6 @@ public class LoginController {
 		this.loginForm = new LoginProtheusForm();
 	}
 
-	
 	public String authenticate() {
 		try {
 			this.authenticationRepository.authenticate(loginForm);
@@ -47,6 +45,9 @@ public class LoginController {
 		} catch (NotAuthorizedException e) {
 			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null);
 
+		} catch (Exception e) {
+			if (e.getCause() instanceof ConnectException)
+				FacesUtils.error(null, "Connection timed out", "Servidor fora do ar");
 		}
 		return null;
 

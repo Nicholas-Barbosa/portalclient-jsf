@@ -17,6 +17,7 @@ public abstract class AbstractLazyDataModel<T> extends LazyDataModel<T> implemen
 	private static final long serialVersionUID = 7142768819768641175L;
 
 	private List<T> collection;
+	private int vrowCount = 0;
 
 	@Override
 	public List<T> getCollection() {
@@ -54,15 +55,20 @@ public abstract class AbstractLazyDataModel<T> extends LazyDataModel<T> implemen
 	@Override
 	public List<T> load(int arg0, int arg1, Map<String, SortMeta> arg2, Map<String, FilterMeta> arg3) {
 		// TODO Auto-generated method stub
+		super.setRowCount(vrowCount);
 		return collection;
 	}
 
 	@Override
 	public int count(Map<String, FilterMeta> arg0) {
 		// TODO Auto-generated method stub
-		return collection != null ? collection.size() : 0;
+		return 0;
 	}
 
+	public void setVrowCount(int vrowCount) {
+		this.vrowCount = vrowCount;
+	}
+	
 	@Override
 	public T getRowData(String rowKey) {
 		// TODO Auto-generated method stub
