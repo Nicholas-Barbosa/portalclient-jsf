@@ -35,9 +35,9 @@ class JaxrsClientRequesterTest2 {
 	@DisplayName("Http get request")
 	void testGet() {
 		System.out.println(requester);
-		requester.asyncRequest(JaxrsRequestDataBuilder.getInstance().method("GET")
-				.url("https://api.coindesk.com/v1/bpi/currentprice.json").mediaType(MediaType.APPLICATION_JSON)
-				.build());
+//		requester.request(JaxrsRequestDataBuilder.getInstance().method("GET")
+//				.url("https://api.coindesk.com/v1/bpi/currentprice.json").mediaType(MediaType.APPLICATION_JSON)
+//				.build());
 
 	}
 

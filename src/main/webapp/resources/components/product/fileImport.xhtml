@@ -4,11 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:composite="http://java.sun.com/jsf/composite">
-<h:head>
-
-</h:head>
-
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 <composite:interface>
 	<composite:attribute name="customerCode" required="true"
 		type="java.lang.String" />
@@ -24,10 +21,178 @@
 		type="java.lang.String" />
 </composite:interface>
 <composite:implementation>
-	<p:dialog header="Importar produtos" widgetVar="dlgImportProducts"
-		responsive="true" modal="true" blockScroll="true"
-		style="max-width: 50vw; max-height: 60vh; overflow-y: auto">
-		<div id="#{cc.clientId}">
+	<div id="#{cc.clientId}">
+		<p:dialog header="Upload box" widgetVar="dlgUploadBox"
+			responsive="true" modal="true" blockScroll="true">
+			<div class="w-auto">
+				<h:form>
+					<div id="divUpload">
+						<p:fileUpload mode="advanced" dragDropSupport="true"
+							allowTypes="/(\.|\/)(xlsx)$/" cancelLabel="Cancelar"
+							label="Escolher"
+							listener="#{productFileImportComponent.handleFileUpload}"
+							process="@this" invalidFileMessage="Arquivo inválido" auto="true"
+							onstart="$('#readingData').show();"
+							oncomplete="$('#divUpload').hide();$('#readingData').hide();$('#dataReady').show();" />
+
+					</div>
+
+					<div id="readingData" class="p-grid p-ai-center vertical-container"
+						style="display: none">
+						<div class="p-col">
+							<i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+						</div>
+						<div class="p-col">
+							<LABEL>Extraindo dados...</LABEL>
+						</div>
+					</div>
+
+					<div id="dataReady" class="p-grid p-ai-center p-flex-column"
+						style="display: none;">
+						<div class="p-col">
+							<i class="pi pi-check" style="font-size: 2.5rem"></i>
+						</div>
+						<div class="p-col">
+							<p:commandButton value="Dados extraídos. Customizar"
+								update="#{cc.clientId}:previewExcelData, #{cc.clientId}:divSelectColumns"
+								onclick="PF('dlgCustomizeData').show();PF('dlgUploadBox').hide()" />
+						</div>
+					</div>
+				</h:form>
+			</div>
+		</p:dialog>
+
+		<p:dialog header="Customizar" widgetVar="dlgCustomizeData"
+			responsive="true" modal="true" blockScroll="true"
+			style="max-width:20vw">
+			<div>
+				<h:form prependId="false">
+					<div class="p-grid p-flex-column">
+						<div class="font-bold w-10 text-cyan-500 text-lg p-col">Selecione
+							as colunas de código e quantidade</div>
+
+						<div class="ui-fluid formgrid grid p-col"
+							jsf:id="divSelectColumns">
+							<div class="field col">
+								<p:outputLabel for="@next" value="Código" />
+								<p:selectOneMenu id="optionCode"
+									value="#{productFileImportComponent.codeColumn}"
+									required="true" requiredMessage="Selecione coluna código">
+									<f:selectItems
+										value="#{productFileImportComponent.avaliableColumns}"
+										var="column" itemValue="#{column}"
+										itemLabel="Coluna-#{column+1}" />
+
+								</p:selectOneMenu>
+							</div>
+							<div class="field col">
+								<p:outputLabel for="@next" value="Quantidade" />
+								<p:selectOneMenu id="optionQuantity"
+									value="#{productFileImportComponent.quantityColumn}"
+									required="true" requiredMessage="Selecione coluna quantidade">
+									<f:selectItems
+										value="#{productFileImportComponent.avaliableColumns}"
+										var="column" itemValue="#{column}"
+										itemLabel="Coluna-#{column+1}" />
+								</p:selectOneMenu>
+							</div>
+
+						</div>
+					</div>
+					<p:dataTable id="previewExcelData"
+						value="#{productFileImportComponent.excelpreviewData}" var="data">
+						<p:headerRow field="cellOffset" expandable="true" expanded="false">
+							<p:column colspan="1">
+								<div class="p-d-inline-flex p-ai-center"
+									style="vertical-align: middle">
+									<h:outputText styleClass="p-ml-2"
+										value="Coluna-#{data.cellOffset+1}" />
+								</div>
+							</p:column>
+						</p:headerRow>
+
+						<p:column>
+							<h:outputText value="#{data.value}" />
+						</p:column>
+					</p:dataTable>
+
+				</h:form>
+				<f:facet name="footer">
+					<p:commandButton value="Ler" icon="pi pi-check"
+						action="#{productFileImportComponent.read}"
+						process="@this,#{cc.clientId}:optionQuantity,#{cc.clientId}:optionCode"
+						oncomplete="onReadComplete(xhr)" />
+				</f:facet>
+			</div>
+
+		</p:dialog>
+
+		<p:dialog header="Tipo incompatível detectado" modal="true"
+			fitViewport="true" responsive="true" widgetVar="dlgMismatchCellsType"
+			style="max-width: 30vw;">
+			<h:form prependId="false">
+				<p:remoteCommand name="updateMismatchCellsTypeTable" process="@none"
+					update="mismatchCellsTable,resolvedMismatchColumnsMessage"
+					oncomplete="editScrollBodyMaxHeight('clientmismatchCellsTable','30vh');" />
+				<p class="line-height-3 w-10"
+					jsf:id="resolvedMismatchColumnsMessage">
+					#{productFileImportComponent.resolvedMismatchColumnsMessage}</p>
+				<div id="mismatchs-type-divtable">
+					<p:dataTable
+						value="#{productFileImportComponent.mismatchsForCellType}"
+						var="cell" id="mismatchCellsTable" rows="10"
+						widgetVar="clientmismatchCellsTable" scrollable="true"
+						editable="true">
+						<p:ajax event="rowEdit"
+							listener="#{productFileImportComponent.onRowEdit}"
+							update="#{cc.clientId}:resolvedMismatchColumnsMessage"
+							oncomplete="onRowEdit(xhr)" />
+						<p:column headerText="Linha" field="rowOffset+1" />
+						<p:column headerText="Valor">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{cell.value}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText id="modelInput" value="#{cell.value}"
+										style="width:100%" />
+									<p:tooltip for="modelInput" value="Digite -1 para remover"
+										position="bottom" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Tipo atual">
+							<h:outputText value="#{cell.cellType}" />
+						</p:column>
+						<p:column headerText="Tipo esperado">
+							<h:outputText
+								value="#{cell.cellType=='STRING' ? 'NUMERIC':'NUMERIC'}" />
+						</p:column>
+						<p:column style="width:6rem">
+							<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+								saveTitle="Save Row" />
+						</p:column>
+					</p:dataTable>
+				</div>
+				<div id="resolved-types-mismatchs"
+					class="p-grid p-ai-center p-flex-column" style="display: none;">
+					<div
+						class="p-col bg-cyan-500 text-white font-bold border-round m-2 flex align-items-center justify-content-center">
+						<i class="pi pi-check" style="font-size: 2.5rem"></i>
+					</div>
+					<div class="p-col">
+						<p:commandButton value="Incompatibilidades resolvidas. Ler"
+							action="#{productFileImportComponent.read}" process="@this" />
+					</div>
+				</div>
+			</h:form>
+
+
+		</p:dialog>
+		<p:dialog header="Importar produtos" widgetVar="dlgImportProducts"
+			responsive="true" modal="true" blockScroll="true"
+			style="max-width: 50vw; max-height: 60vh; overflow-y: auto">
+
 			<h:form prependId="false">
 				<p:wizard flowListener="#{productFileImportComponent.onFlowProcess}"
 					showNavBar="true" showStepStatus="true"
@@ -90,6 +255,7 @@
 										<p:cellEditor>
 											<f:facet name="input">
 												<p:inputText value="#{product.code}" />
+
 											</f:facet>
 											<f:facet name="output">
 												<h:outputText value="#{product.code}" />
@@ -135,79 +301,91 @@
 			</h:form>
 
 
-		</div>
-	</p:dialog>
-	<p:dialog widgetVar="dlgReadingFile" closable="false" responsive="true"
-		modal="true" header="Processando..." appendTo="@(body)">
-		<div class="grid flex-column">
-			<div class="col" id="div-loading-text">Realizando leitura do
-				arquivo...</div>
-			<div class="col">
-				<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+		</p:dialog>
+		<p:dialog widgetVar="dlgReadingFile" closable="false"
+			responsive="true" modal="true" header="Processando..."
+			appendTo="@(body)">
+			<div class="grid flex-column">
+				<div class="col" id="div-loading-text">Realizando leitura do
+					arquivo...</div>
+				<div class="col">
+					<i class="pi pi-spin pi-spinner" style="font-size: 3rem"></i>
+				</div>
 			</div>
-		</div>
-	</p:dialog>
-	<p:dialog widgetVar="dlgMismatchExcpetions" responsive="true"
-		header="Erro" modal="true" appendTo="@(body)" style="max-width:40vw">
-		<div class="grid flex-column">
-			<div class="col">
-				<p:staticMessage severity="error" summary="Incompatibilidade"
-					detail="Foi detectado incompatibilidade no tipo das células a seguir."
-					style="width: 100%" />
+		</p:dialog>
+		<p:dialog widgetVar="dlgMismatchExcpetions" responsive="true"
+			header="Erro" modal="true" appendTo="@(body)" style="max-width:40vw">
+			<div class="grid flex-column">
+				<div class="col">
+					<p:staticMessage severity="error" summary="Incompatibilidade"
+						detail="Foi detectado incompatibilidade no tipo das células a seguir."
+						style="width: 100%" />
+				</div>
+				<div class="col">
+					<h:form id="frm-mismatachs">
+						<p:remoteCommand name="updateMismatchs" process="@this"
+							update="@form:mismatchs"
+							oncomplete="editScrollBodyMaxHeight('mismatchs','40vh')" />
+						<p:dataTable id="mismatchs" widgetVar="mismatchs"
+							value="#{productFileImportComponent.mismatchCelltypeExceptions}"
+							var="mismatch" scrollable="true">
+							<p:column field="rowNum" headerText="Linha" />
+							<p:column field="cell.cellOffset" headerText="Célula" />
+							<p:column field="expectedType" headerText="Tipo experado" />
+							<p:column field="cell.cellType" headerText="Tipo atual" />
+							<p:column field="cell.value" headerText="Valor" />
+							<p:column field="message" filterable="false" sortable="false"
+								headerText="Erro" />
+						</p:dataTable>
+					</h:form>
+				</div>
 			</div>
-			<div class="col">
-				<h:form id="frm-mismatachs">
-					<p:remoteCommand name="updateMismatchs" process="@this"
-						update="@form:mismatchs"
-						oncomplete="editScrollBodyMaxHeight('mismatchs','40vh')" />
-					<p:dataTable id="mismatchs" widgetVar="mismatchs"
-						value="#{productFileImportComponent.mismatchCelltypeExceptions}"
-						var="mismatch" scrollable="true">
-						<p:column field="rowNum" headerText="Linha" />
-						<p:column field="cell.cellOffset" headerText="Célula" />
-						<p:column field="expectedType" headerText="Tipo experado" />
-						<p:column field="cell.cellType" headerText="Tipo atual" />
-						<p:column field="cell.value" headerText="Valor" />
-						<p:column field="message" filterable="false" sortable="false"
-							headerText="Erro" />
-					</p:dataTable>
-				</h:form>
-			</div>
-		</div>
-	</p:dialog>
+		</p:dialog>
 
 
-	<p:dialog widgetVar="productsNotFound" header="Produtos não importados"
-		modal="true" responsive="true" appendTo="@(body)"
-		style="max-width: 25vw; max-height: 60vh; overflow-y: auto" onHide="setNullProductsNotFound()">
-		<div class="grid flex-column">
-			<div class="col">
-				<p:staticMessage severity="warn" summary="Produtos não encontrados"
-					detail="Os seguintes produtos não foram encontrados, portanto não foram importados"
-					style="width: 100%" />
-			</div>
-			<div class="col">
-				<h:form id="frm-products-not-found">
-					<p:remoteCommand name="updateProductsNotFound" process="@this"
-						update="productsNotFound" async="true" />
-					<p:remoteCommand name="setNullProductsNotFound" process="@this"
-						action="#{productFileImportComponent.setProductsNotFound(null)}" />
-					<p:dataTable id="productsNotFound"
-						value="#{productFileImportComponent.productsNotFound}"
-						var="mismatch">
-						<f:facet name="header">
-							<p:commandButton icon="pi pi-file-excel" value="Baixar .xlsx"
-								action="#{productFileImportComponent.exportXlsxProductsNotFound}"
-								ajax="false" />
-						</f:facet>
-						<p:column field="productIdentity" headerText="Produto" />
+		<p:dialog widgetVar="productsNotFound"
+			header="Produtos não importados" modal="true" responsive="true"
+			appendTo="@(body)"
+			style="max-width: 25vw; max-height: 60vh; overflow-y: auto"
+			onHide="setNullProductsNotFound()">
+			<div class="grid flex-column">
+				<div class="col">
+					<p:staticMessage severity="warn" summary="Produtos não encontrados"
+						detail="Os seguintes produtos não foram encontrados, portanto não foram importados"
+						style="width: 100%" />
+				</div>
+				<div class="col">
+					<h:form id="frm-products-not-found">
+						<p:remoteCommand name="updateProductsNotFound" process="@this"
+							update="productsNotFound" async="true" />
+						<p:remoteCommand name="setNullProductsNotFound" process="@this"
+							action="#{productFileImportComponent.setProductsNotFound(null)}" />
+						<p:dataTable id="productsNotFound"
+							value="#{productFileImportComponent.productsNotFound}"
+							var="mismatch">
+							<f:facet name="header">
+								<p:commandButton icon="pi pi-file-excel" value="Baixar .xlsx"
+									action="#{productFileImportComponent.exportXlsxProductsNotFound}"
+									ajax="false" />
+							</f:facet>
+							<p:column field="productIdentity" headerText="Produto" />
 
-					</p:dataTable>
-				</h:form>
+						</p:dataTable>
+					</h:form>
+				</div>
 			</div>
-		</div>
-	</p:dialog>
+		</p:dialog>
+	</div>
+
+
 	<script>
+		function onRowEdit(xhr){
+			let istypesOk = Boolean(xhr.getResponseHeader('typesok'));
+			if(istypesOk){
+				$('#resolved-types-mismatchs').show();
+				$('#mismatchs-type-divtable').hide();
+			}
+		}
 		function onLoaded(xhr) {
 			$('#div-loading-text').text('Realizando leitura do arquivo...');
 			backWizardToBegin();
@@ -218,6 +396,15 @@
 				updateProductsNotFound();
 			}
 		}
+		function onReadComplete(xhr){
+			let isMismatch = Boolean(xhr.getResponseHeader('mismatch'));
+			if(isMismatch){
+				PF('dlgMismatchCellsType').show();
+				PF('dlgCustomizeData').hide();
+				updateMismatchCellsTypeTable();
+			}
+		}
+		
 	</script>
 </composite:implementation>
 

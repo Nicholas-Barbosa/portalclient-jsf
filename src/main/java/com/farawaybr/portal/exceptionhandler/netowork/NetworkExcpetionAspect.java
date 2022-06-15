@@ -24,6 +24,7 @@ public class NetworkExcpetionAspect implements Serializable {
 	@AroundInvoke
 	public Object aroundInvoke(InvocationContext joinpoint) throws Throwable {
 		try {
+			
 			return joinpoint.proceed();
 		} catch (ProcessingException | SocketTimeoutException | TimeoutException e) {
 			if (e instanceof ProcessingException) {

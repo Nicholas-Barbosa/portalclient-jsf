@@ -1,32 +1,48 @@
 package com.farawaybr.portal.jsf.controller.components;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.poi.ss.usermodel.CellType;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
+import org.primefaces.event.RowEditEvent;
+import org.slf4j.helpers.MessageFormatter;
 
+import com.farawaybr.portal.dto.ExtractedDataPhase;
 import com.farawaybr.portal.dto.ProductImporterExtractedData;
 import com.farawaybr.portal.dto.XlsxProductFileReadLayout;
 import com.farawaybr.portal.exception.MismatchCellTypeExceptions;
-import com.farawaybr.portal.exception.ProductsNotFoundException;
 import com.farawaybr.portal.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
+import com.farawaybr.portal.exception.ProductsNotFoundException;
 import com.farawaybr.portal.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
 import com.farawaybr.portal.jsf.controller.ProductFileImportObserver;
+import com.farawaybr.portal.microsoft.excel.CellAttribute;
+import com.farawaybr.portal.microsoft.excel.RowObject;
+import com.farawaybr.portal.microsoft.excel.reader.CellReadPolicy;
+import com.farawaybr.portal.microsoft.excel.reader.XssfReader;
+import com.farawaybr.portal.regex.RegexUtils;
 import com.farawaybr.portal.resources.export.ProductsImportComponentNotFoundCommandExporter;
+import com.farawaybr.portal.service.ObserverProductImporter;
 import com.farawaybr.portal.service.ProductImporter;
+import com.farawaybr.portal.service.SubjectProductImporter;
 import com.farawaybr.portal.util.jsf.FacesUtils;
 import com.farawaybr.portal.vo.WrapperProduct404Error.Product404Error;
 
 @ViewScoped
 @Named
 @NetworkExceptionJoinPointCut
-public class ProductFileImportComponent implements Serializable {
+public class ProductFileImportComponent implements Serializable, ObserverProductImporter {
 
 	/**
 	 * 
@@ -35,6 +51,14 @@ public class ProductFileImportComponent implements Serializable {
 
 	@Inject
 	private ProductImporter importer;
+
+	@Inject
+	private SubjectProductImporter templateImporter;
+
+	@Inject
+	private XssfReader excelReader;
+
+	private byte[] xlsxstreams;
 
 	private XlsxProductFileReadLayout fileLayout;
 
@@ -47,9 +71,80 @@ public class ProductFileImportComponent implements Serializable {
 	@Inject
 	private ProductsImportComponentNotFoundCommandExporter exporter;
 
+	private List<CellAttribute> excelpreviewData;
+
+	private int[] avaliableColumns;
+
+	private int codeColumn, quantityColumn;
+
+	private List<CellAttribute> mismatchsForCellType;
+
+	private short resolvedMismatchColumnsCounter, initialmismatchsForCellTypeSize;
+
+	private final String resolvedMismatchColumnsMessageToFormat = "Da(s) {0} coluna(s) incompatível(is), {1} foram resolvida(s)";
+
+	private String resolvedMismatchColumnsMessage;
+
 	public ProductFileImportComponent() {
 		this.setDefaultFileLayoutPositions();
+	}
 
+	@PostConstruct
+	public void postDI() {
+		templateImporter.registerObserver(this);
+	}
+
+	@PreDestroy
+	public void preDestroy() {
+		templateImporter.unRegisterObserver(this);
+	}
+
+	public void read() {
+		try {
+			templateImporter.execute(xlsxstreams, codeColumn, quantityColumn);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+		this.xlsxstreams = event.getFile().getContent();
+		this.fileLayout = new XlsxProductFileReadLayout();
+		this.fileLayout.setXlsxStreams(xlsxstreams);
+//		this.previewExcelFile();
+//		avaliableColumns = this.excelpreviewData.parallelStream().mapToInt(CellAttribute::getCellOffset).distinct()
+//				.sorted().toArray();
+//		this.codeColumn = 0;
+//		this.quantityColumn = 1;
+	}
+
+	private void previewExcelFile() {
+		try {
+			excelpreviewData = excelReader.read(xlsxstreams, 0, 0, CellReadPolicy.ALL, 0, 5).parallelStream()
+					.map(RowObject::getCellAttributes).flatMap(List::parallelStream)
+					.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void onRowEdit(RowEditEvent<CellAttribute> event) {
+		CellAttribute cellAttribute = event.getObject();
+		if (RegexUtils.isOnlyNumbers(cellAttribute.getValue() + "")) {
+			this.mismatchsForCellType.remove(cellAttribute);
+			this.resolvedMismatchColumnsMessage = MessageFormat.format(resolvedMismatchColumnsMessageToFormat,
+					initialmismatchsForCellTypeSize, ++this.resolvedMismatchColumnsCounter);
+			FacesUtils.addHeaderForResponse("typesok", this.mismatchsForCellType.size() == 0);
+			cellAttribute.setCellType(CellType.NUMERIC);
+			if (Integer.parseInt(cellAttribute.getValue() + "") == -1) {
+				cellAttribute.autoRemove();
+				cellAttribute = null;
+			}
+			return;
+		}
+		FacesUtils.warn(null, "Digite um tipo adequado", null, "growl");
 	}
 
 	public void exportXlsxProductsNotFound() {
@@ -72,7 +167,7 @@ public class ProductFileImportComponent implements Serializable {
 			FacesUtils.addHeaderForResponse("products-not-found", true);
 			if (extractedData.size() > 0)
 				this.confirm(customerCode, customerStore, observer);
-				
+
 		}
 	}
 
@@ -139,11 +234,6 @@ public class ProductFileImportComponent implements Serializable {
 		fileLayout.setOffSetCellForProductQuantity(2);
 	}
 
-	public void handleFileUpload(FileUploadEvent event) {
-		this.fileLayout.setXlsxStreams(event.getFile().getContent());
-		FacesUtils.info(null, "Sucesso", "Arquivo salvo para leitura", "growl");
-	}
-
 	public XlsxProductFileReadLayout getFileLayout() {
 		return fileLayout;
 	}
@@ -162,5 +252,65 @@ public class ProductFileImportComponent implements Serializable {
 
 	public void setProductsNotFound(Product404Error[] productsNotFound) {
 		this.productsNotFound = productsNotFound;
+	}
+
+	public List<CellAttribute> getExcelpreviewData() {
+		return excelpreviewData;
+	}
+
+	public int[] getAvaliableColumns() {
+		return avaliableColumns;
+	}
+
+	public int getCodeColumn() {
+		return codeColumn;
+	}
+
+	public void setCodeColumn(int codeColumn) {
+		this.codeColumn = codeColumn;
+	}
+
+	public int getQuantityColumn() {
+		return quantityColumn;
+	}
+
+	public void setQuantityColumn(int quantityColumn) {
+		this.quantityColumn = quantityColumn;
+	}
+
+	@Override
+	public void onExtractedData(ExtractedDataPhase jessionId) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onMismatchTypeCells(List<RowObject> rows) {
+		// TODO Auto-generated method stub
+		this.mismatchsForCellType = rows.parallelStream().map(RowObject::getCellAttributes)
+				.flatMap(List::parallelStream).filter(c -> c.getCellOffset() == quantityColumn)
+				.collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+		this.initialmismatchsForCellTypeSize = (short) mismatchsForCellType.size();
+		resolvedMismatchColumnsMessage = MessageFormat.format(resolvedMismatchColumnsMessageToFormat,
+				initialmismatchsForCellTypeSize, "nenhuma");
+		FacesUtils.addHeaderForResponse("mismatch", true);
+	}
+
+	@Override
+	public void onMismatchProductsMultiple() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public List<CellAttribute> getMismatchsForCellType() {
+		return mismatchsForCellType;
+	}
+
+	public short getResolvedMismatchColumnsCounter() {
+		return resolvedMismatchColumnsCounter;
+	}
+
+	public String getResolvedMismatchColumnsMessage() {
+		return resolvedMismatchColumnsMessage;
 	}
 }

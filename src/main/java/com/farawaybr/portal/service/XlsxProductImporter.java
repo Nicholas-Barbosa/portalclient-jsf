@@ -13,6 +13,8 @@ import org.apache.poi.ss.usermodel.CellType;
 
 import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
 import com.farawaybr.portal.dto.ProductFileReadLayout;
+import com.farawaybr.portal.dto.ProductImportXlsxCustomizedRow;
+import com.farawaybr.portal.dto.ProductImportXlsxLayout;
 import com.farawaybr.portal.dto.ProductImporterExtractedData;
 import com.farawaybr.portal.dto.ProductToFind;
 import com.farawaybr.portal.dto.XlsxProductFileReadLayout;
@@ -20,6 +22,7 @@ import com.farawaybr.portal.exception.MismatchCellTypeExceptions;
 import com.farawaybr.portal.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
 import com.farawaybr.portal.microsoft.excel.CellAttribute;
 import com.farawaybr.portal.microsoft.excel.RowObject;
+import com.farawaybr.portal.microsoft.excel.reader.CellReadPolicy;
 import com.farawaybr.portal.microsoft.excel.reader.XssfReader;
 import com.farawaybr.portal.regex.RegexUtils;
 import com.farawaybr.portal.repository.ProductRepository;
@@ -37,8 +40,9 @@ public class XlsxProductImporter implements ProductImporter {
 	public List<ProductImporterExtractedData> extractData(ProductFileReadLayout layout) {
 		XlsxProductFileReadLayout xlsxLayout = (XlsxProductFileReadLayout) layout;
 		try {
-			List<RowObject> rows = xssReader.read(xlsxLayout.getXlsxStreams(), xlsxLayout.getInitPosition(),
-					xlsxLayout.getLastPosition());
+			List<RowObject> rows = xssReader.read(xlsxLayout.getXlsxStreams(), xlsxLayout.getOffSetCellForProductCode(),
+					xlsxLayout.getOffSetCellForProductQuantity(), CellReadPolicy.FIRST_SECOND,
+					xlsxLayout.getInitPosition(), xlsxLayout.getLastPosition());
 			List<? extends Object> collectionObj = rows.parallelStream().map(r -> {
 				try {
 					return this.of(r, xlsxLayout.getOffSetCellForProductCode(),
@@ -87,15 +91,14 @@ public class XlsxProductImporter implements ProductImporter {
 			default:
 				throw new MismatchCellTypeException(row.getOffset(), codeCell, CellType.STRING);
 			}
-			
+
 			Object quantityObj = quantityCell.getValue();
 			if (quantityObj == null)
 				return new ProductImporterExtractedData((String) code, 1);
 
 			switch (quantityCell.getCellType()) {
 			case NUMERIC:
-				return new ProductImporterExtractedData((String) code,
-						((Double) quantityObj).intValue());
+				return new ProductImporterExtractedData((String) code, ((Double) quantityObj).intValue());
 
 			default:
 				try {
@@ -111,5 +114,24 @@ public class XlsxProductImporter implements ProductImporter {
 		throw new IllegalArgumentException(
 				codeCell == null && quantityCell == null ? "Code cell and Quantity cell not found"
 						: quantityCell == null ? "Quantity cell not found" : "Code cell not found");
+	}
+
+	@Override
+	public List<RowObject> extractData(byte[] xlsxstreams) {
+		// TODO Auto-generated method stub
+		try {
+			return xssReader.read(xlsxstreams, 0, 0,CellReadPolicy.ALL,0,-1);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public List<ProductImportXlsxCustomizedRow> customizeExtractedData(ProductImportXlsxLayout layout) {
+		// TODO Auto-generated method stub
+
+		return null;
 	}
 }
