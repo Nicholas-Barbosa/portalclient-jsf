@@ -2,7 +2,7 @@ package com.farawaybr.portal.dto;
 
 import javax.json.bind.annotation.JsonbProperty;
 
-public class ProductToFind {
+public class ProductToFind implements Comparable<ProductToFind> {
 
 	private String productCode;
 	private int quantity;
@@ -22,8 +22,6 @@ public class ProductToFind {
 	public int getQuantity() {
 		return quantity;
 	}
-	
-	
 
 	public static class ItemBudgetToEstimateb {
 		private String productCode;
@@ -69,6 +67,12 @@ public class ProductToFind {
 		} else if (!productCode.equals(other.productCode))
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(ProductToFind o) {
+		// TODO Auto-generated method stub
+		return productCode.compareTo(o.productCode);
 	}
 
 }

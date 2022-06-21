@@ -10,6 +10,7 @@ import com.farawaybr.portal.dto.ProductPageDTO;
 import com.farawaybr.portal.dto.ProductTechDetailJson;
 import com.farawaybr.portal.dto.ProductToFind;
 import com.farawaybr.portal.dto.ProductWrapper;
+import com.farawaybr.portal.exception.WrapperProductBatchSearchEndpointException;
 import com.farawaybr.portal.vo.Product;
 
 public interface ProductRepository {
@@ -30,5 +31,5 @@ public interface ProductRepository {
 	void findStock(Product... products);
 
 	BatchProductSearchDataWrapper batchProductSearch(String customerCode, String customerStore,
-			Set<ProductToFind> products);
+			Set<ProductToFind> products)throws WrapperProductBatchSearchEndpointException;
 }

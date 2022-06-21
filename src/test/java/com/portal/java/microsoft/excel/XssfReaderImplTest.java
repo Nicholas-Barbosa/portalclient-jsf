@@ -7,8 +7,8 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.Test;
 
-import com.farawaybr.portal.microsoft.excel.reader.XssfReader;
-import com.farawaybr.portal.microsoft.excel.reader.XssfReaderBuilder;
+import com.farawaybr.portal.resources.poi.microsoft.excel.reader.XssfReader;
+import com.farawaybr.portal.resources.poi.microsoft.excel.reader.XssfReaderBuilder;
 
 class XssfReaderImplTest {
 

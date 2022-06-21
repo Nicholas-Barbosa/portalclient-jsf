@@ -3,8 +3,8 @@ package com.farawaybr.portal.jsf.controller.components;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.annotation.PostConstruct;
@@ -17,27 +17,27 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.FlowEvent;
 import org.primefaces.event.RowEditEvent;
-import org.slf4j.helpers.MessageFormatter;
 
+import com.farawaybr.portal.dto.BatchProductSearchDataWrapper.BatchProductSearchData;
 import com.farawaybr.portal.dto.ExtractedDataPhase;
-import com.farawaybr.portal.dto.ProductImporterExtractedData;
+import com.farawaybr.portal.dto.ProductRowExcelData;
+import com.farawaybr.portal.dto.ProductToFind;
 import com.farawaybr.portal.dto.XlsxProductFileReadLayout;
 import com.farawaybr.portal.exception.MismatchCellTypeExceptions;
 import com.farawaybr.portal.exception.MismatchCellTypeExceptions.MismatchCellTypeException;
-import com.farawaybr.portal.exception.ProductsNotFoundException;
 import com.farawaybr.portal.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
-import com.farawaybr.portal.jsf.controller.ProductFileImportObserver;
-import com.farawaybr.portal.microsoft.excel.CellAttribute;
-import com.farawaybr.portal.microsoft.excel.RowObject;
-import com.farawaybr.portal.microsoft.excel.reader.CellReadPolicy;
-import com.farawaybr.portal.microsoft.excel.reader.XssfReader;
+import com.farawaybr.portal.jsf.controller.ProductFileImportComponentObserver;
 import com.farawaybr.portal.regex.RegexUtils;
 import com.farawaybr.portal.resources.export.ProductsImportComponentNotFoundCommandExporter;
+import com.farawaybr.portal.resources.poi.microsoft.excel.CellAttribute;
+import com.farawaybr.portal.resources.poi.microsoft.excel.RowObject;
+import com.farawaybr.portal.resources.poi.microsoft.excel.reader.CellReadPolicy;
+import com.farawaybr.portal.resources.poi.microsoft.excel.reader.XssfReader;
 import com.farawaybr.portal.service.ObserverProductImporter;
 import com.farawaybr.portal.service.ProductImporter;
 import com.farawaybr.portal.service.SubjectProductImporter;
 import com.farawaybr.portal.util.jsf.FacesUtils;
-import com.farawaybr.portal.vo.WrapperProduct404Error.Product404Error;
+import com.farawaybr.portal.vo.WrapperProductBatchSearchEndpointError.ProductBatchSearchEndpointError;
 
 @ViewScoped
 @Named
@@ -62,11 +62,9 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 
 	private XlsxProductFileReadLayout fileLayout;
 
-	private List<ProductImporterExtractedData> extractedData;
-
 	private List<MismatchCellTypeException> mismatchCelltypeExceptions;
 
-	private Product404Error[] productsNotFound;
+	private ProductBatchSearchEndpointError[] productsNotFound;
 
 	@Inject
 	private ProductsImportComponentNotFoundCommandExporter exporter;
@@ -99,9 +97,10 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 		templateImporter.unRegisterObserver(this);
 	}
 
-	public void read() {
+	public void read(String customerCode, String customerStore) {
 		try {
-			templateImporter.execute(xlsxstreams, codeColumn, quantityColumn);
+			System.out.println("customerCode " + customerCode + " " + customerStore);
+			templateImporter.execute(xlsxstreams, codeColumn, quantityColumn, customerCode, customerStore);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -110,13 +109,13 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 
 	public void handleFileUpload(FileUploadEvent event) {
 		this.xlsxstreams = event.getFile().getContent();
-		this.fileLayout = new XlsxProductFileReadLayout();
-		this.fileLayout.setXlsxStreams(xlsxstreams);
-//		this.previewExcelFile();
-//		avaliableColumns = this.excelpreviewData.parallelStream().mapToInt(CellAttribute::getCellOffset).distinct()
-//				.sorted().toArray();
-//		this.codeColumn = 0;
-//		this.quantityColumn = 1;
+//		this.fileLayout = new XlsxProductFileReadLayout();
+//		this.fileLayout.setXlsxStreams(xlsxstreams);
+		this.previewExcelFile();
+		avaliableColumns = this.excelpreviewData.parallelStream().mapToInt(CellAttribute::getCellOffset).distinct()
+				.sorted().toArray();
+		this.codeColumn = 0;
+		this.quantityColumn = 1;
 	}
 
 	private void previewExcelFile() {
@@ -153,22 +152,22 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 	}
 
-	public void confirm(String customerCode, String customerStore, ProductFileImportObserver observer) {
-		try {
-			observer.onConfirm(importer.parseData(extractedData, customerCode, customerStore));
-			this.setDefaultFileLayoutPositions();
-			this.fileLayout.setXlsxStreams(null);
-			this.mismatchCelltypeExceptions = null;
-			this.extractedData = null;
-		} catch (ProductsNotFoundException e) {
-			productsNotFound = e.getProducts();
-			extractedData.removeIf(p -> Arrays.stream(productsNotFound).parallel().anyMatch(
-					pNotFound -> p.getCode().strip().equalsIgnoreCase(pNotFound.getProductIdentity().strip())));
-			FacesUtils.addHeaderForResponse("products-not-found", true);
-			if (extractedData.size() > 0)
-				this.confirm(customerCode, customerStore, observer);
-
-		}
+	public void confirm(String customerCode, String customerStore, ProductFileImportComponentObserver observer) {
+//		try {
+//			observer.onConfirm(importer.parseData(extractedData, customerCode, customerStore));
+//			this.setDefaultFileLayoutPositions();
+//			this.fileLayout.setXlsxStreams(null);
+//			this.mismatchCelltypeExceptions = null;
+//			this.extractedData = null;
+//		} catch (ProductsNotFoundException e) {
+//			productsNotFound = e.getProducts();
+//			extractedData.removeIf(p -> Arrays.stream(productsNotFound).parallel().anyMatch(
+//					pNotFound -> p.getCode().strip().equalsIgnoreCase(pNotFound.getProductIdentity().strip())));
+//			FacesUtils.addHeaderForResponse("products-not-found", true);
+//			if (extractedData.size() > 0)
+//				this.confirm(customerCode, customerStore, observer);
+//
+//		}
 	}
 
 	public String onFlowProcess(FlowEvent event) {
@@ -223,7 +222,7 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 
 	}
 
-	public void removeExtractedData(ProductImporterExtractedData data) {
+	public void removeExtractedData(ProductImporterExcelExtractedData data) {
 		this.extractedData.remove(data);
 	}
 
@@ -238,7 +237,7 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 		return fileLayout;
 	}
 
-	public List<ProductImporterExtractedData> getExtractedData() {
+	public List<ProductImporterExcelExtractedData> getExtractedData() {
 		return extractedData;
 	}
 
@@ -246,11 +245,11 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 		return mismatchCelltypeExceptions;
 	}
 
-	public Product404Error[] getProductsNotFound() {
+	public ProductBatchSearchEndpointError[] getProductsNotFound() {
 		return productsNotFound;
 	}
 
-	public void setProductsNotFound(Product404Error[] productsNotFound) {
+	public void setProductsNotFound(ProductBatchSearchEndpointError[] productsNotFound) {
 		this.productsNotFound = productsNotFound;
 	}
 
@@ -285,7 +284,13 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 	}
 
 	@Override
-	public void onMismatchTypeCells(List<RowObject> rows) {
+	public void onMismatchProductsMultiple(Set<BatchProductSearchData> products) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onMismatchTypeCells(List<ProductRowExcelData> rows) {
 		// TODO Auto-generated method stub
 		this.mismatchsForCellType = rows.parallelStream().map(RowObject::getCellAttributes)
 				.flatMap(List::parallelStream).filter(c -> c.getCellOffset() == quantityColumn)
@@ -294,12 +299,6 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 		resolvedMismatchColumnsMessage = MessageFormat.format(resolvedMismatchColumnsMessageToFormat,
 				initialmismatchsForCellTypeSize, "nenhuma");
 		FacesUtils.addHeaderForResponse("mismatch", true);
-	}
-
-	@Override
-	public void onMismatchProductsMultiple() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public List<CellAttribute> getMismatchsForCellType() {
@@ -313,4 +312,14 @@ public class ProductFileImportComponent implements Serializable, ObserverProduct
 	public String getResolvedMismatchColumnsMessage() {
 		return resolvedMismatchColumnsMessage;
 	}
+
+
+	@Override
+	public void onProductsNotFound(Set<ProductToFind> productsToFind) {
+		// TODO Auto-generated method stub
+
+	}
+
+	
+
 }

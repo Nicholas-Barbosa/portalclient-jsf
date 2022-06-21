@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import com.farawaybr.portal.cdi.aop.annotations.IllegalResponsePointCutJoinPoint;
 
 @ApplicationScoped
-
 public class JaxrsClientRequester {
 
 	@Inject

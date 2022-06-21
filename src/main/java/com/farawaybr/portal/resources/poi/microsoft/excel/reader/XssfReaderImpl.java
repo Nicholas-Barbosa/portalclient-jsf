@@ -1,4 +1,4 @@
-package com.farawaybr.portal.microsoft.excel.reader;
+package com.farawaybr.portal.resources.poi.microsoft.excel.reader;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.farawaybr.portal.microsoft.excel.RowObject;
+import com.farawaybr.portal.resources.poi.microsoft.excel.RowObject;
 
 @ApplicationScoped
 public class XssfReaderImpl implements XssfReader {

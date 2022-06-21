@@ -1,18 +1,21 @@
 package com.farawaybr.portal.service;
 
 import java.util.List;
+import java.util.Set;
 
-import com.farawaybr.portal.dto.ExtractedDataPhase;
-import com.farawaybr.portal.microsoft.excel.RowObject;
+import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
+import com.farawaybr.portal.dto.BatchProductSearchDataWrapper.BatchProductSearchData;
+import com.farawaybr.portal.dto.MultipleProductRowExcelData;
+import com.farawaybr.portal.dto.ProductRowExcelData;
 
 public interface ObserverProductImporter {
 
-	void onExtractedData(ExtractedDataPhase jessionId);
+	void onComplete(BatchProductSearchDataWrapper products);
 
-	void onMismatchTypeCells(List<RowObject>rows);
+	void onMismatchTypeCells(List<ProductRowExcelData> rows);
 
-	void onMismatchProductsMultiple();
-	
-	
+	void onMismatchProductsMultiple(List<MultipleProductRowExcelData> products);
+
+	void onProductsNotFound(List<ProductRowExcelData> products);
 
 }

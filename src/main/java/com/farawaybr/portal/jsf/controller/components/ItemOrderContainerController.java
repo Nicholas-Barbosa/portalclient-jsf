@@ -15,7 +15,7 @@ import org.primefaces.event.SelectEvent;
 
 import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
 import com.farawaybr.portal.exception.ItemQuantityNotAllowed;
-import com.farawaybr.portal.jsf.controller.ProductFileImportObserver;
+import com.farawaybr.portal.jsf.controller.ProductFileImportComponentObserver;
 import com.farawaybr.portal.service.OrderBehaviorHelper;
 import com.farawaybr.portal.service.OrderItemQuantityCalculator;
 import com.farawaybr.portal.util.jsf.FacesUtils;
@@ -26,7 +26,7 @@ import com.farawaybr.portal.vo.Product;
 
 @ViewScoped
 @Named
-public class ItemOrderContainerController implements Serializable, ProductFileImportObserver, ProductSearchObserver {
+public class ItemOrderContainerController implements Serializable, ProductFileImportComponentObserver, ProductSearchObserver {
 
 	/**
 	 * 

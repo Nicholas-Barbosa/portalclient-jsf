@@ -1,4 +1,4 @@
-package com.farawaybr.portal.microsoft.excel.writer;
+package com.portal.client.microsoft.excel.writer;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -10,7 +10,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriter;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriter;
 import com.portal.ShrinkwrapDeploymentUtils;
 
 @ExtendWith(ArquillianExtension.class)

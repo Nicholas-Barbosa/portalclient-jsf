@@ -2,7 +2,7 @@ package com.farawaybr.portal.jsf.controller;
 
 import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
 
-public interface ProductFileImportObserver {
+public interface ProductFileImportComponentObserver {
 
 	void onConfirm(BatchProductSearchDataWrapper wrapper);
 }

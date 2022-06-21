@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+<composite:interface>
+	<composite:attribute name="products" />
+ />
+
+</composite:interface>
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<p:dialog header="Incompatibilidade detectada" modal="true"
+			fitViewport="true" responsive="true" widgetVar="dlgTableMismatch"
+			style="max-width: 30vw;">
+			<h:form prependId="false">
+				<p:remoteCommand name="updateMismatchCellsTypeTable" process="@none"
+					update="#{cc.clientId}:mismatchTable,#{cc.clientId}:resolvedMismatchColumnsMessage"
+					oncomplete="editScrollBodyMaxHeight('clientmismatchCellsTable','30vh');" />
+				<p class="line-height-3 w-10"
+					jsf:id="resolvedMismatchColumnsMessage">
+					#{tableMismatchFileImportController.resolvedMessage}</p>
+				<div id="mismatchs-type-divtable">
+					<p:dataTable value="#{cc.attrs.products}" var="product"
+						id="mismatchTable" rows="10" widgetVar="clientMismatchTable"
+						scrollable="true" editable="true" lazy="false">
+						<p:ajax event="rowEdit"
+							listener="#{productFileImportComponentV2.onRowEdit}"
+							update="#{cc.clientId}:resolvedMismatchColumnsMessage"
+							oncomplete="onRowEdit(xhr)" />
+						<p:column headerText="Linha" field="excelRowIndex+1" filterable="false"/>
+						<p:column headerText="Produto">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{product.code.value}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText id="codeInput" value="#{product.code.value}"
+										style="width:100%" />
+									<p:tooltip for="codeInput" position="bottom" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Quantidade" sortBy="#{product.quantityValue}">
+							<p:cellEditor>
+								<f:facet name="output">
+									<h:outputText value="#{product.quantityValue}" />
+								</f:facet>
+								<f:facet name="input">
+									<p:inputText id="quantityInput" value="#{product.quantityValue}"
+										style="width:100%" />
+									<p:tooltip for="quantityInput" value="Digite -1 para remover"
+										position="bottom" />
+								</f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column headerText="Tipo atual">
+							<h:outputText value="#{product.quantity.cellType}" />
+						</p:column>
+						<p:column headerText="Tipo esperado">
+							<h:outputText
+								value="#{cell.cellType=='STRING' ? 'NUMERIC':'NUMERIC'}" />
+						</p:column>
+						<p:column style="width:6rem">
+							<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
+								saveTitle="Save Row" />
+						</p:column>
+					</p:dataTable>
+				</div>
+				<div id="resolved-mismatchs"
+					class="p-grid p-ai-center p-flex-column" style="display: none;">
+					<div
+						class="p-col bg-cyan-500 text-white font-bold border-round m-2 flex align-items-center justify-content-center">
+						<i class="pi pi-check" style="font-size: 2.5rem"></i>
+					</div>
+					<div class="p-col">
+						<p:commandButton value="Incompatibilidades resolvidas. Próximo!"
+							action="#{productFileImportComponentV2.read(cc.attrs.customerCode,cc.attrs.customerStore)}"
+							process="@this" oncomplete="onReadComplete(xhr)" />
+					</div>
+				</div>
+			</h:form>
+
+		</p:dialog>
+
+	</div>
+
+
+	<script>
+		function onRowEdit(xhr){
+			let istypesOk = Boolean(xhr.getResponseHeader('typesok'));
+			if(istypesOk){
+				$('#resolved-types-mismatchs').show();
+				$('#mismatchs-type-divtable').hide();
+			}
+		}
+		function onLoaded(xhr) {
+			$('#div-loading-text').text('Realizando leitura do arquivo...');
+			backWizardToBegin();
+			#{cc.attrs.onConfirm};
+			PF('dlgReadingFile').hide();
+			if(Boolean(xhr.getResponseHeader("products-not-found"))){
+				PF('productsNotFound').show();
+				updateProductsNotFound();
+			}
+		}
+		function onReadComplete(xhr){
+			let isMismatch = Boolean(xhr.getResponseHeader('mismatch'));
+			let productsFound = xhr.getResponseHeader('products-found');
+			if(isMismatch){
+				PF('dlgMismatchCellsType').show();
+				PF('dlgCustomizeData').hide();
+				updateMismatchCellsTypeTable();
+				return;
+			}
+			if(productsFound=='false'){
+				PF('dlgMismatchCellsType').hide();
+				PF('dlgProductsNotFound').show();
+				updateProductsNotFoundTable();
+			}
+		}
+		
+	</script>
+</composite:implementation>
+
+</html>

@@ -11,11 +11,11 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriterImpl;
 import com.farawaybr.portal.resources.export.jasper.service.ExcelJasperService;
 import com.farawaybr.portal.resources.export.jasper.service.JasperReportType;
 import com.farawaybr.portal.resources.export.jasper.service.PdfJasperService;
 import com.farawaybr.portal.resources.export.jasper.service.SimpleJasperServiceFactory;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriterImpl;
 import com.portal.ShrinkwrapDeploymentUtils;
 
 @RunWith(Arquillian.class)

@@ -1,4 +1,4 @@
-package com.farawaybr.portal.microsoft.excel.writer;
+package com.farawaybr.portal.resources.poi.microsoft.excel.writer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,8 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import com.farawaybr.portal.microsoft.excel.CellAttribute;
-import com.farawaybr.portal.microsoft.excel.RowObject;
+import com.farawaybr.portal.resources.poi.microsoft.excel.CellAttribute;
+import com.farawaybr.portal.resources.poi.microsoft.excel.RowObject;
 
 @ApplicationScoped
 public class XssfWriterImpl implements XssfWriter {

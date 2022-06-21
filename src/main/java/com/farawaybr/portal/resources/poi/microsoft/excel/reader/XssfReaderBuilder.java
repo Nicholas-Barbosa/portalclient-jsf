@@ -1,4 +1,4 @@
-package com.farawaybr.portal.microsoft.excel.reader;
+package com.farawaybr.portal.resources.poi.microsoft.excel.reader;
 
 public class XssfReaderBuilder {
 

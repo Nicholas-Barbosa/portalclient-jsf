@@ -10,10 +10,10 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriterImpl;
 import com.farawaybr.portal.resources.ConfigPropertyResolver;
 import com.farawaybr.portal.resources.export.BudgetExportType;
 import com.farawaybr.portal.resources.export.SimpleBudgetExporterFactory;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriterImpl;
 import com.portal.ShrinkwrapDeploymentUtils;
 
 @RunWith(Arquillian.class)

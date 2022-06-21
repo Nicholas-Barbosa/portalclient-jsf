@@ -6,20 +6,20 @@ import java.util.Arrays;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-public class WrapperProduct404Error implements Serializable{
+public class WrapperProductBatchSearchEndpointError implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -8361543285619261063L;
-	private Product404Error[] errors;
+	private ProductBatchSearchEndpointError[] errors;
 
 	@JsonbProperty("error")
-	public void setErrors(Product404Error[] errors) {
+	public void setErrors(ProductBatchSearchEndpointError[] errors) {
 		this.errors = errors == null ? errors : errors.clone();
 	}
 
-	public Product404Error[] getErrors() {
+	public ProductBatchSearchEndpointError[] getErrors() {
 		return errors;
 	}
 
@@ -30,19 +30,19 @@ public class WrapperProduct404Error implements Serializable{
 	}
 
 
-	public static class Product404Error implements Serializable{
+	public static class ProductBatchSearchEndpointError implements Serializable{
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -1775166016929585854L;
 		private String cause, productIdentity;
 
-		public Product404Error() {
+		public ProductBatchSearchEndpointError() {
 			// TODO Auto-generated constructor stub
 		}
 
 		@JsonbCreator
-		public Product404Error(@JsonbProperty("cause") String cause, @JsonbProperty("itendity") String productIdentity) {
+		public ProductBatchSearchEndpointError(@JsonbProperty("cause") String cause, @JsonbProperty("itendity") String productIdentity) {
 			super();
 			this.cause = cause;
 			this.productIdentity = productIdentity;

@@ -2,7 +2,7 @@ package com.farawaybr.portal.dto;
 
 import java.util.List;
 
-import com.farawaybr.portal.microsoft.excel.RowObject;
+import com.farawaybr.portal.resources.poi.microsoft.excel.RowObject;
 
 public class ProductImportXlsxLayout {
 

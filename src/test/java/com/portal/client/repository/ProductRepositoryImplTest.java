@@ -16,11 +16,11 @@ import org.junit.runner.RunWith;
 
 import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
 import com.farawaybr.portal.dto.ProductToFind;
-import com.farawaybr.portal.exception.ProductsNotFoundException;
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriter;
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriterImpl;
+import com.farawaybr.portal.exception.WrapperProductBatchSearchEndpointException;
 import com.farawaybr.portal.repository.ProductRepositoryImpl;
 import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriter;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriterImpl;
 import com.farawaybr.portal.service.jsonb.JsonbService;
 import com.farawaybr.portal.service.jsonb.JsonbServiceImpl;
 import com.portal.ShrinkwrapDeploymentUtils;
@@ -57,7 +57,7 @@ public class ProductRepositoryImplTest {
 		assertNotNull(dataWrapper);
 	}
 
-	@Test(expected = ProductsNotFoundException.class)
+	@Test(expected = WrapperProductBatchSearchEndpointException.class)
 	@InSequence(3)
 	public void shouldThrowProductsNotFoundException() {
 		this.shouldApiRegistered();

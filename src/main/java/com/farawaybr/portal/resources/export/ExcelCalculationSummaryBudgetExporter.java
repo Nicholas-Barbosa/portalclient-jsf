@@ -13,10 +13,10 @@ import javax.inject.Inject;
 import org.apache.poi.ss.usermodel.CellType;
 
 import com.farawaybr.portal.cdi.qualifier.Summary;
-import com.farawaybr.portal.microsoft.excel.CellAttribute;
-import com.farawaybr.portal.microsoft.excel.RowObject;
-import com.farawaybr.portal.microsoft.excel.CellAttribute.CellAttributeBuilder;
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriter;
+import com.farawaybr.portal.resources.poi.microsoft.excel.CellAttribute;
+import com.farawaybr.portal.resources.poi.microsoft.excel.RowObject;
+import com.farawaybr.portal.resources.poi.microsoft.excel.CellAttribute.CellAttributeBuilder;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriter;
 import com.farawaybr.portal.vo.Budget;
 import com.farawaybr.portal.vo.Item;
 import com.farawaybr.portal.vo.ProductPriceData;

@@ -1,4 +1,4 @@
-package com.farawaybr.portal.repository;
+package com.portal.client.repository;
 
 import static org.junit.Assert.assertNotNull;
 

@@ -11,10 +11,10 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.CellType;
 import org.junit.jupiter.api.Test;
 
-import com.farawaybr.portal.microsoft.excel.CellAttribute;
-import com.farawaybr.portal.microsoft.excel.RowObject;
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriter;
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriterImpl;
+import com.farawaybr.portal.resources.poi.microsoft.excel.CellAttribute;
+import com.farawaybr.portal.resources.poi.microsoft.excel.RowObject;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriter;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriterImpl;
 
 class XssfWriterImplTest {
 

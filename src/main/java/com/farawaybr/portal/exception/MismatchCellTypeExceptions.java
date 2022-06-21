@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.CellType;
 
-import com.farawaybr.portal.microsoft.excel.CellAttribute;
+import com.farawaybr.portal.resources.poi.microsoft.excel.CellAttribute;
 
 public class MismatchCellTypeExceptions extends RuntimeException{
 	/**

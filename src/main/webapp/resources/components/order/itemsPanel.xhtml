@@ -43,7 +43,7 @@
 							style="margin-right: .5rem" onclick="PF('productSearch').show()" />
 						<p:commandButton type="button" value="#{resourceBundleServiceImpl.getMessage('abrir')}"
 							icon="pi pi-folder-open" styleClass="ui-button-success mr-2"
-							onclick="PF('dlgImportProducts').show();"
+							onclick="PF('dlgUploadBox').show();"
 							title="Importar produtos" />
 						<p:menuButton
 							value="#{resourceBundleServiceImpl.getMessage('descontos')}"
@@ -401,7 +401,7 @@
 		customerCode="#{cc.attrs.order.customerOnOrder.code}"
 		customerStore="#{cc.attrs.order.customerOnOrder.store}"
 		observer="#{itemOrderContainerController}"
-		onConfirm="PF('dlgImportProducts').hide();" />
+		onConfirm="PF('dlgImportProducts').hide();" confirmImport="#{itemOrderContainerController.onConfirm}"/>
 
 	<product:search customer="#{cc.attrs.order.customerOnOrder}"
 		searchObserver="#{itemOrderContainerController}"

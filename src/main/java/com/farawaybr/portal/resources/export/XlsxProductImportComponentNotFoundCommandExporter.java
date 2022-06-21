@@ -9,10 +9,10 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.farawaybr.portal.microsoft.excel.RowObject;
-import com.farawaybr.portal.microsoft.excel.CellAttribute.CellAttributeBuilder;
-import com.farawaybr.portal.microsoft.excel.writer.XssfWriter;
-import com.farawaybr.portal.vo.WrapperProduct404Error.Product404Error;
+import com.farawaybr.portal.resources.poi.microsoft.excel.RowObject;
+import com.farawaybr.portal.resources.poi.microsoft.excel.CellAttribute.CellAttributeBuilder;
+import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriter;
+import com.farawaybr.portal.vo.WrapperProductBatchSearchEndpointError.ProductBatchSearchEndpointError;
 
 @ApplicationScoped
 public class XlsxProductImportComponentNotFoundCommandExporter
@@ -22,7 +22,7 @@ public class XlsxProductImportComponentNotFoundCommandExporter
 	private XssfWriter writer;
 
 	@Override
-	public byte[] execute(Product404Error[] products) {
+	public byte[] execute(ProductBatchSearchEndpointError[] products) {
 		final AtomicInteger rowOffset = new AtomicInteger(1);
 		List<RowObject> rows = new ArrayList<>();
 		rows.add(new RowObject(0, CellAttributeBuilder.of(0, "Produto")));

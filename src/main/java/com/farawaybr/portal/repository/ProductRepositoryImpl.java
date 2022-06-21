@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -27,12 +28,12 @@ import com.farawaybr.portal.dto.ProductTechDetailJson;
 import com.farawaybr.portal.dto.ProductToFind;
 import com.farawaybr.portal.dto.ProductToFindStock;
 import com.farawaybr.portal.dto.ProductWrapper;
-import com.farawaybr.portal.exception.ProductsNotFoundException;
+import com.farawaybr.portal.exception.WrapperProductBatchSearchEndpointException;
 import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.security.api.helper.APIHelper;
 import com.farawaybr.portal.service.jsonb.JsonbService;
 import com.farawaybr.portal.vo.Product;
-import com.farawaybr.portal.vo.WrapperProduct404Error;
+import com.farawaybr.portal.vo.WrapperProductBatchSearchEndpointError;
 
 @ApplicationScoped
 public class ProductRepositoryImpl extends RepositoryInterceptors implements ProductRepository, Serializable {
@@ -141,7 +142,7 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 
 	@Override
 	public BatchProductSearchDataWrapper batchProductSearch(String customerCode, String customerStore,
-			Set<ProductToFind> products) {
+			Set<ProductToFind> products) throws WrapperProductBatchSearchEndpointException {
 		BatchProductSearchJsonPostForm postForm = new BatchProductSearchJsonPostForm(customerCode, customerStore,
 				products);
 		try {
@@ -150,10 +151,12 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 					BatchProductSearchDataWrapper.class, null, null, postForm, "application/json",
 					Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 			return dataWrapper;
-		} catch (NotFoundException e) {
-			WrapperProduct404Error wrapper = jsonb.fromJson((String) e.getResponse().getEntity(),
-					WrapperProduct404Error.class);
-			throw new ProductsNotFoundException(wrapper.getErrors());
+		} catch (NotFoundException | BadRequestException e) {
+			WrapperProductBatchSearchEndpointError wrapper = jsonb.fromJson((String) e.getResponse().getEntity(),
+					WrapperProductBatchSearchEndpointError.class);
+			throw e instanceof NotFoundException
+					? new WrapperProductBatchSearchEndpointException(wrapper.getErrors(), 404)
+					: new WrapperProductBatchSearchEndpointException(wrapper.getErrors(), 400);
 		}
 	}
 

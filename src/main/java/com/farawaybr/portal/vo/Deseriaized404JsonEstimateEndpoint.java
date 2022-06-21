@@ -1,22 +1,22 @@
 package com.farawaybr.portal.vo;
 
-import com.farawaybr.portal.vo.WrapperProduct404Error.Product404Error;
+import com.farawaybr.portal.vo.WrapperProductBatchSearchEndpointError.ProductBatchSearchEndpointError;
 
 public class Deseriaized404JsonEstimateEndpoint {
 
-	private Product404Error[] itemErrors;
+	private ProductBatchSearchEndpointError[] itemErrors;
 	private Customer404Error customerError;
 	private boolean okWithItems;
 	private boolean okWithCustomer;
 
-	public Deseriaized404JsonEstimateEndpoint(Product404Error[] itemErrors, Customer404Error customerError) {
+	public Deseriaized404JsonEstimateEndpoint(ProductBatchSearchEndpointError[] itemErrors, Customer404Error customerError) {
 		super();
 		this.itemErrors = itemErrors;
 		this.customerError = customerError;
 		checkBooleanFields();
 	}
 
-	public Product404Error[] getItemErrors() {
+	public ProductBatchSearchEndpointError[] getItemErrors() {
 		return itemErrors;
 	}
 

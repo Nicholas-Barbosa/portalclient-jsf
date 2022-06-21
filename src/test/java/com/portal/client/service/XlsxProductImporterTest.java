@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 
 import com.farawaybr.portal.dto.XlsxProductFileReadLayout;
 import com.farawaybr.portal.exception.MismatchCellTypeExceptions;
-import com.farawaybr.portal.microsoft.excel.reader.XssfReaderImpl;
+import com.farawaybr.portal.resources.poi.microsoft.excel.reader.XssfReaderImpl;
 import com.farawaybr.portal.service.XlsxProductImporter;
 import com.portal.ShrinkwrapDeploymentUtils;
 

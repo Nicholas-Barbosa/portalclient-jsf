@@ -1,4 +1,4 @@
-package com.farawaybr.portal.microsoft.excel;
+package com.farawaybr.portal.resources.poi.microsoft.excel;
 
 import java.io.Serializable;
 import java.util.Arrays;
