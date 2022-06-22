@@ -1,6 +1,6 @@
 package com.farawaybr.portal.service;
 
-import com.farawaybr.portal.security.user.RepresentativeUser;
+import com.farawaybr.portal.security.user.ProtheusUser;
 
 public interface RepresentativeService {
 
@@ -9,5 +9,5 @@ public interface RepresentativeService {
 	 * 
 	 * @return
 	 */
-	RepresentativeUser find();
+	ProtheusUser find();
 }

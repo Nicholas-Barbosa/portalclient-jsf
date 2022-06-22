@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import com.farawaybr.portal.security.api.APIsManager;
 import com.farawaybr.portal.security.api.ProtheusApiData;
-import com.farawaybr.portal.security.user.RepresentativeUser;
+import com.farawaybr.portal.security.user.ProtheusUser;
 
 @SessionScoped
 public class ProtheusAPIHelper implements Serializable, APIHelper {
@@ -67,7 +67,7 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 	}
 
 	@Override
-	public RepresentativeUser getUser() {
+	public ProtheusUser getUser() {
 		// TODO Auto-generated method stub
 		return orcamentoAPI.getLoggedUser();
 	}

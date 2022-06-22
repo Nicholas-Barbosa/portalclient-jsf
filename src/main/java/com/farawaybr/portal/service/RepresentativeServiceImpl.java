@@ -8,9 +8,9 @@ import javax.inject.Inject;
 import com.farawaybr.portal.dto.RepresentativeData;
 import com.farawaybr.portal.repository.RepresentativeRepository;
 import com.farawaybr.portal.security.api.helper.APIHelper;
-import com.farawaybr.portal.security.user.InternalRepresentativeUser;
-import com.farawaybr.portal.security.user.RepresentativeUser;
-import com.farawaybr.portal.security.user.RepresentativeUser.FetchStatus;
+import com.farawaybr.portal.security.user.InternalProtheusUser;
+import com.farawaybr.portal.security.user.ProtheusUser;
+import com.farawaybr.portal.security.user.ProtheusUser.FetchStatus;
 
 @ApplicationScoped
 public class RepresentativeServiceImpl implements RepresentativeService, Serializable {
@@ -27,11 +27,11 @@ public class RepresentativeServiceImpl implements RepresentativeService, Seriali
 	private RepresentativeRepository repository;
 
 	@Override
-	public RepresentativeUser find() {
+	public ProtheusUser find() {
 		if (protheusApi.getUser().getFetchStatus() == null
 				|| protheusApi.getUser().getFetchStatus() == FetchStatus.NOT_FETCHED) {
 			RepresentativeData data = repository.loadData();
-			RepresentativeUser user = (RepresentativeUser) protheusApi.getUser();
+			ProtheusUser user = (ProtheusUser) protheusApi.getUser();
 			user.setCode(data.getCode());
 			user.setFantasyName(data.getFantasyname());
 			user.setName(data.getName());
@@ -40,7 +40,7 @@ public class RepresentativeServiceImpl implements RepresentativeService, Seriali
 			user.setFetchStatus(FetchStatus.FETCHED);
 			switch (user.getType()) {
 			case INTERNO:
-				InternalRepresentativeUser internal = new InternalRepresentativeUser(user);
+				InternalProtheusUser internal = new InternalProtheusUser(user);
 				protheusApi.getData().setUser(internal);
 				break;
 

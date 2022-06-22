@@ -15,7 +15,9 @@ import java.util.stream.Stream;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.ProcessingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
@@ -151,12 +153,15 @@ public class ProductRepositoryImpl extends RepositoryInterceptors implements Pro
 					BatchProductSearchDataWrapper.class, null, null, postForm, "application/json",
 					Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApiHelper.getToken()));
 			return dataWrapper;
-		} catch (NotFoundException | BadRequestException e) {
-			WrapperProductBatchSearchEndpointError wrapper = jsonb.fromJson((String) e.getResponse().getEntity(),
-					WrapperProductBatchSearchEndpointError.class);
-			throw e instanceof NotFoundException
+		} catch (ProcessingException | NotFoundException | BadRequestException e) {
+			ClientErrorException rootException = e instanceof ProcessingException ? (ClientErrorException) e.getCause()
+					: (ClientErrorException) e;
+			WrapperProductBatchSearchEndpointError wrapper = jsonb.fromJson(
+					(String) rootException.getResponse().getEntity(), WrapperProductBatchSearchEndpointError.class);
+			throw rootException instanceof NotFoundException
 					? new WrapperProductBatchSearchEndpointException(wrapper.getErrors(), 404)
 					: new WrapperProductBatchSearchEndpointException(wrapper.getErrors(), 400);
+
 		}
 	}
 

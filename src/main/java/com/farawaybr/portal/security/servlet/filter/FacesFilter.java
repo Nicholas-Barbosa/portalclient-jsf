@@ -13,22 +13,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.farawaybr.portal.security.api.APIsManager;
-import com.farawaybr.portal.service.route.RequestTracker;
 
 @WebFilter(value = "/faces/*")
 public class FacesFilter implements Filter {
 
 	private final APIsManager userPropertyHolder;
-	private final RequestTracker requestTracker;
 
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
 	@Inject
-	public FacesFilter(APIsManager userPropertyHolder, RequestTracker requestTracker) {
+	public FacesFilter(APIsManager userPropertyHolder) {
 		super();
 		this.userPropertyHolder = userPropertyHolder;
-		this.requestTracker = requestTracker;
 	}
 
 	@Override

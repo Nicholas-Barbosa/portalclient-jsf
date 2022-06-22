@@ -46,7 +46,6 @@ public class ProspectCustomerFormController implements Serializable {
 	}
 
 	public void loadStates() {
-		System.out.println("load states!");
 		if (states == null || states.size() < 27) {
 			states = this.stateService.findAll();
 			return;

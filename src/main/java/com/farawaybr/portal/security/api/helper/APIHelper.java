@@ -1,7 +1,7 @@
 package com.farawaybr.portal.security.api.helper;
 
 import com.farawaybr.portal.security.api.ProtheusApiData;
-import com.farawaybr.portal.security.user.RepresentativeUser;
+import com.farawaybr.portal.security.user.ProtheusUser;
 
 public interface APIHelper {
 
@@ -17,6 +17,6 @@ public interface APIHelper {
 
 	String getKey();
 
-	RepresentativeUser getUser();
+	ProtheusUser getUser();
 
 }

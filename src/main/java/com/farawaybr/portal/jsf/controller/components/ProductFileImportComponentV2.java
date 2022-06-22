@@ -13,8 +13,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.poi.ss.usermodel.CellType;
+import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.RowEditEvent;
 
 import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
 import com.farawaybr.portal.dto.MultipleProductRowExcelData;
@@ -126,6 +126,7 @@ public class ProductFileImportComponentV2 implements Serializable, ObserverProdu
 	public void onMismatchProductsMultiple(List<MultipleProductRowExcelData> products) {
 		// TODO Auto-generated method stub
 		this.mismatch = "multiple";
+		this.resolvedMismatchColumnsCounter = 0;
 		this.productsWithProblems = new ArrayList<>(products);
 		this.productsWithProblemSize = (short) productsWithProblems.size();
 		resolvedMismatchColumnsMessage = MessageFormat.format(problemMessage, productsWithProblemSize, "nenhuma");
@@ -136,6 +137,7 @@ public class ProductFileImportComponentV2 implements Serializable, ObserverProdu
 	public void onMismatchTypeCells(List<ProductRowExcelData> rows) {
 		// TODO Auto-generated method stub
 		this.mismatch = "cellType";
+		this.resolvedMismatchColumnsCounter = 0;
 		this.productsWithProblems = rows;
 		this.productsWithProblemSize = (short) productsWithProblems.size();
 		resolvedMismatchColumnsMessage = MessageFormat.format(problemMessage, productsWithProblemSize, "nenhuma");
@@ -146,60 +148,76 @@ public class ProductFileImportComponentV2 implements Serializable, ObserverProdu
 	public void onProductsNotFound(List<ProductRowExcelData> products) {
 		// TODO Auto-generated method stub
 		this.mismatch = "productsNotfound";
+		this.resolvedMismatchColumnsCounter = 0;
 		this.productsWithProblems = products;
 		this.productsWithProblemSize = (short) productsWithProblems.size();
 		products = null;
 		FacesUtils.addHeaderForResponse("products-found", false);
-		this.resolvedMismatchColumnsCounter = 0;
 		resolvedMismatchColumnsMessage = MessageFormat.format(problemMessage, productsWithProblemSize, "nenhuma");
 	}
 
-	public void onRowEdit(RowEditEvent<ProductRowExcelData> event) {
-		ProductRowExcelData product = event.getObject();
+	public void onRowDelete(int rowIndex) {
+		productsWithProblems.get(rowIndex).setQuantityValue(-1);
+		this.productsWithProblems.remove(rowIndex);
+		this.resolvedMismatchColumnsCounter++;
+		this.checkResolvedMismatchColumnsCounter();
+
+	}
+
+	public void onRowEdit(CellEditEvent<Object> event) {
+		ProductRowExcelData product = productsWithProblems.get(event.getRowIndex());
+		Object newValue = event.getNewValue();
+		int rowIndex = event.getRowIndex();
 		switch (mismatch) {
 		case "cellType":
-			if (RegexUtils.isOnlyNumbers(product.getQuantityValue() + "")) {
-				this.productsWithProblems.remove(product);
+			if (RegexUtils.isOnlyNumbers(newValue + "")) {
+				this.productsWithProblems.remove(rowIndex);
 				this.resolvedMismatchColumnsMessage = MessageFormat.format(problemMessage, productsWithProblemSize,
 						++this.resolvedMismatchColumnsCounter);
+				product.setQuantityValue(Integer.parseInt(newValue + ""));
 				product.getQuantity().setCellType(CellType.NUMERIC);
-//				if (Integer.parseInt(product.getQuantityValue() + "") == -1) {
-//					this.productsWithProblems.remove(product);
-//					product = null;
-//				}
-				if (resolvedMismatchColumnsCounter == productsWithProblemSize) {
-					FacesUtils.addHeaderForResponse("typesok", this.productsWithProblems.size() == 0);
-				}
+				this.checkResolvedMismatchColumnsCounter();
 				product = null;
 				return;
 			}
-			FacesUtils.warn(null, "Digite um tipo adequado", null, "growl");
+			FacesUtils.warn(null, "Digite um tipo numérico!", "O valor analisado não corresponde a um tipo numérico",
+					"growl");
 			break;
 
 		case "productsNotfound":
-			this.productsWithProblems.remove(product);
+			product.setCodeValue(newValue);
+			this.productsWithProblems.remove(rowIndex);
 			this.resolvedMismatchColumnsMessage = MessageFormat.format(problemMessage, productsWithProblemSize,
 					++this.resolvedMismatchColumnsCounter);
-			if (resolvedMismatchColumnsCounter == productsWithProblemSize) {
-				FacesUtils.addHeaderForResponse("typesok", this.productsWithProblems.size() == 0);
-			}
+			this.checkResolvedMismatchColumnsCounter();
 			break;
 		case "multiple":
-			MultipleProductRowExcelData multipleProduct = (MultipleProductRowExcelData) product;
-			if (Integer.parseInt(multipleProduct.getQuantityValue() + "") % multipleProduct.getCorrectMultiple() == 0) {
-				this.resolvedMismatchColumnsMessage = MessageFormat.format(problemMessage, productsWithProblemSize,
-						++this.resolvedMismatchColumnsCounter);
-				if (resolvedMismatchColumnsCounter == productsWithProblemSize) {
-					FacesUtils.addHeaderForResponse("typesok", this.productsWithProblems.size() == 0);
+			if (RegexUtils.isOnlyNumbers(newValue + "")) {
+				MultipleProductRowExcelData multipleProduct = (MultipleProductRowExcelData) product;
+				int numericValue = Integer.parseInt(newValue + "");
+				if (numericValue % multipleProduct.getCorrectMultiple() == 0) {
+					product.setQuantityValue(newValue);
+					this.productsWithProblems.remove(rowIndex);
+					this.resolvedMismatchColumnsMessage = MessageFormat.format(problemMessage, productsWithProblemSize,
+							++this.resolvedMismatchColumnsCounter);
+					this.checkResolvedMismatchColumnsCounter();
+					FacesUtils.executeScript("updateMismatchTable()");
+					return;
 				}
-				FacesUtils.executeScript("updateMismatchTable()");
-				return;
+				FacesUtils.warn(null, "Valor proibido",
+						"Valor deve ser múltiplo de " + multipleProduct.getCorrectMultiple(), "growl");
 			}
-			FacesUtils.warn(null, "Valor proibido",
-					"Valor deve ser múltiplo de " + multipleProduct.getCorrectMultiple(), "growl");
+			FacesUtils.warn(null, "Digite um tipo numérico!", "O valor analisado não corresponde a um tipo numérico",
+					"growl");
 			break;
 		}
 
+	}
+
+	private void checkResolvedMismatchColumnsCounter() {
+		if (resolvedMismatchColumnsCounter == productsWithProblemSize) {
+			FacesUtils.addHeaderForResponse("typesok", this.productsWithProblems.size() == 0);
+		}
 	}
 
 	public List<ProductRowExcelData> getProductsWithProblems() {

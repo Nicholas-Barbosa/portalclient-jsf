@@ -24,7 +24,6 @@ public class FacesAjaxFilter implements PhaseListener {
 	@Override
 	public void beforePhase(PhaseEvent event) {
 		// TODO Auto-generated method stub
-		System.out.println("Before phase");
 		FacesContext currentRequest = FacesContext.getCurrentInstance();
 		PartialViewContext partialView = currentRequest.getPartialViewContext();
 		HttpServletResponse response = (HttpServletResponse) currentRequest.getExternalContext().getResponse();

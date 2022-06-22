@@ -16,8 +16,8 @@ import com.farawaybr.portal.resources.ProtheusApiUrlResolver;
 import com.farawaybr.portal.security.api.APIsManager;
 import com.farawaybr.portal.security.api.ProtheusApiData;
 import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
-import com.farawaybr.portal.security.user.RepresentativeUser;
-import com.farawaybr.portal.security.user.builder.RepresentativeUserBuilder;
+import com.farawaybr.portal.security.user.ProtheusUser;
+import com.farawaybr.portal.security.user.builder.ProtheusUserBuilder;
 
 @RequestScoped
 public class ProtheusApiAuthenticationService implements AuthenticationService, Serializable {
@@ -54,14 +54,14 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 				null);
 
 		this.registerApi(
-				(RepresentativeUser) RepresentativeUserBuilder.getInstance().withUsername(loginForm.getUsername())
+				(ProtheusUser) ProtheusUserBuilder.getInstance().withUsername(loginForm.getUsername())
 						.withPassword(loginForm.getPassword().toCharArray()).build(),
 				authResponse.getAccessToken(), authResponse.getRefreshToken(), "Bearer", loginForm.getCompanyEnv());
 		authenticatedEvent.fire(new AuthenticateddEvent(loginForm.getCompanyEnv()));
 		loginForm = null;
 	}
 
-	private void registerApi(RepresentativeUser user, String token, String refreshToken, String tokenPrefix,
+	private void registerApi(ProtheusUser user, String token, String refreshToken, String tokenPrefix,
 			ProtheusApiEnviroment enviroment) {
 		ProtheusApiData api = new ProtheusApiData(user, protheusApiUrlResolver.getUrl(enviroment),
 				"api/oauth2/v1/token", "api/oauth2/v1/token", token, refreshToken, tokenPrefix);

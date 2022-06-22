@@ -142,7 +142,7 @@
 			style="max-width: 30vw;" onHide="resetSteps()">
 			<h:form prependId="false">
 				<p:remoteCommand name="updateMismatchTable" process="@none"
-					update="mismatchTable,resolvedMismatchColumnsMessage"
+					update="mismatchTable,resolvedMismatchColumnsMessage,dataExporter"
 					oncomplete="editScrollBodyMaxHeight('cl-mismatch-table','30vh');" />
 
 				<p class="line-height-3 w-10"
@@ -154,21 +154,24 @@
 					productFileImportComponentV2.resolvedMismatchColumnsMessage}
 				</p>
 				<div id="mismatchs-type-divtable">
-
+					<p:commandButton id="dataExporter" value="Excel"
+						styleClass="p-mr-2 p-mb-2"
+						disabled="#{productFileImportComponentV2.mismatch !='productsNotfound'}">
+						<p:dataExporter type="xlsxstream" target="mismatchTable"
+							fileName="produtos-nao-encontrados" />
+					</p:commandButton>
 					<p:dataTable
 						value="#{productFileImportComponentV2.productsWithProblems}"
 						var="product" id="mismatchTable" rows="10"
 						widgetVar="cl-mismatch-table" scrollable="true" editable="true"
-						lazy="false">
-						<p:ajax event="rowEdit"
+						editMode="cell" lazy="false" rowIndexVar="rowIndx">
+						<p:ajax event="cellEdit"
 							listener="#{productFileImportComponentV2.onRowEdit}"
-							update="#{cc.clientId}:resolvedMismatchColumnsMessage"
-							oncomplete="onRowEdit(xhr)" />
+							update="@none" oncomplete="updateMismatchTable();onRowEdit(xhr)" />
 						<p:column headerText="Linha" field="excelRowIndex+1"
 							rendered="#{productFileImportComponentV2.mismatch == 'cellType'}" />
 						<p:column headerText="Produto">
-							<p:cellEditor
-								>
+							<p:cellEditor>
 								<f:facet name="output">
 									<h:outputText value="#{product.code.value}" />
 								</f:facet>
@@ -178,20 +181,22 @@
 								</f:facet>
 							</p:cellEditor>
 						</p:column>
-						<p:column headerText="Quantidade">
-							<p:cellEditor
-								>
+						<p:column headerText="Quantidade"
+							rendered="#{productFileImportComponentV2.mismatch == 'cellType'}">
+							<p:cellEditor>
 								<f:facet name="output">
 									<h:outputText value="#{product.quantityValue}" />
 								</f:facet>
 								<f:facet name="input">
-									<p:inputText id="quantityInput"
-										value="#{product.quantityValue}" style="width:100%" />
-									<p:tooltip for="quantityInput" value="Digite -1 para remover"
-										position="bottom" />
+									<p:spinner id="quantityInput" value="#{product.quantityValue}"
+										 style="width:100%" />
+
 								</f:facet>
 							</p:cellEditor>
 						</p:column>
+						<p:column headerText="Quantidade"
+							rendered="#{productFileImportComponentV2.mismatch != 'cellType'}"
+							field="quantityValue" filterable="false" />
 						<p:column headerText="Tipo atual"
 							rendered="#{productFileImportComponentV2.mismatch == 'cellType'}">
 							<h:outputText value="#{product.quantity.cellType}" />
@@ -202,14 +207,17 @@
 								value="#{cell.cellType=='STRING' ? 'NUMERIC':'NUMERIC'}" />
 						</p:column>
 						<p:column headerText="Múltiplo"
-							rendered="#{productFileImportComponentV2.mismatch == 'multiple'}">
-							<h:outputText value="#{product.correctMultiple}" />
-						</p:column>
-						<p:column style="width:6rem">
-							<p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit"
-								saveTitle="Save Row" />
-						</p:column>
+							rendered="#{productFileImportComponentV2.mismatch == 'multiple'}"
+							field="correctMultiple" filterable="false" />
 
+						<p:column style="width:6rem" exportable="false">
+							<p:commandButton icon="pi pi-times"
+								styleClass="rounded-button ui-button-danger ui-button-flat"
+								title="Remover da importação"
+								update="#{cc.clientId}:resolvedMismatchColumnsMessage,mismatchTable"
+								action="#{productFileImportComponentV2.onRowDelete(rowIndx)}"
+								oncomplete="onRowEdit(xhr)" />
+						</p:column>
 					</p:dataTable>
 				</div>
 				<div id="resolved-types-mismatchs"

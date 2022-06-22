@@ -3,7 +3,7 @@ package com.farawaybr.portal.security.user;
 import java.io.Serializable;
 import java.util.Arrays;
 
-public class RepresentativeUser implements Serializable {
+public class ProtheusUser implements Serializable {
 
 	/**
 	 * 
@@ -16,7 +16,7 @@ public class RepresentativeUser implements Serializable {
 	private SaleType type;
 	private FetchStatus fetchStatus;
 	
-	public RepresentativeUser(String name, String email, String username, char[] password, String code,
+	public ProtheusUser(String name, String email, String username, char[] password, String code,
 			String fantasyName, SaleType type) {
 		super();
 		this.name = name;

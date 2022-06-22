@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.farawaybr.portal.security.user.RepresentativeUser;
+import com.farawaybr.portal.security.user.ProtheusUser;
 
 public class ProtheusApiData implements Serializable {
 
@@ -18,10 +18,10 @@ public class ProtheusApiData implements Serializable {
 	private final String refreshTokenUrl;
 	private String token,refreshToken;
 	private final String tokenPrefix;
-	private RepresentativeUser userData;
+	private ProtheusUser userData;
 	private final Map<String, Object> attributes;
 
-	public ProtheusApiData(RepresentativeUser user, String baseUrl, String loginEndpoint, String refreshTokenUrl, String token,String refreshToken,
+	public ProtheusApiData(ProtheusUser user, String baseUrl, String loginEndpoint, String refreshTokenUrl, String token,String refreshToken,
 			String tokenPrefix) {
 		super();
 		this.userData = user;
@@ -54,11 +54,11 @@ public class ProtheusApiData implements Serializable {
 		return token;
 	}
 
-	public RepresentativeUser getLoggedUser() {
+	public ProtheusUser getLoggedUser() {
 		return userData;
 	}
 
-	public void setUser(RepresentativeUser user) {
+	public void setUser(ProtheusUser user) {
 		this.userData = user;
 	}
 

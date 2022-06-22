@@ -1,6 +1,6 @@
 package com.farawaybr.portal.vo;
 
-import com.farawaybr.portal.security.user.RepresentativeUser.SaleType;
+import com.farawaybr.portal.security.user.ProtheusUser.SaleType;
 
 public class ProspectCustomerOnOrder extends CustomerOnOrder {
 

@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.farawaybr.portal.security.user.RepresentativeUser;
+import com.farawaybr.portal.security.user.ProtheusUser;
 
 public class Order {
 
@@ -18,7 +18,7 @@ public class Order {
 	private String message;
 	private List<Item> items;
 	private LocalDate createdAt;
-	private RepresentativeUser representative;
+	private ProtheusUser representative;
 	private Invoice invoice;
 	private String status;
 
@@ -27,7 +27,7 @@ public class Order {
 
 	public Order(String code,String customerNumOrder, String repNumOrder, CustomerOnOrder customerOnOrder, BigDecimal grossValue,
 			BigDecimal liquidValue, BigDecimal stValue, BigDecimal globalDiscount, String message, List<Item> items,
-			LocalDate createdAt, RepresentativeUser representative, String status) {
+			LocalDate createdAt, ProtheusUser representative, String status) {
 		super();
 		this.code = code;
 		this.repNumOrder = repNumOrder;
@@ -150,11 +150,11 @@ public class Order {
 		this.createdAt = createdAt;
 	}
 
-	public RepresentativeUser getRepresentative() {
+	public ProtheusUser getRepresentative() {
 		return representative;
 	}
 
-	public void setRepresentative(RepresentativeUser representative) {
+	public void setRepresentative(ProtheusUser representative) {
 		this.representative = representative;
 	}
 

@@ -7,7 +7,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.ProcessingException;
 
-import com.farawaybr.portal.security.user.RepresentativeUser;
+import com.farawaybr.portal.security.user.ProtheusUser;
 import com.farawaybr.portal.service.RepresentativeService;
 import com.farawaybr.portal.util.jsf.FacesUtils;
 
@@ -23,7 +23,7 @@ public class UserDataController implements Serializable {
 	@Inject
 	private RepresentativeService service;
 	private boolean loadedUserData;
-	private RepresentativeUser user;
+	private ProtheusUser user;
 
 	public void loadUserData() {
 		if (!loadedUserData)
@@ -44,7 +44,7 @@ public class UserDataController implements Serializable {
 			}
 	}
 
-	public RepresentativeUser getUser() {
+	public ProtheusUser getUser() {
 		return user;
 	}
 

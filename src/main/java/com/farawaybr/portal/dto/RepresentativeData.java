@@ -3,7 +3,7 @@ package com.farawaybr.portal.dto;
 import javax.json.bind.annotation.JsonbCreator;
 import javax.json.bind.annotation.JsonbProperty;
 
-import com.farawaybr.portal.security.user.RepresentativeUser.SaleType;
+import com.farawaybr.portal.security.user.ProtheusUser.SaleType;
 
 public class RepresentativeData {
 

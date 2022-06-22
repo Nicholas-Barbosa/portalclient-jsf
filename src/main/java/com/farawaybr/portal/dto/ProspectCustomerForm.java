@@ -3,7 +3,7 @@ package com.farawaybr.portal.dto;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import com.farawaybr.portal.security.user.RepresentativeUser.SaleType;
+import com.farawaybr.portal.security.user.ProtheusUser.SaleType;
 import com.farawaybr.portal.vo.CustomerAddress;
 import com.farawaybr.portal.vo.CustomerPurchaseInfo;
 import com.farawaybr.portal.vo.ProspectCustomerOnOrder;

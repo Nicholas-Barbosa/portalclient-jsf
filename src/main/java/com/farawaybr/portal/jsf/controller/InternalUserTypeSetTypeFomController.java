@@ -5,8 +5,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.farawaybr.portal.security.api.helper.ProtheusAPIHelper;
-import com.farawaybr.portal.security.user.InternalRepresentativeUser;
-import com.farawaybr.portal.security.user.RepresentativeUser.SaleType;
+import com.farawaybr.portal.security.user.InternalProtheusUser;
+import com.farawaybr.portal.security.user.ProtheusUser.SaleType;
 import com.farawaybr.portal.util.jsf.FacesUtils;
 
 @RequestScoped
@@ -19,7 +19,7 @@ public class InternalUserTypeSetTypeFomController {
 	private ProtheusAPIHelper protheusApi;
 
 	public void saveSaleType() {
-		InternalRepresentativeUser user = (InternalRepresentativeUser) protheusApi.getUser();
+		InternalProtheusUser user = (InternalProtheusUser) protheusApi.getUser();
 		user.setLoggedSaleType(type);
 		FacesUtils.info(null, "Tipo salvo com sucesso", null, "growl");
 	}

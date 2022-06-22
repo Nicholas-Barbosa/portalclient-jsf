@@ -37,17 +37,20 @@ public class LoginController {
 		this.loginForm = new LoginProtheusForm();
 	}
 
+
 	public String authenticate() {
 		try {
 			this.authenticationRepository.authenticate(loginForm);
 			FacesUtils.addHeaderForResponse("ok", true);
 			return "NEW_ORDER";
 		} catch (NotAuthorizedException e) {
-			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null);
+			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null, "messages");
 
 		} catch (Exception e) {
 			if (e.getCause() instanceof ConnectException)
-				FacesUtils.error(null, "Connection timed out", "Servidor fora do ar");
+				FacesUtils.error(null, "Connection timed out", "Servidor fora do ar", "messages");
+			if (e.getCause() instanceof NotAuthorizedException)
+				FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null, "messages");
 		}
 		return null;
 

@@ -70,7 +70,12 @@ public class XlsxSubjectTemplateProductImporter implements SubjectProductImporte
 						return new ProductRowExcelData(rowObject.getCell(codeColumn), rowObject.getCell(quantityColumn),
 								rowObject.getOffset());
 					}).collect(CopyOnWriteArrayList::new, List::add, List::addAll);
+			return;
 		}
+		productsRowsExcelData.removeIf(p -> {
+			Object obValue = p.getQuantityValue();
+			return obValue instanceof Integer ? ((Integer) obValue) == -1 ? true : false : false;
+		});
 
 	}
 

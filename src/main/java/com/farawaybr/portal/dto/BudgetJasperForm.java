@@ -1,6 +1,6 @@
 package com.farawaybr.portal.dto;
 
-import com.farawaybr.portal.security.user.RepresentativeUser.SaleType;
+import com.farawaybr.portal.security.user.ProtheusUser.SaleType;
 
 public class BudgetJasperForm {
 

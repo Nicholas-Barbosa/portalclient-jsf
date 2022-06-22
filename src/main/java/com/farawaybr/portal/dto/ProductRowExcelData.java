@@ -56,7 +56,9 @@ public class ProductRowExcelData implements Serializable {
 	public void setQuantityValue(Object value) {
 		this.quantity.setValue(value);
 	}
-
+	public void setCodeValue(Object value) {
+		this.code.setValue(value);
+	}
 	@Override
 	public String toString() {
 		return "ProductImporterExtractedData [code=" + code + ", quantity=" + quantity + "]";

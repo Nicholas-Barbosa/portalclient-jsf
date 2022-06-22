@@ -25,7 +25,6 @@ public class RepositoryNotFound404OptionalEmptyAspect {
 				return Optional.empty();
 			throw e.getCause();
 		} catch (NotFoundException e) {
-			System.out.println("not found!");
 			if (isOptional(joinpoint))
 				return Optional.empty();
 			throw e;

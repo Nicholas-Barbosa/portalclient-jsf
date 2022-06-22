@@ -43,7 +43,6 @@ public class BudgetCrudServiceImpl implements BudgetCrudService {
 		checkBudgetState(budget);
 		budget.setRepNumOrder(ordersForm.getRepresentativeOrder());
 		budget.setCustomerNumOrder(ordersForm.getCustomerOrder());
-		budget.getItems().forEach(i -> System.out.println("Item " + i.getPriceData().getQuantity()));
 
 		budgetRepository.save(budget);
 	}
