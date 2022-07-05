@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+</h:head>
+
+<composite:interface>
+
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<p:dialog header="Token expirado"
+			widgetVar="#{cc.clientId}-notauthroized-dialog" responsive="true"
+			modal="true" style="max-width: 20vw">
+			<div class="p-d-flex p-flex-column">
+				<div class="p-col alert alert-danger" style="width: 100%">
+					<p:staticMessage severity="error" summary="Seu token foi expirado." styleClass="p-m-0"
+						detail="Sua requisição recente foi recusada pelo servidor Protheus. Seu token protheus expirou ou se tornou inválido. É necessário um novo token ou atualização do mesmo. Fechando a mensagem, esta sessão será automaticamente encerrada e você será redirecionado(a) para página de login."
+						style="width: 100%" />
+				</div>
+				<div class="p-col">
+					<p:commandButton value="Atualizar token" />
+				</div>
+			</div>
+		</p:dialog>
+	</div>
+
+	<script>
+		function showNotAuthorized(token) {
+			PF('#{cc.clientId}-notauthroized-dialog').show();
+			console.log(token)
+		}
+	</script>
+</composite:implementation>
+
+</html>

@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.farawaybr.portal.cdi.aop.annotations.IllegalResponsePointCutJoinPoint;
 import com.farawaybr.portal.cdi.aop.annotations.NotAuthorizedJoinPointCut;
-import com.farawaybr.portal.dto.RepresentativeData;
+import com.farawaybr.portal.dto.UserData;
 import com.farawaybr.portal.dto.WrapperRepresentativeData;
 import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.security.api.helper.APIHelper;
@@ -30,9 +30,9 @@ public class RepresentativeRepositoryImpl implements RepresentativeRepository, S
 
 	@Inject
 	private APIHelper protheusApiHelper;
-
+	
 	@Override
-	public RepresentativeData loadData() {
+	public UserData loadData() {
 		// TODO Auto-generated method stub
 		return restClient
 				.get(protheusApiHelper.buildEndpoint("representative"), WrapperRepresentativeData.class, null, null,

@@ -1,6 +1,6 @@
 package com.farawaybr.portal.repository;
 
-import com.farawaybr.portal.dto.RepresentativeData;
+import com.farawaybr.portal.dto.UserData;
 
 public interface RepresentativeRepository {
 
@@ -9,5 +9,5 @@ public interface RepresentativeRepository {
 	 * 
 	 * @return
 	 */
-	RepresentativeData loadData();
+	UserData loadData();
 }

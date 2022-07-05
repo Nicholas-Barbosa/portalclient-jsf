@@ -11,7 +11,6 @@ public class SessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
-		Locale.setDefault(Locale.ENGLISH);
 		se.getSession().setMaxInactiveInterval(1200);
 	}
 

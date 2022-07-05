@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:po="http://primefaces.org/rain">
 
-	<div class="layout-topbar">
+	<div class="layout-topbar" id="topbar">
 		<div class="layout-topbar-wrapper">
 			<div class="layout-topbar-left">
 				<h:link id="logolink">
@@ -26,15 +26,14 @@
 				</div>
 
 				<ul class="layout-topbar-actions">
-					<li><i class="pi pi-spin pi-spinner" style="font-size: 3rem"
-						id="loadingUser"></i></li>
+					
 					<li class="topbar-item"><a href="#"> <p:avatar
 								icon="pi pi-user" styleClass="mr-2" size="large" shape="circle"
 								id="avatar" />
 					</a>
 						<ul>
 							<li><a href="#"> <i class="pi pi-user"></i> <span><p:outputLabel
-											value="#{userDataController.user.name}" id="user-label" /> </span>
+											value="#{topBarPreferences.user.name}" id="user-label" /> </span>
 							</a></li>
 							<li onclick="logout()"><a href="#"> <i
 									class="topbar-icon pi pi-power-off"> </i><span>Sair</span>
@@ -50,16 +49,16 @@
 					<p:remoteCommand action="#{session.invalidate}" process="@this"
 						name="logout" oncomplete="window.location='/portal/login.xhtml'"
 						partialSubmit="true" id="sessionInvalidate" />
-					<p:remoteCommand action="#{userDataController.loadUserData}"
-						autoRun="true" async="true"
-						onstart="$('#loadingUser').show();$('#avatar').hide();"
-						oncomplete="$('#loadingUser').hide();$('#avatar').show();"
-						update="user-label" />
+					
 				</h:form>
 			</div>
 
 
 		</div>
 	</div>
+	<script>
+		function getUserData() {
 
+		}
+	</script>
 </ui:composition>

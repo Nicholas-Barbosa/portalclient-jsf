@@ -72,4 +72,10 @@ public class ProtheusAPIHelper implements Serializable, APIHelper {
 		return orcamentoAPI.getLoggedUser();
 	}
 
+	@Override
+	public void setUser(ProtheusUser user) {
+		// TODO Auto-generated method stub
+		this.getData().setUser(user);
+	}
+
 }

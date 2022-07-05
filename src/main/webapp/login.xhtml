@@ -4,7 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:excp="http://java.sun.com/jsf/composite/components/exception">
+	xmlns:excp="http://java.sun.com/jsf/composite/components/exception"
+	xmlns:o="http://omnifaces.org/ui">
 
 <h:head>
 	<f:facet name="first">
@@ -52,7 +53,8 @@
 				<span>#{resourceBundleServiceImpl.getMessage('ambiente')}</span>
 				<p:selectOneMenu id="option"
 					value="#{loginController.loginForm.companyEnv}" required="true"
-					requiredMessage="Selecione o ambiente da API">
+					requiredMessage="Selecione o ambiente da API"
+					widgetVar="env-selector">
 					<f:selectItem itemLabel="CDG" itemValue="CDG" />
 					<f:selectItem itemLabel="NSG" itemValue="NSG" />
 					<f:selectItem itemLabel="SPG" itemValue="SPG" />
@@ -62,55 +64,70 @@
 			</div>
 
 			<p:commandButton value="LOGIN"
-				action="#{loginController.authenticate}"
-				onstart="PF('dlgLoading').show();startLogin();" process="@form"
-				update="@form dlgLoading"
-				oncomplete="PF('dlgLoading').hide();finishedLoginProcess=true;if(xhr.getResponseHeader('ok')=='true')PF('redirectingUser').show()"
-				ajax="true" />
-			
+				action="#{loginController.authenticate}" onclick="login()"
+				process="@form" update="@form" ajax="true"
+				oncomplete="onCompleteLogin(xhr)" />
+			<p:commandButton type="button" onclick="PF('dlgLoading').show()" />
 		</h:form>
 		<p:messages id="messages" showDetail="true" closable="true"
 			globalOnly="true" />
 	</div>
+	<p:remoteCommand name="updateDlgLoading" async="true" process="@none"
+		update="dlgLoading" />
+	<p:dialog header="Aguarde" widgetVar="dlgLoading" minHeight="40"
+		width="350" showEffect="fade" modal="true" closable="false"
+		draggable="false" id="dlgLoading">
 
-	<p:dialog header="#{holdMessageView.label('autenticando_usuario')}"
-		widgetVar="dlgLoading" minHeight="40" width="350" showEffect="fade"
-		modal="true" closable="false" draggable="false" id="dlgLoading">
-		<div class="grid-demo">
-			<div class="grid p-dir-col-rev">
-				<div class="col">
-
-					<i class="pi pi-spin pi-spinner" style="font-size: 5rem"> </i> <LABEL
-						id="counter"></LABEL>
-				</div>
-
+		<div class="p-grid p-ai-center p-flex-column">
+			<div class="p-col">
+				<p id="progress-text" class="font-bold w-10 text-lg">Autenticando
+					usuário...</p>
+			</div>
+			<div class="p-col">
+				<p:progressBar id="progressBarIndeterminate" style="height:6px"
+					mode="indeterminate" />
 			</div>
 		</div>
-	</p:dialog>
-	<p:dialog widgetVar="redirectingUser" modal="true" closable="false"
-		header="#{resourceBundleServiceImpl.getMessage('aguarde')}">
-		<p:staticMessage severity="info"
-			summary="#{resourceBundleServiceImpl.getMessage('usuario_encontrado')}"
-			detail="#{resourceBundleServiceImpl.getMessage('redirecionando')}"
-			style="width: 100%" />
-	</p:dialog>
-	<excp:network />
-</h:body>
-<SCRIPT type="text/javascript">
-	var finishedLoginProcess = false;
 
-	function startLogin() {
-		finishedLoginProcess = false;
-		let count = 10;
-		let counter = document.getElementById("counter");
-		var timer = setInterval(function() {
-			if (finishedLoginProcess == true) {
-				clearInterval(timer);
+	</p:dialog>
+
+	<excp:network />
+
+	<o:socket channel="loginChannel" onmessage="socketListener"
+		scope="session" onclose="socketCloseListener" connected="false" />
+
+
+	<SCRIPT type="text/javascript">
+		var finishedLoginProcess = false;
+		var textProgress = document.getElementById('progress-text');
+		function login() {
+			PF('dlgLoading').show();
+			textProgress.innerHTML = "Opening websocket connection..."
+			OmniFaces.Push.open("loginChannel")
+			let env = PF('env-selector').getSelectedValue();
+			textProgress.innerHTML = 'Autenticando usuário em ' + env;
+
+		}
+		function onCompleteLogin(xhr) {
+			if (xhr.getResponseHeader('ok') == null) {
+				updateDlgLoading();
+				return;
 			}
-			count--;
-			counter.innerHTML = 'Wait for ' + count + ' seconds...';
-		}, 1000);
-	}
-</SCRIPT>
+			console.log('closing websocket connetcion...')
+			textProgress.innerHTML = "Redirecionando..."
+			OmniFaces.Push.close("loginChannel")
+		}
+		function socketListener(message, channel, event) {
+			textProgress.innerHTML = message.message.string;
+			console.log('message ' + message)
+		}
+
+		function socketCloseListener(code, channel, event) {
+			console.log("socket close")
+
+		}
+	</SCRIPT>
+</h:body>
+
 
 </html>

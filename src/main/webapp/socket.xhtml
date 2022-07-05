@@ -21,21 +21,11 @@
 
 <h:body>
 	<h:form>
-		<h:commandButton value="Clock" action="#{pushBean.clockAction()}">
-			<f:ajax />
-		</h:commandButton>
+		<p:commandButton value="Clock"
+			action="#{loginPushBean.sendLoginMessage}" />
+
 	</h:form>
 
-	<o:socket channel="clock" onmessage="socketListener" />
-
-	<hr />
-	<div id="clockId"></div>
-
-	<script type="text/javascript">
-		function socketListener(message, channel, event) {
-			console.log(message)
-		}
-	</script>
 </h:body>
 
 

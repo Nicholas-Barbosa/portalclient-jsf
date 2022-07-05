@@ -1,6 +1,8 @@
 package com.farawaybr.portal.jaxrs.client;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -58,6 +60,15 @@ public class JaxrsClientRequester {
 
 	}
 
+	public <T> CompletionStage<T> asyncRequestRX(JaxrsRequestData data, Class<T> responseType) {
+		WebTarget target = getTarget(data.getUrl(), data.getQueryParams(), data.getPathParams());
+
+		Builder request = target.request(data.getMediaType());
+		resolveHeaders(data.getHeaders(), request);
+		return request.rx().method(data.getMethod(), Entity.entity(data.getRequestBody(), data.getMediaType()),
+				responseType);
+
+	}
 	private WebTarget getTarget(String url, Map<String, Object> queryParams, Map<String, Object> pathParams) {
 
 		WebTarget target = clientSource.getClient().target(url);

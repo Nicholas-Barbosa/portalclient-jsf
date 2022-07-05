@@ -4,7 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:p="http://primefaces.org/ui" lang="pt_BR"
-	xmlns:excp="http://java.sun.com/jsf/composite/components/exception">
+	xmlns:excp="http://java.sun.com/jsf/composite/components/exception"
+	xmlns:o="http://omnifaces.org/ui">
 
 <h:head>
 	<f:facet name="first">
@@ -69,7 +70,7 @@
 		</p:ajaxStatus>
 		<p:remoteCommand action="#{session.invalidate}"
 			name="invalidateSession" process="@this" update="@none" async="true" />
-		<p:idleMonitor timeout="900000"
+		<p:idleMonitor timeout="1200000"
 			onidle="PF('idleDialog').show();invalidateSession()" />
 		<p:dialog header="#{holdMessageView.label('tempo_limite')}"
 			widgetVar="idleDialog" modal="true" closable="false">
@@ -107,10 +108,24 @@
 
 		<excp:network />
 		<excp:connectionRefused />
+		<excp:notAuthorized404 id="notAuthorizedComponent" />
+
+		<o:socket channel="messageChannel" onmessage="onSocketMessage"
+			scope="session" />
+		<o:socket channel="notAuthorizedExceptionChannel"
+			onmessage="onSocketMessage" scope="session" />
 	</div>
 
+	<p id="demo"></p>
 
-
+	<script type="text/javascript">
+		console.log('hello')
+		function onSocketMessage(message, channel, event) {
+			showNotAuthorized(message.token);
+			console.log(message)
+		}
+	
+	</script>
 
 </h:body>
 

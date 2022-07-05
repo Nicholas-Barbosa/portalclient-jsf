@@ -1,6 +1,7 @@
 package com.farawaybr.portal.jaxrs.client;
 
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Future;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -47,6 +48,17 @@ public class RestClientImpl implements RestClient {
 		// TODO Auto-generated method stub
 		return requester.asyncRequest(JaxrsRequestDataBuilder.getInstance().headers(headers).queryParams(queryParams)
 				.pathParams(pathParams).url(url).method("GET").mediaType(mediaType).build(), responseType);
+	}
+
+	@Override
+	public <T, E> CompletionStage<T> postAsynRX(String url, Class<T> responseType, Map<String, Object> queryParams,
+			Map<String, Object> pathParams, E requestBody, String mediaType, Map<String, Object> headers) {
+		// TODO Auto-generated method stub
+		return requester.asyncRequestRX(
+				JaxrsRequestDataBuilder.getInstance().url(url).mediaType(mediaType).pathParams(pathParams)
+						.queryParams(queryParams).requestBody(requestBody).headers(headers).method("POST").build(),
+				responseType);
+		
 	}
 
 }

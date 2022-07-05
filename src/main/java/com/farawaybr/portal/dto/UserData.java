@@ -5,13 +5,13 @@ import javax.json.bind.annotation.JsonbProperty;
 
 import com.farawaybr.portal.security.user.ProtheusUser.SaleType;
 
-public class RepresentativeData {
+public class UserData {
 
 	private String name, fantasyname, email, code;
 	private SaleType type;
 
 	@JsonbCreator
-	public RepresentativeData(@JsonbProperty(value = "name") String name, @JsonbProperty("email") String email,
+	public UserData(@JsonbProperty(value = "name") String name, @JsonbProperty("email") String email,
 			@JsonbProperty("code") String code, @JsonbProperty("type") String type) {
 		super();
 		this.name = name;

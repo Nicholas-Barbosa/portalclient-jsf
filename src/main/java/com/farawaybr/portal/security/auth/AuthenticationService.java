@@ -5,5 +5,6 @@ import com.farawaybr.portal.dto.LoginProtheusForm;
 public interface AuthenticationService {
 
 	void authenticate(LoginProtheusForm login);
+
 	void refreshToken();
 }

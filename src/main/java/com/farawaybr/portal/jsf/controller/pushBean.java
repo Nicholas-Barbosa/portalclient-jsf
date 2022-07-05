@@ -3,12 +3,11 @@ package com.farawaybr.portal.jsf.controller;
 import java.io.Serializable;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.core.Response;
 
-import org.omnifaces.cdi.Push;
-import org.omnifaces.cdi.PushContext;
-
+import com.farawaybr.portal.cdi.aop.annotations.NotAuthorizedJoinPointCut;
 
 @Named
 @ApplicationScoped
@@ -19,12 +18,8 @@ public class pushBean implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Inject
-	@Push(channel = "clock")
-	private PushContext push;
-
+	@NotAuthorizedJoinPointCut
 	public void clockAction() {
-		System.out.println("send message!!");
-		System.out.println(push.send("Mensagem!!"));
+		throw new NotAuthorizedException(Response.status(401));
 	}
 }

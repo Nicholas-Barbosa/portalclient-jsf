@@ -9,8 +9,7 @@ import javax.ws.rs.NotAuthorizedException;
 
 import com.farawaybr.portal.dto.LoginProtheusForm;
 import com.farawaybr.portal.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
-import com.farawaybr.portal.security.auth.AuthenticationService;
-import com.farawaybr.portal.service.ResourceBundleService;
+import com.farawaybr.portal.security.auth.JsfAuthenticationFacade;
 import com.farawaybr.portal.util.jsf.FacesUtils;
 
 @RequestScoped
@@ -18,39 +17,29 @@ import com.farawaybr.portal.util.jsf.FacesUtils;
 @NetworkExceptionJoinPointCut
 public class LoginController {
 
-	/**
-	 * 
-	 */
-
-	private final AuthenticationService authenticationRepository;
-	private final ResourceBundleService resourceBundleService;
-	private LoginProtheusForm loginForm;
+	@Inject
+	private JsfAuthenticationFacade facade;
+	private LoginProtheusForm loginForm = new LoginProtheusForm();;
 	private String headerDlgMessage;
 	private String previousPage;
 
-	@Inject
-	public LoginController(AuthenticationService authenticationRepository,
-			ResourceBundleService resourceBundleService) {
-		this.authenticationRepository = authenticationRepository;
-		this.resourceBundleService = resourceBundleService;
-		this.headerDlgMessage = this.resourceBundleService.getMessage("auteticando_usuario");
-		this.loginForm = new LoginProtheusForm();
-	}
 
 
 	public String authenticate() {
 		try {
-			this.authenticationRepository.authenticate(loginForm);
+			facade.authenticate(loginForm);
 			FacesUtils.addHeaderForResponse("ok", true);
 			return "NEW_ORDER";
 		} catch (NotAuthorizedException e) {
-			FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null, "messages");
+			FacesUtils.error(null, "Usuário não encontrado", "Verifique se " + loginForm.getUsername()
+					+ " realmente existe no ambiente " + loginForm.getCompanyEnv(), "messages");
 
 		} catch (Exception e) {
 			if (e.getCause() instanceof ConnectException)
 				FacesUtils.error(null, "Connection timed out", "Servidor fora do ar", "messages");
 			if (e.getCause() instanceof NotAuthorizedException)
-				FacesUtils.error(null, resourceBundleService.getMessage("usuario_nao_encontrado"), null, "messages");
+				FacesUtils.error(null, "Usuário não encontrado", "Verifique se " + loginForm.getUsername()
+						+ " realmente existe no ambiente " + loginForm.getCompanyEnv(), "messages");
 		}
 		return null;
 

@@ -6,7 +6,7 @@
 	<interceptors>
 		<class>com.farawaybr.portal.jaxrs.client.aspect.IllegalResponseAspect</class>
 		<class>com.farawaybr.portal.repository.RepositoryNotFound404OptionalEmptyAspect</class>
-		<class>com.farawaybr.portal.jaxrs.client.aspect.NotAuthorizedAspect</class>
+		<class>com.farawaybr.portal.security.NotAuthorizedAspect</class>
 		<class>com.farawaybr.portal.cdi.aop.aspect.OrderBadRequestAspect</class>
 		<class>com.farawaybr.portal.exceptionhandler.netowork.NetworkExcpetionAspect</class>
 		<class>com.farawaybr.portal.service.states.StatesCacheAspect</class>

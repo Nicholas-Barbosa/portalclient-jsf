@@ -19,4 +19,5 @@ public interface APIHelper {
 
 	ProtheusUser getUser();
 
+	void setUser(ProtheusUser user);
 }

@@ -5,18 +5,18 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class WrapperRepresentativeData {
 
-	private RepresentativeData[] representativeData;
+	private UserData[] representativeData;
 
 	@JsonbCreator
-	public WrapperRepresentativeData(@JsonbProperty("representative") RepresentativeData[] representativeData) {
+	public WrapperRepresentativeData(@JsonbProperty("representative") UserData[] representativeData) {
 		this.representativeData = representativeData;
 	}
 
-	public RepresentativeData[] getRepresentativeData() {
+	public UserData[] getRepresentativeData() {
 		return representativeData;
 	}
 
-	public RepresentativeData getData() {
+	public UserData getData() {
 		return representativeData[0];
 	}
 }

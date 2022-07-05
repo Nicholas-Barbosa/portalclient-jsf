@@ -4,10 +4,12 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Destroyed;
 import javax.enterprise.context.SessionScoped;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 
 /**
  * All ServerAPI which the current session client has been authenticated.
@@ -15,7 +17,7 @@ import org.slf4j.LoggerFactory;
  * @author nicholas-barbosa
  *
  */
-@SessionScoped
+@ApplicationScoped
 public class APIsManager implements Serializable {
 
 	/**
@@ -25,7 +27,8 @@ public class APIsManager implements Serializable {
 
 	private final Map<String, ProtheusApiData> authenticatedServices = new ConcurrentHashMap<>();
 
-	private final Logger logger = LoggerFactory.getLogger(APIsManager.class);
+	@Inject
+	private HttpSession httpSession;
 
 	/**
 	 * Register this service to the hash table.
@@ -34,8 +37,7 @@ public class APIsManager implements Serializable {
 	 * @param service
 	 */
 	public void registerAuthenticatedService(String key, ProtheusApiData service) {
-		logger.debug("Registering server API with key " + key + " with token " + service.getToken());
-		this.authenticatedServices.putIfAbsent(key, service);
+		this.authenticatedServices.putIfAbsent(httpSession.getId() + "-" + key, service);
 	}
 
 	/**
@@ -44,10 +46,13 @@ public class APIsManager implements Serializable {
 	 * @param key
 	 */
 	public void unRegisterAuthenticatedService(String key) {
-		logger.debug("Unregistering server API with key " + key);
-		this.authenticatedServices.remove(key);
+		this.authenticatedServices.remove(httpSession.getId() + "-" + key);
 	}
 
+	public void unRegisterAuthenticatedService(@Observes HttpSession key) {
+		this.authenticatedServices.remove(httpSession.getId() + "-" + key);
+	}
+	
 	/**
 	 * Get the service by the key.
 	 * 
@@ -55,11 +60,11 @@ public class APIsManager implements Serializable {
 	 * @return
 	 */
 	public ProtheusApiData getAPI(String key) {
-		return this.authenticatedServices.get(key);
+		return this.authenticatedServices.get(httpSession.getId() + "-" + key);
 	}
 
 	public boolean containsService(String key) {
-		return authenticatedServices.containsKey(key);
+		return authenticatedServices.containsKey(httpSession.getId() + "-" + key);
 	}
 
 	public boolean isAuthenticated() {
@@ -74,5 +79,7 @@ public class APIsManager implements Serializable {
 		return new StringBuilder(serverAPI.getBaseUrl()).append("/" + endpoint).toString();
 	}
 
-	
+	public void onSessionDestroy(@Destroyed(SessionScoped.class) HttpSession session) {
+		System.out.println("Session " + session.getId() + " destroyed");
+	}
 }

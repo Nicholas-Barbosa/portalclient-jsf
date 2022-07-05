@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 
@@ -19,46 +18,43 @@ import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
 import com.farawaybr.portal.security.user.ProtheusUser;
 import com.farawaybr.portal.security.user.builder.ProtheusUserBuilder;
 
-@RequestScoped
+@ApplicationScoped
 public class ProtheusApiAuthenticationService implements AuthenticationService, Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6233748924596132481L;
+	@Inject
 	private RestClient restClient;
+	@Inject
 	private ProtheusApiUrlResolver protheusApiUrlResolver;
-	@Inject
-	private Event<AuthenticateddEvent> authenticatedEvent;
-	@Inject
-	private APIsManager apisManger;
 
 	@Inject
-	public ProtheusApiAuthenticationService(RestClient restClient, ProtheusApiUrlResolver protheusApiUrlResolver) {
+	private APIsManager apiManager;
+
+	@Inject
+	public ProtheusApiAuthenticationService(RestClient restClient) {
 		super();
 		this.restClient = restClient;
-		this.protheusApiUrlResolver = protheusApiUrlResolver;
 	}
 
 	@Override
-	public void authenticate(LoginProtheusForm loginForm) {
+	public void authenticate(LoginProtheusForm form) {
 		// TODO Auto-generated method stub
 		Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("grant_type", "password");
-		queryParams.put("password", loginForm.getPassword());
-		queryParams.put("username", loginForm.getUsername());
-		String baseUrl = protheusApiUrlResolver.getUrl(loginForm.getCompanyEnv());
+		queryParams.put("password", form.getPassword());
+		queryParams.put("username", form.getUsername());
+		String baseUrl = protheusApiUrlResolver.getUrl(form.getCompanyEnv());
 		String authenticationUrl = String.format("%s/%s", baseUrl, "api/oauth2/v1/token");
 		ProtheusAuthenticationEndpointResponse authResponse = restClient.post(authenticationUrl,
 				ProtheusAuthenticationEndpointResponse.class, queryParams, null, null, MediaType.APPLICATION_JSON,
 				null);
-
 		this.registerApi(
-				(ProtheusUser) ProtheusUserBuilder.getInstance().withUsername(loginForm.getUsername())
-						.withPassword(loginForm.getPassword().toCharArray()).build(),
-				authResponse.getAccessToken(), authResponse.getRefreshToken(), "Bearer", loginForm.getCompanyEnv());
-		authenticatedEvent.fire(new AuthenticateddEvent(loginForm.getCompanyEnv()));
-		loginForm = null;
+				(ProtheusUser) ProtheusUserBuilder.getInstance().withUsername(form.getUsername())
+						.withPassword(form.getPassword().toCharArray()).build(),
+				authResponse.getAccessToken(), authResponse.getRefreshToken(), "Bearer", form.getCompanyEnv());
 	}
 
 	private void registerApi(ProtheusUser user, String token, String refreshToken, String tokenPrefix,
@@ -66,14 +62,14 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 		ProtheusApiData api = new ProtheusApiData(user, protheusApiUrlResolver.getUrl(enviroment),
 				"api/oauth2/v1/token", "api/oauth2/v1/token", token, refreshToken, tokenPrefix);
 		api.setAttribute("companyEnv", enviroment);
-		apisManger.registerAuthenticatedService("PROTHEUS_API", api);
+		apiManager.registerAuthenticatedService("PROTHEUS_API", api);
 	}
 
 	@Override
 	public void refreshToken() {
-		ProtheusApiData apiData = apisManger.getAPI("PROTHEUS_API");
+		ProtheusApiData apiData = apiManager.getAPI("PROTHEUS_API");
 		ProtheusAuthenticationEndpointResponse refreshResponse = restClient.post(
-				apisManger.buildEndpoint(apiData, apiData.getRefreshTokenUrl()),
+				apiManager.buildEndpoint(apiData, apiData.getRefreshTokenUrl()),
 				ProtheusAuthenticationEndpointResponse.class,
 				Map.of("grant_type", "refresh_token", "refresh_token", apiData.getRefreshToken()), null, null,
 				MediaType.APPLICATION_JSON, null);
