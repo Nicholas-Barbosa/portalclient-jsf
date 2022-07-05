@@ -41,6 +41,7 @@ public class LoginController {
 				FacesUtils.error(null, "Usuário não encontrado", "Verifique se " + loginForm.getUsername()
 						+ " realmente existe no ambiente " + loginForm.getCompanyEnv(), "messages");
 		}
+		System.out.println(loginForm);
 		return null;
 
 	}

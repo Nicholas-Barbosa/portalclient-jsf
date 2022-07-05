@@ -110,21 +110,19 @@
 		<excp:connectionRefused />
 		<excp:notAuthorized404 id="notAuthorizedComponent" />
 
-		<o:socket channel="messageChannel" onmessage="onSocketMessage"
+		<!--  	<o:socket channel="messageChannel" onmessage="onSocketMessage"
 			scope="session" />
 		<o:socket channel="notAuthorizedExceptionChannel"
-			onmessage="onSocketMessage" scope="session" />
+			onmessage="onSocketMessage" scope="session" />-->
 	</div>
 
 	<p id="demo"></p>
 
 	<script type="text/javascript">
-		console.log('hello')
 		function onSocketMessage(message, channel, event) {
 			showNotAuthorized(message.token);
 			console.log(message)
 		}
-	
 	</script>
 
 </h:body>

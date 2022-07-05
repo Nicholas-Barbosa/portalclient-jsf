@@ -35,4 +35,11 @@ public class LoginProtheusForm {
 	public void setCompanyEnv(ProtheusApiEnviroment companyEnv) {
 		this.companyEnv = companyEnv;
 	}
+
+	@Override
+	public String toString() {
+		return "LoginProtheusForm [username=" + username + ", password=" + password + ", companyEnv=" + companyEnv
+				+ "]";
+	}
+
 }

@@ -11,6 +11,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
+import com.farawaybr.portal.session.listener.DestroySessionEvent;
+
 /**
  * All ServerAPI which the current session client has been authenticated.
  * 
@@ -49,10 +51,12 @@ public class APIsManager implements Serializable {
 		this.authenticatedServices.remove(httpSession.getId() + "-" + key);
 	}
 
-	public void unRegisterAuthenticatedService(@Observes HttpSession key) {
-		this.authenticatedServices.remove(httpSession.getId() + "-" + key);
+	public void unRegisterAuthenticatedService(@Observes DestroySessionEvent event) {
+		System.out.println("unregistering services...");
+		authenticatedServices.keySet().stream().filter(s -> s.contains(event.getSession().getId()))
+				.forEach(k -> authenticatedServices.remove(k));
 	}
-	
+
 	/**
 	 * Get the service by the key.
 	 * 
