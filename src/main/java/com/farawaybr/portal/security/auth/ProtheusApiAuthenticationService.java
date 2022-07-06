@@ -40,7 +40,7 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 		queryParams.put("grant_type", "password");
 		queryParams.put("password", form.getPassword());
 		queryParams.put("username", form.getUsername());
-		String baseUrl = protheusApiUrlResolver.getUrl(form.getCompanyEnv());
+		String baseUrl = protheusApiUrlResolver.getUrl(form.getEnvironment());
 		String authenticationUrl = String.format("%s/%s", baseUrl, "api/oauth2/v1/token");
 		ProtheusAuthenticationEndpointResponse authResponse = restClient.post(authenticationUrl,
 				ProtheusAuthenticationEndpointResponse.class, queryParams, null, null, MediaType.APPLICATION_JSON,
@@ -48,7 +48,7 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 		this.registerApi(
 				(ProtheusUser) ProtheusUserBuilder.getInstance().withUsername(form.getUsername())
 						.withPassword(form.getPassword().toCharArray()).build(),
-				authResponse.getAccessToken(), authResponse.getRefreshToken(), "Bearer", form.getCompanyEnv());
+				authResponse.getAccessToken(), authResponse.getRefreshToken(), "Bearer", form.getEnvironment());
 	}
 
 	private void registerApi(ProtheusUser user, String token, String refreshToken, String tokenPrefix,

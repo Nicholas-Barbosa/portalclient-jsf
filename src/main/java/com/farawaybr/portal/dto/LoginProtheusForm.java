@@ -10,7 +10,7 @@ public class LoginProtheusForm {
 	private String username;
 	@NotEmpty
 	private String password;
-	private ProtheusApiEnviroment companyEnv;
+	private ProtheusApiEnviroment environment;
 
 	public String getUsername() {
 		return username;
@@ -28,17 +28,17 @@ public class LoginProtheusForm {
 		this.password = password;
 	}
 
-	public ProtheusApiEnviroment getCompanyEnv() {
-		return companyEnv;
+	public ProtheusApiEnviroment getEnvironment() {
+		return environment;
 	}
 
-	public void setCompanyEnv(ProtheusApiEnviroment companyEnv) {
-		this.companyEnv = companyEnv;
+	public void setEnvironment(ProtheusApiEnviroment environment) {
+		this.environment = environment;
 	}
 
 	@Override
 	public String toString() {
-		return "LoginProtheusForm [username=" + username + ", password=" + password + ", companyEnv=" + companyEnv
+		return "LoginProtheusForm [username=" + username + ", password=" + password + ", companyEnv=" + environment
 				+ "]";
 	}
 

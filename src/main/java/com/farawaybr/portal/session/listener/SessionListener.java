@@ -20,6 +20,6 @@ public class SessionListener implements HttpSessionListener {
 	@Override
 	public void sessionDestroyed(HttpSessionEvent se) {
 		// TODO Auto-generated method stub
-		event.fire(new DestroySessionEvent(se.getSession()));
+		event.fireAsync(new DestroySessionEvent(se.getSession()));
 	}
 }

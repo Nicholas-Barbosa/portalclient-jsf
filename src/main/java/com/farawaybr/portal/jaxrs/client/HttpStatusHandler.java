@@ -32,6 +32,7 @@ public class HttpStatusHandler implements ClientResponseFilter {
 		case 403:
 			throw new ForbiddenException();
 		case 401:
+			System.out.println("Got 401 for request: " + requestContext.getUri());
 			throw new NotAuthorizedException(
 					Response.status(401).entity(readResponse(responseContext.getEntityStream())).build());
 		case 409:

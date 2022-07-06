@@ -32,15 +32,20 @@ public class LoginController {
 			FacesUtils.addHeaderForResponse("ok", true);
 			return "NEW_ORDER";
 		} catch (NotAuthorizedException e) {
-			FacesUtils.error(null, "Usuário não encontrado", "Verifique se " + loginForm.getUsername()
-					+ " realmente existe no ambiente " + loginForm.getCompanyEnv(), "messages");
+			System.out.println("not authorized");
+			FacesUtils
+					.error(null, "Usuário não encontrado, em 5 tentativas, haverá bloqueio.",
+							"Verifique se " + loginForm.getUsername() + " realmente existe no ambiente "
+									+ loginForm.getEnvironment() + " Protheus e se seu usuário não está bloquado.",
+							"messages");
 
 		} catch (Exception e) {
 			if (e.getCause() instanceof ConnectException)
 				FacesUtils.error(null, "Connection timed out", "Servidor fora do ar", "messages");
 			if (e.getCause() instanceof NotAuthorizedException)
 				FacesUtils.error(null, "Usuário não encontrado", "Verifique se " + loginForm.getUsername()
-						+ " realmente existe no ambiente " + loginForm.getCompanyEnv(), "messages");
+						+ " realmente existe no ambiente " + loginForm.getEnvironment(), "messages");
+			e.printStackTrace();
 		}
 		System.out.println(loginForm + " User Agent: " + request.getHeader("User-Agent"));
 		return null;

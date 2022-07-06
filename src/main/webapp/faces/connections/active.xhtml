@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../WEB-INF/template.xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+	<ui:define name="head">
+		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+	</ui:define>
+
+	<ui:define name="title">Conexões ativas</ui:define>
+
+	<ui:define name="viewname">
+		<li>Conexões</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li>Ativas</li>
+		<li><i class="pi pi-chevron-right"></i></li>
+		<li><p:link outcome="/faces/connections/active">Conexões ativas</p:link>
+		</li>
+	</ui:define>
+
+	<ui:define name="content">
+		<div class="grid table-demo">
+			<div class="col-12">
+				<div jsf:id="divListContent" class="card">
+					<p:dataTable
+						value="#{activeConnectionsController.activeConnections}"
+						var="conn" reflow="true">
+						<p:column field="id" filterable="false" />
+						<p:column field="user" filterable="false" />
+						<p:column field="userAgent" filterable="true" sortable="false" />
+						<p:column field="locale" sortable="false" />
+						<p:column headerText="Criada" sortable="false">
+							<h:outputText value="#{conn.startedAt}">
+								<f:convertDateTime pattern="MM/dd/yyyy 'às' HH:mm:ss"
+									type="localDateTime" />
+							</h:outputText>
+						</p:column>/
+					</p:dataTable>
+				</div>
+			</div>
+		</div>
+
+	</ui:define>
+</ui:composition>

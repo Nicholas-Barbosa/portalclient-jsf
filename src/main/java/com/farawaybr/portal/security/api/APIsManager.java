@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
 
@@ -49,9 +50,8 @@ public class APIsManager implements Serializable {
 		this.authenticatedServices.remove(httpSession.getId() + "-" + key);
 	}
 
-	public void unRegisterAuthenticatedService(@Observes DestroySessionEvent event) {
+	public void unRegisterAuthenticatedService(@ObservesAsync DestroySessionEvent event) {
 		authenticatedServices.keySet().stream().filter(s -> s.contains(event.getSession().getId())).forEach(k -> {
-
 			authenticatedServices.remove(k);
 		});
 	}

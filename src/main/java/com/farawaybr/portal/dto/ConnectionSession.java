@@ -1,22 +1,28 @@
 package com.farawaybr.portal.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
-public class ConnectionSession {
+import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
+
+public class ConnectionSession implements Comparable<ConnectionSession> {
 
 	private final String id, user, ip, userAgent;
 	private final Locale locale;
-	private final LocalDate startedAt;
+	private final LocalDateTime startedAt;
+	private final ProtheusApiEnviroment env;
 
-	public ConnectionSession(String id, String user, String ip, String userAgent, Locale locale, LocalDate startedAt) {
+	public ConnectionSession(String id, String user, String ip, String userAgent, Locale locale,
+			ProtheusApiEnviroment env) {
 		super();
 		this.id = id;
 		this.user = user;
 		this.ip = ip;
 		this.userAgent = userAgent;
 		this.locale = locale;
-		this.startedAt = startedAt;
+		this.startedAt = LocalDateTime.now();
+		this.env = env;
 	}
 
 	public String getId() {
@@ -39,8 +45,12 @@ public class ConnectionSession {
 		return locale;
 	}
 
-	public LocalDate getStartedAt() {
+	public LocalDateTime getStartedAt() {
 		return startedAt;
+	}
+
+	public ProtheusApiEnviroment getEnv() {
+		return env;
 	}
 
 	@Override
@@ -68,5 +78,16 @@ public class ConnectionSession {
 		return true;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "ConnectionSession [id=" + id + ", user=" + user + ", ip=" + ip + ", userAgent=" + userAgent
+				+ ", locale=" + locale + ", startedAt=" + startedAt + ", env=" + env + "]";
+	}
+
+	@Override
+	public int compareTo(ConnectionSession o) {
+		// TODO Auto-generated method stub
+		return this.startedAt.compareTo(o.startedAt);
+	}
+
 }

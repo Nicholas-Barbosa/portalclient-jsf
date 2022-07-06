@@ -4,7 +4,7 @@ import java.util.Set;
 
 import com.farawaybr.portal.dto.ConnectionSession;
 
-public interface ActiveSessionsRepository {
+public interface ConnectionSessionRepository {
 
 	void persist(ConnectionSession connection);
 

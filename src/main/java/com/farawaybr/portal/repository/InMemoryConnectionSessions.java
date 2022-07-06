@@ -5,14 +5,13 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.enterprise.event.ObservesAsync;
 
 import com.farawaybr.portal.dto.ConnectionSession;
 import com.farawaybr.portal.session.listener.DestroySessionEvent;
 
 @ApplicationScoped
-public class InMemoryActiveSessionsRepository implements ActiveSessionsRepository {
+public class InMemoryConnectionSessions implements ConnectionSessionRepository {
 
 	private final Set<ConnectionSession> connections = new ConcurrentSkipListSet<>();
 
@@ -34,7 +33,9 @@ public class InMemoryActiveSessionsRepository implements ActiveSessionsRepositor
 		return Collections.unmodifiableSet(connections);
 	}
 
-	public void onSessionDestroyEvent(@Observes DestroySessionEvent event) {
-		connections.removeIf(c -> c.getId().equals(event.getSession().getId()));
+	public void onSessionDestroyEvent(@ObservesAsync DestroySessionEvent event) {
+		connections.removeIf(c -> {
+			return c.getId().equals(event.getSession().getId());
+		});
 	}
 }
