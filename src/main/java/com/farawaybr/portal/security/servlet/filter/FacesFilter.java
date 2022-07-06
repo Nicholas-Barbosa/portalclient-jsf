@@ -47,6 +47,8 @@ public class FacesFilter implements Filter {
 				httpResponse.getWriter().format(AJAX_REDIRECT_XML, loginUrl);
 				return;
 			}
+//			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/login.xhtml");
+//			requestDispatcher.forward(httpRequest, httpResponse);
 			httpResponse.sendRedirect(loginUrl);
 		} else {
 			chain.doFilter(request, response);

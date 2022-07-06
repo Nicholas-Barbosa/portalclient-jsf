@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -55,6 +54,11 @@ public class XlsxSubjectTemplateProductImporter implements SubjectProductImporte
 	private boolean containsProductsNotFoundFromLastTry;
 
 	private List<ProductRowExcelData> productsNotFoundLastTry;
+
+	@PreDestroy
+	public void preDestroy() {
+		
+	}
 
 	@Override
 	public void extractData(byte[] xlsxstreams, int codeColumn, int quantityColumn, String customerCode,

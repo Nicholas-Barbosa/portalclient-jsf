@@ -5,6 +5,7 @@ import java.net.ConnectException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotAuthorizedException;
 
 import com.farawaybr.portal.dto.LoginProtheusForm;
@@ -19,11 +20,11 @@ public class LoginController {
 
 	@Inject
 	private JsfAuthenticationFacade facade;
+	@Inject
+	private HttpServletRequest request;
 	private LoginProtheusForm loginForm = new LoginProtheusForm();;
 	private String headerDlgMessage;
 	private String previousPage;
-
-
 
 	public String authenticate() {
 		try {
@@ -41,7 +42,7 @@ public class LoginController {
 				FacesUtils.error(null, "Usuário não encontrado", "Verifique se " + loginForm.getUsername()
 						+ " realmente existe no ambiente " + loginForm.getCompanyEnv(), "messages");
 		}
-		System.out.println(loginForm);
+		System.out.println(loginForm + " User Agent: " + request.getHeader("User-Agent"));
 		return null;
 
 	}
