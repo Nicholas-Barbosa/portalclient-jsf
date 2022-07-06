@@ -33,12 +33,6 @@ public class ProtheusApiAuthenticationService implements AuthenticationService, 
 	@Inject
 	private APIsManager apiManager;
 
-	@Inject
-	public ProtheusApiAuthenticationService(RestClient restClient) {
-		super();
-		this.restClient = restClient;
-	}
-
 	@Override
 	public void authenticate(LoginProtheusForm form) {
 		// TODO Auto-generated method stub

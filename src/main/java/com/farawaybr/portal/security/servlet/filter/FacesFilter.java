@@ -11,21 +11,25 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.farawaybr.portal.security.api.APIsManager;
 
 @WebFilter(value = "/faces/*")
 public class FacesFilter implements Filter {
 
-	private final APIsManager userPropertyHolder;
+	private final APIsManager apiManager;
 
+	@Inject
+	private HttpSession session;
+	
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
 	@Inject
 	public FacesFilter(APIsManager userPropertyHolder) {
 		super();
-		this.userPropertyHolder = userPropertyHolder;
+		this.apiManager = userPropertyHolder;
 	}
 
 	@Override
@@ -33,7 +37,7 @@ public class FacesFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
 //		requestTracker.addRequest(httpRequest);
-		if (!userPropertyHolder.isAuthenticated() && !httpRequest.getRequestURI().contains("resource")) {
+		if (!apiManager.isAuthenticated(session.getId()) && !httpRequest.getRequestURI().contains("resource")) {
 			HttpServletResponse httpResponse = (HttpServletResponse) response;
 			String loginUrl = String.format("%s/%s", httpRequest.getContextPath(), "login.xhtml");
 			if (isAjaxRequest(httpRequest)) {

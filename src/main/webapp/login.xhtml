@@ -67,7 +67,6 @@
 				action="#{loginController.authenticate}" onclick="login()"
 				process="@form" update="@form" ajax="true"
 				oncomplete="onCompleteLogin(xhr)" />
-			<p:commandButton type="button" onclick="PF('dlgLoading').show()" />
 		</h:form>
 		<p:messages id="messages" showDetail="true" closable="true"
 			globalOnly="true" />

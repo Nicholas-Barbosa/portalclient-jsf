@@ -2,7 +2,6 @@ package com.farawaybr.portal.jsf.controller;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -29,9 +28,8 @@ public class TopBarPreferences implements Serializable {
 	@Inject
 	private APIHelper apiHelper;
 
-	@PostConstruct
-	public void postDI() {
-		user = apiHelper.getUser();
+	public void setUser(@Observes LoggedEvent event) {
+		this.user = apiHelper.getUser();
 	}
 
 	public void loadImage(@Observes LoggedEvent event) {
@@ -57,7 +55,7 @@ public class TopBarPreferences implements Serializable {
 	public String getCurrentLogoCss() {
 		return currentLogoCss;
 	}
-	
+
 	public ProtheusUser getUser() {
 		return user;
 	}

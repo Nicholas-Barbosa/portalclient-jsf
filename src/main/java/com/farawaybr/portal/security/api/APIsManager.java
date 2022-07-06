@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Destroyed;
-import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
@@ -52,9 +50,10 @@ public class APIsManager implements Serializable {
 	}
 
 	public void unRegisterAuthenticatedService(@Observes DestroySessionEvent event) {
-		System.out.println("unregistering services...");
-		authenticatedServices.keySet().stream().filter(s -> s.contains(event.getSession().getId()))
-				.forEach(k -> authenticatedServices.remove(k));
+		authenticatedServices.keySet().stream().filter(s -> s.contains(event.getSession().getId())).forEach(k -> {
+
+			authenticatedServices.remove(k);
+		});
 	}
 
 	/**
@@ -71,8 +70,8 @@ public class APIsManager implements Serializable {
 		return authenticatedServices.containsKey(httpSession.getId() + "-" + key);
 	}
 
-	public boolean isAuthenticated() {
-		return !authenticatedServices.isEmpty();
+	public boolean isAuthenticated(String sessionId) {
+		return authenticatedServices.keySet().parallelStream().anyMatch(key -> key.contains(sessionId));
 	}
 
 	public String buildEndpoint(String serverKey, String endpoint) {
@@ -83,7 +82,4 @@ public class APIsManager implements Serializable {
 		return new StringBuilder(serverAPI.getBaseUrl()).append("/" + endpoint).toString();
 	}
 
-	public void onSessionDestroy(@Destroyed(SessionScoped.class) HttpSession session) {
-		System.out.println("Session " + session.getId() + " destroyed");
-	}
 }
