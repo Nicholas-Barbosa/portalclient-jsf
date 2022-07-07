@@ -77,7 +77,11 @@
 			}
 
 			function playNotification() {
-				audio.play();
+				audio.play().then(()=>{
+					
+				}).catch(()=>{
+					console.log("som não disponível")
+				});
 			}
 			
 			function startChat(conn){

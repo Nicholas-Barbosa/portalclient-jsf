@@ -46,7 +46,6 @@ public class JsfAuthenticationFacade implements Serializable {
 	@Inject
 	private HttpServletRequest request;
 
-	
 	public void authenticate(final LoginProtheusForm form) {
 		authService.authenticate(form);
 		this.sendMessage(0, "Usuário autenticado!Obtendo informações...");

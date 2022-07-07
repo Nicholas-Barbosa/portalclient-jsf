@@ -4,17 +4,16 @@ import java.io.Serializable;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.omnifaces.cdi.ViewScoped;
 
 import com.farawaybr.portal.dto.ConnectionSession;
 import com.farawaybr.portal.repository.ConnectionSessionRepository;
 import com.farawaybr.portal.session.listener.DestroySessionEvent;
 
-@ViewScoped
+@ApplicationScoped
 @Named
 public class ConnectionsSessionsMonitorController implements Serializable {
 
@@ -38,7 +37,7 @@ public class ConnectionsSessionsMonitorController implements Serializable {
 	}
 
 	public void onCloseConnection(@ObservesAsync DestroySessionEvent event) {
-		this.activeConnections.removeIf(c -> c.getId().equals(event.getSession().getId()));
+		this.activeConnections = repository.findAll();
 	}
 
 	public Set<ConnectionSession> getActiveConnections() {

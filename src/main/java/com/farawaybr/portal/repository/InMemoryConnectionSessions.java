@@ -1,7 +1,8 @@
 package com.farawaybr.portal.repository;
 
-import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import javax.annotation.Priority;
@@ -14,29 +15,34 @@ import com.farawaybr.portal.session.listener.DestroySessionEvent;
 @ApplicationScoped
 public class InMemoryConnectionSessions implements ConnectionSessionRepository {
 
-	private final Set<ConnectionSession> connections = new ConcurrentSkipListSet<>();
+	private final Map<String, ConnectionSession> connections = new ConcurrentHashMap<>();
 
 	@Override
 	public void persist(@Priority(0) @ObservesAsync ConnectionSession connection) {
 		// TODO Auto-generated method stub
-		connections.add(connection);
+		connections.put(connection.getId(), connection);
 	}
 
 	@Override
 	public void remove(ConnectionSession connection) {
 		// TODO Auto-generated method stub
-		connections.remove(connection);
+		connections.remove(connection.getId());
 	}
 
 	@Override
 	public Set<ConnectionSession> findAll() {
 		// TODO Auto-generated method stub
-		return Collections.unmodifiableSet(connections);
+		return new ConcurrentSkipListSet<>(connections.values());
 	}
 
 	public void onSessionDestroyEvent(@ObservesAsync @Priority(2) DestroySessionEvent event) {
-		connections.removeIf(c -> {
-			return c.getId().equals(event.getSession().getId());
-		});
+		connections.remove(event.getSession().getId());
+
+	}
+
+	@Override
+	public boolean isActive(String id) {
+		// TODO Auto-generated method stub
+		return connections.containsKey(id);
 	}
 }

@@ -11,4 +11,6 @@ public interface ConnectionSessionRepository {
 	void remove(ConnectionSession connection);
 
 	Set<ConnectionSession> findAll();
+	
+	boolean isActive(String id);
 }
