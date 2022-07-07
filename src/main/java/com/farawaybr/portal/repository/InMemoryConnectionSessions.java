@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.ObservesAsync;
 
@@ -16,9 +17,10 @@ public class InMemoryConnectionSessions implements ConnectionSessionRepository {
 	private final Set<ConnectionSession> connections = new ConcurrentSkipListSet<>();
 
 	@Override
-	public void persist(@ObservesAsync ConnectionSession connection) {
+	public void persist(@Priority(0) @ObservesAsync ConnectionSession connection) {
 		// TODO Auto-generated method stub
 		connections.add(connection);
+		connections.forEach(System.out::println);
 	}
 
 	@Override
@@ -33,7 +35,7 @@ public class InMemoryConnectionSessions implements ConnectionSessionRepository {
 		return Collections.unmodifiableSet(connections);
 	}
 
-	public void onSessionDestroyEvent(@ObservesAsync DestroySessionEvent event) {
+	public void onSessionDestroyEvent(@ObservesAsync @Priority(2) DestroySessionEvent event) {
 		connections.removeIf(c -> {
 			return c.getId().equals(event.getSession().getId());
 		});

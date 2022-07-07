@@ -5,7 +5,7 @@
 	xmlns:p="http://primefaces.org/ui"
 	template="../../WEB-INF/template.xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:jsf="http://xmlns.jcp.org/jsf">
+	xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:o="http://omnifaces.org/ui">
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
@@ -26,23 +26,36 @@
 		<div class="grid table-demo">
 			<div class="col-12">
 				<div jsf:id="divListContent" class="card">
-					<p:dataTable
-						value="#{activeConnectionsController.activeConnections}"
-						var="conn" reflow="true">
-						<p:column field="id" filterable="false" />
+					<h:form>
+						<p:remoteCommand name="updateTable" process="@none" update="table" />
+						<p:dataTable id="table"
+							value="#{activeConnectionsController.activeConnections}"
+							var="conn" reflow="true">
+							<p:column field="id" filterable="false" headerText="ID" />
+							<p:column headerText="Criada" sortable="false">
+								<h:outputText value="#{conn.startedAt}">
+									<f:convertDateTime pattern="MM/dd/yyyy 'às' HH:mm:ss"
+										type="localDateTime" />
+								</h:outputText>
+							</p:column>/
 						<p:column field="user" filterable="false" />
-						<p:column field="userAgent" filterable="true" sortable="false" />
-						<p:column field="locale" sortable="false" />
-						<p:column headerText="Criada" sortable="false">
-							<h:outputText value="#{conn.startedAt}">
-								<f:convertDateTime pattern="MM/dd/yyyy 'às' HH:mm:ss"
-									type="localDateTime" />
-							</h:outputText>
-						</p:column>/
-					</p:dataTable>
+							<p:column field="userAgent" filterable="true" sortable="false" />
+							<p:column field="locale.displayCountry" sortable="false"
+								headerText="Origem" />
+							<p:column field="ip" sortable="false" filterable="false"
+								headerText="IP" />
+						</p:dataTable>
+					</h:form>
 				</div>
 			</div>
 		</div>
-
+		<o:socket channel="connectionChannel" onmessage="onConnectionListener" />
+		<script>
+			function onConnectionListener(message, channel, event) {
+				console.log(message)
+				updateTable();
+			}
+		</script>
 	</ui:define>
+
 </ui:composition>

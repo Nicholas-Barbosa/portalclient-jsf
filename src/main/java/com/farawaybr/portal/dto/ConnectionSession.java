@@ -87,7 +87,7 @@ public class ConnectionSession implements Comparable<ConnectionSession> {
 	@Override
 	public int compareTo(ConnectionSession o) {
 		// TODO Auto-generated method stub
-		return this.startedAt.compareTo(o.startedAt);
+		return o.startedAt.compareTo(startedAt);
 	}
 
 }
