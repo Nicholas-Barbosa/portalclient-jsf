@@ -12,17 +12,17 @@ import com.farawaybr.portal.dto.ConnectionSession;
 import com.farawaybr.portal.session.listener.DestroySessionEvent;
 
 @ApplicationScoped
-public class ConnectionSessionPushBean {
+public class ConnectionSessionMonitorWSPushBean {
 
 	@Inject
 	@Push
-	private PushContext connectionChannel;
+	private PushContext connectionMonitorChannel;
 
 	public void onNewConnection(@Priority(1) @ObservesAsync ConnectionSession cnn) {
-		connectionChannel.send("new connection!");
+		connectionMonitorChannel.send("new connection!");
 	}
 
 	public void onNewConnection(@ObservesAsync @Priority(1) DestroySessionEvent cnn) {
-		connectionChannel.send("close connection!");
+		connectionMonitorChannel.send("close connection!");
 	}
 }

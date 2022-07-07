@@ -29,7 +29,7 @@
 					<h:form>
 						<p:remoteCommand name="updateTable" process="@none" update="table" />
 						<p:dataTable id="table"
-							value="#{activeConnectionsController.activeConnections}"
+							value="#{connectionsSessionsMonitorController.activeConnections}"
 							var="conn" reflow="true">
 							<p:column field="id" filterable="false" headerText="ID" />
 							<p:column headerText="Criada" sortable="false">
@@ -49,7 +49,8 @@
 				</div>
 			</div>
 		</div>
-		<o:socket channel="connectionChannel" onmessage="onConnectionListener" />
+		<o:socket channel="connectionMonitorChannel"
+			onmessage="onConnectionListener" />
 		<script>
 			function onConnectionListener(message, channel, event) {
 				console.log(message)

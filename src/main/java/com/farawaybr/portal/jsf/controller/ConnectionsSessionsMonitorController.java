@@ -16,7 +16,7 @@ import com.farawaybr.portal.session.listener.DestroySessionEvent;
 
 @ViewScoped
 @Named
-public class ActiveConnectionsController implements Serializable {
+public class ConnectionsSessionsMonitorController implements Serializable {
 
 	/**
 	 * 
