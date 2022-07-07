@@ -11,26 +11,34 @@
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
 	</ui:define>
 
-	<ui:define name="title">Conexões ativas</ui:define>
+	<ui:define name="title">Monitoramento de conexões</ui:define>
 
 	<ui:define name="viewname">
 		<li>Conexões</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li>Ativas</li>
+		<li>Monitoramento</li>
 		<li><i class="pi pi-chevron-right"></i></li>
-		<li><p:link outcome="/faces/connections/active">Conexões ativas</p:link>
+		<li><p:link outcome="/faces/connections/monitor">Monitor de conexões</p:link>
 		</li>
 	</ui:define>
 
 	<ui:define name="content">
+		<audio id="notification-audio">
+			<source src="../../resources/sound/notification_sound.mp3"
+				type="audio/mpeg" />
+		</audio>
 		<div class="grid table-demo">
 			<div class="col-12">
 				<div jsf:id="divListContent" class="card">
+					<h4>Monitor de conexões ativas</h4>
 					<h:form>
 						<p:remoteCommand name="updateTable" process="@none" update="table" />
 						<p:dataTable id="table"
 							value="#{connectionsSessionsMonitorController.activeConnections}"
 							var="conn" reflow="true">
+							<f:facet name="header">
+
+							</f:facet>
 							<p:column field="id" filterable="false" headerText="ID" />
 							<p:column headerText="Criada" sortable="false">
 								<h:outputText value="#{conn.startedAt}">
@@ -44,7 +52,13 @@
 								headerText="Origem" />
 							<p:column field="ip" sortable="false" filterable="false"
 								headerText="IP" />
+							<p:column style="width:6rem">
+								<p:commandButton type="button" value="Chat"
+									icon="pi pi-comments" title="Iniciar chat"
+									onclick="startChat('#{conn.id}')" />
+							</p:column>
 						</p:dataTable>
+						<p:spotlight target="@form" widgetVar="spot" />
 					</h:form>
 				</div>
 			</div>
@@ -52,9 +66,22 @@
 		<o:socket channel="connectionMonitorChannel"
 			onmessage="onConnectionListener" />
 		<script>
+			let audio = document.getElementById("notification-audio")
 			function onConnectionListener(message, channel, event) {
-				console.log(message)
 				updateTable();
+				playNotification();
+				PF('spot').show();
+				setTimeout(() => {
+					PF('spot').hide();
+				}, 400);
+			}
+
+			function playNotification() {
+				audio.play();
+			}
+			
+			function startChat(conn){
+				console.log(conn)
 			}
 		</script>
 	</ui:define>

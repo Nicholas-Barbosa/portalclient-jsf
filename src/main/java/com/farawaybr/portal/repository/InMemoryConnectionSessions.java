@@ -20,7 +20,6 @@ public class InMemoryConnectionSessions implements ConnectionSessionRepository {
 	public void persist(@Priority(0) @ObservesAsync ConnectionSession connection) {
 		// TODO Auto-generated method stub
 		connections.add(connection);
-		connections.forEach(System.out::println);
 	}
 
 	@Override
