@@ -1,11 +1,8 @@
-package com.farawaybr.portal.websocket;
+package com.farawaybr.portal.websocket.endpoint;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.websocket.CloseReason;
 import javax.websocket.CloseReason.CloseCodes;
@@ -16,11 +13,13 @@ import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
 import com.farawaybr.portal.repository.ConnectionSessionRepository;
+import com.farawaybr.portal.websocket.ChatWebSocketConnection;
+import com.farawaybr.portal.websocket.HttpSessionRequestK;
+import com.farawaybr.portal.websocket.repo.WebSocketNewConnection;
+import com.farawaybr.portal.websocket.repo.WebSocketClosedConnection;
 
 @ServerEndpoint("/chat")
 public class ChatEndpoint {
-
-	private final Map<String, Session> avaliableSessions = new ConcurrentHashMap<>();
 
 	@Inject
 	private ConnectionSessionRepository connectionSessionRepository;
@@ -28,25 +27,23 @@ public class ChatEndpoint {
 	@Inject
 	private HttpSessionRequestK httpSessionRequestK;
 
-	private String httpSessionId;
+	private ChatWebSocketConnection connection;
 
-	@PostConstruct
-	public void postContruct() {
-		System.out.println("post construct chat endpoint ");
-	}
+	@Inject
+	@WebSocketNewConnection
+	private Event<ChatWebSocketConnection> newConnectionEvent;
 
-	@PreDestroy
-	public void preDestroy() {
-		System.out.println("pre destroy chat endpoint ");
-	}
+	@Inject
+	@WebSocketClosedConnection
+	private Event<ChatWebSocketConnection> closedConnectionEvent;
 
 	@OnOpen
 	public void onOpen(Session session) throws IOException {
-		this.httpSessionId = httpSessionRequestK.getSession().getId();
+		this.connection = new ChatWebSocketConnection(httpSessionRequestK.getSession().getId(), session);
 		System.out.println("[SERVER]: Handshake successful!!!!! - Connected!!!!! - Session ID: " + session.getId()
-				+ " http session id " + httpSessionId);
-		if (connectionSessionRepository.isActive(httpSessionId)) {
-			this.avaliableSessions.put(httpSessionId, session);
+				+ " http session id " + connection.getHttpSessionId());
+		if (connectionSessionRepository.isActive(this.connection.getHttpSessionId())) {
+			newConnectionEvent.fireAsync(this.connection);
 			return;
 		}
 		session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, "Http session does not exists!"));
@@ -54,11 +51,12 @@ public class ChatEndpoint {
 
 	@OnMessage
 	public void processGreeting(String message, Session session) {
-		System.out.println("Greeting received:" + message + "\n http session " + httpSessionId);
+		System.out.println("Greeting received:" + message + "\n http session " + this.connection.getHttpSessionId());
 	}
 
 	@OnClose
 	public void onClose(Session session) {
 		System.out.println("close session " + session.getId());
+		closedConnectionEvent.fireAsync(this.connection);
 	}
 }

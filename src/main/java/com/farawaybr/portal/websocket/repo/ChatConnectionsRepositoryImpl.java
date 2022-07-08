@@ -1,0 +1,28 @@
+package com.farawaybr.portal.websocket.repo;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.ObservesAsync;
+
+import com.farawaybr.portal.websocket.ChatWebSocketConnection;
+
+@ApplicationScoped
+public class ChatConnectionsRepositoryImpl implements ChatConnectionsRepository {
+
+	private final Map<String, ChatWebSocketConnection> connections = new ConcurrentHashMap<>();
+
+	@Override
+	public void putConnection(@ObservesAsync @WebSocketNewConnection ChatWebSocketConnection connection) {
+		// TODO Auto-generated method stub
+		connections.put(connection.getHttpSessionId(), connection);
+	}
+
+	@Override
+	public void removeConnection(@ObservesAsync @WebSocketClosedConnection ChatWebSocketConnection connection) {
+		// TODO Auto-generated method stub
+		connections.remove(connection.getHttpSessionId());
+	}
+
+}
