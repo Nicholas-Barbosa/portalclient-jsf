@@ -27,6 +27,7 @@
 	<h:outputStylesheet name="css/primeicons.css" library="rain-layout" />
 	<h:outputStylesheet name="primeflex-3.css" library="css" />
 	<h:outputStylesheet name="primeflex-2.css" library="css" />
+
 	<h:outputStylesheet name="css/#{userStylePreferences.layout}.css"
 		library="rain-layout" />
 	<h:outputStylesheet
@@ -54,6 +55,7 @@
 			<div class="layout-content">
 				<ui:insert name="content" />
 			</div>
+			<ui:include src="./chat.xhtml" />
 			<ui:include src="./footer.xhtml" />
 		</div>
 

@@ -1,0 +1,59 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+	<ui:define name="head">
+		<h:outputStylesheet name="chat.css" library="css" />
+	</ui:define>
+	<div id="chat">
+		<p:commandButton value="Chat" type="button"
+			style="bottom: 23px; right: 28px;width: 280px"
+			styleClass="z-5 fixed  ui-button-secondary"
+			onclick="PF('dlgChat').show()" />
+
+		<p:dialog modal="true" widgetVar="dlgChat">
+			<div class="card chat">
+				<div class="chat-content">
+					<div class="chat-message send">
+						<div class="message">
+							<p>Minimum extent of sea ice in the region its second-lowest
+								on record.</p>
+							<span>24 mins ago</span>
+						</div>
+					</div>
+					<div class="chat-message">
+						<div class="message">
+							<p>Right… Right my friend. This is better. Right? Right my
+								friend… 🏄‍♂️</p>
+							<span>25 mins ago</span>
+						</div>
+					</div>
+				</div>
+				<div class="chat-input">
+					<p:inputText placeholder="Type your message..." />
+					<div class="input-buttons">
+						<p:commandButton type="button" icon="pi pi-heart"
+							styleClass="ui-button-secondary outlined-button p-mr-2" />
+						<p:commandButton type="button" icon="pi pi-paperclip"
+							styleClass="ui-button-secondary outlined-button p-mr-2" />
+						<p:commandButton type="button" icon="pi pi-reply"
+							styleClass="ui-button-success p-mr-2" />
+					</div>
+				</div>
+			</div>
+		</p:dialog>
+	</div>
+	<script>
+		startWS();
+		function startWS() {
+			let webSocket = new WebSocket(
+					"ws://localhost:8080/portal/chat");
+			webSocket.onopen = function(event) {
+				webSocket
+						.send("Here's some text that the server is urgently awaiting!");
+			};
+			
+		}
+	</script>
+</ui:composition>
