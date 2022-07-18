@@ -11,17 +11,23 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 
+import com.farawaybr.portal.security.api.helper.ProtheusAPIHelper;
+
 @WebFilter("/chat/*")
-public class ChatHandShakeFilter implements Filter {
+public class ChatHandShakeServletFilter implements Filter {
 
 	@Inject
 	private HttpSessionRequestK httpSessionRequestK;
+
+	@Inject
+	private ProtheusAPIHelper protheusAPIHelper;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		// TODO Auto-generated method stub
 		httpSessionRequestK.setSession(((HttpServletRequest) request).getSession());
+		httpSessionRequestK.setUser(protheusAPIHelper.getUser().getName());
 		chain.doFilter(request, response);
 	}
 

@@ -53,9 +53,11 @@
 							<p:column field="ip" sortable="false" filterable="false"
 								headerText="IP" />
 							<p:column style="width:6rem">
-								<p:commandButton type="button" value="Chat"
-									icon="pi pi-comments" title="Iniciar chat"
-									onclick="startChat('#{conn.id}')" />
+								<p:commandButton value="Chat" icon="pi pi-comments"
+									title="Iniciar chat" process="@this"
+									action="#{connectionsSessionsMonitorController.startChat(conn)}"
+									onstart="PF('startChatLoading').show()"
+									oncomplete="startChat(args,'#{conn.user}')" />
 							</p:column>
 						</p:dataTable>
 						<p:spotlight target="@form" widgetVar="spot" />
@@ -63,6 +65,11 @@
 				</div>
 			</div>
 		</div>
+		<p:dialog header="Iniciando bate-papo..." modal="true"
+			closable="false" widgetVar="startChatLoading">
+			<p:progressBar id="progressBarIndeterminate" style="height:6px"
+				mode="indeterminate" />
+		</p:dialog>
 		<o:socket channel="connectionMonitorChannel"
 			onmessage="onConnectionListener" />
 		<script>
@@ -73,7 +80,7 @@
 				PF('spot').show();
 				setTimeout(() => {
 					PF('spot').hide();
-				}, 400);
+				}, 600);
 			}
 
 			function playNotification() {
@@ -84,8 +91,12 @@
 				});
 			}
 			
-			function startChat(conn){
-				console.log(conn)
+			function startChat(args,user){
+				PF('startChatLoading').hide();
+				PF('dlgChat').show();
+				sessionStorage.setItem("conversation_id",args.conversation_id);
+				document.getElementById("p-chat").innerHTML = "Conectado com "
+					+ user;
 			}
 		</script>
 	</ui:define>

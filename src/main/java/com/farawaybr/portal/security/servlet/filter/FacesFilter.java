@@ -2,9 +2,11 @@ package com.farawaybr.portal.security.servlet.filter;
 
 import java.io.IOException;
 
+import javax.faces.application.ResourceHandler;
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -22,7 +24,7 @@ public class FacesFilter implements Filter {
 
 	@Inject
 	private HttpSession session;
-	
+
 	private static final String AJAX_REDIRECT_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "<partial-response><redirect url=\"%s\"></redirect></partial-response>";
 
@@ -36,22 +38,20 @@ public class FacesFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		HttpServletRequest httpRequest = (HttpServletRequest) request;
-//		requestTracker.addRequest(httpRequest);
-		if (!apiManager.isAuthenticated(session.getId()) && !httpRequest.getRequestURI().contains("resource")) {
-			HttpServletResponse httpResponse = (HttpServletResponse) response;
-			String loginUrl = String.format("%s/%s", httpRequest.getContextPath(), "login.xhtml");
+		HttpServletResponse httpResponse = (HttpServletResponse) response;
+		boolean resourceRequest = httpRequest.getRequestURI()
+				.startsWith(httpRequest.getContextPath() + ResourceHandler.RESOURCE_IDENTIFIER + "/");
+		if (apiManager.isAuthenticated(session.getId()) || resourceRequest) {
+			chain.doFilter(httpRequest, httpResponse);
+		} else {
+			String loginUrl = String.format("%s/auth/%s", httpRequest.getContextPath(), "login.xhtml");
 			if (isAjaxRequest(httpRequest)) {
-
 				httpResponse.setContentType("text/html;charset=UTF-8");
-
 				httpResponse.getWriter().format(AJAX_REDIRECT_XML, loginUrl);
 				return;
 			}
-//			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/login.xhtml");
-//			requestDispatcher.forward(httpRequest, httpResponse);
-			httpResponse.sendRedirect(loginUrl);
-		} else {
-			chain.doFilter(request, response);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/auth/login.xhtml");
+			requestDispatcher.forward(httpRequest, httpResponse);
 		}
 	}
 

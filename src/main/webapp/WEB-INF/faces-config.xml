@@ -5,7 +5,7 @@
 	version="2.3">
 
 	<navigation-rule>
-		<from-view-id>/login.xhtml</from-view-id>
+		<from-view-id>/auth/login.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>NEW_ORDER</from-outcome>
 			<to-view-id>/faces/budget/new</to-view-id>

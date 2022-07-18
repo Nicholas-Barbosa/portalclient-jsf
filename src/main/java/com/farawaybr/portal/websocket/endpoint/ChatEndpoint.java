@@ -15,10 +15,13 @@ import javax.websocket.server.ServerEndpoint;
 import com.farawaybr.portal.repository.ConnectionSessionRepository;
 import com.farawaybr.portal.websocket.ChatWebSocketConnection;
 import com.farawaybr.portal.websocket.HttpSessionRequestK;
+import com.farawaybr.portal.websocket.JsonEncoder;
+import com.farawaybr.portal.websocket.message.ChatMessage;
 import com.farawaybr.portal.websocket.repo.WebSocketNewConnection;
+import com.farawaybr.portal.websocket.service.ChatService;
 import com.farawaybr.portal.websocket.repo.WebSocketClosedConnection;
 
-@ServerEndpoint("/chat")
+@ServerEndpoint(value = "/chat", encoders = JsonEncoder.class, decoders = JsonEncoder.class)
 public class ChatEndpoint {
 
 	@Inject
@@ -37,9 +40,13 @@ public class ChatEndpoint {
 	@WebSocketClosedConnection
 	private Event<ChatWebSocketConnection> closedConnectionEvent;
 
+	@Inject
+	private ChatService chatService;
+
 	@OnOpen
 	public void onOpen(Session session) throws IOException {
-		this.connection = new ChatWebSocketConnection(httpSessionRequestK.getSession().getId(), session);
+		this.connection = new ChatWebSocketConnection(httpSessionRequestK.getSession().getId(),
+				httpSessionRequestK.getUser(), session);
 		System.out.println("[SERVER]: Handshake successful!!!!! - Connected!!!!! - Session ID: " + session.getId()
 				+ " http session id " + connection.getHttpSessionId());
 		if (connectionSessionRepository.isActive(this.connection.getHttpSessionId())) {
@@ -50,13 +57,13 @@ public class ChatEndpoint {
 	}
 
 	@OnMessage
-	public void processGreeting(String message, Session session) {
+	public void onMessage(ChatMessage message, Session session) {
 		System.out.println("Greeting received:" + message + "\n http session " + this.connection.getHttpSessionId());
+		chatService.sendMessage(message, connection);
 	}
 
 	@OnClose
 	public void onClose(Session session) {
-		System.out.println("close session " + session.getId());
 		closedConnectionEvent.fireAsync(this.connection);
 	}
 }

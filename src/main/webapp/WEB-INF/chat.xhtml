@@ -5,55 +5,96 @@
 	xmlns:p="http://primefaces.org/ui">
 	<ui:define name="head">
 		<h:outputStylesheet name="chat.css" library="css" />
+
 	</ui:define>
 	<div id="chat">
 		<p:commandButton value="Chat" type="button"
 			style="bottom: 23px; right: 28px;width: 280px"
 			styleClass="z-5 fixed  ui-button-secondary"
-			onclick="PF('dlgChat').show()" />
-
-		<p:dialog modal="true" widgetVar="dlgChat" header="Chat em manutenção!">
+			onclick="PF('dlgChat').show();console.log(PF('dlgChat'))" />
+		<p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true"
+			widgetVar="msgsWidget" />
+		<p:dialog modal="true" widgetVar="dlgChat" header="Chat"
+			responsive="true">
+			<p class="font-semibold w-10" id="p-chat"></p>
 			<div class="card chat">
-				<div class="chat-content">
-					<div class="chat-message send">
-						<div class="message">
-							<p>Minimum extent of sea ice in the region its second-lowest
-								on record.</p>
-							<span>24 mins ago</span>
-						</div>
-					</div>
-					<div class="chat-message">
-						<div class="message">
-							<p>Right… Right my friend. This is better. Right? Right my
-								friend… 🏄‍♂️</p>
-							<span>25 mins ago</span>
-						</div>
-					</div>
-				</div>
+				<div class="chat-content" id="chat-content"></div>
 				<div class="chat-input">
-					<p:inputText placeholder="Type your message..." />
+					<p:inputText placeholder="Type your message..."
+						widgetVar="inputMessage" />
 					<div class="input-buttons">
-						<p:commandButton type="button" icon="pi pi-heart"
-							styleClass="ui-button-secondary outlined-button p-mr-2" />
-						<p:commandButton type="button" icon="pi pi-paperclip"
-							styleClass="ui-button-secondary outlined-button p-mr-2" />
 						<p:commandButton type="button" icon="pi pi-reply"
-							styleClass="ui-button-success p-mr-2" />
+							styleClass="ui-button-success p-mr-2" onclick="sendMessage()" />
+						<p:commandButton type="button" icon="pi pi-times"
+							styleClass="ui-button-danger" onclick="sendMessage()"
+							title="Desconectar" />
 					</div>
 				</div>
 			</div>
 		</p:dialog>
 	</div>
 	<script>
+		let webSocket = new WebSocket("ws://localhost:8080/portal/chat");
 		startWS();
 		function startWS() {
-			let webSocket = new WebSocket(
-					"ws://localhost:8080/portal/chat");
-			webSocket.onopen = function(event) {
-				webSocket
-						.send("Here's some text that the server is urgently awaiting!");
+			webSocket.onmessage = function(event) {
+				let incomingMessage = JSON.parse(event.data);
+				switch (incomingMessage.type) {
+				case "CONVERSATION_HANDSHAKE":
+					showMessage("Chat conectado",
+							" Você foi adicionado a um bate papo!")
+					localStorage.setItem("conversation_id",
+							incomingMessage.conversationId);
+					document.getElementById("p-chat").innerHTML = "Conectado com "
+							+ incomingMessage.interlocutor;
+					break;
+				case "INTERLOCUTOR":
+					createDivMessage(false, incomingMessage.content);
+					showMessage("Nova mensagem recebida!")
+					break;
+				default:
+					break;
+				}
+
+			}
+		}
+
+		function sendMessage() {
+			const conversationId = sessionStorage.getItem("conversation_id") == null ? "-1"
+					: sessionStorage.getItem("conversation_id");
+			const messageContent = document
+					.getElementById(PF("inputMessage").id).value;
+			const message = {
+				content : messageContent,
+				conversation_id : conversationId
 			};
-			
+			webSocket.send(JSON.stringify(message));
+			createDivMessage(true, messageContent);
+			document.getElementById(PF("inputMessage").id).value = "";
+
+		}
+
+		function createDivMessage(send, message) {
+			const chatContent = document.getElementById("chat-content");
+			const div = document.createElement("div");
+			const divMessage = document.createElement("div");
+			const p = document.createElement("p");
+			div.classList.add("chat-message");
+			if (!send)
+				div.classList.add("send");
+			divMessage.classList.add("message");
+			p.innerHTML = message;
+			divMessage.appendChild(p);
+			div.appendChild(divMessage);
+			chatContent.appendChild(div);
+		}
+		function showMessage(summary, detail) {
+			if (PF('dlgChat').isVisible() == false)
+				PF('msgsWidget').renderMessage({
+					severity : 'info',
+					summary : summary,
+					detail : detail
+				})
 		}
 	</script>
 </ui:composition>
