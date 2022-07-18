@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+<h:head>
+</h:head>
+
+<composite:interface>
+
+</composite:interface>
+
+<composite:implementation>
+	<div id="#{cc.clientId}">
+		<audio id="error-audio">
+			<source src="../../resources/sound/mixkit-software-interface-start-2574.wav"
+				type="audio/wav" />
+		</audio>
+		<p:ajaxExceptionHandler type="java.lang.RuntimeException"
+			onexception="playErrorSound();PF('dlgRuntimeException').show();"
+			update="runtimeException" />
+		<p:dialog header="Ocorreu um erro" widgetVar="dlgRuntimeException"
+			id="runtimeException" responsive="true" modal="true">
+			<div class="grid flex-column">
+				<div class="col">
+					<ul>
+						<li>User agent: #{header['user-agent']}</li>
+						<li>IP do cliente: #{request.remoteAddr}</li>
+						<li>Exception type: #{pfExceptionHandler.type}</li>
+						<li>Exception message: #{pfExceptionHandler.message}</li>
+						<li>Timestamp: #{pfExceptionHandler.timestamp}</li>
+					</ul>
+				</div>
+				<div class="col">
+					<div class="text-yellow-500 hover:text-orange-700">Para
+						solucionar, recomendamos que tire um print e abra um chamado!</div>
+				</div>
+			</div>
+		</p:dialog>
+	</div>
+	<script>
+		function playErrorSound() {
+			let audio = document.getElementById("error-audio");
+			audio.play().then(()=>{
+				
+			}).catch(()=>{
+				console.log("som não disponível")
+			});
+		}
+	</script>
+</composite:implementation>
+
+</html>
