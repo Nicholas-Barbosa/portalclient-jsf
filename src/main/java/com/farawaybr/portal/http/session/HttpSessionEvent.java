@@ -1,12 +1,12 @@
-package com.farawaybr.portal.session.listener;
+package com.farawaybr.portal.http.session;
 
 import javax.servlet.http.HttpSession;
 
-public class DestroySessionEvent {
+public class HttpSessionEvent {
 
 	private HttpSession session;
 
-	public DestroySessionEvent(HttpSession session) {
+	public HttpSessionEvent(HttpSession session) {
 		super();
 		this.session = session;
 	}

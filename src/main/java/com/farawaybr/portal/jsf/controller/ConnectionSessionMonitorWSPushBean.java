@@ -4,12 +4,13 @@ import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSessionEvent;
 
 import org.omnifaces.cdi.Push;
 import org.omnifaces.cdi.PushContext;
 
 import com.farawaybr.portal.dto.ConnectionSession;
-import com.farawaybr.portal.session.listener.DestroySessionEvent;
+import com.farawaybr.portal.http.session.DestroySessionEvent;
 
 @ApplicationScoped
 public class ConnectionSessionMonitorWSPushBean {
@@ -22,7 +23,7 @@ public class ConnectionSessionMonitorWSPushBean {
 		connectionMonitorChannel.send("new connection!");
 	}
 
-	public void onNewConnection(@ObservesAsync @Priority(1) DestroySessionEvent cnn) {
+	public void onClosedConnection(@ObservesAsync @Priority(3) @DestroySessionEvent HttpSessionEvent cnn) {
 		connectionMonitorChannel.send("close connection!");
 	}
 }

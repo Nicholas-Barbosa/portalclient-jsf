@@ -6,12 +6,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
 
-import com.farawaybr.portal.session.listener.DestroySessionEvent;
+import com.farawaybr.portal.http.session.DestroySessionEvent;
 
 /**
  * All ServerAPI which the current session client has been authenticated.
@@ -51,7 +51,8 @@ public class APIsManager implements Serializable {
 		this.authenticatedServices.remove(httpSession.getId() + "-" + key);
 	}
 
-	public void unRegisterAuthenticatedService(@ObservesAsync @Priority(0) DestroySessionEvent event) {
+	public void unRegisterAuthenticatedService(
+			@ObservesAsync @Priority(1) @DestroySessionEvent HttpSessionEvent event) {
 		authenticatedServices.keySet().stream().filter(s -> s.contains(event.getSession().getId())).forEach(k -> {
 			authenticatedServices.remove(k);
 		});

@@ -58,7 +58,6 @@ public class ChatEndpoint {
 
 	@OnMessage
 	public void onMessage(ChatMessage message, Session session) {
-		System.out.println("Greeting received:" + message + "\n http session " + this.connection.getHttpSessionId());
 		chatService.sendMessage(message, connection);
 	}
 

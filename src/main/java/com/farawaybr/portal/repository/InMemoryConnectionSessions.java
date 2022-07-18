@@ -8,9 +8,10 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.ObservesAsync;
+import javax.servlet.http.HttpSessionEvent;
 
 import com.farawaybr.portal.dto.ConnectionSession;
-import com.farawaybr.portal.session.listener.DestroySessionEvent;
+import com.farawaybr.portal.http.session.DestroySessionEvent;
 
 @ApplicationScoped
 public class InMemoryConnectionSessions implements ConnectionSessionRepository {
@@ -35,7 +36,7 @@ public class InMemoryConnectionSessions implements ConnectionSessionRepository {
 		return new ConcurrentSkipListSet<>(connections.values());
 	}
 
-	public void onSessionDestroyEvent(@ObservesAsync @Priority(2) DestroySessionEvent event) {
+	public void onSessionDestroyEvent(@ObservesAsync @DestroySessionEvent @Priority(2) HttpSessionEvent event) {
 		connections.remove(event.getSession().getId());
 
 	}

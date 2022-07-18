@@ -56,7 +56,8 @@ public class LoginHttpFilter extends HttpFilter implements Filter {
 
 		// pass the request along the filter chain
 		if (apiManager.isAuthenticated(httpSession.getId())) {
-			String loginUrl = String.format("%s/faces/budget/%s", ((HttpServletRequest) request).getContextPath(), "new.xhtml");
+			String loginUrl = String.format("%s/faces/budget/%s", ((HttpServletRequest) request).getContextPath(),
+					"new.xhtml");
 			((HttpServletResponse) response).sendRedirect(loginUrl);
 			return;
 		}

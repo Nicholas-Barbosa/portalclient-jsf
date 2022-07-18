@@ -9,12 +9,13 @@ import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpSessionEvent;
 
 import org.primefaces.PrimeFaces;
 
 import com.farawaybr.portal.dto.ConnectionSession;
+import com.farawaybr.portal.http.session.DestroySessionEvent;
 import com.farawaybr.portal.repository.ConnectionSessionRepository;
-import com.farawaybr.portal.session.listener.DestroySessionEvent;
 import com.farawaybr.portal.websocket.service.ChatService;
 
 @ApplicationScoped
@@ -43,7 +44,7 @@ public class ConnectionsSessionsMonitorController implements Serializable {
 		this.activeConnections.add(cnn);
 	}
 
-	public void onCloseConnection(@ObservesAsync DestroySessionEvent event) {
+	public void onCloseConnection(@ObservesAsync @DestroySessionEvent HttpSessionEvent event) {
 		this.activeConnections = repository.findAll();
 	}
 
