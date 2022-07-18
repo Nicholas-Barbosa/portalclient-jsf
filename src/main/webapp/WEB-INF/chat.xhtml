@@ -34,7 +34,8 @@
 		</p:dialog>
 	</div>
 	<script>
-		let webSocket = new WebSocket("ws://localhost:8080/portal/chat");
+		
+		let webSocket = new WebSocket("ws://"+window.location.host.concat("/portal/chat"));
 		startWS();
 		function startWS() {
 			webSocket.onmessage = function(event) {
