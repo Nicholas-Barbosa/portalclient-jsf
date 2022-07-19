@@ -40,10 +40,6 @@ public class ConnectionsSessionsMonitorController implements Serializable {
 		this.activeConnections = repository.findAll();
 	}
 
-	public void throwException() {
-		throw new NullPointerException("Message cannot be null!");
-	}
-
 	public void onNewConnection(@ObservesAsync ConnectionSession cnn) {
 		this.activeConnections.add(cnn);
 	}

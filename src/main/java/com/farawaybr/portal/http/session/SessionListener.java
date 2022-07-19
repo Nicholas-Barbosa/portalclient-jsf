@@ -1,5 +1,8 @@
 package com.farawaybr.portal.http.session;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.servlet.annotation.WebListener;
@@ -23,7 +26,7 @@ public class SessionListener implements HttpSessionListener {
 
 	@Override
 	public void sessionCreated(HttpSessionEvent se) {
-		String clientIp = request.getRemoteAddr().equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : request.getRemoteAddr();
+		String clientIp = request.getRemoteAddr() + ":" + request.getRemotePort();
 		se.getSession().setAttribute("clientIp", clientIp);
 		newSessionEvent.fireAsync(se);
 		System.out.println("new session has been created");

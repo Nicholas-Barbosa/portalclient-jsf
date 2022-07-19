@@ -31,7 +31,7 @@ public class DanfeRepositoryImpl extends RepositoryInterceptors implements Danfe
 				Map.of("invoiceNumber", invoiceNumber, "invoiceSerie", invoiceSerie), "application/json",
 				Map.of(HttpHeaders.AUTHORIZATION, "Bearer " + protheusApi.getToken()));
 		StringBuilder base64 = new StringBuilder(data.getStreamBase64());
-//		base64.delete(0, 28);
+		data=null;
 		return Optional.of(new Danfe(base64.toString()));
 	}
 

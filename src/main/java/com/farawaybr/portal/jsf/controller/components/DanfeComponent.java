@@ -7,6 +7,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.PrimeFaces;
 import org.primefaces.model.StreamedContent;
 
 import com.farawaybr.portal.exceptionhandler.netowork.NetworkExceptionJoinPointCut;
@@ -41,7 +42,8 @@ public class DanfeComponent implements Serializable {
 
 	private void danfeOptional(Optional<Danfe> danfeOptional) {
 		danfeOptional.ifPresentOrElse(d -> {
-			FacesUtils.addHeaderForResponse("base64", d.getBase64Streams());
+			PrimeFaces.current().ajax().addCallbackParam("danfe", d.getBase64Streams());
+			d = null;
 		}, () -> {
 			FacesUtils.error(null, "Danfe não encontrada", null, "growl");
 

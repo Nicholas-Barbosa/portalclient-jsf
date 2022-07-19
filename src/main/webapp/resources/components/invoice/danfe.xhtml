@@ -21,7 +21,7 @@
 		<h:form>
 			<p:remoteCommand name="findDanfe" process="@this"
 				action="#{danfeComponent.load(cc.attrs.invoice,cc.attrs.invoiceNumber,cc.attrs.invoiceSerie)}"
-				onstart="onStartLoad()" oncomplete="onLoaded(xhr);" />
+				onstart="onStartLoad()" oncomplete="onLoaded(args,xhr);" />
 		</h:form>
 		<div id="divLoadingDanfe" style="display: none">
 			<div class="p-d-flex p-ai-end">
@@ -46,8 +46,8 @@
 			mediaObject.src = null;
 		}
 
-		function onLoaded(xhr) {
-			let base64Data = xhr.getResponseHeader('base64');
+		function onLoaded(args,xhr) {
+			let base64Data = args.danfe;
 			mediaObject.src = base64Data;
 			#{cc.attrs.onLoad}
 			$('#divLoadingDanfe').hide();

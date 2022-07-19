@@ -32,9 +32,6 @@
 				<div jsf:id="divListContent" class="card">
 					<h4>Monitor de conexões ativas</h4>
 					<h:form>
-						<p:commandButton value="Throw exception"
-							action="#{connectionsSessionsMonitorController.throwException}"
-							process="@this" />
 						<p:remoteCommand name="updateTable" process="@none" update="table" />
 						<p:dataTable id="table"
 							value="#{connectionsSessionsMonitorController.activeConnections}"
