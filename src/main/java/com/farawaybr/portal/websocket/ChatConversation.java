@@ -1,6 +1,7 @@
 package com.farawaybr.portal.websocket;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.websocket.Session;
 
@@ -42,6 +43,18 @@ public class ChatConversation {
 
 	public Session getInterlocutor2Session() {
 		return interlocutor2.getSession();
+	}
+
+	public Optional<ChatWebSocketConnection> getInterlocutorByHttpSessionId(String httpSessionId) {
+		return containsHttpSession(httpSessionId)
+				? interlocutor1.getHttpSessionId().equals(httpSessionId) ? Optional.of(interlocutor1)
+						: Optional.of(interlocutor2)
+				: Optional.empty();
+	}
+
+	public boolean containsHttpSession(String httpSession) {
+		return interlocutor1.getHttpSessionId().equals(httpSession)
+				|| interlocutor2.getHttpSessionId().equals(httpSession);
 	}
 
 	@Override

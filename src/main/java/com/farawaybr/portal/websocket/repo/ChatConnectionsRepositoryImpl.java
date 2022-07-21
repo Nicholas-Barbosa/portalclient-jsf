@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.ObservesAsync;
 
@@ -17,6 +18,7 @@ public class ChatConnectionsRepositoryImpl implements ChatConnectionsRepository 
 	@Override
 	public void putConnection(@ObservesAsync @WebSocketNewConnection ChatWebSocketConnection connection) {
 		// TODO Auto-generated method stub
+		System.out.println("put connection, http session id " + connection.getHttpSessionId());
 		connections.put(connection.getHttpSessionId(), connection);
 	}
 

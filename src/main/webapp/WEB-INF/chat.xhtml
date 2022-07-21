@@ -35,7 +35,7 @@
 	</div>
 	<script>
 		
-		let webSocket = new WebSocket("wss://"+window.location.host.concat("/portal/chat"));
+		let webSocket = new WebSocket("ws://"+window.location.host.concat("/portal/chat"));
 		startWS();
 		function startWS() {
 			webSocket.onmessage = function(event) {
@@ -51,7 +51,7 @@
 					break;
 				case "INTERLOCUTOR":
 					createDivMessage(false, incomingMessage.content);
-					showMessage("Nova mensagem recebida!")
+					showMessage("Nova mensagem recebida!",incomingMessage.content)
 					break;
 				default:
 					break;
@@ -61,8 +61,8 @@
 		}
 
 		function sendMessage() {
-			const conversationId = sessionStorage.getItem("conversation_id") == null ? "-1"
-					: sessionStorage.getItem("conversation_id");
+			const conversationId = localStorage.getItem("conversation_id") == null ? "-1"
+					: localStorage.getItem("conversation_id");
 			const messageContent = document
 					.getElementById(PF("inputMessage").id).value;
 			const message = {

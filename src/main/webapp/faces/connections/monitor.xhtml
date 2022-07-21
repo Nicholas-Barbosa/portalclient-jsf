@@ -170,7 +170,7 @@
 			function startChat(args,user){
 				PF('startChatLoading').hide();
 				PF('dlgChat').show();
-				sessionStorage.setItem("conversation_id",args.conversation_id);
+				localStorage.setItem("conversation_id",args.conversation_id);
 				document.getElementById("p-chat").innerHTML = "Conectado com "
 					+ user;
 			}

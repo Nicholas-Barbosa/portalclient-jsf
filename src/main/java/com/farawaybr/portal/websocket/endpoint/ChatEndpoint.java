@@ -47,8 +47,6 @@ public class ChatEndpoint {
 	public void onOpen(Session session) throws IOException {
 		this.connection = new ChatWebSocketConnection(httpSessionRequestK.getSession().getId(),
 				httpSessionRequestK.getUser(), session);
-		System.out.println("[SERVER]: Handshake successful!!!!! - Connected!!!!! - Session ID: " + session.getId()
-				+ " http session id " + connection.getHttpSessionId());
 		if (connectionSessionRepository.isActive(this.connection.getHttpSessionId())) {
 			newConnectionEvent.fireAsync(this.connection);
 			return;

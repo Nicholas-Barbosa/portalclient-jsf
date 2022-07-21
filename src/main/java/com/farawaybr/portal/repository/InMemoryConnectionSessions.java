@@ -28,9 +28,15 @@ public class InMemoryConnectionSessions implements ConnectionSessionRepository {
 	@Override
 	public void persist(@Priority(0) @ObservesAsync ConnectionSession connection) {
 		// TODO Auto-generated method stub
-		Optional<IpInfo> ipGeoData = ipGeolocation.findByIp(connection.getRawIp());
-		ipGeoData.ifPresent(connection::setIp);
-		connections.put(connection.getId(), connection);
+		try {
+			Optional<IpInfo> ipGeoData = ipGeolocation.findByIp(connection.getRawIp());
+			ipGeoData.ifPresent(connection::setIp);
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			connections.put(connection.getId(), connection);
+		}
+
 	}
 
 	@Override

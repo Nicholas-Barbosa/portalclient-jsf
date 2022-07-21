@@ -8,7 +8,7 @@ import javax.websocket.Session;
 public class ChatWebSocketConnection {
 
 	private final String httpSessionId, user;
-	private final Session session;
+	private Session session;
 	private final LocalDateTime createdAt;
 
 	public ChatWebSocketConnection(String httpSessionId, String user, Session session) {
@@ -37,6 +37,10 @@ public class ChatWebSocketConnection {
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
+	}
+
+	public void replaceWSSession(Session newSession) {
+		this.session = newSession;
 	}
 
 	@Override

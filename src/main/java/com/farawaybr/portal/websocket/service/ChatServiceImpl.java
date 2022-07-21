@@ -8,15 +8,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.ObservesAsync;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSessionEvent;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
+import com.farawaybr.portal.http.session.DestroySessionEvent;
 import com.farawaybr.portal.websocket.ChatConversation;
 import com.farawaybr.portal.websocket.ChatWebSocketConnection;
 import com.farawaybr.portal.websocket.message.ChatMessage;
 import com.farawaybr.portal.websocket.message.ChatMessageType;
 import com.farawaybr.portal.websocket.repo.ChatConnectionsRepository;
-import com.farawaybr.portal.websocket.repo.WebSocketClosedConnection;
+import com.farawaybr.portal.websocket.repo.WebSocketNewConnection;
 
 @ApplicationScoped
 public class ChatServiceImpl implements ChatService {
@@ -50,7 +52,6 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public void sendMessage(ChatMessage message, ChatWebSocketConnection currentConnection) {
 		Optional<ChatConversation> opCC = Optional.ofNullable(conversations.get(message.getConversationId()));
-
 		opCC.ifPresentOrElse(cc -> {
 			Session destination = cc.getInterlocutor1Session().equals(currentConnection.getSession())
 					? cc.getInterlocutor2Session()
@@ -62,8 +63,16 @@ public class ChatServiceImpl implements ChatService {
 
 	}
 
-	public void onChatSocketClosed(@ObservesAsync @WebSocketClosedConnection ChatWebSocketConnection connection) {
-		conversations.values().removeIf(cc -> cc.containsInterlocutor(connection));
+	public void onNewChatWSConnection(@ObservesAsync @WebSocketNewConnection ChatWebSocketConnection connection) {
+		// TODO Auto-generated method stub
+		conversations.values().parallelStream().filter(cc -> cc.containsHttpSession(connection.getHttpSessionId()))
+				.map(cc -> cc.getInterlocutorByHttpSessionId(connection.getHttpSessionId())).forEach(cc -> {
+					cc.ifPresent(cwc -> cwc.replaceWSSession(connection.getSession()));
+				});
+	}
+
+	public void onChatSocketClosed(@ObservesAsync @DestroySessionEvent HttpSessionEvent httpSessionEvent) {
+		conversations.values().removeIf(cc -> cc.containsHttpSession(httpSessionEvent.getSession().getId()));
 	}
 
 	private String generateConversationId(String sessionId1, String sessionId2) {

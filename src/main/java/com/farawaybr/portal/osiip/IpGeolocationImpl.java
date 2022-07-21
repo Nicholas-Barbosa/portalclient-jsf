@@ -29,4 +29,5 @@ public class IpGeolocationImpl implements IpGeolocation {
 				"aplication/json", null));
 	}
 
+	
 }

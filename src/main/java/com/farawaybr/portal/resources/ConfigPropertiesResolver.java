@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -13,8 +14,9 @@ public class ConfigPropertiesResolver {
 	private Properties properties;
 
 	private String profile;
-	
-	public ConfigPropertiesResolver() {
+
+	@PostConstruct
+	public void postDI() {
 		properties = new Properties();
 		loadProperties();
 		this.profile = properties.getProperty("profile");
@@ -38,7 +40,7 @@ public class ConfigPropertiesResolver {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public String getProfile() {
 		return profile;
 	}
