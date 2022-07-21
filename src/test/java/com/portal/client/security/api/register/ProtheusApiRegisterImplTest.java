@@ -10,7 +10,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.resources.ConfigPropertiesResolver;
 import com.farawaybr.portal.security.api.ProtheusApiData;
 import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
 import com.portal.ShrinkwrapDeploymentUtils;
@@ -23,7 +23,7 @@ public class ProtheusApiRegisterImplTest {
 
 	@Deployment
 	public static JavaArchive deployment() {
-		return ShrinkwrapDeploymentUtils.createdDeployment(true,"com.farawaybr.portal.security.api").addClass(ConfigPropertyResolver.class);
+		return ShrinkwrapDeploymentUtils.createdDeployment(true,"com.farawaybr.portal.security.api").addClass(ConfigPropertiesResolver.class);
 	}
 
 	@Test

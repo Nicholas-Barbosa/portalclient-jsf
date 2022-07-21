@@ -10,7 +10,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.resources.ConfigPropertiesResolver;
 import com.farawaybr.portal.resources.export.BudgetExportType;
 import com.farawaybr.portal.resources.export.SimpleBudgetExporterFactory;
 import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriterImpl;
@@ -26,7 +26,7 @@ public class SimpleBudgetExporterFactoryTest {
 	public static JavaArchive deployment() {
 		return ShrinkwrapDeploymentUtils
 				.createdDeployment(true, "com.farawaybr.portal.resources.export", "com.farawaybr.portal.security.api")
-				.addClass(ConfigPropertyResolver.class).addClass(XssfWriterImpl.class);
+				.addClass(ConfigPropertiesResolver.class).addClass(XssfWriterImpl.class);
 	}
 
 	@Test

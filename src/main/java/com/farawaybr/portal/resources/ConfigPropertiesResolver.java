@@ -8,13 +8,13 @@ import java.util.Properties;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-public class ConfigPropertyResolver {
+public class ConfigPropertiesResolver {
 
 	private Properties properties;
 
 	private String profile;
 	
-	public ConfigPropertyResolver() {
+	public ConfigPropertiesResolver() {
 		properties = new Properties();
 		loadProperties();
 		this.profile = properties.getProperty("profile");

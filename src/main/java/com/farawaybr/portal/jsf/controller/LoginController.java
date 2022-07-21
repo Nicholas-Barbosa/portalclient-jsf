@@ -47,7 +47,6 @@ public class LoginController {
 						+ " realmente existe no ambiente " + loginForm.getEnvironment(), "messages");
 			e.printStackTrace();
 		}
-		System.out.println(loginForm + " User Agent: " + request.getHeader("User-Agent"));
 		return null;
 
 	}

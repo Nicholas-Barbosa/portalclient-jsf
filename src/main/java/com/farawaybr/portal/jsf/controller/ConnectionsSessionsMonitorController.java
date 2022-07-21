@@ -16,6 +16,7 @@ import org.primefaces.PrimeFaces;
 import com.farawaybr.portal.dto.ConnectionSession;
 import com.farawaybr.portal.http.session.DestroySessionEvent;
 import com.farawaybr.portal.repository.ConnectionSessionRepository;
+import com.farawaybr.portal.service.jsonb.JsonbService;
 import com.farawaybr.portal.websocket.service.ChatService;
 
 @ApplicationScoped
@@ -34,6 +35,8 @@ public class ConnectionsSessionsMonitorController implements Serializable {
 	@Inject
 	private HttpSession httpSession;
 	private Set<ConnectionSession> activeConnections;
+	@Inject
+	private JsonbService jsonbService;
 
 	@PostConstruct
 	public void postDI() {
@@ -46,6 +49,10 @@ public class ConnectionsSessionsMonitorController implements Serializable {
 
 	public void onCloseConnection(@ObservesAsync @DestroySessionEvent HttpSessionEvent event) {
 		this.activeConnections = repository.findAll();
+	}
+
+	public void toJson(ConnectionSession connectionSession) {
+		PrimeFaces.current().ajax().addCallbackParam("ipInfo", jsonbService.toJson(connectionSession.getIp()));
 	}
 
 	public void startChat(ConnectionSession connectionSession) {

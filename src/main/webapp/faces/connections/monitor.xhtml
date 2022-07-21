@@ -9,6 +9,7 @@
 
 	<ui:define name="head">
 		<h:outputStylesheet name="css/flags/flags.css" library="demo" />
+
 	</ui:define>
 
 	<ui:define name="title">Monitoramento de conexões</ui:define>
@@ -36,35 +37,110 @@
 						<p:dataTable id="table"
 							value="#{connectionsSessionsMonitorController.activeConnections}"
 							var="conn" reflow="true">
-							<f:facet name="header">
-
-							</f:facet>
 							<p:column field="id" filterable="false" headerText="ID" />
 							<p:column headerText="Criada" sortable="false">
 								<h:outputText value="#{conn.startedAt}">
 									<f:convertDateTime pattern="MM/dd/yyyy 'às' HH:mm:ss"
 										type="localDateTime" />
 								</h:outputText>
-							</p:column>/
-						<p:column field="user" filterable="false" />
+							</p:column>
+							<p:column field="user" filterable="false" />
 							<p:column field="userAgent" filterable="true" sortable="false" />
-							<p:column field="locale.displayCountry" sortable="false"
-								headerText="Origem" />
-							<p:column field="ip" sortable="false" filterable="false"
+							<p:column field="rawIp" sortable="false" filterable="false"
 								headerText="IP" />
-							<p:column style="width:6rem">
+							<p:column field="ip.location.city" headerText="Cidade"
+								filterable="false" sortable="false" />
+							<p:column sortable="false" headerText="País">
+								<h:outputText
+									value="#{conn.ip.country.flagEmoji}#{conn.ip.country.name}" />
+							</p:column>
+							<p:column>
 								<p:commandButton value="Chat" icon="pi pi-comments"
 									title="Iniciar chat" process="@this"
 									action="#{connectionsSessionsMonitorController.startChat(conn)}"
 									onstart="PF('startChatLoading').show()"
-									oncomplete="startChat(args,'#{conn.user}')" />
+									oncomplete="startChat(args,'#{conn.user}')"
+									styleClass="p-mr-2 p-mb-2" />
+								<p:commandButton value="IP lookup" styleClass="p-mb-2"
+									type="button"
+									onclick="let json = JSON.stringify({ip:'#{conn.ip.ip}',country:{name:'#{conn.ip.country.name}',fullName:'#{conn.ip.country.fullName}',flagEmoji:'#{conn.ip.country.flagEmoji}',callingCode:'#{conn.ip.country.callingCode}'},location:{continent:'#{conn.ip.location.continent}',city:'#{conn.ip.location.city}',localityName:'#{conn.ip.location.localityName}',latitude:'#{conn.ip.location.latitude}',longitude:'#{conn.ip.location.longituede}'}}); ipLookup(json);" />
 							</p:column>
 						</p:dataTable>
 						<p:spotlight target="@form" widgetVar="spot" />
 					</h:form>
 				</div>
+
+				<p:dialog header="IP lookup" modal="true" responsive="true"
+					widgetVar="dlgIpLookup">
+					<div class="grid" style="width: 65vw">
+						<div class="col-7 overflow-auto" style="height: 27vw">
+							<div class="surface-section">
+								<div class="font-medium text-3xl text-900 mb-3" id="ip-title">
+									Geolocation</div>
+								<ul class="list-none p-0 m-0">
+									<li
+										class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+										<div class="text-500 w-6 md:w-2 font-medium">IP Address</div>
+										<div
+											class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+											id="ip">Heat</div>
+									</li>
+
+									<li
+										class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+										<div class="text-500 w-6 md:w-2 font-medium">Cidade</div>
+										<div
+											class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1 line-height-3"
+											id="city"></div>
+
+									</li>
+									<li
+										class="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 surface-border flex-wrap">
+										<div class="text-500 w-6 md:w-2 font-medium">País</div>
+										<div
+											class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+											id="country-name"></div>
+									</li>
+									<li
+										class="flex align-items-center py-3 px-2 border-top-1 surface-border flex-wrap">
+										<div class="text-500 w-6 md:w-2 font-medium">Continente</div>
+										<div
+											class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+											id="continent"></div>
+
+									</li>
+									<li
+										class="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 surface-border flex-wrap">
+										<div class="text-500 w-6 md:w-2 font-medium">Calling code</div>
+										<div
+											class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+											id="country-callingCode"></div>
+									</li>
+									<li
+										class="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 surface-border flex-wrap">
+										<div class="text-500 w-6 md:w-2 font-medium">Latitude</div>
+										<div
+											class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+											id="latitude"></div>
+									</li>
+									<li
+										class="flex align-items-center py-3 px-2 border-top-1 border-bottom-1 surface-border flex-wrap">
+										<div class="text-500 w-6 md:w-2 font-medium">Longitude</div>
+										<div
+											class="text-900 w-full md:w-8 md:flex-order-0 flex-order-1"
+											id="longitude"></div>
+									</li>
+
+								</ul>
+							</div>
+						</div>
+						<div id="map" class="col-5" style="height: 25vw"></div>
+					</div>
+				</p:dialog>
 			</div>
+
 		</div>
+
 		<p:dialog header="Iniciando bate-papo..." modal="true"
 			closable="false" widgetVar="startChatLoading">
 			<p:progressBar id="progressBarIndeterminate" style="height:6px"
@@ -73,7 +149,7 @@
 		<o:socket channel="connectionMonitorChannel"
 			onmessage="onConnectionListener" />
 		<script>
-			let audio = document.getElementById("notification-audio")
+			let audio = document.getElementById("notification-audio");
 			function onConnectionListener(message, channel, event) {
 				updateTable();
 				playNotification();
@@ -98,7 +174,37 @@
 				document.getElementById("p-chat").innerHTML = "Conectado com "
 					+ user;
 			}
+			
+			function ipLookup(ipInfo){
+				const ipObject = JSON.parse(ipInfo);
+				const location = ipObject.location;
+				const country = ipObject.country;
+				document.getElementById('ip-title').innerHTML=country.flagEmoji+' Geolocation'
+				document.getElementById('ip').innerHTML = ipObject.ip;
+				document.getElementById('continent').innerHTML = location.continent;
+				document.getElementById('city').innerHTML = location.city+'; '+location.localityName;
+				document.getElementById('latitude').innerHTML = location.latitude;
+				document.getElementById('longitude').innerHTML = location.longitude;
+				document.getElementById('country-name').innerHTML =country.flagEmoji+country.name+'; '+country.fullName;
+				document.getElementById('country-callingCode').innerHTML = '+'+country.callingCode;
+				initMap(location.latitude,location.longitude);
+				PF('dlgIpLookup').show();
+			}
+			
+			function initMap(lat,lng) {
+				const position = {lat: parseFloat(lat), lng: parseFloat(lng)}
+				  let map = new google.maps.Map(document.getElementById("map"), {
+				    center:position,
+				    zoom: 10,
+				  });
+				  let marker = new google.maps.Marker({
+					    position: position,
+					    map: map,
+					  });
+
+				}
 		</script>
+
 	</ui:define>
 
 </ui:composition>

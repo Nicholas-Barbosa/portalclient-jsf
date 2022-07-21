@@ -1,28 +1,35 @@
 package com.farawaybr.portal.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
+import com.farawaybr.portal.osiip.IpInfo;
 import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
 
 public class ConnectionSession implements Comparable<ConnectionSession> {
 
-	private final String id, user, ip, userAgent;
+	private final String id, user, rawIp, userAgent;
 	private final Locale locale;
 	private final LocalDateTime startedAt;
 	private final ProtheusApiEnviroment env;
+	private IpInfo ip;
 
-	public ConnectionSession(String id, String user, String ip, String userAgent, Locale locale,
+	public ConnectionSession(String id, String user, String rawIp, String userAgent, Locale locale,
 			ProtheusApiEnviroment env) {
 		super();
 		this.id = id;
 		this.user = user;
-		this.ip = ip;
+		this.rawIp = rawIp;
 		this.userAgent = userAgent;
 		this.locale = locale;
 		this.startedAt = LocalDateTime.now();
 		this.env = env;
+	}
+
+	public ConnectionSession(String id, String user, String rawIp, String userAgent, Locale locale,
+			ProtheusApiEnviroment env, IpInfo ip) {
+		this(id, user, rawIp, userAgent, locale, env);
+		this.ip = ip;
 	}
 
 	public String getId() {
@@ -33,8 +40,8 @@ public class ConnectionSession implements Comparable<ConnectionSession> {
 		return user;
 	}
 
-	public String getIp() {
-		return ip;
+	public String getRawIp() {
+		return rawIp;
 	}
 
 	public String getUserAgent() {
@@ -51,6 +58,14 @@ public class ConnectionSession implements Comparable<ConnectionSession> {
 
 	public ProtheusApiEnviroment getEnv() {
 		return env;
+	}
+
+	public IpInfo getIp() {
+		return ip;
+	}
+
+	public void setIp(IpInfo ip) {
+		this.ip = ip;
 	}
 
 	@Override
@@ -80,7 +95,7 @@ public class ConnectionSession implements Comparable<ConnectionSession> {
 
 	@Override
 	public String toString() {
-		return "ConnectionSession [id=" + id + ", user=" + user + ", ip=" + ip + ", userAgent=" + userAgent
+		return "ConnectionSession [id=" + id + ", user=" + user + ", ip=" + rawIp + ", userAgent=" + userAgent
 				+ ", locale=" + locale + ", startedAt=" + startedAt + ", env=" + env + "]";
 	}
 

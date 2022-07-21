@@ -16,6 +16,7 @@ import org.omnifaces.cdi.PushContext;
 import com.farawaybr.portal.dto.ConnectionSession;
 import com.farawaybr.portal.dto.ConnectionSessionBuilder;
 import com.farawaybr.portal.dto.LoginProtheusForm;
+import com.farawaybr.portal.osiip.IpGeolocation;
 import com.farawaybr.portal.service.UserService;
 
 @SessionScoped

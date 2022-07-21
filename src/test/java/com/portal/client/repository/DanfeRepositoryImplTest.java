@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import com.farawaybr.portal.repository.DanfeRepository;
 import com.farawaybr.portal.repository.DanfeRepositoryImpl;
-import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.resources.ConfigPropertiesResolver;
 import com.farawaybr.portal.security.api.register.ProtheusApiRegisterImpl;
 import com.portal.ShrinkwrapDeploymentUtils;
 
@@ -30,7 +30,7 @@ public class DanfeRepositoryImplTest {
 	public static JavaArchive createDeploy() {
 		return ShrinkwrapDeploymentUtils
 				.createdDeployment(true, "com.nicholas.jaxrsclient", "com.farawaybr.portal.security.api")
-				.addClass(ConfigPropertyResolver.class).addClass(DanfeRepository.class)
+				.addClass(ConfigPropertiesResolver.class).addClass(DanfeRepository.class)
 				.addClass(DanfeRepositoryImpl.class);
 	}
 

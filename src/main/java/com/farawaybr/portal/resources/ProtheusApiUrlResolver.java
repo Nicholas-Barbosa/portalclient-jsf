@@ -9,7 +9,7 @@ import com.farawaybr.portal.security.api.ProtheusApiEnviroment;
 public class ProtheusApiUrlResolver {
 
 	@Inject
-	private ConfigPropertyResolver propertiesResolver;
+	private ConfigPropertiesResolver propertiesResolver;
 	private final String configProtheusUrlTestKey = "protheus_test_env_url";
 	private final String configProtheusUrlProdKey = "protheus_production_env_url";
 

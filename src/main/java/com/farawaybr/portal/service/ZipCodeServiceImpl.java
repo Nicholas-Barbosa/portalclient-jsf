@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType;
 import com.farawaybr.portal.cdi.aop.annotations.NotFoundOptionalEmptyJoinPointCut;
 import com.farawaybr.portal.jaxrs.client.RestClient;
 import com.farawaybr.portal.pojo.ZipCode;
-import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.resources.ConfigPropertiesResolver;
 
 @ApplicationScoped
 public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
@@ -24,10 +24,10 @@ public class ZipCodeServiceImpl implements ZipCodeService, Serializable {
 
 	private RestClient restClient;
 
-	private ConfigPropertyResolver configPropertiesResolver;
+	private ConfigPropertiesResolver configPropertiesResolver;
 
 	@Inject
-	public ZipCodeServiceImpl(RestClient restClient, ConfigPropertyResolver resourcesReader) {
+	public ZipCodeServiceImpl(RestClient restClient, ConfigPropertiesResolver resourcesReader) {
 		super();
 		this.restClient = restClient;
 		this.configPropertiesResolver = resourcesReader;

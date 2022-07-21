@@ -18,7 +18,7 @@ import com.farawaybr.portal.dto.BatchProductSearchDataWrapper;
 import com.farawaybr.portal.dto.ProductToFind;
 import com.farawaybr.portal.exception.WrapperProductBatchSearchEndpointException;
 import com.farawaybr.portal.repository.ProductRepositoryImpl;
-import com.farawaybr.portal.resources.ConfigPropertyResolver;
+import com.farawaybr.portal.resources.ConfigPropertiesResolver;
 import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriter;
 import com.farawaybr.portal.resources.poi.microsoft.excel.writer.XssfWriterImpl;
 import com.farawaybr.portal.service.jsonb.JsonbService;
@@ -36,7 +36,7 @@ public class ProductRepositoryImplTest {
 		return ShrinkwrapDeploymentUtils
 				.createdDeployment(true, "com.nicholas.jaxrsclient", "com.farawaybr.portal.repository",
 						"com.farawaybr.portal.security.api")
-				.addClass(ConfigPropertyResolver.class).addClass(XssfWriter.class).addClass(XssfWriterImpl.class)
+				.addClass(ConfigPropertiesResolver.class).addClass(XssfWriter.class).addClass(XssfWriterImpl.class)
 				.addClass(JsonbService.class).addClass(JsonbServiceImpl.class);
 	}
 

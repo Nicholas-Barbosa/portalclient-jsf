@@ -20,6 +20,7 @@ public class ConnectionSessionMonitorWSPushBean {
 	private PushContext connectionMonitorChannel;
 
 	public void onNewConnection(@Priority(1) @ObservesAsync ConnectionSession cnn) {
+		System.out.println("second observer!!!");
 		connectionMonitorChannel.send("new connection!");
 	}
 
